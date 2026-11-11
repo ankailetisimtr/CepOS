@@ -611,11 +611,12 @@ function pwModal(){S.uOpen=false;render();modal(`<h2>Şifremi değiştir</h2><in
 /* sunucu fonksiyonu çağrısı: hata mesajını Türkçe döndürür */
 async function fnCall(name,body){let r;try{r=await sb.functions.invoke(name,{body})}catch(e){throw new Error('Sunucuya ulaşılamadı: '+msg(e))}
   if(r.error){let m='',st=0;try{st=r.error.context&&r.error.context.status;const j=await r.error.context.json();m=j&&(j.error||j.msg||j.message)||''}catch(e){}
-    if(st===404||/not.?found/i.test(m)&&!/Kullanıcı/.test(m))m=`"${name}" sunucu fonksiyonu yayınlanmamış. KURULUM.md > Kullanıcı yönetimi bölümüne bakın.`;
+    if((st===404&&!m)||/Requested function was not found|^NOT_FOUND$/i.test(m))m=`"${name}" sunucu fonksiyonu yayınlanmamış. KURULUM.md > Kullanıcı yönetimi bölümüne bakın.`;
     throw new Error(m||r.error.message||'İşlem yapılamadı')}
   if(r.data&&r.data.error)throw new Error(r.data.error);return r.data}
 /* Yönetim > Kullanıcılar: giriş bilgileri ve son giriş (yalnız kullanıcı yöneticisi) */
-async function uaLoad(){try{const r=await call('user_logins');S.ul=new Map((r||[]).map(x=>[x.id,x]))}catch(e){S.ul=false}if(S.ui.tab==='yonetim')render()}
+async function uaLoad(){try{const r=await call('user_logins');S.ul=new Map((r||[]).map(x=>[x.id,x]))}catch(e){S.ul=false}
+  try{const q=await sb.from('user_deletions').select('*').order('deleted_at',{ascending:false}).limit(200);S.udel=q.error?null:q.data}catch(e){S.udel=null}if(S.ui.tab==='yonetim')render()}
 const uaCan=p=>p.id!==S.user.id&&(p.role!=='owner'||S.me.role==='owner');
 const uaRoles=()=>ROLES.filter(r=>r[0]!=='owner'||S.me.role==='owner');
 function uaModal(){modal(`<h2>Kullanıcı ekle</h2><div class="form">
@@ -637,6 +638,36 @@ function uaResetModal(id){const p=S.d.profileMap.get(id);if(!p)return;S.uaId=id;
 function uaLoginModal(id){const p=S.d.profileMap.get(id),u=S.ul&&S.ul.get(id);if(!p)return;S.uaId=id;modal(`<h2>Giriş bilgisini değiştir</h2><p class="sub" style="margin-top:0"><b>${esc(p.full_name)}</b> bundan sonra yeni bilgiyle giriş yapar; şifresi değişmez.</p><div class="form">
   <label class="f full">E-posta veya kullanıcı adı<input class="in" id="ua-l" maxlength="120" value="${esc(u?loginShow(u.login):'')}" autocomplete="off" autocapitalize="none" spellcheck="false"></label></div>
   <div class="err" id="f-err" hidden></div><div class="actions"><button class="btn" data-a="close">Vazgeç</button><button class="btn pri" data-a="ua-login-save">Kaydet</button></div>`)}
+/* aktif kullanıcılar önce (sahip en üstte); pasifler yalnız "Pasifleri göster" ile */
+const uaList=()=>S.d.profiles.filter(p=>p.active||S.ui.upas).sort((a,b)=>(b.active-a.active)||((b.role==='owner')-(a.role==='owner'))||String(a.full_name).localeCompare(String(b.full_name),'tr'));
+/* pasife alırken uyarılacak açık işler (yüklü veriden) */
+function uaOpenWork(id){const d=S.d,t=today(),L=[];const add=(n,l)=>{if(n)L.push(n+' '+l)};
+  add((d.tasks||[]).filter(x=>x.assigned_to===id&&(x.status==='acik'||x.status==='yapiliyor')).length,'açık görev');
+  add((d.service_orders||[]).filter(x=>x.assigned_to===id&&x.status!=='teslim'&&x.status!=='iptal').length,'açık servis kaydı');
+  add((d.customer_orders||[]).filter(x=>x.assigned_to===id&&x.status!=='teslim'&&x.status!=='iptal').length,'açık sipariş');
+  add((d.follow_ups||[]).filter(x=>x.assigned_to===id&&!x.done).length,'bekleyen müşteri takibi');
+  add((d.time_clock||[]).filter(x=>x.staff_id===id&&!x.clock_out).length,'kapatılmamış mesai');
+  add((d.shifts||[]).filter(x=>x.staff_id===id&&x.status==='planli'&&String(x.shift_date)>=t).length,'planlı vardiya (bugün ve sonrası)');
+  add((d.entitlements||[]).filter(x=>x.staff_id===id&&x.status==='bekliyor').length,'ödenmemiş hakediş kalemi');
+  return L}
+function uaOffModal(id){const p=S.d.profileMap.get(id);if(!p)return;S.uaId=id;const w=uaOpenWork(id);
+  modal(`<h2>Pasife al · ${esc(p.full_name)}</h2><p class="sub" style="margin-top:0">Kişi CepOS'a giriş yapamaz, telefon bildirimleri kapanır. Satış, prim, hakediş ve mesai geçmişi aynen korunur; raporlarda adı görünmeye devam eder. İstediğiniz zaman <b>Aktif et</b> ile geri açabilirsiniz.</p>
+  ${w.length?`<div class="card" style="margin:0;border-color:var(--warn)"><b>Devredilmesi gereken açık işleri var:</b><ul style="margin:6px 0 0 18px;padding:0">${w.map(x=>`<li>${esc(x)}</li>`).join('')}</ul><p class="sub" style="margin-bottom:0">Pasife almadan önce bu işleri başka birine atamanızı öneririm (Görevler, Teknik Servis, Siparişler, Vardiya, Hakedişler).</p></div>`:'<p class="sub">Açık işi yok.</p>'}
+  <div class="err" id="f-err" hidden></div><div class="actions"><button class="btn" data-a="close">Vazgeç</button><button class="btn danger" data-a="ua-off-save">Pasife al</button></div>`)}
+async function uaDelModal(id){const p=S.d.profileMap.get(id);if(!p)return;S.uaId=id;
+  modal(`<h2>Sil · ${esc(p.full_name)}</h2><p class="sub">Kayıtları kontrol ediliyor…</p>`);
+  let use;try{use=await call('user_usage',{p_id:id})}catch(e){return modal(`<h2>Sil · ${esc(p.full_name)}</h2><div class="err">${esc(/user_usage|function/.test(msg(e))?'049 dosyası çalıştırılmamış.':msg(e))}</div><div class="actions"><button class="btn" data-a="close">Kapat</button></div>`)}
+  if(!S.d||S.uaId!==id||!document.getElementById('modal').innerHTML)return;
+  if(use&&use.length)return modal(`<h2>${esc(p.full_name)} silinemez</h2><p class="sub" style="margin-top:0">Bu kullanıcının uygulamada kayıtları var. Silinirse bu kayıtlarda kimin işlem yaptığı kaybolur ve hesaplar bozulur:</p>
+    <ul style="margin:6px 0 0 18px;padding:0">${use.map(x=>`<li>${esc(x.l||x.t)}: <b>${num(x.n)}</b></li>`).join('')}</ul>
+    <p class="sub">Bunun yerine pasife alın: giriş yapamaz, geçmişi korunur ve listede gizlenir.</p>
+    <div class="actions"><button class="btn" data-a="close">Kapat</button>${p.active?`<button class="btn pri" data-a="ua-off" data-id="${id}">Pasife al</button>`:''}</div>`);
+  modal(`<h2>Kalıcı olarak sil · ${esc(p.full_name)}</h2><p class="sub" style="margin-top:0">Bu kullanıcının hiç işlemi yok. Silinince hesabı ve giriş bilgisi tamamen kaldırılır; prim/hedef ayarı, çalışma düzeni, planlı vardiyaları ve kendisine gelen bildirimler de silinir. <b>Geri alınamaz.</b> Aynı kişi daha sonra yeniden eklenebilir.</p>
+    <p class="sub">Silinen kullanıcı "Silinenler" listesinde (kim, ne zaman sildi) kayıtlı kalır.</p>
+    <div class="err" id="f-err" hidden></div><div class="actions"><button class="btn" data-a="close">Vazgeç</button><button class="btn danger" data-a="ua-del-save">Kalıcı olarak sil</button></div>`)}
+function uaDelLog(){const L=S.udel||[];modal(`<h2>Silinen kullanıcılar</h2><div class="tw"><table><tr><th>Ad</th><th>Giriş</th><th>Rol</th><th>Silen</th><th>Tarih</th></tr>
+  ${L.map(x=>`<tr><td>${esc(x.full_name||'')}</td><td>${esc(loginShow(x.login||''))}</td><td>${esc((ROLES.find(r=>r[0]===x.role)||[0,x.role||''])[1])}</td><td>${esc(x.deleted_by?((S.d.profileMap.get(x.deleted_by)||{}).full_name||'—'):'—')}</td><td>${esc(fmtSeen(x.deleted_at).replace('son giriş ',''))}</td></tr>`).join('')}</table></div>
+  <div class="actions"><button class="btn" data-a="close">Kapat</button></div>`)}
 const fmtSeen=t=>{if(!t)return 'hiç giriş yapmadı';const d=new Date(t);return 'son giriş '+d.toLocaleDateString('tr-TR',{day:'2-digit',month:'2-digit',year:'numeric'})+' '+d.toLocaleTimeString('tr-TR',{hour:'2-digit',minute:'2-digit'})};
 
 /* ================= YÖNLENDİRME / ÇERÇEVE ================= */
@@ -4232,19 +4263,22 @@ function accRefundModal(lineId){
 
 /* ================= YÖNETİM ================= */
 function vYonetim(){
-  const d=S.d,perms=[...new Map(d.role_permissions.map(r=>[r.permission,r.label])).entries()];
+  const d=S.d,uaN={on:d.profiles.filter(p=>p.active).length,off:d.profiles.filter(p=>!p.active).length},perms=[...new Map(d.role_permissions.map(r=>[r.permission,r.label])).entries()];
   const sh=shopSet();
   return `<h1>Yönetim</h1>
   <div class="card"><div class="row"><h2>İşletme bilgileri</h2><div class="sp"></div><button class="btn" data-a="sv-set">Düzenle</button></div><div class="sub" style="margin-top:0"><b>${esc(sh.name)}</b><br>${shopLines(sh).map(esc).join('<br>')}</div><p class="sub">Fişlerde, formlarda, sözleşmelerde, raporlarda ve etiketlerde otomatik kullanılır.</p></div>
-  <div class="card"><div class="row"><h2>Kullanıcılar</h2><div class="sp"></div><button class="btn pri" data-a="ua-new">${ic('userplus')}Kullanıcı ekle</button></div>
-   <p class="sub" style="margin-top:0">Kullanıcı ekleme, şifre sıfırlama ve giriş bilgisi buradan yapılır. İşten ayrılan kişiyi silmeyin, <b>Aktif</b> kutusunu kaldırın: giriş yapamaz, satış ve prim geçmişi korunur.</p>
-   <div class="tw"><table><tr><th>Ad</th><th style="text-align:left">Giriş</th><th>Rol</th><th>Aktif</th><th>Prim % (kâr payı)</th><th>Günlük hedef ₺</th><th>Aylık hedef ₺</th></tr>
-   ${(S.ul===undefined&&(S.ul=null,uaLoad()),'')}${d.profiles.map(p=>{const st=d.staff_settings.find(s=>s.profile_id===p.id)||{},u=S.ul&&S.ul.get(p.id),own=p.role==='owner'&&S.me.role!=='owner';return `<tr><td><input class="in" style="width:150px" value="${esc(p.full_name)}" data-c="pname" data-id="${p.id}" ${own?'disabled':''}></td>
-    <td class="ua-cell" style="min-width:170px;text-align:left">${u?`<b>${esc(loginShow(u.login))}</b><div class="sub">${esc(fmtSeen(u.last_sign_in_at))}</div>`:S.ul===false?'<span class="sub">—</span>':'<span class="sub">…</span>'}
-     ${p.must_change_password?'<div><span class="pill warn">Şifre değiştirmesi bekleniyor</span></div>':''}
-     ${uaCan(p)?`<div class="row" style="gap:4px;margin-top:4px"><button class="btn sm" data-a="ua-reset" data-id="${p.id}">Şifre sıfırla</button><button class="btn sm" data-a="ua-login" data-id="${p.id}">Giriş bilgisi</button></div>`:''}</td>
+  ${(S.ul===undefined&&(S.ul=null,uaLoad()),'')}<div class="card"><div class="row"><h2>Kullanıcılar</h2><span class="sub">${uaN.on} aktif${uaN.off?' · '+uaN.off+' pasif':''}</span><div class="sp"></div>
+    ${uaN.off?`<button class="btn" data-a="ua-pas" aria-pressed="${!!S.ui.upas}">${S.ui.upas?'Pasifleri gizle':'Pasifleri göster ('+uaN.off+')'}</button>`:''}
+    ${S.udel&&S.udel.length?`<button class="btn" data-a="ua-dellog">Silinenler (${S.udel.length})</button>`:''}<button class="btn pri" data-a="ua-new">${ic('userplus')}Kullanıcı ekle</button></div>
+   <p class="sub" style="margin-top:0">Kullanıcı ekleme, şifre sıfırlama, giriş bilgisi, pasife alma ve silme buradan yapılır. <b>Sil</b> yalnız hiç işlemi olmayan kullanıcıda çalışır. İşten ayrılan kişiyi <b>Pasife al</b>: giriş yapamaz, satış ve prim geçmişi korunur; liste varsayılan olarak yalnız aktif kullanıcıları gösterir.</p>
+   <div class="tw"><table><tr><th>Ad</th><th style="text-align:left">Giriş ve işlemler</th><th>Rol</th><th>Durum</th><th>Prim % (kâr payı)</th><th>Günlük hedef ₺</th><th>Aylık hedef ₺</th></tr>
+   ${uaList().map(p=>{const st=d.staff_settings.find(s=>s.profile_id===p.id)||{},u=S.ul&&S.ul.get(p.id),own=p.role==='owner'&&S.me.role!=='owner',can=uaCan(p);return `<tr${p.active?'':' class="ua-off" style="opacity:.62"'}><td><input class="in" style="width:150px" value="${esc(p.full_name)}" data-c="pname" data-id="${p.id}" ${own?'disabled':''}></td>
+    <td class="ua-cell" style="min-width:190px;text-align:left">${u?`<b>${esc(loginShow(u.login))}</b><div class="sub">${esc(fmtSeen(u.last_sign_in_at))}</div>`:S.ul===false?'<span class="sub">—</span>':'<span class="sub">…</span>'}
+     ${p.must_change_password&&p.active?'<div><span class="pill warn">Şifre değiştirmesi bekleniyor</span></div>':''}
+     ${can?`<div class="row" style="gap:4px;margin-top:4px">${p.active?`<button class="btn sm" data-a="ua-reset" data-id="${p.id}">Şifre sıfırla</button><button class="btn sm" data-a="ua-login" data-id="${p.id}">Giriş bilgisi</button><button class="btn sm" data-a="ua-off" data-id="${p.id}">Pasife al</button>`
+       :`<button class="btn sm pri" data-a="ua-on" data-id="${p.id}">Aktif et</button>`}<button class="btn sm danger" data-a="ua-del" data-id="${p.id}">Sil</button></div>`:''}</td>
     <td><select class="in" style="width:150px" data-c="prole" data-id="${p.id}" ${p.id===S.user.id||own?'disabled':''}>${opts(p.role==='owner'?ROLES:uaRoles(),p.role)}</select></td>
-    <td><input type="checkbox" data-c="pactive" data-id="${p.id}" ${p.active?'checked':''} ${p.id===S.user.id||own?'disabled':''}></td>
+    <td>${p.active?'<span class="pill sold">Aktif</span>':`<span class="pill">Pasif</span>`}</td>
     ${p.role==='owner'?'<td colspan="3" class="sub">İşletme sahibi: prim, hedef ve hakediş yok</td>':`<td title="Prim oranı Personeller > Primler sekmesinden değiştirilir"><b>%${num(st.commission_rate??0)}</b></td>
     <td><input class="in" style="width:110px" type="number" min="0" step="100" value="${st.daily_target??0}" data-c="pset" data-f="daily_target" data-id="${p.id}"></td>
     <td><input class="in" style="width:120px" type="number" min="0" step="1000" value="${st.monthly_target??0}" data-c="pset" data-f="monthly_target" data-id="${p.id}"></td>`}</tr>`}).join('')}</table></div></div>
@@ -4304,7 +4338,15 @@ const A={
     if(!l.includes('@')&&!/^[a-z0-9][a-z0-9._-]{2,29}$/.test(l))return setErr('Kullanıcı adı 3-30 karakter olmalı; yalnız küçük harf (Türkçe karakter olmadan), rakam, nokta, tire ve alt çizgi.');
     const e=pwRule(pw);if(e)return setErr(e);
     t.disabled=true;try{const r=await fnCall('user-admin',{action:'create',full_name:n,login:l,password:pw,role});S.ul=undefined;uaDone('Kullanıcı oluşturuldu',n,r.login,pw);reload().catch(()=>{})}catch(x){t.disabled=false;setErr(msg(x))}},
-  'ua-reset'(t){uaResetModal(t.dataset.id)},'ua-login'(t){uaLoginModal(t.dataset.id)},
+  'ua-reset'(t){uaResetModal(t.dataset.id)},
+  'ua-pas'(){S.ui.upas=!S.ui.upas;render()},'ua-dellog'(){uaDelLog()},
+  'ua-off'(t){uaOffModal(t.dataset.id)},'ua-del'(t){uaDelModal(t.dataset.id)},
+  async 'ua-off-save'(t){const id=S.uaId,p=S.d.profileMap.get(id);t.disabled=true;
+    try{const r=await fnCall('user-admin',{action:'set_active',id,active:false});closeModal();toast((p?p.full_name+' ':'')+'pasife alındı'+(r&&r.warning?' · '+r.warning:''),!!(r&&r.warning));S.ul=undefined;await reload()}catch(x){t.disabled=false;setErr(msg(x))}},
+  async 'ua-on'(t){if(!armed(t,'Aktif edilsin mi?'))return;const id=t.dataset.id,p=S.d.profileMap.get(id);t.disabled=true;
+    try{const r=await fnCall('user-admin',{action:'set_active',id,active:true});toast((p?p.full_name+' ':'')+'aktif edildi'+(r&&r.warning?' · '+r.warning:''),!!(r&&r.warning));S.ul=undefined;await reload()}catch(x){t.disabled=false;toast(msg(x),true)}},
+  async 'ua-del-save'(t){if(!armed(t,'Emin misiniz? Geri alınamaz'))return;const id=S.uaId,p=S.d.profileMap.get(id);t.disabled=true;
+    try{await fnCall('user-admin',{action:'delete',id});closeModal();toast((p?p.full_name+' ':'')+'kalıcı olarak silindi');S.ul=undefined;await reload()}catch(x){t.disabled=false;setErr(msg(x))}},'ua-login'(t){uaLoginModal(t.dataset.id)},
   async 'ua-reset-save'(t){const pw=g('ua-p').trim(),e=pwRule(pw);if(e)return setErr(e);const id=S.uaId,p=S.d.profileMap.get(id),u=S.ul&&S.ul.get(id);
     t.disabled=true;try{await fnCall('user-admin',{action:'reset',id,password:pw});uaDone('Şifre sıfırlandı',p?p.full_name:'',u?u.login:'',pw);reload().catch(()=>{})}catch(x){t.disabled=false;setErr(msg(x))}},
   async 'ua-login-save'(t){const l=g('ua-l').trim().toLowerCase();if(!l)return setErr('E-posta veya kullanıcı adı yazın.');
