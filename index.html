@@ -229,6 +229,16 @@ textarea.in{min-height:64px;resize:vertical}
 .form{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px}.form .full{grid-column:1/-1}
 .pill{display:inline-block;padding:2px 8px;border-radius:99px;font-size:12px;font-weight:500;background:var(--surface2);color:var(--muted);white-space:nowrap}
 .pill.stock{background:var(--accent-soft);color:var(--accent)}.pill.sold{background:var(--good-soft);color:var(--good)}
+.qs-ov{position:fixed;inset:0;z-index:90;background:color-mix(in srgb,var(--bg) 70%,transparent);backdrop-filter:blur(6px);display:flex;align-items:center;justify-content:center;padding:16px;overflow:auto}
+.qs-box{background:var(--surface);border:1px solid var(--line);border-radius:16px;box-shadow:0 20px 60px rgba(0,0,0,.18);padding:20px;width:min(560px,100%);display:flex;flex-direction:column;gap:12px}
+.qs-box .lg-l,.qs-box .lg-d{height:36px}
+.qs-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px;margin-top:6px}
+.qs-u{display:flex;flex-direction:column;align-items:center;gap:4px;padding:14px 8px;border:1px solid var(--line);border-radius:12px;background:var(--surface);color:inherit;font:inherit;cursor:pointer;text-align:center}
+.qs-u:hover,.qs-u:focus-visible{border-color:var(--accent);outline:none;box-shadow:0 0 0 3px color-mix(in srgb,var(--accent) 20%,transparent)}
+.qs-u.cur{border-color:var(--accent)}.qs-u .avatar{width:44px;height:44px;font-size:16px}.qs-u small{color:var(--muted);font-size:12px}
+.qs-warn{background:var(--warn-soft);color:var(--warn);border-radius:8px;padding:8px 10px;font-size:13px}
+.qs-form{display:flex;flex-direction:column;gap:8px}.qs-login{margin-bottom:12px}
+.qs-lock{max-width:520px}.qs-lock a{color:var(--accent)}.qs-bar{display:flex;align-items:center;gap:8px;background:var(--accent-soft);color:var(--accent);border-radius:10px;padding:6px 10px;margin-bottom:10px;font-size:13px}
 .pill.warn{background:var(--warn-soft);color:var(--warn)}.pill.bad{background:var(--bad-soft);color:var(--bad)}
 .mono{font-family:var(--mono);font-size:12px}
 .tw{overflow-x:auto}
@@ -564,22 +574,34 @@ async function boot(){
     if(!data.session){S.user=null;return renderLogin()}
     S.user=data.session.user;await loadAll();
     if(!S.me||!S.me.active)return renderBlocked();
+    if(!(await qsBoot(data.session)))return;
     if(S.me.must_change_password)return renderPwChange();
     subscribe();swListen();swReg();fxStart();route()}
   catch(e){document.getElementById('app').innerHTML=`<div class="wrap"><main><div class="card"><h1>Bağlantı kurulamadı</h1><p class="sub">${esc(msg(e))}</p><button class="btn pri" data-a="retry">Tekrar dene</button></div></main></div>`}}
 function renderLogin(err){
+  const L=qsShared()?qsList():[];
   document.getElementById('app').innerHTML=`<div class="wrap login"><div class="login-logo">${logoImg('word','Anka İletişim')}<span>CepOS</span></div>
-  <form class="card" id="login" autocomplete="on"><h1>Giriş</h1>
+  ${L.length?`<div class="card qs-login"><h2 style="margin:0 0 4px">Kim kullanıyor?</h2><div class="sub">${esc(qsDev())} · bugün giriş yapanlar, şifre sorulmaz</div>
+    <div class="qs-grid">${L.map(u=>`<button class="qs-u" data-a="qs-sw" data-id="${u.id}"><span class="avatar">${esc(initials(u.name||u.email))}</span><b>${esc(u.name||loginShow(u.email))}</b><small>${esc((ROLES.find(r=>r[0]===u.role)||[0,''])[1])}</small></button>`).join('')}</div></div>`:''}
+  <form class="card" id="login" autocomplete="on"><h1>${L.length?'Başka kullanıcıyla giriş':'Giriş'}</h1>
   <label class="f">E-posta veya kullanıcı adı<input class="in" id="l-mail" type="text" autocomplete="username" autocapitalize="none" autocorrect="off" spellcheck="false" required></label>
   <label class="f">Şifre<input class="in" id="l-pass" type="password" autocomplete="current-password" required></label>
   ${err?`<div class="err">${esc(err)}</div>`:''}<button class="btn pri" type="submit">Giriş yap</button></form></div>`}
 function renderBlocked(){document.getElementById('app').innerHTML=`<div class="wrap login"><div class="card"><h1>Hesap etkin değil</h1><p class="sub">Bu kullanıcı için profil bulunamadı veya kapatılmış. İşletme sahibine başvurun.</p><button class="btn" data-a="logout">Çıkış</button></div></div>`}
 document.addEventListener('submit',async e=>{
+  if(e.target.id==='qs-lockf'){e.preventDefault();return qsUnlock()}
+  if(e.target.id==='qsform'){e.preventDefault();const em=loginEmail(g('qs-mail')),pw=document.getElementById('qs-pass').value,er=document.getElementById('qs-err'),b=e.target.querySelector('button[type=submit]');
+    if(!em||!pw){er.textContent='E-posta / kullanıcı adı ve şifre yazın.';er.hidden=false;return}
+    try{const {data}=await sb.auth.getSession();if(data.session)qsStore(data.session)}catch(x){}
+    b.disabled=true;S.switching=true;const r=await sb.auth.signInWithPassword({email:em,password:pw});
+    if(r.error){S.switching=false;b.disabled=false;er.textContent=r.error.message==='Invalid login credentials'?'E-posta / kullanıcı adı veya şifre hatalı.':r.error.message;er.hidden=false;return}
+    qsStore(r.data.session,{day:today()});try{sessionStorage.setItem('anka_qs_ev','giris')}catch(x){}location.reload();return}
   if(e.target.id!=='login'&&e.target.id!=='pwform')return;e.preventDefault();
   if(e.target.id==='pwform'){const b=e.target.querySelector('button[type=submit]');b.disabled=true;const r=await pwChange(g('pw-n'),g('pw-r'));b.disabled=false;
     if(r)return pwErrShow(r);toast('Şifreniz değiştirildi');return boot()}
-  const {error}=await sb.auth.signInWithPassword({email:loginEmail(g('l-mail')),password:document.getElementById('l-pass').value});
+  const {data:li,error}=await sb.auth.signInWithPassword({email:loginEmail(g('l-mail')),password:document.getElementById('l-pass').value});
   if(error)return renderLogin(error.message==='Invalid login credentials'?'E-posta / kullanıcı adı veya şifre hatalı.':error.message);
+  if(qsShared()&&li&&li.session){qsStore(li.session,{day:today()});try{sessionStorage.setItem('anka_qs_ev','giris')}catch(x){}}
   boot()});
 /* ================= KULLANICI YÖNETİMİ (048 + user-admin) =================
    Kullanıcı adıyla giriş: "ahmet" → ahmet@cepos.local (user-admin fonksiyonundaki USER_DOMAIN ile aynı). */
@@ -608,6 +630,118 @@ function renderPwChange(){document.getElementById('app').innerHTML=`<div class="
 const _fn=n=>String(n||'').trim().split(/\s+/)[0]||'';
 function pwModal(){S.uOpen=false;render();modal(`<h2>Şifremi değiştir</h2><input type="text" autocomplete="username" value="${esc(loginShow(S.user&&S.user.email))}" hidden><div class="form">${pwFields()}</div>
   <div class="err" id="f-err" hidden></div><div class="actions"><button class="btn" data-a="close">Vazgeç</button><button class="btn pri" data-a="pw-save">Kaydet</button></div>`)}
+/* ================= ORTAK BİLGİSAYAR: HIZLI KULLANICI GEÇİŞİ (050) =================
+   "Ortak mağaza bilgisayarı" olarak işaretlenen cihazda o gün giriş yapan kullanıcıların oturumları yalnız bu tarayıcıda
+   (localStorage 'anka_qs') tutulur; şifre sormadan geçilir. Gün değişince, mesai bitince ve çıkışta oturum bu cihazdan
+   silinir ve sunucuda kapatılır. Kişisel alanlar (qs_secure_tabs) ortak bilgisayarda kişinin kendi şifresiyle açılır. */
+const QS_KEY='anka_qs';
+const QS_TABS=[['hakedis','Hakedişler'],['primler','Primler'],['odemeler','Ödemeler'],['kazancrapor','Kazanç Raporu'],['sermaye','Sermaye Raporu'],['satisrapor','Satış Raporu'],
+  ['kasa','Kasa'],['masraf','Masraflar'],['konsinye','Konsinye'],['alislar','Alışlar'],['egitim','Eğitimler'],['yonetim','Yönetim']];
+const qsGet=()=>{let v;try{v=JSON.parse(localStorage.getItem(QS_KEY)||'{}')}catch(e){v={}}if(!v||typeof v!=='object')v={};v.users=v.users||{};return v};
+const qsPut=v=>{try{localStorage.setItem(QS_KEY,JSON.stringify(v))}catch(e){}};
+const qsShared=()=>!!qsGet().shared;
+const qsOn=()=>qsShared()&&(!S.d||appSet('qs_on','1')!=='0');
+const qsDev=()=>qsGet().name||'Ortak bilgisayar';
+const qsSecTabs=()=>S.d?appSet('qs_secure_tabs','hakedis,primler,odemeler,kazancrapor,yonetim,konsinye').split(',').filter(Boolean):[];
+const qsSecLocked=tab=>qsOn()&&qsSecTabs().includes(tab)&&!((S.unlockUntil||0)>Date.now());
+/* oturumu bu cihazın listesine yazar (anahtarlar yenilendikçe güncellenir; "gün" ilk girişte konur) */
+function qsStore(session,extra){if(!session||!session.user||!qsShared())return;const v=qsGet(),u=session.user,o=v.users[u.id]||{};
+  v.users[u.id]={...o,email:u.email,at:session.access_token,rt:session.refresh_token,day:o.day||today(),seen:Date.now(),...(extra||{})};qsPut(v)}
+const qsList=()=>{const v=qsGet(),t=today();return Object.entries(v.users).filter(([,e])=>e.day===t&&e.rt).map(([id,e])=>({id,...e})).sort((a,b)=>String(a.name||a.email).localeCompare(String(b.name||b.email),'tr'))};
+const qsTmp=()=>window.supabase.createClient(CFG.URL,CFG.KEY,{auth:{persistSession:false,autoRefreshToken:false,detectSessionInUrl:false,storageKey:'anka-qs-tmp'}});
+async function qsRevoke(e){try{const c=qsTmp(),r=await c.auth.setSession({access_token:e.at,refresh_token:e.rt});if(!r.error)await c.auth.signOut({scope:'local'})}catch(x){}}
+async function qsDrop(id,revoke){const v=qsGet(),e=v.users[id];if(!e)return;delete v.users[id];qsPut(v);if(revoke)await qsRevoke(e)}
+function qsLog(kind,detail){try{sb.rpc('log_session_event',{p_kind:kind,p_device:qsDev(),p_detail:detail||null}).then(()=>{},()=>{})}catch(e){}}
+/* açılışta: eski günün oturumlarını kapat, kendi kaydını güncelle; hızlı geçiş kapatıldıysa diğerlerini kapat */
+async function qsBoot(session){
+  if(!qsShared())return true;
+  const v=qsGet(),me=v.users[S.user.id];
+  if(me&&me.day!==today()){await qsEndSelf();return false}           // dünden kalan oturum: kapat
+  qsStore(session,{name:S.me.full_name,role:S.me.role});
+  for(const [id,e] of Object.entries(qsGet().users))if(id!==S.user.id&&(e.day!==today()||appSet('qs_on','1')==='0'))await qsDrop(id,true);
+  let ev=null;try{ev=sessionStorage.getItem('anka_qs_ev');sessionStorage.removeItem('anka_qs_ev')}catch(e){}
+  if(ev)qsLog(ev);
+  return true}
+async function qsEndSelf(){S.switching=true;const id=S.user&&S.user.id;if(id)await qsDrop(id,false);try{await sb.auth.signOut({scope:'local'})}catch(e){}location.reload()}
+async function qsSwitch(id){
+  if(S.user&&id===S.user.id){qsClose();return}
+  const e=qsGet().users[id];if(!e)return;
+  try{const {data}=await sb.auth.getSession();if(data.session)qsStore(data.session)}catch(x){}
+  S.switching=true;
+  let r;try{r=await sb.auth.setSession({access_token:e.at,refresh_token:e.rt})}catch(x){r={error:x}}
+  if(r.error||!r.data||!r.data.session){S.switching=false;await qsDrop(id,false);
+    const s=(await sb.auth.getSession()).data.session;if(S.user&&(!s||s.user.id!==S.user.id))return location.reload();
+    qsPick(!!S.qsLock,'Bu kişinin oturumu sona ermiş; şifresiyle yeniden giriş yapması gerekiyor.',e.email);return}
+  qsStore(r.data.session);try{sessionStorage.setItem('anka_qs_ev','gecis')}catch(x){}
+  location.reload()}
+async function qsLogout(){await pushLeave();qsLog('cikis');await new Promise(r=>setTimeout(r,150));await qsEndSelf()}
+/* "Kim kullanıyor?" / "Kullanıcı değiştir" penceresi (body'ye eklenir; sayfa çizimi silmez) */
+function qsClose(){const o=document.getElementById('qs-ov');if(o)o.remove();S.qsLock=false}
+function qsPick(lock,err,email){
+  qsClose();S.qsLock=!!lock;if(lock){S.unlockUntil=0;S.uOpen=false;S.notifOpen=false}
+  const L=qsList(),cur=S.user&&S.user.id,cartN=S.d?(S.cart.items.length+S.cart.acc.length+S.cart.trades.length):0;
+  const tile=u=>`<button class="qs-u${u.id===cur?' cur':''}" data-a="qs-sw" data-id="${u.id}"><span class="avatar">${esc(initials(u.name||u.email))}</span>
+    <b>${esc(u.name||loginShow(u.email))}</b><small>${esc((ROLES.find(r=>r[0]===u.role)||[0,''])[1])}${u.id===cur?' · şu an açık':''}</small></button>`;
+  const o=document.createElement('div');o.id='qs-ov';o.className='qs-ov';o.setAttribute('role','dialog');o.setAttribute('aria-modal','true');
+  o.innerHTML=`<div class="qs-box"><div class="row" style="gap:10px;flex-wrap:nowrap">${logoImg('emb','Anka İletişim')}<div style="min-width:0"><h2 style="margin:0">${lock?'Kim kullanıyor?':'Kullanıcı değiştir'}</h2>
+    <div class="sub">${esc(qsDev())} · bugün bu bilgisayarda giriş yapanlar</div></div><div class="sp"></div>${lock||!S.d?'':`<button class="ib" data-a="qs-close" aria-label="Kapat">${ic('x')}</button>`}</div>
+    ${lock?'<p class="sub">Bir süredir işlem yapılmadı. Devam etmek için adınızı seçin; şifre sorulmaz.</p>':'<p class="sub">Adınızı seçin, şifre sorulmaz. Satışlar ve işlemler seçilen kişi adına kaydedilir.</p>'}
+    ${cartN&&!lock?`<div class="qs-warn">Sepette ${cartN} kalem var; başka kullanıcıya geçerseniz sepet boşalır.</div>`:''}
+    <div class="qs-grid">${L.map(tile).join('')||'<div class="sub">Bugün bu bilgisayarda giriş yapan yok.</div>'}</div>
+    <div class="err" id="qs-err"${err?'':' hidden'}>${esc(err||'')}</div>
+    <button class="btn" data-a="qs-add"${email?' hidden':''}>${ic('userplus')}Başka kullanıcıyla giriş</button>
+    <form id="qsform" class="qs-form"${email?'':' hidden'} autocomplete="on"><label class="f">E-posta veya kullanıcı adı<input class="in" id="qs-mail" value="${esc(loginShow(email||''))}" autocomplete="username" autocapitalize="none" spellcheck="false"></label>
+      <label class="f">Şifre<input class="in" id="qs-pass" type="password" autocomplete="current-password"></label>
+      <button class="btn pri" type="submit">Giriş yap ve geç</button><p class="sub" style="margin:4px 0 0">Bu kişi bugün bu bilgisayarın hızlı geçiş listesine eklenir.</p></form></div>`;
+  document.body.appendChild(o);const f=o.querySelector(email?'#qs-pass':'.qs-u.cur')||o.querySelector('.qs-u');if(f)f.focus()}
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&document.getElementById('qs-ov')&&!S.qsLock&&S.d){qsClose()}},true);
+/* hareketsizlik kilidi ve gün sonu kontrolü */
+let qsLast=Date.now();
+['pointerdown','keydown','wheel','touchstart'].forEach(t=>document.addEventListener(t,()=>{qsLast=Date.now()},{passive:true,capture:true}));
+function qsTick(){if(!S.d||!S.me||!S.user||!qsOn())return;
+  const me=qsGet().users[S.user.id];if(me&&me.day!==today())return qsEndSelf();
+  const m=Number(appSet('qs_idle_min','5'))||0;if(m>0&&!document.getElementById('qs-ov')&&Date.now()-qsLast>m*60000)qsPick(true)}
+setInterval(qsTick,15000);
+/* kişisel alan kilidi */
+function qsLockPage(tab){const blk=(S.qsBlock||0)>Date.now();
+  return `<h1>${esc(tabLabel(tab))}</h1><div class="card qs-lock"><div class="row" style="gap:10px;flex-wrap:nowrap"><span class="icb">${ic('shield')}</span><div><h2 style="margin:0">Kişisel alan</h2>
+    <div class="sub">${esc(qsDev())} ortak bilgisayar. Bu bölüm için şifrenizi girin.</div></div></div>
+    <form id="qs-lockf" class="form" style="margin-top:12px" autocomplete="off"><input type="text" value="${esc(loginShow(S.user.email))}" autocomplete="username" hidden>
+    <label class="f full">${esc(S.me.full_name)} · şifre<input class="in" id="qs-pw" type="password" autocomplete="current-password" ${blk?'disabled':''}></label>
+    <div class="err full" id="qs-lerr"${blk?'':' hidden'}>${blk?'Çok fazla hatalı deneme. Birkaç dakika sonra tekrar deneyin.':''}</div>
+    <div class="actions full"><button class="btn pri" type="submit" ${blk?'disabled':''}>Kilidi aç</button></div></form>
+    <p class="sub">Kilit ${appSet('qs_secure_min','10')} dakika açık kalır; kullanıcı değişince veya ekran kilitlenince yeniden kapanır. Siz değilseniz <a href="#" data-a="qs-open">kullanıcı değiştirin</a>.</p></div>`}
+const qsUnlockBar=tab=>qsOn()&&qsSecTabs().includes(tab)&&(S.unlockUntil||0)>Date.now()?`<div class="qs-bar">${ic('shield','sm')}<span>Kişisel alan açık · ${Math.max(1,Math.ceil((S.unlockUntil-Date.now())/60000))} dk sonra kilitlenir</span><div class="sp"></div><button class="btn sm" data-a="qs-relock">Şimdi kilitle</button></div>`:'';
+async function qsUnlock(){const i=document.getElementById('qs-pw'),er=document.getElementById('qs-lerr'),b=document.querySelector('#qs-lockf button[type=submit]');
+  const show=m=>{if(er){er.textContent=m;er.hidden=false}};
+  if((S.qsBlock||0)>Date.now())return show('Çok fazla hatalı deneme. Birkaç dakika sonra tekrar deneyin.');
+  const pw=i?i.value:'';if(!pw)return show('Şifrenizi yazın.');
+  if(b)b.disabled=true;let r;try{r=await qsTmp().auth.signInWithPassword({email:S.user.email,password:pw})}catch(x){r={error:x}}
+  if(r.error||!r.data||!r.data.session){if(b)b.disabled=false;S.qsFails=(S.qsFails||0)+1;qsLog('kilit_hata',tabLabel(S.ui.tab));
+    if(S.qsFails>=5){S.qsFails=0;S.qsBlock=Date.now()+5*60000;render();return}
+    if(i){i.value='';i.focus()}return show(/invalid/i.test((r.error&&r.error.message)||'')?'Şifre hatalı.':'Doğrulanamadı: '+msg(r.error||'bağlantı'))}
+  try{const c=qsTmp();await c.auth.setSession({access_token:r.data.session.access_token,refresh_token:r.data.session.refresh_token});await c.auth.signOut({scope:'local'})}catch(x){}
+  S.qsFails=0;S.unlockUntil=Date.now()+(Number(appSet('qs_secure_min','10'))||10)*60000;qsLog('kilit_ac',tabLabel(S.ui.tab));render()}
+setInterval(()=>{if(S.d&&S.unlockUntil&&S.unlockUntil<=Date.now()&&qsSecTabs().includes(S.ui.tab)&&qsOn()&&!document.getElementById('qs-pw')){S.unlockUntil=0;if(!document.querySelector('#modal .modal'))render()}},20000);
+/* Yönetim: bu cihaz + ayarlar + kayıtlar */
+function qsCard(){const v=qsGet(),on=appSet('qs_on','1')!=='0',sec=qsSecTabs();
+  return `<div class="card" id="qs-card"><div class="row"><h2>Ortak bilgisayar ve hızlı kullanıcı geçişi</h2><div class="sp"></div><button class="btn" data-a="qs-events">Geçiş kayıtları</button></div>
+   <p class="sub" style="margin-top:0">Mağazada birden fazla kişinin kullandığı bilgisayarda, o gün giriş yapan kullanıcılar çıkış yapmadan ve şifre girmeden birbirine geçer. Kişisel alanlar kişinin kendi şifresiyle açılır. Kişisel telefon ve bilgisayarlarda açmayın.</p>
+   <div class="qs-dev"><b>Bu cihaz:</b> ${v.shared?`<span class="pill sold">Ortak bilgisayar · ${esc(qsDev())}</span> <span class="sub">${qsList().length} kişi listede</span>`:'<span class="pill">Kişisel cihaz</span>'}
+    <div class="row" style="gap:6px;margin-top:8px">${v.shared?`<button class="btn danger" data-a="qs-dev-off">Ortak bilgisayarı kapat</button>`
+      :`<input class="in" id="qs-name" placeholder="Cihaz adı (ör. Kasa bilgisayarı)" maxlength="40" style="max-width:260px"><button class="btn pri" data-a="qs-dev-on">Bu cihazı ortak bilgisayar yap</button>`}</div></div>
+   <div class="form" style="margin-top:12px"><label class="chk full"><input type="checkbox" id="qs-on" ${on?'checked':''}> Hızlı geçiş açık (tüm ortak bilgisayarlarda)</label>
+    <label class="f">Ekran kilidi: işlem yapılmazsa "Kim kullanıyor?" (dakika, 0 = kapalı)<input class="in" id="qs-idle" type="number" min="0" max="120" value="${esc(appSet('qs_idle_min','5'))}"></label>
+    <label class="f">Kişisel alan kilidi açık kalma süresi (dakika)<input class="in" id="qs-smin" type="number" min="1" max="120" value="${esc(appSet('qs_secure_min','10'))}"></label>
+    <div class="f full"><span>Şifre sorulacak kişisel alanlar</span><div class="row" style="gap:4px 14px;margin-top:4px">${QS_TABS.map(([k,l])=>`<label class="chk"><input type="checkbox" class="qs-t" value="${k}" ${sec.includes(k)?'checked':''}> ${esc(l)}</label>`).join('')}</div></div></div>
+   <div class="actions"><button class="btn pri" data-a="qs-save">Ayarları kaydet</button></div></div>`}
+async function qsEvents(){modal('<h2>Geçiş kayıtları</h2><p class="sub">Yükleniyor…</p>');
+  const q=await sb.from('session_events').select('*').order('created_at',{ascending:false}).limit(300);
+  if(q.error)return modal(`<h2>Geçiş kayıtları</h2><div class="err">${esc(/session_events|relation/.test(q.error.message)?'050 dosyası çalıştırılmamış.':q.error.message)}</div><div class="actions"><button class="btn" data-a="close">Kapat</button></div>`);
+  const K={giris:'Şifreyle giriş',gecis:'Hızlı geçiş',kilit_ac:'Kişisel alan açıldı',kilit_hata:'Hatalı şifre',cikis:'Çıkış',ekran_kilidi:'Ekran kilidi'};
+  modal(`<h2>Geçiş kayıtları</h2><p class="sub" style="margin-top:0">Ortak bilgisayarlarda kim, ne zaman, hangi cihazda geçiş yaptı (son 300 kayıt, 180 gün saklanır).</p><div class="tw"><table><tr><th>Zaman</th><th>Kişi</th><th>İşlem</th><th>Cihaz</th><th>Ayrıntı</th></tr>
+    ${(q.data||[]).map(x=>`<tr${x.kind==='kilit_hata'?' style="color:var(--bad)"':''}><td>${esc(fmtSeen(x.created_at).replace('son giriş ',''))}</td><td>${esc((S.d.profileMap.get(x.user_id)||{}).full_name||'—')}</td><td>${esc(K[x.kind]||x.kind)}</td><td>${esc(x.device||'')}</td><td>${esc(x.detail||'')}</td></tr>`).join('')||'<tr><td colspan="5" class="sub">Kayıt yok.</td></tr>'}</table></div>
+    <div class="actions"><button class="btn" data-a="close">Kapat</button></div>`)}
 /* sunucu fonksiyonu çağrısı: hata mesajını Türkçe döndürür */
 async function fnCall(name,body){let r;try{r=await sb.functions.invoke(name,{body})}catch(e){throw new Error('Sunucuya ulaşılamadı: '+msg(e))}
   if(r.error){let m='',st=0;try{st=r.error.context&&r.error.context.status;const j=await r.error.context.json();m=j&&(j.error||j.msg||j.message)||''}catch(e){}
@@ -725,6 +859,8 @@ function userMenu(){const w=S.work,since=w&&w.clock_open_since,sh=w?(w.my_shift_
    <button class="it" role="menuitem" data-a="snd-toggle" aria-pressed="${sndOn()}">${ic('bell')}Bildirim sesi<span class="v">${sndOn()?'Açık':'Kapalı'}</span></button>
    <button class="it" role="menuitem" data-a="snd-test">${ic('activity')}Sesi dene</button>
    <button class="it" role="menuitem" data-a="push-settings">${ic('bell')}Telefon bildirimleri</button>
+   ${qsOn()?`<button class="it" role="menuitem" data-a="qs-open">${ic('users')}Kullanıcı değiştir<span class="v">${qsList().length}</span></button>
+   <button class="it" role="menuitem" data-a="qs-lock">${ic('shield')}Ekranı kilitle</button>`:''}
    <button class="it" role="menuitem" data-a="pw-change">${ic('shield')}Şifremi değiştir</button>
    <button class="it" role="menuitem" data-a="logout">${ic('logout')}Çıkış</button></div>`}
 async function loadWork(){
@@ -735,7 +871,8 @@ function render(){
   if(!S.d||!S.me)return;
   const tab=S.ui.tab,ae=document.activeElement,keepQ=ae&&ae.id==='dq';
   const unread=nUnreadCount();
-  const page={panel:vPanel,satis:vSatis,stok:vStok,aksesuar:vAksesuar,sayim:vSayim,sorgu:vSorgu,alislar:vAlislar,satislar:vSatislar,iadeler:vIadeler,fireler:vFireler,odemeler:vOdemeler,kazancrapor:vKazancRapor,satisrapor:vSatisRapor,sermaye:vSermaye,hakedis:vHakedis,primler:vPrimler,kasa:vKasa,masraf:vMasraf,musteriler:vMusteriler,firmalar:vFirmalar,konsinye:vKonsinye,servis:vServis,siparis:vSiparis,eksikler:vEksik,teklif:vTeklif,gorev:vGorev,vardiya:vVardiya,hedef:vHedef,egitim:vEgitim,yonetim:vYonetim}[tab]();
+  const secLock=qsSecLocked(tab);
+  const page=secLock?qsLockPage(tab):qsUnlockBar(tab)+{panel:vPanel,satis:vSatis,stok:vStok,aksesuar:vAksesuar,sayim:vSayim,sorgu:vSorgu,alislar:vAlislar,satislar:vSatislar,iadeler:vIadeler,fireler:vFireler,odemeler:vOdemeler,kazancrapor:vKazancRapor,satisrapor:vSatisRapor,sermaye:vSermaye,hakedis:vHakedis,primler:vPrimler,kasa:vKasa,masraf:vMasraf,musteriler:vMusteriler,firmalar:vFirmalar,konsinye:vKonsinye,servis:vServis,siparis:vSiparis,eksikler:vEksik,teklif:vTeklif,gorev:vGorev,vardiya:vVardiya,hedef:vHedef,egitim:vEgitim,yonetim:vYonetim}[tab]();
   const grp=tabGroup(tab);
   document.getElementById('app').innerHTML=`<header class="top"><div class="wrap">
     <button class="ib" data-a="drawer-open" aria-label="Menüyü aç" title="Menü (Ctrl+K)">${ic('menu')}</button>
@@ -751,6 +888,7 @@ function render(){
   drawerShell();drawNav();const df=document.getElementById('dfoot');if(df)df.innerHTML=`<span class="dot-on"></span>${esc(shopSet().name||'Anka İletişim')}`;
   if(keepQ){const i=document.getElementById('dq');if(i)i.focus()}
   if(S.work===undefined)loadWork();
+  if(secLock){const i=document.getElementById('qs-pw');if(i&&!keepQ&&!document.getElementById('qs-ov'))i.focus();return}
   if(tab==='panel'){pnDrawCharts();loadOps();pnLoadTargets();if(can('view_all_sales')){const [a,b]=pnTeamRange();loadTeam(a,b)}}
   if(tab==='stok')stokList();
   if(tab==='hedef')loadTargets();
@@ -4282,6 +4420,7 @@ function vYonetim(){
     ${p.role==='owner'?'<td colspan="3" class="sub">İşletme sahibi: prim, hedef ve hakediş yok</td>':`<td title="Prim oranı Personeller > Primler sekmesinden değiştirilir"><b>%${num(st.commission_rate??0)}</b></td>
     <td><input class="in" style="width:110px" type="number" min="0" step="100" value="${st.daily_target??0}" data-c="pset" data-f="daily_target" data-id="${p.id}"></td>
     <td><input class="in" style="width:120px" type="number" min="0" step="1000" value="${st.monthly_target??0}" data-c="pset" data-f="monthly_target" data-id="${p.id}"></td>`}</tr>`}).join('')}</table></div></div>
+  ${qsCard()}
   <div class="card"><h2>Yetkiler</h2><p class="sub" style="margin-top:0">İşletme sahibi her zaman tüm yetkilere sahiptir.</p><div class="tw"><table><tr><th>Yetki</th>${ROLES.map(r=>`<th>${r[1]}</th>`).join('')}</tr>
    ${perms.map(([k,lab])=>`<tr><td>${esc(lab||k)}</td>${ROLES.map(([r])=>{const row=d.role_permissions.find(x=>x.role===r&&x.permission===k);return `<td><input type="checkbox" data-c="perm" data-r="${r}" data-p="${k}" ${row&&row.allowed?'checked':''} ${r==='owner'?'disabled checked':''}></td>`}).join('')}</tr>`).join('')}</table></div></div>`}
 
@@ -4299,7 +4438,7 @@ const A={
   'snd-test'(){chime(true)},
   umenu(){S.uOpen=!S.uOpen;S.notifOpen=false;render()},
   theme(){const r=document.documentElement,dark=r.dataset.theme?r.dataset.theme==='dark':matchMedia('(prefers-color-scheme: dark)').matches;r.dataset.theme=dark?'light':'dark';if(S.uOpen)render()},
-  async logout(){await pushLeave();await sb.auth.signOut();S.d=null;S.me=null;renderLogin()},
+  async logout(){if(qsShared())return qsLogout();await pushLeave();await sb.auth.signOut();S.d=null;S.me=null;renderLogin()},
   close(){closeModal()},ov(t,e){if(e.target===t&&!S.ins&&!S.pf)closeModal()},
   'prm-month'(t){const m=S.ui.prm||monthStart(today()),d=parse(m);S.ui.prm=iso(new Date(d.getFullYear(),d.getMonth()+Number(t.dataset.n),1));render()},
   async 'prm-rate'(t){const v=Number((document.getElementById('prr-'+t.dataset.id)||{}).value);
@@ -4485,7 +4624,21 @@ const A={
     const d=await sb.from('attachments').delete().eq('id',a.id);if(d.error)return toast(d.error.message,true);
     await sb.storage.from('anka-docs').remove([a.path]);S.d.attachments=S.d.attachments.filter(x=>x.id!==a.id);toast('Silindi');render();docsModal(a.ref_table,a.ref_id)},
   async 'clock-in'(){try{await call('clock_in',{},'Mesai başladı');S.work=undefined;await reload()}catch(e){}},
-  async 'clock-out'(){try{const h=await call('clock_out',{});toast('Mesai bitti · '+hrsTxt(Number(h)));S.work=undefined;await reload()}catch(e){}},
+  async 'clock-out'(){try{const h=await call('clock_out',{});toast('Mesai bitti · '+hrsTxt(Number(h)));S.work=undefined;await reload();
+    if(qsOn())modal(`<h2>Mesainiz bitti</h2><p class="sub" style="margin-top:0">${esc(qsDev())} ortak bilgisayar. Oturumunuzu kapatırsanız hızlı geçiş listesinden çıkarsınız ve başkası sizin adınıza işlem yapamaz.</p>
+      <div class="actions"><button class="btn" data-a="close">Açık kalsın</button><button class="btn pri" data-a="qs-out">Oturumumu kapat</button></div>`)}catch(e){}},
+  'qs-open'(t,e){if(e)e.preventDefault();S.uOpen=false;render();qsPick(false)},'qs-lock'(){S.uOpen=false;render();qsLog('ekran_kilidi');qsPick(true)},'qs-close'(){qsClose()},
+  'qs-sw'(t){qsSwitch(t.dataset.id)},'qs-add'(t){t.hidden=true;const f=document.getElementById('qsform');f.hidden=false;document.getElementById('qs-mail').focus()},
+  'qs-out'(){closeModal();qsLogout()},'qs-relock'(){S.unlockUntil=0;render()},'qs-events'(){qsEvents()},
+  'qs-dev-on'(){const n=g('qs-name');if(n.length<2)return toast('Cihaz için bir ad yazın (ör. Kasa bilgisayarı)',true);const v=qsGet();v.shared=true;v.name=n.slice(0,40);v.users={};qsPut(v);
+    S.unlockUntil=Date.now()+(Number(appSet('qs_secure_min','10'))||10)*60000;sb.auth.getSession().then(({data})=>{qsStore(data.session,{day:today(),name:S.me.full_name,role:S.me.role});toast('Bu cihaz ortak bilgisayar oldu');render()})},
+  async 'qs-dev-off'(t){if(!armed(t,'Diğer oturumlar kapatılsın mı?'))return;const v=qsGet();for(const id of Object.keys(v.users))if(id!==S.user.id)await qsDrop(id,true);
+    const w=qsGet();w.shared=false;w.users={};qsPut(w);S.unlockUntil=0;toast('Ortak bilgisayar kapatıldı; diğer kullanıcıların oturumları sonlandırıldı');render()},
+  async 'qs-save'(t){const want={qs_on:document.getElementById('qs-on').checked?'1':'0',qs_idle_min:String(g('qs-idle')),qs_secure_min:String(g('qs-smin')),
+      qs_secure_tabs:[...document.querySelectorAll('.qs-t')].filter(x=>x.checked).map(x=>x.value).join(',')};
+    const def={qs_on:'1',qs_idle_min:'5',qs_secure_min:'10',qs_secure_tabs:'hakedis,primler,odemeler,kazancrapor,yonetim,konsinye'};
+    t.disabled=true;try{let n=0;for(const k of Object.keys(want)){if(want[k]===appSet(k,def[k]))continue;await call('set_security_setting',{p_key:k,p_value:want[k]});n++}
+      toast(n?'Ayarlar kaydedildi':'Değişiklik yok');if(n)await reload()}catch(e){t.disabled=false}},
   taskfilter(t){S.ui.tf=t.dataset.v;render()},taskwho(t){S.ui.tw=t.dataset.v;render()},
   'task-new'(){taskModal()},'task-edit'(t){taskModal(S.d.tasks.find(x=>x.id===t.dataset.id))},
   async 'task-save'(t){const id=t.dataset.id,title=g('tk-title');if(!title)return setErr('Görevi yazın.');
@@ -5039,7 +5192,11 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape'){scanStop();closeMod
   if(e.key==='Enter'&&e.target.id==='pf-aq'){e.preventDefault();const v=e.target.value.trim(),ac=accFind(v)||(v?S.d.accessories.find(a=>a.active!==false&&[a.name,a.barcode,a.sku].join(' ').toLowerCase().includes(v.toLowerCase())):null);if(ac)pfAddAcc(ac.id);else toast('Ürün bulunamadı',true)}
   if(e.key==='Enter'&&e.target.id==='sc-scan'){e.preventDefault();const v=e.target.value;e.target.value='';scScan(v);return}
   if(e.key==='Enter'&&e.target.id==='cq'){const p=prodFind(e.target.value);if(p){e.preventDefault();S.cart.q='';cartAdd(p.id)}else{const ac=accFind(e.target.value);if(ac){e.preventDefault();S.cart.q='';accAdd(ac.id)}}}});
-sb.auth.onAuthStateChange(ev=>{if(ev==='SIGNED_OUT'&&S.d){S.d=null;renderLogin()}});
+sb.auth.onAuthStateChange((ev,session)=>{
+  if(session&&session.user&&qsShared()&&qsGet().users[session.user.id])qsStore(session);   // ortak bilgisayar: yenilenen anahtarı sakla
+  if(S.switching)return;
+  if(ev==='SIGNED_OUT'&&S.d){S.d=null;renderLogin()}
+  else if(session&&session.user&&S.user&&session.user.id!==S.user.id)location.reload()});   // başka sekmede kullanıcı değişti
 boot();
 </script>
 </body>
