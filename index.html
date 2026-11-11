@@ -9,6 +9,8 @@
 <meta name="robots" content="noindex,nofollow">
 <link rel="manifest" href="manifest.webmanifest">
 <meta name="theme-color" content="#0A70B8">
+<script>/* tema: ilk çizimden önce uygulanır (yanıp sönme olmaz). Varsayılan açık; bu cihazda en son kullanılan seçim. */
+try{var t=localStorage.getItem('anka_theme_last')||'light';if(t!=='system')document.documentElement.dataset.theme=t==='dark'?'dark':'light'}catch(e){document.documentElement.dataset.theme='light'}</script>
 <link rel="apple-touch-icon" href="icon-192.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -72,7 +74,7 @@ kbd{font:500 11px var(--font);border:1px solid var(--line);border-radius:5px;pad
 .udd .it:hover{background:var(--surface2)}.udd .it .v{margin-left:auto;font-size:12px;color:var(--muted)}
 .udd .it.wide-btn{display:none}@media (min-width:1500px){.udd .it.wide-btn{display:flex}}
 .udd .work{padding:8px 10px 10px;border-bottom:1px solid var(--line);margin-bottom:4px}
-.dot-on{display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--good);margin-right:6px}
+.dot-on{display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--good);margin-right:6px}.dot-off{display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--muted);margin-right:6px}
 /* Genel Bakış */
 .pg-head{display:flex;align-items:flex-end;gap:12px;flex-wrap:wrap;margin-top:6px}
 .pg-eyebrow{font-size:11.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);font-weight:600}
@@ -434,13 +436,17 @@ async function all(table,order,asc){
     const {data,error}=await q;if(error)throw error;
     out=out.concat(data||[]);if(!data||data.length<1000)break;from+=1000}
   return out}
+/* uygulamanın yüklediği tablolar ve sıralamaları (canlı güncelleme de bunları kullanır) */
+const LOAD_NAMES=['trainings','training_progress','training_questions','training_paths','training_path_items','training_assignments','notification_reads','notification_state','price_refs','price_deductions','device_inspections','term_debts','term_debt_payments','work_schedules','shift_changes','owner_closings','entitlements','staff_pay_profiles','exchanges','service_costs','shortages','accessory_categories','accessory_families','expense_categories','expense_templates','expenses','cash_accounts','app_settings','day_closings','day_closing_lines','fx_rates','purchases','purchase_lines','profiles','staff_settings','role_permissions','contacts','products','product_costs','sales','sale_items','sale_payments','sale_trade_ins','sale_item_costs','commissions','sale_returns','cash_entries','party_entries','consignment_agreements','consignment_rates','notifications','service_orders','service_events','customer_orders','follow_ups','quotes','quote_items','attachments','shifts','time_clock','tasks','push_subscriptions','accessories','accessory_costs','accessory_moves','sale_accessory_items','sale_accessory_costs','sale_accessory_returns'];
+const LOAD_ORDERS={device_inspections:'created_at',term_debts:'created_at',term_debt_payments:'created_at',work_schedules:'valid_from',shift_changes:'created_at',owner_closings:'created_at',entitlements:'created_at',staff_pay_profiles:'updated_at',exchanges:'created_at',service_costs:'created_at',shortages:'created_at',accessory_categories:'sort',accessory_families:'created_at',expenses:'created_at',expense_templates:'created_at',expense_categories:'sort',day_closings:'closed_at',cash_accounts:'sort',sales:'sold_at',cash_entries:'created_at',notifications:'created_at',party_entries:'created_at',service_orders:'received_at',service_events:'at',quotes:'created_at',attachments:'created_at',time_clock:'clock_in',tasks:'created_at',accessory_moves:'created_at',purchases:'created_at',fx_rates:'fetched_at'};
+const dropCaches=()=>{S.wd=null;S.prm=undefined;S.hp=undefined;S.ops=undefined;S.svp=undefined;S.work=undefined;S.team=null;S.tp=null};
 async function loadAll(){
-  S.wd=null;S.prm=undefined;S.hp=undefined;S.ops=undefined;S.svp=undefined;S.work=undefined;S.team=null;S.tp=null;
-  const names=['trainings','training_progress','training_questions','training_paths','training_path_items','training_assignments','notification_reads','notification_state','price_refs','price_deductions','device_inspections','term_debts','term_debt_payments','work_schedules','shift_changes','owner_closings','entitlements','staff_pay_profiles','exchanges','service_costs','shortages','accessory_categories','accessory_families','expense_categories','expense_templates','expenses','cash_accounts','app_settings','day_closings','day_closing_lines','fx_rates','purchases','purchase_lines','profiles','staff_settings','role_permissions','contacts','products','product_costs','sales','sale_items','sale_payments','sale_trade_ins','sale_item_costs','commissions','sale_returns','cash_entries','party_entries','consignment_agreements','consignment_rates','notifications','service_orders','service_events','customer_orders','follow_ups','quotes','quote_items','attachments','shifts','time_clock','tasks','push_subscriptions','accessories','accessory_costs','accessory_moves','sale_accessory_items','sale_accessory_costs','sale_accessory_returns'];
-  const orders={device_inspections:'created_at',term_debts:'created_at',term_debt_payments:'created_at',work_schedules:'valid_from',shift_changes:'created_at',owner_closings:'created_at',entitlements:'created_at',staff_pay_profiles:'updated_at',exchanges:'created_at',service_costs:'created_at',shortages:'created_at',accessory_categories:'sort',accessory_families:'created_at',expenses:'created_at',expense_templates:'created_at',expense_categories:'sort',day_closings:'closed_at',cash_accounts:'sort',sales:'sold_at',cash_entries:'created_at',notifications:'created_at',party_entries:'created_at',service_orders:'received_at',service_events:'at',quotes:'created_at',attachments:'created_at',time_clock:'clock_in',tasks:'created_at',accessory_moves:'created_at',purchases:'created_at',fx_rates:'fetched_at'};
-  const res=await Promise.all(names.map(n=>all(n,orders[n],false).catch(e=>{console.warn(n,e);return []})));
-  const d={};names.forEach((n,i)=>d[n]=res[i]);
-  S.d=d;
+  dropCaches();
+  const res=await Promise.all(LOAD_NAMES.map(n=>all(n,LOAD_ORDERS[n],false).catch(e=>{console.warn(n,e);return []})));
+  const d={};LOAD_NAMES.forEach((n,i)=>d[n]=res[i]);
+  S.d=d;derive(d);LIVE.lastSync=Date.now()}
+/* tablolardan türetilen eşlemeler (tam yüklemede ve canlı güncellemede yeniden kurulur) */
+function derive(d){
   S.me=d.profiles.find(p=>p.id===S.user.id)||null;
   S.perms=new Set(d.role_permissions.filter(r=>S.me&&r.role===S.me.role&&r.allowed).map(r=>r.permission));
   d.nreadSet=new Set((d.notification_reads||[]).map(r=>r.notification_id));
@@ -457,12 +463,95 @@ async function loadAll(){
   d.latestRate=new Map();d.consignment_rates.forEach(r=>{const k=r.agreement_id+'|'+r.cat+'|'+r.sub;const o=d.latestRate.get(k);if(!o||r.valid_from>=o.valid_from)d.latestRate.set(k,r)});
 }
 let refreshT=null;
-function refreshSoon(){clearTimeout(refreshT);refreshT=setTimeout(async()=>{try{await loadAll();S.dash=null;S.agr={};render()}catch(e){}},900)}
+function refreshSoon(){clearTimeout(refreshT);refreshT=setTimeout(()=>rtFull(),900)}
+/* ================= CANLI GÜNCELLEME (051) =================
+   Başka bir cihazda yapılan her değişiklik (satış, ürün, fiyat, müşteri, kasa…) Supabase Realtime ile 1-3 saniyede gelir.
+   Yalnız değişen satırlar yeniden okunur (tablo tamamı değil); okuma yetkiye (RLS) göre yapılır.
+   Yazı yazılırken veya pencere açıkken ekran yeniden çizilmez; bitince güncellenir.
+   Uygulamaya 1 dakikadan uzun ayrı kalınıp dönülünce, bağlantı yeniden kurulunca ve yedek olarak belirli aralıklarla tam yenileme yapılır. */
+const LIVE={ok:false,ready:false,was:false,q:new Map(),t:null,lastSync:0,hiddenAt:0,busy:false,ping:null,wait:new Map(),stats:{fast:0,full:0}};
+/* bu tablolar değişince görünürlük başka tablolarda da değişebilir → tam yükleme */
+const RT_FULL=new Set(['role_permissions','training_assignments']);
+const RT_KEYS={product_costs:'product_id',sale_item_costs:'sale_item_id',sale_accessory_costs:'line_id',accessory_costs:'accessory_id',staff_settings:'profile_id',app_settings:'key',notification_state:'user_id'};
+const RT_SAFETY_MIN=20,RT_OFFLINE_MIN=2,RT_AWAY_SEC=60;
+const rtKey=t=>RT_KEYS[t]||(NOID.has(t)?null:'id');
+function rtEvent(p){
+  if(p&&p.table==='rt_pings'){const n=p.new&&p.new.nonce,w=n&&LIVE.wait.get(n);if(w){LIVE.wait.delete(n);w(true)}return}   // 052: işlem sonu işareti
+  if(!S.d||!p||!LOAD_NAMES.includes(p.table))return;
+  if(RT_FULL.has(p.table)||(p.table==='profiles'&&S.user&&((p.new&&p.new.id)||(p.old&&p.old.id))===S.user.id&&p.eventType!=='INSERT'))LIVE.fullNext=true;
+  const k=rtKey(p.table),row=(p.eventType==='DELETE'?p.old:p.new)||{},v=k&&row[k];
+  let e=LIVE.q.get(p.table);if(!e){e={ids:new Set(),full:false};LIVE.q.set(p.table,e)}
+  if(!k||v==null)e.full=true;else e.ids.add(String(v));
+  clearTimeout(LIVE.t);LIVE.t=setTimeout(rtFlush,700)}
+const rtCmp=o=>(a,b)=>{const x=a[o],y=b[o];if(x==y)return 0;if(x==null)return 1;if(y==null)return -1;return (typeof x==='number'&&typeof y==='number')?y-x:String(y).localeCompare(String(x))};
+async function rtFlush(quiet){if(!S.d||LIVE.busy){if(LIVE.q.size&&!quiet){clearTimeout(LIVE.t);LIVE.t=setTimeout(rtFlush,500)}return}
+  clearTimeout(LIVE.t);
+  if(LIVE.fullNext){LIVE.fullNext=false;LIVE.q.clear();if(quiet){await loadAll();return}return rtFull()}
+  const jobs=[...LIVE.q.entries()];LIVE.q.clear();if(!jobs.length)return;LIVE.busy=true;
+  try{for(const [t,e] of jobs){const k=rtKey(t);
+      if(e.full||!k||e.ids.size>200){S.d[t]=await all(t,LOAD_ORDERS[t],false);continue}
+      const ids=[...e.ids],got=[];
+      for(let i=0;i<ids.length;i+=100){const {data,error}=await sb.from(t).select('*').in(k,ids.slice(i,i+100));if(error)throw error;got.push(...(data||[]))}
+      const drop=new Set(ids),L=(S.d[t]||[]).filter(r=>!drop.has(String(r[k])));L.push(...got);
+      if(LOAD_ORDERS[t])L.sort(rtCmp(LOAD_ORDERS[t]));S.d[t]=L}
+    derive(S.d);dropCaches();S.dash=null;S.agr={};LIVE.lastSync=Date.now();
+    if(!S.me||!S.me.active)return location.reload();
+    if(!quiet)rtRender()}
+  catch(e){console.warn('canlı güncelleme',e);LIVE.busy=false;if(quiet)await loadAll();else rtFull()}
+  finally{LIVE.busy=false}}
+/* kendi işleminizden sonra: işaret yaz (rt_ping), canlı bağlantıdan geri gelince işlemin tüm değişiklikleri
+   de gelmiş olur → yalnız değişen satırları oku. Canlı bağlantı / 052 yoksa ya da işaret 3 sn'de gelmezse tam yükleme. */
+async function syncData(){
+  if(!S.d||!S.user)return loadAll();
+  if(!(LIVE.ok&&LIVE.ready&&LIVE.ping!==false)){LIVE.stats.full++;return loadAll()}
+  const nonce=Math.random().toString(36).slice(2,10)+Date.now().toString(36);
+  const got=new Promise(res=>{LIVE.wait.set(nonce,res);setTimeout(()=>res(false),3000)});
+  let r;try{r=await sb.rpc('rt_ping',{p_nonce:nonce})}catch(e){r={error:e}}
+  if(r.error){LIVE.wait.delete(nonce);if(/rt_ping|function|schema cache/i.test(r.error.message||''))LIVE.ping=false;LIVE.stats.full++;return loadAll()}
+  const ok=await got;LIVE.wait.delete(nonce);
+  if(!ok){LIVE.stats.full++;return loadAll()}
+  for(let i=0;LIVE.busy&&i<100;i++)await new Promise(res=>setTimeout(res,30));
+  LIVE.stats.fast++;await rtFlush(true);LIVE.lastSync=Date.now()}
+/* yazı yazılırken / pencere açıkken çizme; bitince çiz */
+const rtBusyUi=()=>{const a=document.activeElement;return !!document.querySelector('#modal .modal')||!!document.getElementById('qs-ov')||!!(a&&a.matches&&a.matches('input:not([type=checkbox]):not([type=radio]),textarea,select')&&a.id!=='dq')};
+function rtRender(){if(!S.d)return;if(rtBusyUi()){S.rtDirty=true;return}S.rtDirty=false;render()}
+document.addEventListener('focusout',()=>setTimeout(()=>{if(S.rtDirty&&!rtBusyUi())rtRender()},250));
+async function rtFull(){if(!S.d||!S.user||LIVE.busy)return;LIVE.busy=true;try{await loadAll();S.dash=null;S.agr={};if(!S.me||!S.me.active)return location.reload();rtRender()}catch(e){}finally{LIVE.busy=false}}
+function rtSubscribe(){
+  try{sb.rpc('realtime_ready').then(r=>{LIVE.ready=!r.error&&r.data===true},()=>{})}catch(e){}
+  try{sb.channel('anka-veri').on('postgres_changes',{event:'*',schema:'public'},rtEvent).subscribe(st=>{
+    const was=LIVE.ok;LIVE.ok=st==='SUBSCRIBED';
+    if(LIVE.ok&&LIVE.was&&!was)rtFull();       // bağlantı koptu ve geri geldi: aradaki değişiklikleri al
+    if(LIVE.ok)LIVE.was=true;rtDot()})}catch(e){}}
+function rtDot(){const df=document.getElementById('dfoot');if(!df||!S.d)return;
+  df.innerHTML=`<span class="${LIVE.ok?'dot-on':'dot-off'}" title="${LIVE.ok?'Canlı bağlantı: değişiklikler anında gelir':'Canlı bağlantı yok: '+RT_OFFLINE_MIN+' dakikada bir yenileniyor'}"></span>${esc(shopSet().name||'Anka İletişim')}<span class="sp"></span><small>${LIVE.ok?'Canlı':'Bağlantı bekleniyor'}</small>`}
+/* uygulamaya dönünce (sekme / telefon öne gelince) */
+function rtVisible(){if(document.visibilityState==='hidden'){LIVE.hiddenAt=Date.now();return}
+  if(LIVE.hiddenAt&&Date.now()-LIVE.hiddenAt>RT_AWAY_SEC*1000)rtFull();LIVE.hiddenAt=0}
+document.addEventListener('visibilitychange',rtVisible);
+window.addEventListener('online',()=>rtFull());
+/* yedek yenileme: canlı bağlantı varken 20 dk, yokken 2 dk; yalnız ekran açıkken */
+function rtTick(){if(!S.d||document.visibilityState==='hidden')return;const age=Date.now()-LIVE.lastSync;
+  if(age>(LIVE.ok?RT_SAFETY_MIN:RT_OFFLINE_MIN)*60000)rtFull()}
+setInterval(rtTick,30000);
+
 /* ================= BİLDİRİM SESİ =================
    Dosya gerektirmez: Web Audio ile yumuşak iki notalı "çan" (Si5 → Mi6, hafif armonikli, hızlı sönümlü).
    Tarayıcılar ilk dokunuştan önce ses çalmaya izin vermez; ilk tıklamada ses açılır. Tercih cihazda saklanır. */
 const SND={ctx:null,last:0};
-const sndOn=()=>{try{return localStorage.getItem('anka_snd')!=='0'}catch(e){return true}};
+/* kişisel görünüm tercihleri: her kullanıcı için bu cihazda ayrı saklanır (ortak bilgisayarda herkesinki kendine).
+   Tema: 'light' (varsayılan) | 'dark' | 'system' (cihazın ayarına uyar). Geniş ekran ve bildirim sesi: yeni kullanıcı bu cihazdaki son ayarı devralır. */
+const prefKey=n=>'anka_'+n+'_'+((S.user&&S.user.id)||'x');
+function prefGet(n,def,noFallback){try{const v=localStorage.getItem(prefKey(n));if(v!==null)return v;if(!noFallback){const d=localStorage.getItem('anka_'+n);if(d!==null)return d}}catch(e){}return def}
+function prefSet(n,v){try{localStorage.setItem(prefKey(n),v);localStorage.setItem('anka_'+n,v)}catch(e){}}
+const THEMES=[['light','Açık'],['dark','Koyu'],['system','Sistem']];
+const themeGet=()=>{const v=prefGet('theme','light',true);return THEMES.some(t=>t[0]===v)?v:'light'};
+const themeDark=()=>{const m=themeGet();return m==='dark'||(m==='system'&&matchMedia('(prefers-color-scheme: dark)').matches)};
+function themeApply(m){const r=document.documentElement;m=m||themeGet();if(m==='system')delete r.dataset.theme;else r.dataset.theme=m;
+  try{localStorage.setItem('anka_theme_last',m)}catch(e){}}
+function prefsApply(){themeApply();document.documentElement.classList.toggle('wide',prefGet('wide','0')==='1')}
+try{matchMedia('(prefers-color-scheme: dark)').addEventListener('change',()=>{if(S.d&&themeGet()==='system'&&S.uOpen)render()})}catch(e){}
+const sndOn=()=>prefGet('snd','1')!=='0';
 function sndCtx(){if(!SND.ctx){try{const C=window.AudioContext||window.webkitAudioContext;if(C)SND.ctx=new C()}catch(e){}}if(SND.ctx&&SND.ctx.state==='suspended')SND.ctx.resume().catch(()=>{});return SND.ctx}
 document.addEventListener('pointerdown',()=>{sndCtx()},{passive:true});
 function chime(force){if(!force&&!sndOn())return false;const now=Date.now();if(!force&&now-SND.last<1500)return false;SND.last=now;
@@ -485,7 +574,7 @@ function chimeUrgent(force){if(!force&&!sndOn())return false;const now=Date.now(
 /* gelen bildirim: başkasının işlemi ve bana (ya da herkese) yönelikse göster + çal.
    acil → kırmızı uyarı + acil sesi · normal → yumuşak çan · bilgi → sessiz (yalnız listede) */
 function notifIn(n){n=n||{};const me=S.user&&S.user.id;if(n.recipient&&n.recipient!==me)return;
-  if(n.actor_id!==me&&n.priority!=='bilgi'){toast(n.title+(n.body?' · '+n.body:''),n.priority==='acil');if(n.priority==='acil')chimeUrgent();else chime()}refreshSoon()}
+  if(n.actor_id!==me&&n.priority!=='bilgi'){toast(n.title+(n.body?' · '+n.body:''),n.priority==='acil');if(n.priority==='acil')chimeUrgent();else chime()}if(!LIVE.ready)refreshSoon()}   // 051 kurulu değilse eski yol: bildirimde tam yenile
 function subscribe(){
   try{sb.channel('anka-bildirim').on('postgres_changes',{event:'INSERT',schema:'public',table:'notifications'},p=>notifIn(p.new)).subscribe()}catch(e){}}
 
@@ -556,7 +645,7 @@ async function nsSave(){const g=id=>document.getElementById(id),num=v=>String(v|
     notify_late_min:num(g('ns-lm').value),shift_reminders:g('ns-sr').checked?'1':'0',notify_off:off};
   const def={quiet_hours:'1',quiet_start:'00:00',quiet_end:'08:00',notify_discount_pct:'10',notify_fx_pct:'3',notify_late_min:'15',shift_reminders:'1',notify_off:''};
   try{let n=0;for(const k of Object.keys(want)){if(want[k]===appSet(k,def[k]))continue;await call('set_notify_setting',{p_key:k,p_value:want[k]});n++}
-    closeModal();toast(n?'Bildirim ayarları kaydedildi':'Değişiklik yok');if(n){await loadAll();render()}}catch(e){setErr(msg(e))}}
+    closeModal();toast(n?'Bildirim ayarları kaydedildi':'Değişiklik yok');if(n){await syncData();render()}}catch(e){setErr(msg(e))}}
 async function nsRun(k){try{const r=k==='ozet'?await call('notif_summary',{p_kind:'gun'}):await call('notif_morning',{});toast(Number(r)>0?r+' bildirim gönderildi':'Gönderilecek yeni bildirim yok (aynı uyarı bir kez gönderilir)')}catch(e){setErr(msg(e))}}
 
 function toast(t,bad){const el=document.getElementById('toast');el.innerHTML=`<div class="toast${bad?' bad':''}">${esc(t)}</div>`;clearTimeout(toast.t);toast.t=setTimeout(()=>el.innerHTML='',bad?5000:2600)}
@@ -565,18 +654,18 @@ async function call(name,args,okMsg){
   if(error){toast(error.message,true);throw error}
   if(okMsg)toast(okMsg);return data}
 async function mcall(name,args,msg){try{await call(name,args,msg);return true}catch(e){setErr(e.message);return false}}
-async function reload(){await loadAll();S.dash=null;S.agr={};render()}
+async function reload(){await syncData();S.dash=null;S.agr={};render()}
 
 /* ================= AÇILIŞ / GİRİŞ ================= */
 async function boot(){
   try{
     const {data}=await sb.auth.getSession();
     if(!data.session){S.user=null;return renderLogin()}
-    S.user=data.session.user;await loadAll();
+    S.user=data.session.user;prefsApply();await loadAll();
     if(!S.me||!S.me.active)return renderBlocked();
     if(!(await qsBoot(data.session)))return;
     if(S.me.must_change_password)return renderPwChange();
-    subscribe();swListen();swReg();fxStart();route()}
+    subscribe();rtSubscribe();swListen();swReg();fxStart();route()}
   catch(e){document.getElementById('app').innerHTML=`<div class="wrap"><main><div class="card"><h1>Bağlantı kurulamadı</h1><p class="sub">${esc(msg(e))}</p><button class="btn pri" data-a="retry">Tekrar dene</button></div></main></div>`}}
 function renderLogin(err){
   const L=qsShared()?qsList():[];
@@ -850,12 +939,12 @@ document.addEventListener('keydown',e=>{if(!S.d||!S.me)return;
 /* kullanıcı menüsü: mesai giriş-çıkış, geniş ekran, tema, çıkış */
 const initials=n=>String(n||'?').trim().split(/\s+/).slice(0,2).map(w=>w[0]||'').join('').toLocaleUpperCase('tr')||'?';
 function userMenu(){const w=S.work,since=w&&w.clock_open_since,sh=w?(w.my_shift_today||[]).map(x=>x.start+'–'+x.end).join(', '):'',wide=document.documentElement.classList.contains('wide');
-  const dark=document.documentElement.dataset.theme?document.documentElement.dataset.theme==='dark':matchMedia('(prefers-color-scheme: dark)').matches;
+  const thm=themeGet(),thl=(THEMES.find(t=>t[0]===thm)||THEMES[0])[1]+(thm==='system'?' ('+(themeDark()?'koyu':'açık')+')':'');
   return `<div class="udd" role="menu"><div class="hd"><b>${esc(S.me.full_name||'')}</b><div class="sub">${esc(ROLES.find(r=>r[0]===S.me.role)[1])}${S.user&&S.user.email?' · '+esc(loginShow(S.user.email)):''}</div></div>
    ${w?`<div class="work"><div class="row" style="gap:8px;flex-wrap:nowrap"><div style="min-width:0">${since?`<b><span class="dot-on"></span>Mesaidesiniz</b><div class="sub">${fmtTime(since)} itibarıyla</div>`:'<b>Mesaide değilsiniz</b>'}<div class="sub">Bugünkü vardiya: ${esc(sh||'planlanmadı')}</div></div><div class="sp"></div>
      <button class="btn sm ${since?'':'pri'}" data-a="${since?'clock-out':'clock-in'}">${since?'Bitir':'Başla'}</button></div></div>`:''}
    <button class="it wide-btn" role="menuitem" data-a="wide-toggle" aria-pressed="${wide}">${ic('expand')}Geniş ekran<span class="v">${wide?'Açık':'Kapalı'}</span></button>
-   <button class="it" role="menuitem" data-a="theme">${ic('moon')}Tema<span class="v">${dark?'Koyu':'Açık'}</span></button>
+   <button class="it" role="menuitem" data-a="theme" title="Açık → Koyu → Sistem">${ic('moon')}Tema<span class="v">${thl}</span></button>
    <button class="it" role="menuitem" data-a="snd-toggle" aria-pressed="${sndOn()}">${ic('bell')}Bildirim sesi<span class="v">${sndOn()?'Açık':'Kapalı'}</span></button>
    <button class="it" role="menuitem" data-a="snd-test">${ic('activity')}Sesi dene</button>
    <button class="it" role="menuitem" data-a="push-settings">${ic('bell')}Telefon bildirimleri</button>
@@ -885,7 +974,7 @@ function render(){
     <div class="umenu"><button class="user" data-a="umenu" aria-haspopup="menu" aria-expanded="${!!S.uOpen}"><span class="avatar">${esc(initials(S.me.full_name))}</span><span class="nm"><b>${esc(S.me.full_name||'')}</b><span>${esc(ROLES.find(r=>r[0]===S.me.role)[1])}</span></span>${ic('down','sm')}</button>${S.uOpen?userMenu():''}</div>
     </div></header>
     <div class="wrap"><main>${page}</main></div>`;
-  drawerShell();drawNav();const df=document.getElementById('dfoot');if(df)df.innerHTML=`<span class="dot-on"></span>${esc(shopSet().name||'Anka İletişim')}`;
+  drawerShell();drawNav();rtDot();
   if(keepQ){const i=document.getElementById('dq');if(i)i.focus()}
   if(S.work===undefined)loadWork();
   if(secLock){const i=document.getElementById('qs-pw');if(i&&!keepQ&&!document.getElementById('qs-ov'))i.focus();return}
@@ -1203,7 +1292,7 @@ function vPanel(){const d=S.d,t=today(),y=addDays(t,-1),mine=!pnAll();
 
 /* ================= MODAL ================= */
 function modal(html){document.getElementById('modal').innerHTML=`<div class="ov" data-a="ov"><div class="modal" role="dialog" aria-modal="true">${html}</div></div>`;const f=document.querySelector('#modal input:not([type=hidden]),#modal select');if(f)f.focus()}
-function closeModal(){S.dg=null;S.rd=null;S.pf=null;S.pfd=null;S.accHost=false;S.gs=null;S.qw=null;S.qconv=null;S.ins=null;document.getElementById('modal').innerHTML=''}
+function closeModal(){if(S.rtDirty)setTimeout(()=>{if(S.d&&S.rtDirty&&!rtBusyUi())rtRender()},0);S.dg=null;S.rd=null;S.pf=null;S.pfd=null;S.accHost=false;S.gs=null;S.qw=null;S.qconv=null;S.ins=null;document.getElementById('modal').innerHTML=''}
 function setErr(m){const e=document.getElementById('f-err');if(e){e.textContent=m;e.hidden=false}}
 async function resolveContact(kind,id){
   const v=g(id);if(v!=='__new__')return v||null;
@@ -1283,7 +1372,7 @@ function lblRun(items,size,price){const {css,html}=lblSheet(items,size,price);
 async function lblPrint(){const L=S.lbl;if(!L.sel.size)return setErr('Önce ürün seçin.');
   try{const kind=L.k==='c'?'cihaz':'aksesuar';let made=0;
     for(const key of L.sel.keys()){const id=key.slice(1),it=lblItems(L.k).find(x=>x.id===id);if(it&&!it.code){await call('generate_barcode',{p_kind:kind,p_id:id});made++}}
-    if(made){await loadAll();render();toast(made+' ürüne barkod üretildi')}
+    if(made){await syncData();render();toast(made+' ürüne barkod üretildi')}
     const items=[];for(const [key,n] of L.sel){const it=lblItems(L.k).find(x=>x.id===key.slice(1));if(it&&it.code)for(let i=0;i<n;i++)items.push(it)}
     if(!items.length)return setErr('Yazdırılacak etiket yok.');
     L.size=g('lb-size')||L.size;L.price=document.getElementById('lb-price').checked;L.shop=document.getElementById('lb-shop').checked;lblRun(items,L.size,L.price)}catch(e){setErr(msg(e))}}
@@ -1437,7 +1526,7 @@ async function completeSale(){
       p_trade_ins:c.trades,p_payments:c.pays.filter(p=>p.amount>0).map(p=>({method:p.method,amount:p.amount})),p_note:c.note||null,p_staff:c.staff||null});
     S.cart={items:[],acc:[],trades:[],pays:[],customer:'',staff:'',note:'',q:'',nn:'',nt:''};
     toast('Satış tamamlandı · '+res.sale_no);S.ui.openSale=res.id;S.mine=null;
-    await loadAll();S.dash=null;location.hash='satislar';S.ui.tab='satislar';render();saleReceipt(res.id)}
+    await syncData();S.dash=null;location.hash='satislar';S.ui.tab='satislar';render();saleReceipt(res.id)}
   catch(e){setErr(msg(e))}}
 
 /* ================= SATIŞLAR / İADE ================= */
@@ -4238,7 +4327,7 @@ async function famSave(){const m=S.fm;
       const q=Math.round(Number(r.qty)||0),c=r.cost===''?null:Number(r.cost);
       if(m.host){if(q>0&&c!=null&&c>=0){if(m.cur==='USD')await call('set_accessories_usd_mode',{p_ids:[ids[i]],p_usd:true});added.push({id:ids[i],qty:q,cur:m.cur||'TRY',cost:c})}}
       else if(q>0&&c!=null&&c>=0)await call('receive_accessory',{p_accessory:ids[i],p_qty:q,p_unit_cost:c,p_method:m.method})}
-    if(m.host&&S.pf){await loadAll();S.pf.accs.push(...added);if(!S.pf.term&&added.length)S.pf.cur=m.cur||'TRY';S.fm=null;pfModal();toast(added.length?added.length+' varyant faturaya eklendi':'Varyantlar tanımlandı (faturaya adet girilmedi)');return}
+    if(m.host&&S.pf){await syncData();S.pf.accs.push(...added);if(!S.pf.term&&added.length)S.pf.cur=m.cur||'TRY';S.fm=null;pfModal();toast(added.length?added.length+' varyant faturaya eklendi':'Varyantlar tanımlandı (faturaya adet girilmedi)');return}
     toast('Varyantlar kaydedildi');S.fm=null;closeModal();await reload()}catch(e){setErr(msg(e));await (S.fm&&S.fm.host?loadAll():reload()).catch(()=>{})}}
 function famEditModal(id){const f=(S.d.accessory_families||[]).find(x=>x.id===id);if(!f)return;
   modal(`<h2>Ana ürünü düzenle</h2><div class="form"><label class="f full">Ürün adı<input class="in" id="fe-name" value="${esc(f.name)}"></label>${catCtl('fe-cat','fe-newcat',f.category)}</div>
@@ -4428,16 +4517,16 @@ function vYonetim(){
 const armed=(t,m)=>{if(t.dataset.armed)return true;t.dataset.armed='1';t.dataset.old=t.textContent;t.textContent=m||'Emin misiniz?';setTimeout(()=>{if(t.isConnected){delete t.dataset.armed;t.textContent=t.dataset.old}},3000);return false};
 const A={
   retry(){boot()},
-  'wide-toggle'(){const on=document.documentElement.classList.toggle('wide');try{localStorage.setItem('anka_wide',on?'1':'0')}catch(e){}render()},
+  'wide-toggle'(){const on=document.documentElement.classList.toggle('wide');prefSet('wide',on?'1':'0');render()},
   'pn-k'(t){S.ui.pnk=t.dataset.v;render()},'pn-hm'(t){S.ui.pnhm=t.dataset.v;render()},'pn-tp'(t){S.ui.pntp=t.dataset.v;render()},'pn-bp'(t){S.ui.pnbp=t.dataset.v;render()},
   'fg-open'(){fgModal()},'fg-add'(t){closeModal();if(t.dataset.k==='dev')cartAdd(t.dataset.id);else{accAdd(t.dataset.id);if(location.hash!=='#satis')location.hash='satis'}},
   'pn-sale'(t){S.ui.openSale=t.dataset.id;location.hash='satislar'},
   async 'pn-refresh'(t){t.disabled=true;try{await reload();toast('Güncellendi')}catch(e){t.disabled=false}},
   'drawer-open'(){S.uOpen=false;S.notifOpen=false;render();drawer(true)},'drawer-close'(){drawer(false)},
-  'snd-toggle'(){const on=!sndOn();try{localStorage.setItem('anka_snd',on?'1':'0')}catch(e){}if(on)chime(true);toast(on?'Bildirim sesi açık':'Bildirim sesi kapalı');render()},
+  'snd-toggle'(){const on=!sndOn();prefSet('snd',on?'1':'0');if(on)chime(true);toast(on?'Bildirim sesi açık':'Bildirim sesi kapalı');render()},
   'snd-test'(){chime(true)},
   umenu(){S.uOpen=!S.uOpen;S.notifOpen=false;render()},
-  theme(){const r=document.documentElement,dark=r.dataset.theme?r.dataset.theme==='dark':matchMedia('(prefers-color-scheme: dark)').matches;r.dataset.theme=dark?'light':'dark';if(S.uOpen)render()},
+  theme(){const i=THEMES.findIndex(t=>t[0]===themeGet()),m=THEMES[(i+1)%THEMES.length][0];prefSet('theme',m);themeApply(m);toast('Tema: '+THEMES.find(t=>t[0]===m)[1]+(m==='system'?' (cihaz ayarına uyar)':''));if(S.uOpen)render()},
   async logout(){if(qsShared())return qsLogout();await pushLeave();await sb.auth.signOut();S.d=null;S.me=null;renderLogin()},
   close(){closeModal()},ov(t,e){if(e.target===t&&!S.ins&&!S.pf)closeModal()},
   'prm-month'(t){const m=S.ui.prm||monthStart(today()),d=parse(m);S.ui.prm=iso(new Date(d.getFullYear(),d.getMonth()+Number(t.dataset.n),1));render()},
@@ -4700,7 +4789,7 @@ const A={
         if(q<1)return setErr('Faturadaki adedi yazın.');if(c==null||c<0)return setErr('Birim maliyeti yazın.');
         const nid=await call('create_accessory',{p:o});const ab=document.getElementById('ac-autobar');if(!o.barcode&&ab&&ab.checked)await call('generate_barcode',{p_kind:'aksesuar',p_id:nid});
         if(cur==='USD')await call('set_accessories_usd_mode',{p_ids:[nid],p_usd:true});
-        await loadAll();S.pf.accs.push({id:nid,qty:q,cur,cost:c});if(!S.pf.term)S.pf.cur=cur;S.accHost=false;pfModal();toast('Ürün tanımlandı ve faturaya eklendi');return}
+        await syncData();S.pf.accs.push({id:nid,qty:q,cur,cost:c});if(!S.pf.term)S.pf.cur=cur;S.accHost=false;pfModal();toast('Ürün tanımlandı ve faturaya eklendi');return}
       else{const usd=g('ac-cur0')==='USD';if(usd&&!(S.fx&&S.fx.ok))return setErr('Canlı kur alınamadı; dolar maliyet için kur gerekli.');
         const nid=await call('create_accessory',{p:o});const ab=document.getElementById('ac-autobar');if(!o.barcode&&ab&&ab.checked)await call('generate_barcode',{p_kind:'aksesuar',p_id:nid});const q=nv('ac-q0'),c=nv('ac-c0');
         if(usd)await call('set_accessories_usd_mode',{p_ids:[nid],p_usd:true});
@@ -4732,7 +4821,7 @@ const A={
   'lbl-open'(t){lblOpen(t.dataset.k,t.dataset.id)},
   'lbl-kind'(t){S.lbl.k=t.dataset.v;S.lbl.q='';lblModal()},
   'lbl-all'(){const L=S.lbl,q=(L.q||'').toLowerCase();lblItems(L.k).filter(x=>!q||[x.name,x.sub,x.code].join(' ').toLowerCase().includes(q)).slice(0,200).forEach(x=>L.sel.set(L.k+x.id,L.sel.get(L.k+x.id)||1));lblList()},
-  async 'lbl-missing'(){const L=S.lbl;try{const n=await call('generate_missing_barcodes',{p_kind:L.k==='c'?'cihaz':'aksesuar'});await loadAll();render();toast(n?n+' ürüne barkod üretildi':'Barkodsuz ürün yok');lblList()}catch(e){setErr(msg(e))}},
+  async 'lbl-missing'(){const L=S.lbl;try{const n=await call('generate_missing_barcodes',{p_kind:L.k==='c'?'cihaz':'aksesuar'});await syncData();render();toast(n?n+' ürüne barkod üretildi':'Barkodsuz ürün yok');lblList()}catch(e){setErr(msg(e))}},
   'lbl-print'(){lblPrint()},
   'fx-refresh'(){fxGet(true).then(()=>toast(S.fx.ok?'Kur: '+fxN(S.fx.rate)+(S.fx.stale?' (eski kur)':' güncellendi'):'Kur alınamadı, elle yazın',!S.fx.ok||S.fx.stale))},
   'fx-use'(t){const el=document.getElementById(t.dataset.t);if(!(S.fx&&S.fx.ok))return toast('Canlı kur alınamadı',true);if(el){el.value=S.fx.rate;el.dispatchEvent(new Event('input',{bubbles:true}))}},
