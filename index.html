@@ -8,7 +8,7 @@
 <meta name="apple-mobile-web-app-title" content="CepOS">
 <meta name="robots" content="noindex,nofollow">
 <link rel="manifest" href="manifest.webmanifest">
-<meta name="theme-color" content="#0B6E8A">
+<meta name="theme-color" content="#0A70B8">
 <link rel="apple-touch-icon" href="icon-192.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -564,20 +564,80 @@ async function boot(){
     if(!data.session){S.user=null;return renderLogin()}
     S.user=data.session.user;await loadAll();
     if(!S.me||!S.me.active)return renderBlocked();
+    if(S.me.must_change_password)return renderPwChange();
     subscribe();swListen();swReg();fxStart();route()}
   catch(e){document.getElementById('app').innerHTML=`<div class="wrap"><main><div class="card"><h1>Bağlantı kurulamadı</h1><p class="sub">${esc(msg(e))}</p><button class="btn pri" data-a="retry">Tekrar dene</button></div></main></div>`}}
 function renderLogin(err){
   document.getElementById('app').innerHTML=`<div class="wrap login"><div class="login-logo">${logoImg('word','Anka İletişim')}<span>CepOS</span></div>
   <form class="card" id="login" autocomplete="on"><h1>Giriş</h1>
-  <label class="f">E-posta<input class="in" id="l-mail" type="email" autocomplete="username" required></label>
+  <label class="f">E-posta veya kullanıcı adı<input class="in" id="l-mail" type="text" autocomplete="username" autocapitalize="none" autocorrect="off" spellcheck="false" required></label>
   <label class="f">Şifre<input class="in" id="l-pass" type="password" autocomplete="current-password" required></label>
   ${err?`<div class="err">${esc(err)}</div>`:''}<button class="btn pri" type="submit">Giriş yap</button></form></div>`}
 function renderBlocked(){document.getElementById('app').innerHTML=`<div class="wrap login"><div class="card"><h1>Hesap etkin değil</h1><p class="sub">Bu kullanıcı için profil bulunamadı veya kapatılmış. İşletme sahibine başvurun.</p><button class="btn" data-a="logout">Çıkış</button></div></div>`}
 document.addEventListener('submit',async e=>{
-  if(e.target.id!=='login')return;e.preventDefault();
-  const {error}=await sb.auth.signInWithPassword({email:g('l-mail'),password:document.getElementById('l-pass').value});
-  if(error)return renderLogin(error.message==='Invalid login credentials'?'E-posta veya şifre hatalı.':error.message);
+  if(e.target.id!=='login'&&e.target.id!=='pwform')return;e.preventDefault();
+  if(e.target.id==='pwform'){const b=e.target.querySelector('button[type=submit]');b.disabled=true;const r=await pwChange(g('pw-n'),g('pw-r'));b.disabled=false;
+    if(r)return pwErrShow(r);toast('Şifreniz değiştirildi');return boot()}
+  const {error}=await sb.auth.signInWithPassword({email:loginEmail(g('l-mail')),password:document.getElementById('l-pass').value});
+  if(error)return renderLogin(error.message==='Invalid login credentials'?'E-posta / kullanıcı adı veya şifre hatalı.':error.message);
   boot()});
+/* ================= KULLANICI YÖNETİMİ (048 + user-admin) =================
+   Kullanıcı adıyla giriş: "ahmet" → ahmet@cepos.local (user-admin fonksiyonundaki USER_DOMAIN ile aynı). */
+const USER_DOMAIN='cepos.local';
+const loginEmail=v=>{v=String(v||'').trim().toLowerCase();return v&&!v.includes('@')?v+'@'+USER_DOMAIN:v};
+const loginShow=e=>{e=String(e||'');return e.endsWith('@'+USER_DOMAIN)?e.slice(0,-USER_DOMAIN.length-1):e};
+const pwRule=p=>p.length<8?'Şifre en az 8 karakter olmalı.':p.length>72?'Şifre en çok 72 karakter olabilir.':!/[A-Za-zÇĞİÖŞÜçğıöşü]/.test(p)||!/\d/.test(p)?'Şifrede en az bir harf ve bir rakam olmalı.':'';
+function pwGen(){const A='abcdefghjkmnpqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ23456789';let p='';
+  do{const r=new Uint32Array(10);crypto.getRandomValues(r);p=[...r].map(x=>A[x%A.length]).join('')}while(pwRule(p));return p}
+const PWHINT='En az 8 karakter; en az bir harf ve bir rakam.';
+/* kendi şifresini değiştirme (zorunlu ekran ve kullanıcı menüsü) */
+async function pwChange(n,r){n=String(n||'');const e=pwRule(n);if(e)return e;if(n!==String(r||''))return 'İki şifre aynı değil.';
+  const {error}=await sb.auth.updateUser({password:n});
+  if(error){const m=error.message||'';return /different/i.test(m)?'Yeni şifre eskisinden farklı olmalı.':/weak|short|least|character|pwned|leaked/i.test(m)?'Şifre Supabase şifre kurallarına uymuyor; daha uzun bir şifre deneyin.':/reauth|nonce/i.test(m)?'Supabase yeniden doğrulama istiyor: çıkış yapıp tekrar girin.':m}
+  try{const x=await sb.rpc('password_changed');if(x.error)console.warn(x.error)}catch(x){}
+  if(S.me)S.me.must_change_password=false;return ''}
+function pwErrShow(m){const e=document.getElementById('f-err');if(e){e.textContent=m;e.hidden=false}}
+const pwFields=()=>`<label class="f">Yeni şifre<input class="in" id="pw-n" type="password" autocomplete="new-password" required></label>
+  <label class="f">Yeni şifre (tekrar)<input class="in" id="pw-r" type="password" autocomplete="new-password" required></label>
+  <label class="chk"><input type="checkbox" data-c="pw-show"> Şifreyi göster</label><p class="sub">${PWHINT}</p>`;
+function renderPwChange(){document.getElementById('app').innerHTML=`<div class="wrap login"><div class="login-logo">${logoImg('word','Anka İletişim')}<span>CepOS</span></div>
+  <form class="card" id="pwform"><h1>Yeni şifre belirleyin</h1><p class="sub" style="margin-top:0">Merhaba ${esc(_fn(S.me&&S.me.full_name))}, size geçici bir şifre verildi. Devam etmek için kendinize yeni bir şifre belirleyin. Bu şifreyi kimseyle paylaşmayın.</p>
+  <input type="text" autocomplete="username" value="${esc(loginShow(S.user&&S.user.email))}" hidden>${pwFields()}
+  <div class="err" id="f-err" hidden></div><button class="btn pri" type="submit">Kaydet ve devam et</button><button class="btn" type="button" data-a="logout" style="margin-top:8px">Çıkış</button></form></div>`;
+  const f=document.getElementById('pw-n');if(f)f.focus()}
+const _fn=n=>String(n||'').trim().split(/\s+/)[0]||'';
+function pwModal(){S.uOpen=false;render();modal(`<h2>Şifremi değiştir</h2><input type="text" autocomplete="username" value="${esc(loginShow(S.user&&S.user.email))}" hidden><div class="form">${pwFields()}</div>
+  <div class="err" id="f-err" hidden></div><div class="actions"><button class="btn" data-a="close">Vazgeç</button><button class="btn pri" data-a="pw-save">Kaydet</button></div>`)}
+/* sunucu fonksiyonu çağrısı: hata mesajını Türkçe döndürür */
+async function fnCall(name,body){let r;try{r=await sb.functions.invoke(name,{body})}catch(e){throw new Error('Sunucuya ulaşılamadı: '+msg(e))}
+  if(r.error){let m='',st=0;try{st=r.error.context&&r.error.context.status;const j=await r.error.context.json();m=j&&(j.error||j.msg||j.message)||''}catch(e){}
+    if(st===404||/not.?found/i.test(m)&&!/Kullanıcı/.test(m))m=`"${name}" sunucu fonksiyonu yayınlanmamış. KURULUM.md > Kullanıcı yönetimi bölümüne bakın.`;
+    throw new Error(m||r.error.message||'İşlem yapılamadı')}
+  if(r.data&&r.data.error)throw new Error(r.data.error);return r.data}
+/* Yönetim > Kullanıcılar: giriş bilgileri ve son giriş (yalnız kullanıcı yöneticisi) */
+async function uaLoad(){try{const r=await call('user_logins');S.ul=new Map((r||[]).map(x=>[x.id,x]))}catch(e){S.ul=false}if(S.ui.tab==='yonetim')render()}
+const uaCan=p=>p.id!==S.user.id&&(p.role!=='owner'||S.me.role==='owner');
+const uaRoles=()=>ROLES.filter(r=>r[0]!=='owner'||S.me.role==='owner');
+function uaModal(){modal(`<h2>Kullanıcı ekle</h2><div class="form">
+  <label class="f full">Ad soyad<input class="in" id="ua-n" maxlength="80" autocomplete="off"></label>
+  <label class="f full">E-posta veya kullanıcı adı<input class="in" id="ua-l" maxlength="120" autocomplete="off" autocapitalize="none" spellcheck="false" placeholder="ör. ahmet ya da ahmet@ornek.com"></label>
+  <p class="sub full" style="margin:-4px 0 0">E-postası olmayan personel için kullanıcı adı yazın (küçük harf, Türkçe karakter olmadan: <b>ahmet</b>, <b>ayse.k</b>). Giriş ekranına bunu yazar.</p>
+  <label class="f">Rol<select class="in" id="ua-r">${opts(uaRoles(),'staff')}</select></label>
+  <label class="f">Geçici şifre<span class="row" style="gap:6px;flex-wrap:nowrap"><input class="in" id="ua-p" value="${pwGen()}" autocomplete="off" spellcheck="false"><button class="btn sm" type="button" style="white-space:nowrap" data-a="ua-gen" data-t="ua-p">Yeni üret</button></span></label>
+  <p class="sub full" style="margin:-4px 0 0">${PWHINT} Kişi ilk girişte kendi şifresini belirler. Prim oranı ve hedefler eklendikten sonra tablodan girilir.</p></div>
+  <div class="err" id="f-err" hidden></div><div class="actions"><button class="btn" data-a="close">Vazgeç</button><button class="btn pri" data-a="ua-save">${ic('userplus')}Kullanıcıyı oluştur</button></div>`)}
+function uaDone(title,name,login,pw){const txt=`CepOS giriş bilgileri\nAdres: ${location.origin}${location.pathname}\nKullanıcı: ${loginShow(login)}\nGeçici şifre: ${pw}\nİlk girişte kendi şifrenizi belirleyeceksiniz.`;S.uaTxt=txt;
+  modal(`<h2>${esc(title)}</h2><p class="sub" style="margin-top:0"><b>${esc(name)}</b> için giriş bilgileri:</p>
+  <div class="card" style="margin:0;font-size:15px;line-height:1.8">Kullanıcı: <b id="ua-out-l">${esc(loginShow(login))}</b><br>Geçici şifre: <b id="ua-out-p" style="font-family:ui-monospace,monospace;letter-spacing:.5px">${esc(pw)}</b></div>
+  <p class="sub">Bu bilgileri kişiye kendiniz iletin (yüz yüze veya mesajla). Geçici şifre bu pencere kapanınca bir daha gösterilmez. Kişi ilk girişte kendi şifresini belirler.</p>
+  <div class="actions"><button class="btn" data-a="ua-copy">Kopyala</button><button class="btn pri" data-a="close">Tamam</button></div>`)}
+function uaResetModal(id){const p=S.d.profileMap.get(id);if(!p)return;S.uaId=id;modal(`<h2>Şifre sıfırla</h2><p class="sub" style="margin-top:0"><b>${esc(p.full_name)}</b> için yeni geçici şifre. Eski şifresi artık çalışmaz; kişi girişte kendi şifresini belirler.</p><div class="form">
+  <label class="f full">Geçici şifre<span class="row" style="gap:6px;flex-wrap:nowrap"><input class="in" id="ua-p" value="${pwGen()}" autocomplete="off" spellcheck="false"><button class="btn sm" type="button" style="white-space:nowrap" data-a="ua-gen" data-t="ua-p">Yeni üret</button></span></label></div><p class="sub">${PWHINT}</p>
+  <div class="err" id="f-err" hidden></div><div class="actions"><button class="btn" data-a="close">Vazgeç</button><button class="btn pri" data-a="ua-reset-save">Şifreyi sıfırla</button></div>`)}
+function uaLoginModal(id){const p=S.d.profileMap.get(id),u=S.ul&&S.ul.get(id);if(!p)return;S.uaId=id;modal(`<h2>Giriş bilgisini değiştir</h2><p class="sub" style="margin-top:0"><b>${esc(p.full_name)}</b> bundan sonra yeni bilgiyle giriş yapar; şifresi değişmez.</p><div class="form">
+  <label class="f full">E-posta veya kullanıcı adı<input class="in" id="ua-l" maxlength="120" value="${esc(u?loginShow(u.login):'')}" autocomplete="off" autocapitalize="none" spellcheck="false"></label></div>
+  <div class="err" id="f-err" hidden></div><div class="actions"><button class="btn" data-a="close">Vazgeç</button><button class="btn pri" data-a="ua-login-save">Kaydet</button></div>`)}
+const fmtSeen=t=>{if(!t)return 'hiç giriş yapmadı';const d=new Date(t);return 'son giriş '+d.toLocaleDateString('tr-TR',{day:'2-digit',month:'2-digit',year:'numeric'})+' '+d.toLocaleTimeString('tr-TR',{hour:'2-digit',minute:'2-digit'})};
 
 /* ================= YÖNLENDİRME / ÇERÇEVE ================= */
 /* menüden bir sekmeye tıklanınca rapor ekranları kapanır, sekmenin ana sayfası açılır; menü kapanır */
@@ -626,7 +686,7 @@ document.addEventListener('keydown',e=>{if(!S.d||!S.me)return;
 const initials=n=>String(n||'?').trim().split(/\s+/).slice(0,2).map(w=>w[0]||'').join('').toLocaleUpperCase('tr')||'?';
 function userMenu(){const w=S.work,since=w&&w.clock_open_since,sh=w?(w.my_shift_today||[]).map(x=>x.start+'–'+x.end).join(', '):'',wide=document.documentElement.classList.contains('wide');
   const dark=document.documentElement.dataset.theme?document.documentElement.dataset.theme==='dark':matchMedia('(prefers-color-scheme: dark)').matches;
-  return `<div class="udd" role="menu"><div class="hd"><b>${esc(S.me.full_name||'')}</b><div class="sub">${esc(ROLES.find(r=>r[0]===S.me.role)[1])}${S.user&&S.user.email?' · '+esc(S.user.email):''}</div></div>
+  return `<div class="udd" role="menu"><div class="hd"><b>${esc(S.me.full_name||'')}</b><div class="sub">${esc(ROLES.find(r=>r[0]===S.me.role)[1])}${S.user&&S.user.email?' · '+esc(loginShow(S.user.email)):''}</div></div>
    ${w?`<div class="work"><div class="row" style="gap:8px;flex-wrap:nowrap"><div style="min-width:0">${since?`<b><span class="dot-on"></span>Mesaidesiniz</b><div class="sub">${fmtTime(since)} itibarıyla</div>`:'<b>Mesaide değilsiniz</b>'}<div class="sub">Bugünkü vardiya: ${esc(sh||'planlanmadı')}</div></div><div class="sp"></div>
      <button class="btn sm ${since?'':'pri'}" data-a="${since?'clock-out':'clock-in'}">${since?'Bitir':'Başla'}</button></div></div>`:''}
    <button class="it wide-btn" role="menuitem" data-a="wide-toggle" aria-pressed="${wide}">${ic('expand')}Geniş ekran<span class="v">${wide?'Açık':'Kapalı'}</span></button>
@@ -634,6 +694,7 @@ function userMenu(){const w=S.work,since=w&&w.clock_open_since,sh=w?(w.my_shift_
    <button class="it" role="menuitem" data-a="snd-toggle" aria-pressed="${sndOn()}">${ic('bell')}Bildirim sesi<span class="v">${sndOn()?'Açık':'Kapalı'}</span></button>
    <button class="it" role="menuitem" data-a="snd-test">${ic('activity')}Sesi dene</button>
    <button class="it" role="menuitem" data-a="push-settings">${ic('bell')}Telefon bildirimleri</button>
+   <button class="it" role="menuitem" data-a="pw-change">${ic('shield')}Şifremi değiştir</button>
    <button class="it" role="menuitem" data-a="logout">${ic('logout')}Çıkış</button></div>`}
 async function loadWork(){
   if(S.work!==undefined)return;S.work=null;
@@ -4175,11 +4236,15 @@ function vYonetim(){
   const sh=shopSet();
   return `<h1>Yönetim</h1>
   <div class="card"><div class="row"><h2>İşletme bilgileri</h2><div class="sp"></div><button class="btn" data-a="sv-set">Düzenle</button></div><div class="sub" style="margin-top:0"><b>${esc(sh.name)}</b><br>${shopLines(sh).map(esc).join('<br>')}</div><p class="sub">Fişlerde, formlarda, sözleşmelerde, raporlarda ve etiketlerde otomatik kullanılır.</p></div>
-  <div class="card"><h2>Kullanıcılar</h2><p class="sub" style="margin-top:0">Yeni kullanıcı eklemek için Supabase panelinde Authentication > Users bölümünü kullanın. Eklenen kişi burada görünür.</p>
-   <div class="tw"><table><tr><th>Ad</th><th>Rol</th><th>Aktif</th><th>Prim % (kâr payı)</th><th>Günlük hedef ₺</th><th>Aylık hedef ₺</th></tr>
-   ${d.profiles.map(p=>{const st=d.staff_settings.find(s=>s.profile_id===p.id)||{};return `<tr><td><input class="in" style="width:150px" value="${esc(p.full_name)}" data-c="pname" data-id="${p.id}"></td>
-    <td><select class="in" style="width:150px" data-c="prole" data-id="${p.id}" ${p.id===S.user.id?'disabled':''}>${opts(ROLES,p.role)}</select></td>
-    <td><input type="checkbox" data-c="pactive" data-id="${p.id}" ${p.active?'checked':''} ${p.id===S.user.id?'disabled':''}></td>
+  <div class="card"><div class="row"><h2>Kullanıcılar</h2><div class="sp"></div><button class="btn pri" data-a="ua-new">${ic('userplus')}Kullanıcı ekle</button></div>
+   <p class="sub" style="margin-top:0">Kullanıcı ekleme, şifre sıfırlama ve giriş bilgisi buradan yapılır. İşten ayrılan kişiyi silmeyin, <b>Aktif</b> kutusunu kaldırın: giriş yapamaz, satış ve prim geçmişi korunur.</p>
+   <div class="tw"><table><tr><th>Ad</th><th style="text-align:left">Giriş</th><th>Rol</th><th>Aktif</th><th>Prim % (kâr payı)</th><th>Günlük hedef ₺</th><th>Aylık hedef ₺</th></tr>
+   ${(S.ul===undefined&&(S.ul=null,uaLoad()),'')}${d.profiles.map(p=>{const st=d.staff_settings.find(s=>s.profile_id===p.id)||{},u=S.ul&&S.ul.get(p.id),own=p.role==='owner'&&S.me.role!=='owner';return `<tr><td><input class="in" style="width:150px" value="${esc(p.full_name)}" data-c="pname" data-id="${p.id}" ${own?'disabled':''}></td>
+    <td class="ua-cell" style="min-width:170px;text-align:left">${u?`<b>${esc(loginShow(u.login))}</b><div class="sub">${esc(fmtSeen(u.last_sign_in_at))}</div>`:S.ul===false?'<span class="sub">—</span>':'<span class="sub">…</span>'}
+     ${p.must_change_password?'<div><span class="pill warn">Şifre değiştirmesi bekleniyor</span></div>':''}
+     ${uaCan(p)?`<div class="row" style="gap:4px;margin-top:4px"><button class="btn sm" data-a="ua-reset" data-id="${p.id}">Şifre sıfırla</button><button class="btn sm" data-a="ua-login" data-id="${p.id}">Giriş bilgisi</button></div>`:''}</td>
+    <td><select class="in" style="width:150px" data-c="prole" data-id="${p.id}" ${p.id===S.user.id||own?'disabled':''}>${opts(p.role==='owner'?ROLES:uaRoles(),p.role)}</select></td>
+    <td><input type="checkbox" data-c="pactive" data-id="${p.id}" ${p.active?'checked':''} ${p.id===S.user.id||own?'disabled':''}></td>
     ${p.role==='owner'?'<td colspan="3" class="sub">İşletme sahibi: prim, hedef ve hakediş yok</td>':`<td title="Prim oranı Personeller > Primler sekmesinden değiştirilir"><b>%${num(st.commission_rate??0)}</b></td>
     <td><input class="in" style="width:110px" type="number" min="0" step="100" value="${st.daily_target??0}" data-c="pset" data-f="daily_target" data-id="${p.id}"></td>
     <td><input class="in" style="width:120px" type="number" min="0" step="1000" value="${st.monthly_target??0}" data-c="pset" data-f="monthly_target" data-id="${p.id}"></td>`}</tr>`}).join('')}</table></div></div>
@@ -4231,6 +4296,20 @@ const A={
     insOpen({context:snap.buy_source==='musteri'?'alis':'toptan',cat:snap.cat,id:snap.inspection_id,sub:snap.sub,model:snap.model,imei:snap.imei,price:snap.cost,contact:snap.buy_contact_id||(S.pfd&&S.pf&&S.pf.sup&&S.pf.sup!=='__new__'?S.pf.sup:''),
       done:(row,up)=>productModal(null,{...snap,...(up!=null?{cost:up}:{}),inspection_id:row.id,sub:row.sub||snap.sub,model:row.model||snap.model,imei:row.imei||snap.imei,battery:row.battery==null?snap.battery:row.battery,cosmetic:row.cosmetic_score?insCosm(row.cosmetic_score):snap.cosmetic}),back:()=>productModal(null,snap)})},
   bell(){S.notifOpen=!S.notifOpen;S.uOpen=false;render()},
+  'pw-change'(){pwModal()},
+  async 'pw-save'(t){t.disabled=true;const r=await pwChange(g('pw-n'),g('pw-r'));t.disabled=false;if(r)return setErr(r);closeModal();toast('Şifreniz değiştirildi');render()},
+  'ua-new'(){uaModal()},'ua-gen'(t){const i=document.getElementById(t.dataset.t);if(i)i.value=pwGen()},
+  async 'ua-save'(t){const n=g('ua-n').trim(),l=g('ua-l').trim().toLowerCase(),pw=g('ua-p').trim(),role=g('ua-r');
+    if(n.length<2)return setErr('Ad soyad yazın.');if(!l)return setErr('E-posta veya kullanıcı adı yazın.');
+    if(!l.includes('@')&&!/^[a-z0-9][a-z0-9._-]{2,29}$/.test(l))return setErr('Kullanıcı adı 3-30 karakter olmalı; yalnız küçük harf (Türkçe karakter olmadan), rakam, nokta, tire ve alt çizgi.');
+    const e=pwRule(pw);if(e)return setErr(e);
+    t.disabled=true;try{const r=await fnCall('user-admin',{action:'create',full_name:n,login:l,password:pw,role});S.ul=undefined;uaDone('Kullanıcı oluşturuldu',n,r.login,pw);reload().catch(()=>{})}catch(x){t.disabled=false;setErr(msg(x))}},
+  'ua-reset'(t){uaResetModal(t.dataset.id)},'ua-login'(t){uaLoginModal(t.dataset.id)},
+  async 'ua-reset-save'(t){const pw=g('ua-p').trim(),e=pwRule(pw);if(e)return setErr(e);const id=S.uaId,p=S.d.profileMap.get(id),u=S.ul&&S.ul.get(id);
+    t.disabled=true;try{await fnCall('user-admin',{action:'reset',id,password:pw});uaDone('Şifre sıfırlandı',p?p.full_name:'',u?u.login:'',pw);reload().catch(()=>{})}catch(x){t.disabled=false;setErr(msg(x))}},
+  async 'ua-login-save'(t){const l=g('ua-l').trim().toLowerCase();if(!l)return setErr('E-posta veya kullanıcı adı yazın.');
+    t.disabled=true;try{const r=await fnCall('user-admin',{action:'set_login',id:S.uaId,login:l});closeModal();toast('Giriş bilgisi: '+loginShow(r.login));S.ul=undefined;render()}catch(x){t.disabled=false;setErr(msg(x))}},
+  async 'ua-copy'(){toast(await copyText(S.uaTxt||'')?'Kopyalandı':'Kopyalanamadı, elle seçip kopyalayın',false)},
   'notif-open'(t){notifOpen(t.dataset.id)},
   'eg-new'(){egModal()},'eg-edit'(t){egModal((S.d.trainings||[]).find(x=>x.id===t.dataset.id))},'eg-save'(){egSave()},
   'eg-open'(t){egOpen(t.dataset.id,false)},'eg-dl'(t){egOpen(t.dataset.id,true)},'eg-status'(t){egStatus(t.dataset.id)},
@@ -4814,6 +4893,7 @@ document.addEventListener('change',async e=>{
     case 'paymethod':S.cart.pays[i].method=t.value;break;
     case 'srcchg':{const k=t.value==='toptan'?'firma':'musteri';document.getElementById('p-contact').innerHTML=csel('p-bc',k,'',k==='firma'?'Firma':'Müşteri');break}
     case 'ownerchg':document.getElementById('p-agr-w').hidden=t.value!=='konsinye';break;
+    case 'pw-show':{document.querySelectorAll('#pw-n,#pw-r').forEach(i=>i.type=t.checked?'text':'password');break}
     case 'pname':{const r=await sb.from('profiles').update({full_name:t.value.trim()}).eq('id',t.dataset.id);r.error?toast(r.error.message,true):(toast('Kaydedildi'),reload());break}
     case 'prole':{const r=await sb.from('profiles').update({role:t.value}).eq('id',t.dataset.id);r.error?toast(r.error.message,true):(toast('Rol güncellendi'),reload());break}
     case 'pactive':{const r=await sb.from('profiles').update({active:t.checked}).eq('id',t.dataset.id);r.error?toast(r.error.message,true):(toast('Kaydedildi'),reload());break}
