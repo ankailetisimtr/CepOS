@@ -322,8 +322,8 @@ button.fx{font-variant-numeric:tabular-nums;font-weight:600;white-space:nowrap}b
 .nc-sari{--nc:var(--nc-sari)}.nc-yesil{--nc:var(--nc-yesil)}.nc-mavi{--nc:var(--nc-mavi)}.nc-mor{--nc:var(--nc-mor)}.nc-pembe{--nc:var(--nc-pembe)}.nc-gri{--nc:var(--nc-gri)}
 .ic.rotl{transform:rotate(90deg)}.ic.rotr{transform:rotate(-90deg)}
 .avatar.sm{width:24px;height:24px;font-size:10px;display:inline-grid;vertical-align:middle;margin-right:6px}
-.nt{display:flex;flex-direction:column;gap:12px;padding-bottom:70px}
-.nt h2{margin:0;font-size:16px}
+.nt-page{display:flex;flex-direction:column;gap:12px;padding-bottom:70px}
+.nt-page h2{margin:0;font-size:16px}
 .nt-head{display:flex;align-items:center;gap:10px;flex-wrap:wrap}.nt-head h1{margin:0}
 .nt-search{display:flex;align-items:center;gap:6px;border:1px solid var(--line);border-radius:8px;padding:0 10px;background:var(--surface);min-width:200px}
 .nt-search input{border:0;background:none;padding:8px 0;font:inherit;color:inherit;outline:0;width:100%}
@@ -5462,7 +5462,7 @@ function vNotlar(){const N=NT();
     <button class="btn" data-a="nt-new" data-k="not">${ic('plus','sm')}Not</button><button class="btn pri" data-a="nt-new" data-k="is">${ic('plus','sm')}Yapılacak</button>
     <button class="ib" data-a="nt-set" aria-label="Notlarım ayarları" title="Ayarlar">${ic('sliders')}</button></div>${N.err?`<div class="card bad">${esc(N.err)}</div>`:''}`;
   const body=q?ntSearch(q):v==='hafta'?ntWeek():v==='ay'?ntMonth():v==='tum'?ntAll():ntToday();
-  return `<div class="nt">${head}${body}<button class="nt-fab" data-a="nt-fab" aria-label="Yeni ekle">${ic('plus')}</button></div>`}
+  return `<div class="nt-page">${head}${body}<button class="nt-fab" data-a="nt-fab" aria-label="Yeni ekle">${ic('plus')}</button></div>`}
 
 function ntToday(){const N=NT(),d=N.day||today(),t=today(),isT=d===t;
   const L=ntOn(d),open=L.filter(n=>!n.done),done=L.filter(n=>n.done),od=isT?ntOverdue():[],nod=isT?ntTasks().filter(n=>!n.done&&!n.due_date).sort(ntCmp):[];
