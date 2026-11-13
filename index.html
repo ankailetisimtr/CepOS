@@ -456,6 +456,13 @@ button.fx{font-variant-numeric:tabular-nums;font-weight:600;white-space:nowrap}b
   .nt-fab .ic{width:26px;height:26px}.nt-ra{opacity:1}.nt-hist{grid-template-columns:1fr}.nt-tools .lnk{margin-left:0}.nt-title{font-size:19px}}
 .pill.att{background:var(--pink-soft);color:var(--pink);border-color:transparent}
 .att-bar{height:4px;border-radius:2px;background:var(--surface2);margin-top:3px;min-width:60px}.att-bar i{display:block;height:100%;border-radius:2px;background:var(--pink)}
+.req{color:var(--bad);font-weight:700}.acqbox{margin-top:2px}
+.pill.ch{border-color:transparent}.pill.ch-magaza{background:var(--accent-soft);color:var(--accent)}.pill.ch-internet{background:var(--violet-soft);color:var(--violet)}.pill.ch-sosyal{background:var(--pink-soft);color:var(--pink)}.pill.ch-yok{background:var(--surface2);color:var(--muted)}
+tr.sub-r td{color:var(--muted);font-size:13px}
+.mr-bars{display:flex;align-items:flex-end;gap:10px;height:170px;padding:6px 0}.mr-col{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;justify-content:flex-end;font-size:12px}.mr-col span{color:var(--muted)}
+.mr-stack{width:100%;max-width:56px;display:flex;flex-direction:column-reverse;border-radius:6px 6px 0 0;overflow:hidden;min-height:2px;background:var(--surface2)}.mr-stack i{display:block;min-height:3px}
+.mr-leg{display:flex;flex-wrap:wrap;gap:12px;font-size:12px;color:var(--muted)}.mr-leg i{display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:4px;vertical-align:-1px}
+i.ch-magaza{background:var(--accent)}i.ch-internet{background:var(--violet)}i.ch-sosyal{background:var(--pink)}i.ch-yok{background:var(--muted)}
 </style>
 </head>
 <body>
@@ -1046,10 +1053,10 @@ const fmtSeen=t=>{if(!t)return 'hiç giriş yapmadı';const d=new Date(t);return
 
 /* ================= YÖNLENDİRME / ÇERÇEVE ================= */
 /* menüden bir sekmeye tıklanınca rapor ekranları kapanır, sekmenin ana sayfası açılır; menü kapanır */
-function resetReps(){S.ui.pl_dev=false;S.ui.kz_dev=false;S.ui.kz_acc=false;S.ui.pur_rep=false;S.ui.sh_dev=false;S.ui.sh_acc=false}
+function resetReps(){S.ui.mrep=false;S.ui.pl_dev=false;S.ui.kz_dev=false;S.ui.kz_acc=false;S.ui.pur_rep=false;S.ui.sh_dev=false;S.ui.sh_acc=false}
 document.addEventListener('click',e=>{const a=e.target.closest&&e.target.closest('.dnav a[href^="#"]');if(!a)return;
   const same=a.getAttribute('href')==='#'+location.hash.slice(1)||(a.getAttribute('href')==='#panel'&&!location.hash.slice(1));drawer(false);
-  if(same&&S.d&&(S.ui.pl_dev||S.ui.kz_dev||S.ui.kz_acc||S.ui.pur_rep||S.ui.sh_dev||S.ui.sh_acc)){resetReps();render()}});
+  if(same&&S.d&&(S.ui.mrep||S.ui.pl_dev||S.ui.kz_dev||S.ui.kz_acc||S.ui.pur_rep||S.ui.sh_dev||S.ui.sh_acc)){resetReps();render()}});
 function route(){
   const h=location.hash.slice(1);
   S.ui.tab=TABS.some(t=>t[0]===h)?h:'panel';S.uOpen=false;
@@ -1450,9 +1457,10 @@ function setErr(m){const e=document.getElementById('f-err');if(e){e.textContent=
 async function resolveContact(kind,id){
   const v=g(id);if(v!=='__new__')return v||null;
   const n=g(id+'-nn');if(!n)throw new Error('Yeni kişi / firma adını yazın');
-  const {data,error}=await sb.from('contacts').insert({kind,name:n,phone:g(id+'-nt')||null,branch_id:S.me.branch_id}).select('id').single();
+  const acq=kind==='musteri'?acqRead(id):{};
+  const {data,error}=await sb.from('contacts').insert({kind,name:n,phone:g(id+'-nt')||null,branch_id:S.me.branch_id,...acq}).select('id').single();
   if(error)throw error;return data.id}
-function newContactBox(id,kind,sel){const cart=id==='s-cust';return `<div class="form full" id="${id}-new" ${sel==='__new__'?'':'hidden'}><label class="f">${kind==='firma'?'Firma ünvanı':'İsim soyisim'}<input class="in" id="${id}-nn" value="${esc(cart?S.cart.nn||'':'')}"></label><label class="f">Telefon<input class="in" id="${id}-nt" inputmode="tel" value="${esc(cart?S.cart.nt||'':'')}"></label></div>`}
+function newContactBox(id,kind,sel){const cart=id==='s-cust';return `<div class="form full" id="${id}-new" ${sel==='__new__'?'':'hidden'}><label class="f">${kind==='firma'?'Firma ünvanı':'İsim soyisim'}<input class="in" id="${id}-nn" value="${esc(cart?S.cart.nn||'':'')}"></label><label class="f">Telefon<input class="in" id="${id}-nt" inputmode="tel" value="${esc(cart?S.cart.nt||'':'')}"></label>${kind==='musteri'?acqQuick(id):''}</div>`}
 function csel(id,kind,sel,label){const l=S.d.contacts.filter(c=>c.kind===kind&&c.active!==false).sort((a,b)=>a.name.localeCompare(b.name,'tr'));
   return `<label class="f">${label}<select class="in" id="${id}" data-c="newc">${opts([['','- seçilmedi -'],...l.map(c=>[c.id,c.name]),['__new__','+ Yeni ekle…']],sel||'')}</select></label>${newContactBox(id,kind,sel)}`}
 
@@ -2296,6 +2304,7 @@ function cariRows(k){
   const d=S.d,q=S.ui.cq.toLowerCase();
   let l=d.contacts.filter(c=>c.kind===k&&(!q||[c.name,c.person,c.phone,c.email,c.tax_no,c.tax_office].join(' ').toLowerCase().includes(q)));
   if(S.ui.cdebt&&can('view_cash'))l=l.filter(c=>balance(c.id)!==0);
+  if(k==='musteri'&&S.ui.cch)l=l.filter(c=>(c.acq_channel||'yok')===S.ui.cch);
   return l.sort((a,b)=>a.name.localeCompare(b.name,'tr'))}
 function cariCard(c,k){
   const d=S.d,u=S.ui,bal=can('view_cash')?balance(c.id):0,ek=u.ekstre===c.id;
@@ -2314,7 +2323,7 @@ function cariCard(c,k){
     if(ek)detail=`<div style="margin-top:8px"><h3 style="margin:0 0 4px">Alışveriş geçmişi</h3>${sl.sort((a,b)=>String(b.sold_at).localeCompare(String(a.sold_at))).slice(0,15).map(s=>`<div class="sub">${fmtDate(String(s.sold_at).slice(0,10))} · ${esc(s.sale_no)} · <b>${money(s.total)}</b></div>`).join('')||'<div class="sub">Satış yok.</div>'}${bought.length?`<h3 style="margin:8px 0 4px">Bizim aldığımız cihazlar</h3>${[...bought].sort((a,b)=>String(b.buy_date).localeCompare(String(a.buy_date))).map(x=>`<div class="sub">${fmtDate(x.buy_date)} · ${esc(x.model)}${x.imei?' · '+esc(x.imei):''}${x.buy_source==='takas'?' · takas':''}${can('view_cost')&&d.cost.has(x.id)?' · <b>'+money(d.cost.get(x.id))+'</b>':''}</div>`).join('')}`:''}${can('view_cash')&&d.party_entries.some(e=>e.contact_id===c.id)?`<h3 style="margin:8px 0 4px">Cari hareketler</h3>`+ledger(c.id):''}</div>`}
   const ind=k!=='firma'&&(c.customer_type||'bireysel')==='bireysel';
   const extra=[c.tax_no?(ind?'TC: ':'Vergi no: ')+esc(c.tax_no):'',c.tax_office&&!ind?'Vergi dairesi: '+esc(c.tax_office):'',c.address?esc(c.address):'',c.iban?'IBAN: '+esc(c.iban):'',k==='firma'&&c.payment_term_days!=null?'Vade: '+c.payment_term_days+' gün':''].filter(Boolean);
-  return `<div class="item"><div class="main"><b>${esc(c.name)}</b>${k!=='firma'?` <span class="pill">${ind?'Bireysel':'Kurumsal'}</span>`:''}${can('view_cash')&&bal!==0?` <span class="pill ${bal>0&&k==='firma'?'warn':''}">${k==='firma'?(bal>0?'Borcumuz ':'Alacağımız ')+money(Math.abs(bal)):(bal>0?'Borcumuz ':'Alacağımız ')+money(Math.abs(bal))}</span>`:''}
+  return `<div class="item"><div class="main"><b>${esc(c.name)}</b>${k!=='firma'?` <span class="pill">${ind?'Bireysel':'Kurumsal'}</span> <span class="pill ch ch-${c.acq_channel||'yok'}" title="Müşteri kazanım kanalı">${esc(acqTxt(c))}</span>${c.marketing_ok?' <span class="pill" title="Kampanya mesajı izni var">İleti izni</span>':''}${c.referred_by&&S.d.contactMap.get(c.referred_by)?` <span class="sub">Tavsiye: ${esc(S.d.contactMap.get(c.referred_by).name)}</span>`:''}`:''}${can('view_cash')&&bal!==0?` <span class="pill ${bal>0&&k==='firma'?'warn':''}">${k==='firma'?(bal>0?'Borcumuz ':'Alacağımız ')+money(Math.abs(bal)):(bal>0?'Borcumuz ':'Alacağımız ')+money(Math.abs(bal))}</span>`:''}
     <div class="meta">${c.person?`<span>Yetkili: ${esc(c.person)}</span>`:''}${c.phone?`<span>${telLink(c.phone)}</span>`:''}${c.email?`<span>${esc(c.email)}</span>`:''}</div>
     ${extra.length?`<div class="meta">${extra.map(x=>`<span>${x}</span>`).join('')}</div>`:''}<div class="meta">${stats}</div>${detail}</div>
     <div class="side"><div class="acts">${k==='firma'&&can('add_expense')?`<button class="btn sm pri" data-a="pay-party" data-id="${c.id}">Öde</button><button class="btn sm" data-a="ret-open" data-id="${c.id}">İade et</button>`:''}${k==='firma'&&can('view_cash')?`<button class="btn sm" data-a="fr-open" data-id="${c.id}">Rapor</button>`:''}${k==='firma'&&can('make_purchase')?`<button class="btn sm" data-a="pf-open" data-sup="${c.id}">Toplu alım</button>`:''}${can('view_cash')||k==='musteri'?`<button class="btn sm" data-a="ekstre" data-id="${c.id}">${k==='firma'?'Ekstre':'Geçmiş'}</button>`:''}${wa}${can('manage_documents')?docBtn('contacts',c.id):''}${can('manage_contacts')?`<button class="btn sm" data-a="edit-contact" data-id="${c.id}">Düzenle</button>`:''}</div></div></div>`}
@@ -2324,14 +2333,94 @@ function ledger(cid){
   return `<div style="margin-top:8px">${rows.reverse().join('')||'<div class="sub">Cari hareket yok.</div>'}</div>`}
 function cariList(){const el=document.getElementById('cari-list');if(!el)return;const k=S.ui.tab==='firmalar'?'firma':'musteri';el.innerHTML=cariRows(k).map(c=>cariCard(c,k)).join('')||'<div class="empty">Kayıt yok.</div>'}
 function vCari(k){
+  if(k==='musteri'&&S.ui.mrep&&can('view_all_sales'))return vMusteriRapor();
   const d=S.d,u=S.ui,all=d.contacts.filter(c=>c.kind===k),showBal=can('view_cash');
   const debt=sum(all,c=>Math.max(balance(c.id),0)),claim=sum(all,c=>Math.min(balance(c.id),0));
   const title=k==='firma'?'Firmalar':'Müşteriler';
-  return `<div class="row"><h1>${title}</h1><div class="sp"></div>${can('manage_contacts')?`<button class="btn pri" data-a="new-contact">+ ${k==='firma'?'Firma ekle':'Müşteri ekle'}</button>`:''}</div>
+  const chs=k==='musteri'?`<div class="seg" role="group" aria-label="Kazanım kanalı">${[['','Tümü'],['magaza','Mağaza'],['internet','İnternet'],['sosyal','Sosyal çevre'],['yok','Belirtilmemiş']].map(([v,l])=>`<button data-a="cch" data-v="${v}" aria-pressed="${(u.cch||'')===v}">${l} <small>${v===''?all.length:all.filter(c=>(c.acq_channel||'yok')===v).length}</small></button>`).join('')}</div>`:'';
+  return `<div class="row"><h1>${title}</h1><div class="sp"></div>${k==='musteri'&&can('view_all_sales')?'<button class="btn" data-a="mr-open">Müşteri Raporu</button>':''}${can('manage_contacts')?`<button class="btn pri" data-a="new-contact">+ ${k==='firma'?'Firma ekle':'Müşteri ekle'}</button>`:''}</div>
   <div class="grid g4">${tile('Kayıtlı',String(all.length),k==='firma'?'tedarikçi firma':'müşteri')}${showBal?tile('Toplam borcumuz',`<span class="${debt>0?'neg':''}">${money(debt)}</span>`,k==='firma'?'firmalara ödenecek':'müşterilere ödenecek'):''}${showBal&&claim<0?tile('Alacağımız',`<span class="pos">${money(-claim)}</span>`,'fazla ödeme / iade'):''}</div>
   <div class="card"><div class="form"><label class="f full">Ara (ad, yetkili, telefon, vergi no)<input class="in" id="ctq" type="search" value="${esc(u.cq)}"></label>
-   ${showBal?`<label class="f full"><span><input type="checkbox" id="cdebt" data-c="cdebt" ${u.cdebt?'checked':''}> Yalnızca bakiyesi olanlar</span></label>`:''}</div></div>
+   ${showBal?`<label class="f full"><span><input type="checkbox" id="cdebt" data-c="cdebt" ${u.cdebt?'checked':''}> Yalnızca bakiyesi olanlar</span></label>`:''}${chs?`<div class="f full">${chs}</div>`:''}</div></div>
   <div class="card" id="cari-list">${cariRows(k).map(c=>cariCard(c,k)).join('')||'<div class="empty">Kayıt yok.</div>'}</div>`}
+/* ---- Müşteri kazanım kanalı (055) ---- */
+const ACQ=[['magaza','Mağaza Müşterisi'],['internet','İnternet Müşterisi'],['sosyal','Sosyal Çevre']];
+const ACQ_SRC=[['google','Google'],['instagram','Instagram'],['web','Web Sitesi'],['sahibinden','Sahibinden'],['letgo','Letgo']];
+const acqTxt=c=>!c||!c.acq_channel?'Belirtilmemiş':c.acq_channel==='internet'?'İnternet · '+((ACQ_SRC.find(x=>x[0]===c.acq_source)||[0,'?'])[1]):(ACQ.find(x=>x[0]===c.acq_channel)||[0,''])[1];
+const acqShort=c=>!c||!c.acq_channel?'Belirtilmemiş':c.acq_channel==='magaza'?'Mağaza':c.acq_channel==='sosyal'?'Sosyal çevre':'İnternet';
+function acqFields(c){const ch=c.acq_channel||'',L=S.d.contacts.filter(x=>x.kind==='musteri'&&x.id!==c.id&&x.active!==false).sort((a,b)=>a.name.localeCompare(b.name,'tr'));
+  return `<div class="form full acqbox" style="padding:0"><label class="f">Müşteri kazanım kanalı <span class="req">*</span><select class="in" id="c-acq" data-c="acqch" required>${opts([['','- seçin -'],...ACQ],ch)}</select></label>
+   <label class="f" id="c-acqsrc-w" ${ch==='internet'?'':'hidden'}>İnternet kaynağı <span class="req">*</span><select class="in" id="c-acqsrc">${opts([['','- seçin -'],...ACQ_SRC],c.acq_source||'')}</select></label>
+   <label class="f" id="c-ref-w" ${ch==='sosyal'?'':'hidden'}>Tavsiye eden müşteri <span class="sub">(isteğe bağlı)</span><select class="in" id="c-ref">${opts([['','- yok / bilinmiyor -'],...L.map(x=>[x.id,x.name+(x.phone?' · '+x.phone:'')])],c.referred_by||'')}</select></label>
+   <label class="ck full"><input type="checkbox" id="c-mkt" ${c.marketing_ok?'checked':''}> Kampanya ve bilgilendirme mesajı (SMS, WhatsApp, e-posta) almayı kabul ediyor${c.marketing_ok_at?` <span class="sub">· ${fmtDate(String(c.marketing_ok_at).slice(0,10))}</span>`:''}</label></div>`}
+function acqQuick(id){const cart=id==='s-cust',ch=cart?S.cart.nch||'':'',src=cart?S.cart.nsrc||'':'';
+  return `<label class="f">Kazanım kanalı <span class="req">*</span><select class="in" id="${id}-nch" data-c="acqq" data-p="${id}">${opts([['','- seçin -'],...ACQ],ch)}</select></label>
+   <label class="f" id="${id}-nsrcw" ${ch==='internet'?'':'hidden'}>İnternet kaynağı <span class="req">*</span><select class="in" id="${id}-nsrc" data-c="acqqs" data-p="${id}">${opts([['','- seçin -'],...ACQ_SRC],src)}</select></label>`}
+function acqRead(pre){const ch=g(pre+(pre==='c'?'-acq':'-nch')),src=g(pre+(pre==='c'?'-acqsrc':'-nsrc'));
+  if(!ch)throw new Error('Müşteri kazanım kanalını seçin (Mağaza, İnternet veya Sosyal Çevre).');
+  if(ch==='internet'&&!src)throw new Error('İnternet müşterisi için kaynağı seçin (Google, Instagram, Web Sitesi, Sahibinden, Letgo).');
+  return {acq_channel:ch,acq_source:ch==='internet'?src:null}}
+
+/* ---- Müşteri Raporu ---- */
+function mrRange(){const u=S.ui,t=today();let a=u.mrf||t.slice(0,8)+'01',b=u.mrt||t;return a<=b?[a,b]:[b,a]}
+function mrData(){const d=S.d,C=d.contacts.filter(c=>c.kind==='musteri'),by=new Map(C.map(c=>[c.id,{c,n:0,dev:0,acc:0,dq:0,aq:0,first:null,last:null,sales:[]}])),ok=s=>s&&s.status!=='iptal';
+  const lines=new Map();d.sale_items.forEach(i=>{if(i.returned)return;const s=d.saleMap.get(i.sale_id);if(!ok(s))return;const x=lines.get(s.id)||{dev:0,acc:0,dq:0,aq:0};x.dev+=Number(i.price)-Number(i.discount||0);x.dq++;lines.set(s.id,x)});
+  d.sale_accessory_items.forEach(l=>{const s=d.saleMap.get(l.sale_id);if(!ok(s))return;const q=Number(l.qty),rq=q-Number(l.returned_qty||0);if(rq<=0)return;const x=lines.get(s.id)||{dev:0,acc:0,dq:0,aq:0};x.acc+=(q*Number(l.unit_price)-Number(l.discount||0))*rq/q;x.aq+=rq;lines.set(s.id,x)});
+  d.sales.forEach(s=>{if(!ok(s))return;const x=lines.get(s.id)||{dev:0,acc:0,dq:0,aq:0},day=dayOf(s.sold_at);if(!s.customer_id)return;const r=by.get(s.customer_id);if(!r)return;
+    r.sales.push({id:s.id,day,...x});r.n++;r.dev+=x.dev;r.acc+=x.acc;r.dq+=x.dq;r.aq+=x.aq;if(!r.first||day<r.first)r.first=day;if(!r.last||day>r.last)r.last=day});
+  return {C,by,lines}}
+function vMusteriRapor(){const d=S.d,u=S.ui,[lo,hi]=mrRange(),t=today(),D=mrData(),R=[...D.by.values()],inR=x=>x>=lo&&x<=hi;
+  const pct=(a,b)=>b>0?'%'+(a/b*100).toFixed(1).replace('.',','):'-',cday=c=>String(c.created_at||'').slice(0,10);
+  const per=R.map(r=>{const s=r.sales.filter(x=>inR(x.day));return {...r,pn:s.length,pdev:sum(s,x=>x.dev),pacc:sum(s,x=>x.acc),pnew:inR(cday(r.c)),pfirst:r.first&&inR(r.first)}});
+  const salesR=d.sales.filter(s=>s.status!=='iptal'&&inR(dayOf(s.sold_at))),withC=salesR.filter(s=>s.customer_id&&D.by.has(s.customer_id)).length;
+  const act=per.filter(r=>r.pn>0),rep=act.filter(r=>r.n>=2),revR=sum(act,r=>r.pdev+r.pacc),newC=per.filter(r=>r.pnew);
+  const tiles=`<div class="grid g4">${tile('Kayıtlı müşteri',String(R.length),newC.length+' yeni (seçili dönem)')}${tile('Alışveriş yapan müşteri',String(act.length),'tekrar eden: '+rep.length+' ('+pct(rep.length,act.length)+')')}
+    ${tile('Müşteri başına ciro',act.length?money(revR/act.length):'-','dönemdeki toplam '+money(revR))}${tile('Müşterisi girilen satış',pct(withC,salesR.length),withC+' / '+salesR.length+' satış · müşterisiz satış kanala yazılamaz',salesR.length&&withC/salesR.length<0.6?'warn':'')}</div>`;
+  // kanal tablosu (internet alt kaynaklarıyla)
+  const keyOf=c=>c.acq_channel==='internet'?'internet:'+(c.acq_source||'?'):(c.acq_channel||'yok');
+  const groups=[['magaza','Mağaza Müşterisi'],['internet','İnternet Müşterisi'],...ACQ_SRC.map(([k,l])=>['internet:'+k,'↳ '+l]),['sosyal','Sosyal Çevre'],['yok','Belirtilmemiş']];
+  const agg=k=>{const L=per.filter(r=>k==='internet'?r.c.acq_channel==='internet':keyOf(r.c)===k),A=L.filter(r=>r.pn>0),n=sum(L,r=>r.pn);
+    return {reg:L.length,nw:L.filter(r=>r.pnew).length,act:A.length,ever:L.filter(r=>r.n>0).length,dev:sum(L,r=>r.pdev),acc:sum(L,r=>r.pacc),dq:sum(L,r=>r.sales.filter(x=>inR(x.day)).reduce((t,x)=>t+x.dq,0)),n}};
+  const G=groups.map(([k,l])=>({k,l,...agg(k)})).filter(x=>x.reg||x.k==='magaza'||x.k==='internet'||x.k==='sosyal'),tot=sum(G.filter(x=>!x.k.includes(':')),x=>x.dev+x.acc);
+  const chan=`<div class="card"><h2>Kazanım kanalına göre</h2><div class="tw"><table><tr><th style="text-align:left">Kanal</th><th>Kayıtlı</th><th>Yeni</th><th>Alışveriş yapan</th><th>Dönüşüm</th><th>Cihaz cirosu</th><th>Aksesuar cirosu</th><th>Toplam</th><th>Pay</th><th>Ort. sepet</th></tr>
+    ${G.map(x=>`<tr class="${x.k.includes(':')?'sub-r':''}"><td style="text-align:left">${x.k.includes(':')?esc(x.l):'<b>'+esc(x.l)+'</b>'}</td><td>${x.reg}</td><td>${x.nw}</td><td>${x.act}</td><td title="En az bir kez alışveriş yapmış kayıtlı müşteri oranı (tüm zamanlar)">${pct(x.ever,x.reg)}</td><td>${money(x.dev)}</td><td>${money(x.acc)}</td><td><b>${money(x.dev+x.acc)}</b></td><td>${x.k.includes(':')?'':tot>0?Math.round((x.dev+x.acc)/tot*100)+'%':'-'}</td><td>${x.n?money((x.dev+x.acc)/x.n):'-'}</td></tr>`).join('')}</table></div>
+    <p class="sub">Yeni: seçili dönemde kaydedilen müşteri. Dönüşüm: kayıtlı müşterilerin en az bir kez alışveriş yapan oranı. Ciro seçili dönemdeki satışlardır; cihaz ve aksesuar ayrı, iptal ve iadeler düşülmüş.</p></div>`;
+  // son 6 ay yeni müşteri
+  const mon=srMonths(),m6=mon.map(m=>({l:m.l,by:Object.fromEntries([...ACQ.map(a=>a[0]),'yok'].map(k=>[k,R.filter(r=>cday(r.c).slice(0,7)===m.k&&(r.c.acq_channel||'yok')===k).length]))}));
+  const mx=Math.max(1,...m6.map(m=>sum(Object.values(m.by),v=>v)));
+  const trend=`<div class="card"><h2>Son 6 ay · yeni müşteri</h2><div class="mr-bars">${m6.map(m=>{const tt=sum(Object.values(m.by),v=>v);return `<div class="mr-col"><div class="mr-stack" style="height:${Math.round(tt/mx*120)}px" title="${tt} yeni müşteri">${['magaza','internet','sosyal','yok'].map(k=>m.by[k]?`<i class="ch-${k}" style="flex:${m.by[k]}" title="${acqShort({acq_channel:k==='yok'?null:k})}: ${m.by[k]}"></i>`:'').join('')}</div><b>${tt}</b><span>${m.l}</span></div>`}).join('')}</div>
+    <div class="mr-leg">${[['magaza','Mağaza'],['internet','İnternet'],['sosyal','Sosyal çevre'],['yok','Belirtilmemiş']].map(([k,l])=>`<span><i class="ch-${k}"></i>${l}</span>`).join('')}</div></div>`;
+  // segmentler (tüm zamanlar)
+  const seg=[['Yeni (ilk alışverişi bu dönemde)',per.filter(r=>r.pfirst).length,'İlk deneyimi iyi geçen müşteri geri döner; takip mesajı için uygun.'],['Tek alışveriş',R.filter(r=>r.n===1).length,'İkinci alışverişe teşvik edin (aksesuar, servis, takas).'],['Tekrar eden (2-3)',R.filter(r=>r.n>=2&&r.n<=3).length,''],['Sadık (4+)',R.filter(r=>r.n>=4).length,'Özel indirim / öncelikli servis düşünülebilir.'],['Uyuyan (180+ gündür alışveriş yok)',R.filter(r=>r.last&&diffDays(r.last,t)>180).length,'Kampanya mesajıyla geri kazanılabilir.'],['Hiç alışveriş yapmamış',R.filter(r=>!r.n).length,'Servis, sipariş veya teklif için kaydedilmiş olabilir.']];
+  const segC=`<div class="card"><h2>Müşteri segmentleri</h2><div class="tw"><table><tr><th style="text-align:left">Segment</th><th>Müşteri</th><th style="text-align:left">Not</th></tr>${seg.map(([a,b,c])=>`<tr><td style="text-align:left">${a}</td><td><b>${b}</b></td><td style="text-align:left;white-space:normal;min-width:180px" class="sub">${c}</td></tr>`).join('')}</table></div>
+    <p class="sub">Bireysel ${R.filter(r=>(r.c.customer_type||'bireysel')==='bireysel').length} · Kurumsal ${R.filter(r=>r.c.customer_type==='kurumsal').length} · İleti izni olan ${R.filter(r=>r.c.marketing_ok).length}</p></div>`;
+  // en değerli müşteriler
+  const top=[...per].filter(r=>r.pn>0).sort((a,b)=>(b.pdev+b.pacc)-(a.pdev+a.pacc)).slice(0,20);
+  const name=c=>`<button class="lnk" data-a="mr-cust" data-id="${c.id}">${esc(c.name)}</button>`;
+  const topC=`<div class="card"><h2>En değerli müşteriler (seçili dönem)</h2><div class="tw"><table><tr><th style="text-align:left">Müşteri</th><th style="text-align:left">Kanal</th><th>Alışveriş</th><th>Cihaz</th><th>Aksesuar</th><th>Toplam</th><th>Tüm zamanlar</th><th>Son alışveriş</th></tr>${top.map(r=>`<tr><td style="text-align:left">${name(r.c)}</td><td style="text-align:left">${esc(acqTxt(r.c))}</td><td>${r.pn}</td><td>${money(r.pdev)}</td><td>${money(r.pacc)}</td><td><b>${money(r.pdev+r.pacc)}</b></td><td>${money(r.dev+r.acc)} · ${r.n}</td><td>${r.last?fmtDate(r.last):'-'}</td></tr>`).join('')||'<tr><td colspan="8">Bu dönemde müşterili satış yok.</td></tr>'}</table></div></div>`;
+  // tavsiye edenler
+  const refs=new Map();R.forEach(r=>{if(!r.c.referred_by)return;const x=refs.get(r.c.referred_by)||{n:0,act:0,rev:0};x.n++;if(r.n)x.act++;x.rev+=r.dev+r.acc;refs.set(r.c.referred_by,x)});
+  const refL=[...refs].map(([id,x])=>({c:d.contactMap.get(id),...x})).filter(x=>x.c).sort((a,b)=>b.n-a.n||b.rev-a.rev).slice(0,15);
+  const refC=`<div class="card"><h2>Tavsiye edenler</h2><p class="sub">Sosyal çevreden gelen müşteride "Tavsiye eden müşteri" seçilirse burada görünür. Çok müşteri getirenlere teşekkür / indirim düşünebilirsiniz.</p><div class="tw"><table><tr><th style="text-align:left">Müşteri</th><th>Getirdiği müşteri</th><th>Alışveriş yapan</th><th>Getirdiklerinin cirosu</th></tr>${refL.map(x=>`<tr><td style="text-align:left">${name(x.c)}</td><td><b>${x.n}</b></td><td>${x.act}</td><td>${money(x.rev)}</td></tr>`).join('')||'<tr><td colspan="4">Henüz tavsiye kaydı yok.</td></tr>'}</table></div></div>`;
+  // uyuyan müşteriler
+  const sleep=R.filter(r=>r.last&&diffDays(r.last,t)>180).sort((a,b)=>(b.dev+b.acc)-(a.dev+a.acc)).slice(0,30),sh=shopSet();
+  const waMsg=c=>encodeURIComponent(`Merhaba ${String(c.name).split(' ')[0]}, ${sh.name||'Anka İletişim'} olarak sizi tekrar görmek isteriz. Yeni gelen cihaz ve aksesuarlarımız ile kampanyalarımız için bize ulaşabilirsiniz.`);
+  const sleepC=`<div class="card"><h2>Uyuyan müşteriler (180+ gün)</h2><p class="sub">Daha önce alışveriş yapmış, 6 aydır gelmeyen müşteriler; ciroya göre sıralı. Mesaj yalnız ileti izni olan müşteriye gönderilebilir.</p><div class="tw"><table><tr><th style="text-align:left">Müşteri</th><th style="text-align:left">Kanal</th><th>Alışveriş</th><th>Toplam</th><th>Son alışveriş</th><th></th></tr>${sleep.map(r=>`<tr><td style="text-align:left">${name(r.c)}</td><td style="text-align:left">${esc(acqShort(r.c))}</td><td>${r.n}</td><td>${money(r.dev+r.acc)}</td><td>${fmtDate(r.last)} · ${diffDays(r.last,t)} gün</td><td>${r.c.phone&&r.c.marketing_ok?`<a class="btn sm" target="_blank" rel="noopener" href="https://wa.me/${waPhone(r.c.phone)}?text=${waMsg(r.c)}">WhatsApp</a>`:`<span class="sub">${r.c.phone?'izin yok':'telefon yok'}</span>`}</td></tr>`).join('')||'<tr><td colspan="6">Uyuyan müşteri yok.</td></tr>'}</table></div></div>`;
+  // kanalı belirtilmemiş müşteriler (toplu atama)
+  const none=R.filter(r=>!r.c.acq_channel).sort((a,b)=>(b.dev+b.acc)-(a.dev+a.acc)),sel=S.mrSel||(S.mrSel=new Set());
+  const noneC=can('manage_contacts')&&none.length?`<div class="card" id="mr-none"><h2>Kanalı belirtilmemiş müşteriler (${none.length})</h2><p class="sub">055'ten önce kaydedilen müşteriler. Seçip kanalını toplu girebilirsiniz; düzenlenen müşteride kanal seçmek zorunludur.</p>
+    <div class="row"><label class="ck"><input type="checkbox" data-c="mr-all" ${none.length&&none.slice(0,200).every(r=>sel.has(r.c.id))?'checked':''}> İlk ${Math.min(200,none.length)} müşterinin tümü</label><div class="sp"></div>
+     <select class="in sm" id="mr-ch" data-c="mr-ch" style="width:auto">${opts([['','Kanal seçin'],...ACQ],S.ui.mrch||'')}</select><select class="in sm" id="mr-src" style="width:auto" ${S.ui.mrch==='internet'?'':'hidden'}>${opts([['','Kaynak seçin'],...ACQ_SRC],'')}</select><button class="btn sm pri" data-a="mr-assign">Seçilene uygula (${sel.size})</button></div>
+    <div class="tw"><table><tr><th></th><th style="text-align:left">Müşteri</th><th style="text-align:left">Telefon</th><th>Alışveriş</th><th>Toplam</th><th>Kayıt</th></tr>${none.slice(0,200).map(r=>`<tr><td><input type="checkbox" data-c="mr-one" value="${r.c.id}" ${sel.has(r.c.id)?'checked':''} aria-label="${esc(r.c.name)}"></td><td style="text-align:left">${esc(r.c.name)}</td><td style="text-align:left">${esc(r.c.phone||'')}</td><td>${r.n}</td><td>${money(r.dev+r.acc)}</td><td>${fmtDate(cday(r.c))}</td></tr>`).join('')}</table></div></div>`:'';
+  const pre=[['Bu ay',t.slice(0,8)+'01',t],['Geçen ay',iso(new Date(+t.slice(0,4),+t.slice(5,7)-2,1)),iso(new Date(+t.slice(0,4),+t.slice(5,7)-1,0))],['Son 90 gün',addDays(t,-90),t],['Bu yıl',t.slice(0,5)+'01-01',t],['Tüm zamanlar','2000-01-01',t]];
+  return `<div class="row"><button class="btn sm" data-a="mr-back">${ic('down','sm rotl')}Müşteriler</button><h1>Müşteri Raporu</h1><div class="sp"></div><button class="btn" data-a="mr-csv">CSV indir</button></div>
+   <div class="row"><input class="in" id="mr-f" type="date" value="${lo}" style="width:auto" aria-label="Başlangıç"><input class="in" id="mr-t" type="date" value="${hi}" style="width:auto" aria-label="Bitiş"><button class="btn pri" data-a="mr-go">Raporu getir</button>${pre.map(([l,a,b])=>`<button class="btn sm" data-a="mr-range" data-f="${a}" data-t="${b}" aria-pressed="${lo===a&&hi===b}">${l}</button>`).join('')}</div>
+   ${tiles}${chan}<div class="grid g2">${trend}${segC}</div>${topC}<div class="grid g2">${refC}${sleepC}</div>${noneC}
+   <div class="sub">Müşteri raporu satışlara bağlı müşteri kaydından hesaplanır; müşteri seçilmeden yapılan satışlar kanala yazılamaz. Satış ekranında müşteri seçmeyi alışkanlık hâline getirmeniz kanal raporunu güçlendirir.</div>`}
+function mrCsv(){const [lo,hi]=mrRange(),D=mrData(),q=v=>'"'+String(v??'').replace(/"/g,'""')+'"',n=v=>(Math.round(v*100)/100).toFixed(2).replace('.',','),inR=x=>x>=lo&&x<=hi;
+  const rows=[...D.by.values()].map(r=>{const s=r.sales.filter(x=>inR(x.day)),c=r.c;return [c.name,c.phone||'',c.customer_type==='kurumsal'?'Kurumsal':'Bireysel',acqTxt(c),c.referred_by?(S.d.contactMap.get(c.referred_by)||{}).name||'':'',c.marketing_ok?'Evet':'Hayır',String(c.created_at||'').slice(0,10),s.length,n(sum(s,x=>x.dev)),n(sum(s,x=>x.acc)),r.n,n(r.dev+r.acc),r.first||'',r.last||'']});
+  const csv='﻿'+[['Müşteri raporu · '+lo+' – '+hi],['Müşteri','Telefon','Tür','Kazanım kanalı','Tavsiye eden','İleti izni','Kayıt tarihi','Dönem alışveriş','Dönem cihaz cirosu','Dönem aksesuar cirosu','Toplam alışveriş','Toplam ciro','İlk alışveriş','Son alışveriş'],...rows].map(r=>r.map(q).join(';')).join('\r\n'),a=document.createElement('a');
+  a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv;charset=utf-8'}));a.download='Musteri-Raporu-'+lo+'_'+hi+'.csv';document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},500);return rows.length}
 /* Müşteri: Bireysel / Kurumsal (customer_type) · Firma: tedarikçi. Tür değişince alanlar yeniden çizilir, girilenler korunur. */
 const CTYPES=[['bireysel','Müşteri (Bireysel)'],['kurumsal','Müşteri (Kurumsal)']];
 function cFields(kind,ct,c){const v=k=>esc(c[k]==null?'':c[k]);
@@ -2351,7 +2440,7 @@ function contactModal(c){
   const e=!!c;c=c||{kind:S.ui.tab==='firmalar'?'firma':'musteri',customer_type:'bireysel'};const f=c.kind==='firma',ct=c.customer_type||'bireysel';
   S.cm={id:e?c.id:'',kind:c.kind,ct,c:{...c}};
   modal(`<h2>${e?'Kaydı düzenle':(f?'Yeni firma':'Yeni müşteri')}</h2><div class="form"><label class="f full">Tür<select class="in" id="c-kind" ${f?'disabled':'data-c="ctype"'}>${f?opts([['firma','Firma (tedarikçi)']],'firma'):opts(CTYPES,ct)}</select></label>
-   <div id="c-fields" class="form full" style="padding:0">${cFields(c.kind,ct,c)}</div></div>
+   <div id="c-fields" class="form full" style="padding:0">${cFields(c.kind,ct,c)}</div>${f?'':acqFields(c)}</div>
   <div class="err" id="f-err" hidden></div><div class="actions"><button class="btn" data-a="close">Vazgeç</button><button class="btn pri" data-a="save-contact" data-id="${e?c.id:''}">Kaydet</button></div>`)}
 function cRead(){const g2=id=>{const el=document.getElementById(id);return el?el.value.trim():undefined};
   return{name:g2('c-name'),phone:g2('c-phone'),email:g2('c-mail'),address:g2('c-addr'),tax_no:g2('c-tax'),tax_office:g2('c-office')}}
@@ -4851,7 +4940,14 @@ const A={
   async 'save-move'(){try{await call('add_cash_movement',{p_date:g('m-date'),p_account:g('m-acc'),p_kind:g('m-kind'),p_amount:nv('m-amt'),p_note:g('m-note')||null,p_category:null},'Hareket kaydedildi');closeModal();await reload()}catch(e){setErr(msg(e))}},
   transfer(){transferModal()},
   async 'save-transfer'(){try{await call('transfer_cash',{p_date:g('x-date'),p_from:g('x-from'),p_to:g('x-to'),p_amount:nv('x-amt'),p_note:g('x-note')||null},'Transfer yapıldı');closeModal();await reload()}catch(e){setErr(msg(e))}},
-  'new-contact'(){contactModal()},'edit-contact'(t){contactModal(S.d.contactMap.get(t.dataset.id))},
+  'new-contact'(){contactModal()},
+  'cch'(t){S.ui.cch=t.dataset.v;render()},
+  'mr-open'(){S.ui.mrep=true;S.mrSel=new Set();render();window.scrollTo(0,0)},'mr-back'(){S.ui.mrep=false;render()},
+  'mr-go'(){S.ui.mrf=g('mr-f');S.ui.mrt=g('mr-t');render()},'mr-range'(t){S.ui.mrf=t.dataset.f;S.ui.mrt=t.dataset.t;render()},
+  'mr-csv'(){toast(mrCsv()+' müşteri indirildi')},
+  'mr-cust'(t){const c=S.d.contactMap.get(t.dataset.id);if(!c)return;S.ui.mrep=false;S.ui.cch='';S.ui.cq=c.name;S.ui.ekstre=c.id;render()},
+  async 'mr-assign'(){const ids=[...(S.mrSel||[])],ch=g('mr-ch'),src=g('mr-src');if(!ids.length)return toast('Önce müşteri seçin',true);if(!ch)return toast('Kanal seçin',true);if(ch==='internet'&&!src)return toast('İnternet kaynağını seçin',true);
+    try{const n=await call('set_customer_channel',{p_ids:ids,p_channel:ch,p_source:ch==='internet'?src:null});ids.forEach(id=>{const c=S.d.contactMap.get(id);if(c){c.acq_channel=ch;c.acq_source=ch==='internet'?src:null}});S.mrSel=new Set();toast((n||ids.length)+' müşterinin kanalı kaydedildi');render()}catch(e){toast(msg(e),true)}},'edit-contact'(t){contactModal(S.d.contactMap.get(t.dataset.id))},
   async 'save-contact'(t){const id=t.dataset.id,cm=S.cm||{kind:'musteri',ct:'bireysel'},firm=cm.kind==='firma',ct=firm?null:(g('c-kind')||cm.ct),r0=cRead(),name=r0.name;
     if(!name)return setErr(firm||ct==='kurumsal'?'Firma ünvanı veya isim soyisim yazın.':'İsim soyisim yazın.');
     const tax=(r0.tax_no||'').replace(/\s/g,'');
@@ -4862,7 +4958,7 @@ const A={
     if(firm||ct==='kurumsal')o.tax_office=r0.tax_office||null;else o.tax_office=null;
     if(firm){const term=g('c-term');if(term!==''&&!(Number(term)>=0&&Number(term)<=365))return setErr('Vade 0 ile 365 gün arasında olmalı.');
       Object.assign(o,{person:g('c-person')||null,iban:g('c-iban')||null,payment_term_days:term===''?null:Math.round(Number(term))})}
-    else o.customer_type=ct;
+    else{o.customer_type=ct;try{Object.assign(o,acqRead('c'))}catch(e){return setErr(e.message)}o.referred_by=o.acq_channel==='sosyal'?(g('c-ref')||null):null;o.marketing_ok=!!(document.getElementById('c-mkt')||{}).checked}
     const r=id?await sb.from('contacts').update(o).eq('id',id):await sb.from('contacts').insert({...o,kind:firm?'firma':'musteri',branch_id:S.me.branch_id});
     if(r.error)return setErr(r.error.message);toast('Kaydedildi');closeModal();await reload()},
   'ret-open'(t){retModal(t.dataset.id)},
@@ -5886,6 +5982,12 @@ document.addEventListener('change',async e=>{
     case 'sc-n':{const l=scState().lines.find(x=>x.id===t.dataset.id);if(!l)break;const raw=t.value,v=raw===''?null:Math.max(0,Math.round(Number(raw)));await scSave([{id:l.id,counted:v}]);const row=document.querySelector('[data-line="'+l.id+'"]');if(row)row.outerHTML=scRow(l);scRefresh(true);break}
     case 'frdate':frLoad();break;
     case 'cdebt':S.ui.cdebt=t.checked;cariList();break;
+    case 'acqch':{const a=document.getElementById('c-acqsrc-w'),b=document.getElementById('c-ref-w');if(a)a.hidden=t.value!=='internet';if(b)b.hidden=t.value!=='sosyal';break}
+    case 'acqq':{const w=document.getElementById(t.dataset.p+'-nsrcw');if(w)w.hidden=t.value!=='internet';if(t.dataset.p==='s-cust')S.cart.nch=t.value;break}
+    case 'acqqs':if(t.dataset.p==='s-cust')S.cart.nsrc=t.value;break;
+    case 'mr-ch':{S.ui.mrch=t.value;const w=document.getElementById('mr-src');if(w)w.hidden=t.value!=='internet';break}
+    case 'mr-one':{const s2=S.mrSel||(S.mrSel=new Set());t.checked?s2.add(t.value):s2.delete(t.value);const b=document.querySelector('[data-a="mr-assign"]');if(b)b.textContent='Seçilene uygula ('+s2.size+')';break}
+    case 'mr-all':{const s2=S.mrSel||(S.mrSel=new Set());document.querySelectorAll('[data-c="mr-one"]').forEach(x=>{x.checked=t.checked;t.checked?s2.add(x.value):s2.delete(x.value)});const b=document.querySelector('[data-a="mr-assign"]');if(b)b.textContent='Seçilene uygula ('+s2.size+')';break}
     case 'retmode':{const w=document.getElementById('r-met-w');if(w)w.hidden=t.value!=='nakit';break}
     case 'retdev':case 'retacc':retSuggest();break;
     case 'exstatus':S.ui.exs=t.value;render();break;
