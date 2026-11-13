@@ -315,6 +315,145 @@ button.fx{font-variant-numeric:tabular-nums;font-weight:600;white-space:nowrap}b
 .inl{display:flex;gap:6px;align-items:stretch}.inl .in{flex:1;min-width:0}
 .thumb{max-width:100%;max-height:220px;border-radius:6px;margin-top:6px;border:1px solid var(--line)}
 @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+/* ===== Notlarım (054) ===== */
+:root{--nc-sari:#FFF5C8;--nc-yesil:#E2F5E7;--nc-mavi:#E1EFFC;--nc-mor:#EEE8FB;--nc-pembe:#FCE5F0;--nc-gri:#ECEFF3;--nc-yok:var(--surface)}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--nc-sari:#3A3213;--nc-yesil:#13301F;--nc-mavi:#0F2A41;--nc-mor:#272041;--nc-pembe:#3B1530;--nc-gri:#222C36}}
+:root[data-theme="dark"]{--nc-sari:#3A3213;--nc-yesil:#13301F;--nc-mavi:#0F2A41;--nc-mor:#272041;--nc-pembe:#3B1530;--nc-gri:#222C36}
+.nc-sari{--nc:var(--nc-sari)}.nc-yesil{--nc:var(--nc-yesil)}.nc-mavi{--nc:var(--nc-mavi)}.nc-mor{--nc:var(--nc-mor)}.nc-pembe{--nc:var(--nc-pembe)}.nc-gri{--nc:var(--nc-gri)}
+.ic.rotl{transform:rotate(90deg)}.ic.rotr{transform:rotate(-90deg)}
+.avatar.sm{width:24px;height:24px;font-size:10px;display:inline-grid;vertical-align:middle;margin-right:6px}
+.nt{display:flex;flex-direction:column;gap:12px;padding-bottom:70px}
+.nt h2{margin:0;font-size:16px}
+.nt-head{display:flex;align-items:center;gap:10px;flex-wrap:wrap}.nt-head h1{margin:0}
+.nt-search{display:flex;align-items:center;gap:6px;border:1px solid var(--line);border-radius:8px;padding:0 10px;background:var(--surface);min-width:200px}
+.nt-search input{border:0;background:none;padding:8px 0;font:inherit;color:inherit;outline:0;width:100%}
+.nt-nav{display:flex;align-items:center;gap:8px;flex-wrap:wrap}.nt-nav b{font-size:15px}.nt-nav .in.sm{width:auto}
+.in.sm,.btn.sm{padding:5px 9px;font-size:13px}.ib.sm{width:28px;height:28px}
+.nt-2{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);gap:12px;align-items:start}
+.nt-tasks,.nt-pnote{display:flex;flex-direction:column;gap:10px}
+.nt-quick{display:flex;align-items:center;gap:8px;border:1px dashed var(--line);border-radius:10px;padding:4px 6px 4px 10px;background:var(--surface)}
+.nt-quick:focus-within{border-style:solid;border-color:var(--accent)}.nt-quick .pl{color:var(--muted);display:flex}
+.nt-quick .in{border:0;padding:8px 0;background:none;box-shadow:none;outline:0}
+.nt-hint{display:flex;gap:6px;flex-wrap:wrap;min-height:0}.nt-hint:empty{display:none}
+.nt-hint .chip,.nt-meta .chip{font-size:12px}
+.nt-list{display:flex;flex-direction:column;gap:4px;min-height:8px}
+.nt-empty{color:var(--muted);font-size:14px;padding:10px 4px}
+.nt-task{display:flex;align-items:center;gap:8px;padding:6px 8px;border-radius:8px;border:1px solid var(--line);background:var(--nc,var(--surface));border-left:3px solid var(--line);transition:transform .12s,background .12s;position:relative;touch-action:pan-y}
+.nt-task.pr-yuksek{border-left-color:var(--bad)}.nt-task.pr-dusuk{border-left-color:var(--muted)}
+.nt-task:hover{border-color:var(--accent)}.nt-task.drag{opacity:.45}
+.nt-task.done .nt-tm b{text-decoration:line-through;color:var(--muted);font-weight:500}
+.nt-task.sw-r{background:var(--good-soft)}.nt-task.sw-l{background:var(--warn-soft)}
+.nt-chk{width:22px;height:22px;border-radius:50%;border:2px solid var(--muted);background:none;display:grid;place-items:center;cursor:pointer;flex:none;color:transparent;padding:0}
+.nt-chk .ic{width:13px;height:13px}.nt-chk:hover{border-color:var(--good);color:var(--good)}
+.nt-chk.on{background:var(--good);border-color:var(--good);color:#fff}.nt-chk:disabled{opacity:.5;cursor:default}
+.nt-chk.lg{width:28px;height:28px}.nt-chk.sm{width:20px;height:20px}.nt-chk.mini{width:16px;height:16px;border-width:1.5px;display:inline-grid;vertical-align:-3px;margin-right:6px}.nt-chk.mini .ic{width:10px;height:10px}
+.nt-tm{flex:1;min-width:0;text-align:left;background:none;border:0;padding:2px 0;cursor:pointer;color:inherit;font:inherit;display:flex;flex-direction:column;gap:2px}
+.nt-tm b{font-weight:500;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.nt-meta{display:flex;flex-wrap:wrap;gap:4px 10px;color:var(--muted);font-size:12px}.nt-meta>span{display:inline-flex;align-items:center;gap:3px}.nt-meta .ic{width:13px;height:13px}
+.nt-meta .bad{color:var(--bad);font-weight:600}.tg{color:var(--accent)}
+.nt-ra{opacity:0;transition:opacity .1s}.nt-task:hover .nt-ra,.nt-task:focus-within .nt-ra{opacity:1}.nt-ra .ib{font-size:12px;font-weight:600}
+.nt-sec{border-radius:10px;padding:8px;display:flex;flex-direction:column;gap:6px}.nt-sec.bad{background:var(--bad-soft)}.nt-sec.bad b{color:var(--bad);display:inline-flex;gap:6px;align-items:center}
+.nt-fold{display:flex;flex-direction:column;gap:6px}
+.nt-fh{display:flex;align-items:center;gap:8px;background:none;border:0;color:var(--muted);font:inherit;font-weight:600;cursor:pointer;padding:4px 0}
+.nt-fh[aria-expanded="false"] .ic{transform:rotate(-90deg)}
+.nt-w7{display:flex;align-items:center;gap:6px;margin:4px 0 0}
+.nt-week{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:8px}
+.nt-day{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:8px;min-height:180px;display:flex;flex-direction:column;gap:6px;min-width:0}
+.nt-day.today{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent) inset}.nt-day.we{background:var(--surface2)}
+.nt-dh{display:flex;align-items:center;gap:4px}.nt-dh .lnk{padding:0;color:inherit}.nt-day.today .nt-dh b{color:var(--accent)}
+.nt-day .nt-task{padding:5px 6px;gap:6px}.nt-day .nt-tm b{white-space:normal;font-size:13px}.nt-dd{font-size:12px;color:var(--muted)}
+.drop-on{outline:2px dashed var(--accent);outline-offset:-2px;background:var(--accent-soft)!important}
+.nt-cal{padding:10px}.nt-calh,.nt-calg{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:4px}
+.nt-calh span{font-size:12px;color:var(--muted);text-align:center;font-weight:600;padding:4px 0}
+.nt-cell{min-height:92px;border:1px solid var(--line);border-radius:8px;background:var(--surface);padding:6px;display:flex;flex-direction:column;gap:2px;align-items:stretch;text-align:left;cursor:pointer;font:inherit;color:inherit;min-width:0}
+.nt-cell:hover{border-color:var(--accent)}.nt-cell.out{opacity:.45}.nt-cell.today{border-color:var(--accent);background:var(--accent-soft)}.nt-cell.od .n{color:var(--bad)}
+.nt-cell .n{font-weight:600;font-size:13px;display:flex;align-items:center;gap:4px}.nt-cell .pdot{width:6px;height:6px;border-radius:50%;background:var(--pink);display:inline-block}
+.nt-cell .ct{font-size:11.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;padding:1px 4px;border-radius:4px;background:var(--surface2)}.nt-cell .ct.pr-yuksek{background:var(--bad-soft)}
+.nt-cell .more,.nt-cell .ok{font-size:11px;color:var(--muted);display:inline-flex;gap:3px;align-items:center}.nt-cell .ok .ic{width:12px;height:12px;color:var(--good)}
+.nt-all{display:grid;grid-template-columns:220px minmax(260px,330px) minmax(0,1fr);gap:12px;align-items:start}
+.nt-side{display:flex;flex-direction:column;gap:2px;padding:8px;position:sticky;top:76px;max-height:calc(100vh - 96px);overflow:auto}
+.nt-si{display:flex;align-items:center;gap:8px;width:100%;background:none;border:0;border-radius:6px;padding:7px 8px;font:inherit;color:inherit;cursor:pointer;text-align:left}
+.nt-si span:nth-child(2){flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.nt-si .c{font-size:12px;color:var(--muted)}
+.nt-si:hover{background:var(--surface2)}.nt-si[aria-pressed="true"]{background:var(--accent-soft);color:var(--accent);font-weight:600}
+.nt-sg{display:flex;align-items:center;justify-content:space-between;font-size:12px;text-transform:uppercase;letter-spacing:.04em;color:var(--muted);font-weight:600;padding:10px 8px 2px;border-top:1px solid var(--line);margin-top:6px}
+.nt-fr{display:flex;align-items:center}.nt-fr .nt-si{flex:1;min-width:0}.nt-fr .ib{opacity:.0}.nt-fr:hover .ib,.nt-fr .ib:focus{opacity:1}
+.nt-tags{display:flex;flex-wrap:wrap;gap:4px;padding:4px 6px}.nt-tags .tg{border:1px solid var(--line);background:var(--surface);border-radius:99px;padding:2px 8px;font-size:12px;cursor:pointer;font-family:inherit}
+.nt-tags .tg.on{background:var(--accent);color:var(--accent-fg);border-color:var(--accent)}.nt-none{padding:4px 8px}
+.nt-lp{display:flex;flex-direction:column;gap:8px;padding:10px;max-height:calc(100vh - 96px);overflow:auto;position:sticky;top:76px}
+.nt-cards{display:flex;flex-direction:column;gap:6px}.nt-cards.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr))}
+.nt-card{display:flex;flex-direction:column;gap:4px;text-align:left;background:var(--nc,var(--surface));border:1px solid var(--line);border-radius:10px;padding:10px;cursor:pointer;font:inherit;color:inherit;min-width:0}
+.nt-card:hover{border-color:var(--accent)}.nt-card.sel{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent)}
+.nt-card .h{display:flex;align-items:center;gap:4px;min-width:0}.nt-card .h b{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.nt-card .h .ic{color:var(--pink);flex:none}
+.nt-card.done .h b{text-decoration:line-through;color:var(--muted)}
+.nt-card .sn{font-size:13px;color:var(--muted);display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+.nt-cards.grid .nt-card{min-height:120px}.nt-card mark{background:var(--warn-soft);color:inherit;border-radius:2px}
+.nt-ep{padding:14px;min-width:0}.nt-ph{padding:60px 10px}
+.nt-back{display:none}
+.nt-ed{display:flex;flex-direction:column;gap:10px;min-width:0}
+.nt-ed.nc-sari,.nt-ed.nc-yesil,.nt-ed.nc-mavi,.nt-ed.nc-mor,.nt-ed.nc-pembe,.nt-ed.nc-gri{background:var(--nc);border-radius:10px;padding:10px;margin:-6px}
+.nt-edh{display:flex;align-items:center;gap:10px}
+.nt-title{flex:1;min-width:0;border:0;background:none;font:inherit;font-size:22px;font-weight:600;color:inherit;padding:4px 0;outline:0}
+.nt-title::placeholder{color:var(--muted);font-weight:500}
+.nt-bar{display:flex;align-items:center;gap:6px;flex-wrap:wrap}.nt-bar .btn,.nt-foot .btn,.nt-head .btn{display:inline-flex;align-items:center;gap:5px}.nt-bar .ib[aria-pressed="true"]{color:var(--pink);background:var(--pink-soft)}
+.nt-tagin{width:150px}
+.nt-sw{display:inline-flex;gap:3px}.nt-sw .sw{width:18px;height:18px;border-radius:50%;border:1px solid var(--line);background:var(--nc,var(--surface));cursor:pointer;padding:0}
+.nt-sw .sw.nc-yok{background:linear-gradient(135deg,var(--surface) 45%,var(--bad) 46%,var(--bad) 54%,var(--surface) 55%)}
+.nt-sw .sw[aria-pressed="true"]{box-shadow:0 0 0 2px var(--surface),0 0 0 4px var(--accent)}
+.nt-tf{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:8px}.nt-tf .f{font-size:12px}
+.nt-remh{display:flex;align-items:center;gap:6px;margin:0}.nt-remh.bad{color:var(--bad)}
+.nt-steps{display:flex;flex-direction:column;gap:4px}.nt-steps .row{gap:8px}
+.nt-step{display:flex;align-items:center;gap:6px}.nt-step .in{flex:1;padding:5px 8px}.nt-step.on .in{text-decoration:line-through;color:var(--muted)}
+.nt-stepadd{border-style:dashed}
+.nt-tools{display:flex;align-items:center;gap:2px;flex-wrap:wrap;border:1px solid var(--line);border-radius:8px;padding:3px;background:var(--surface);position:sticky;top:64px;z-index:2}
+.nt-modal .nt-tools{top:0}
+.nt-tools button[data-cmd]{min-width:30px;height:28px;border:0;background:none;border-radius:5px;cursor:pointer;font:inherit;font-weight:600;font-size:13px;color:inherit;padding:0 6px}
+.nt-tools button[data-cmd]:hover{background:var(--surface2)}.nt-tools .sep{width:1px;height:18px;background:var(--line);margin:0 3px}.nt-tools .lnk{margin-left:auto;font-size:13px;padding:0 6px}
+.nt-body{min-height:220px;outline:0;line-height:1.6;font-size:15px;padding:4px 2px;overflow-wrap:anywhere}
+.nt-ed.per .nt-body{min-height:260px}.nt-modal .nt-body{min-height:140px}
+.nt-body:empty:before{content:attr(data-ph);color:var(--muted);pointer-events:none}
+.nt-body h1,.nt-body h2{font-size:19px;margin:.6em 0 .3em}.nt-body h3{font-size:16px;margin:.6em 0 .3em}
+.nt-body p,.nt-body div{margin:0 0 .35em}.nt-body ul,.nt-body ol{margin:.2em 0 .5em;padding-left:1.5em}
+.nt-body blockquote{margin:.4em 0;padding:4px 12px;border-left:3px solid var(--accent);color:var(--muted);background:var(--surface2);border-radius:0 6px 6px 0}
+.nt-body hr{border:0;border-top:1px solid var(--line);margin:.8em 0}.nt-body a{color:var(--accent)}
+.nt-body code,.nt-body pre{font-family:var(--mono);background:var(--surface2);border-radius:4px;padding:1px 4px}
+.nt-body ul[data-chk]{list-style:none;padding-left:4px}
+.nt-body ul[data-chk]>li{position:relative;padding-left:28px;margin:3px 0}
+.nt-body ul[data-chk]>li:before{content:'';position:absolute;left:2px;top:.25em;width:16px;height:16px;border:2px solid var(--muted);border-radius:4px;cursor:pointer;box-sizing:border-box}
+.nt-body ul[data-chk]>li[data-on]{color:var(--muted);text-decoration:line-through}
+.nt-body ul[data-chk]>li[data-on]:before{background:var(--good);border-color:var(--good)}
+.nt-body ul[data-chk]>li[data-on]:after{content:'';position:absolute;left:7px;top:calc(.25em + 3px);width:4px;height:8px;border:solid #fff;border-width:0 2px 2px 0;transform:rotate(45deg)}
+.nt-body.ro{border:1px solid var(--line);border-radius:8px;padding:10px;background:var(--surface);min-height:80px}
+.nt-files{display:flex;flex-wrap:wrap;gap:8px}
+.nt-file{display:flex;align-items:center;gap:6px;border:1px solid var(--line);border-radius:8px;padding:4px 6px;background:var(--surface);max-width:280px}
+.nt-file .lnk{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:150px}.nt-file small{color:var(--muted)}
+.nt-th{width:44px;height:44px;object-fit:cover;border-radius:6px;background:var(--surface2)}.nt-th:not([src]){visibility:hidden}
+.nt-pdf{width:44px;height:44px;display:grid;place-items:center;background:var(--bad-soft);color:var(--bad);border-radius:6px}
+.nt-foot{display:flex;align-items:center;gap:6px;flex-wrap:wrap;font-size:12.5px;color:var(--muted)}.nt-foot .bad{color:var(--bad)}
+.nt-slash{position:absolute;z-index:1000;background:var(--surface);border:1px solid var(--line);border-radius:8px;box-shadow:0 8px 24px rgba(0,0,0,.18);padding:4px;display:flex;flex-direction:column;min-width:190px}
+.nt-slash button{text-align:left;border:0;background:none;padding:7px 10px;border-radius:6px;font:inherit;color:inherit;cursor:pointer}
+.nt-slash button[aria-selected="true"],.nt-slash button:hover{background:var(--accent-soft);color:var(--accent)}
+.modal.nt-modal{width:min(760px,96vw);max-width:760px}
+.nt-mh{display:flex;align-items:center;gap:8px;margin-bottom:4px}
+.nt-hist{display:grid;grid-template-columns:220px minmax(0,1fr);gap:10px;max-height:60vh}
+.nt-hl{display:flex;flex-direction:column;gap:4px;overflow:auto}
+.nt-hl button{display:flex;flex-direction:column;gap:1px;text-align:left;border:1px solid var(--line);background:var(--surface);border-radius:8px;padding:6px 8px;cursor:pointer;font:inherit;color:inherit}
+.nt-hl button[aria-pressed="true"]{border-color:var(--accent);background:var(--accent-soft)}.nt-hl small{color:var(--muted);font-size:12px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.nt-hv{overflow:auto;min-width:0}.nt-hv h3{margin:0 0 6px}
+.nt-shl{display:flex;flex-direction:column;gap:6px;max-height:50vh;overflow:auto;margin:10px 0}
+.nt-shr{display:flex;align-items:center;justify-content:space-between;gap:8px;border:1px solid var(--line);border-radius:8px;padding:6px 8px}
+.nt-help{font-size:13px;color:var(--muted);border-top:1px solid var(--line);margin-top:12px;padding-top:8px}.nt-help ul{margin:4px 0 0;padding-left:18px}
+.nt-help code,.nt-help kbd{font-family:var(--mono);background:var(--surface2);border-radius:4px;padding:0 4px}
+.nt-fab{display:none}
+.pn-my{display:flex;flex-direction:column;gap:8px;margin-bottom:14px}.pn-my h2{display:flex;align-items:center;gap:8px;font-size:16px;margin:0}
+@media (max-width:1100px){.nt-all{grid-template-columns:200px minmax(0,1fr)}.nt-all .nt-ep{grid-column:1/-1}.nt-lp,.nt-side{position:static;max-height:none}
+  .nt-week{grid-template-columns:repeat(7,minmax(150px,1fr));overflow-x:auto;padding-bottom:6px}}
+@media (max-width:820px){.nt-2{grid-template-columns:1fr}.nt-search{min-width:0;flex:1 1 100%;order:5}
+  .nt-all{grid-template-columns:1fr}.nt-all>*{display:none}.nt-all.mob-side .nt-side,.nt-all.mob-list .nt-lp,.nt-all.mob-edit.has-sel .nt-ep,.nt-all.mob-edit:not(.has-sel) .nt-lp{display:flex}
+  .nt-all.mob-edit.has-sel .nt-ep{display:block}.nt-back{display:inline-flex}
+  .nt-cell{min-height:58px;padding:4px}.nt-cell .ct{display:none}.nt-cell .more{display:none}
+  .nt-head .btn{display:none}.nt-head .seg{order:4;width:100%}.nt-head .seg button{flex:1}
+  .nt-fab{display:grid;place-items:center;position:fixed;right:18px;bottom:22px;width:56px;height:56px;border-radius:50%;background:var(--accent);color:var(--accent-fg);border:0;box-shadow:0 6px 18px rgba(0,0,0,.25);z-index:20;cursor:pointer}
+  .nt-fab .ic{width:26px;height:26px}.nt-ra{opacity:1}.nt-hist{grid-template-columns:1fr}.nt-tools .lnk{margin-left:0}.nt-title{font-size:19px}}
 </style>
 </head>
 <body>
@@ -342,10 +481,13 @@ const TYPE_LABEL={satis:'Satış',alis:'Ürün alışı',alis_iptal:'Alış ipta
   alis_borc:'Veresiye alış',alis_odeme:'Alış ödemesi',kur_farki:'Kur farkı',odeme:'Ödeme',sermaye_girisi:'Sermaye girişi',sermaye_iadesi:'Sermaye iadesi',hakedis:'Hakediş',hakedis_iptal:'Hakediş iptali',hakedis_odeme:'Hakediş ödemesi',alis_iade:'Firma iadesi',iade_tahsilat:'İade bedeli geri alındı',cari_iade:'Firma iade tahsilatı',firma_iade:'Firmaya iade'};
 const ROLES=[['owner','İşletme sahibi'],['manager','Mağaza müdürü'],['staff','Personel']];
 const MON=['Oca','Şub','Mar','Nis','May','Haz','Tem','Ağu','Eyl','Eki','Kas','Ara'];
-const TABS=[['panel','Genel Bakış',null],['satis','Satış','make_sale'],['stok','Cihazlar',null],['aksesuar','Aksesuarlar',null],['sayim','Stok Sayım','stock_count'],['sorgu','Sorgulamalar',null],['alislar','Alışlar','make_purchase'],['satislar','Satışlar',null],['iadeler','İade&Değişim','process_refund'],['fireler','Fireler','record_waste'],['servis','Teknik Servis','manage_service'],['siparis','Siparişler','manage_orders'],['eksikler','Eksikler','manage_shortages'],['teklif','Teklifler','manage_quotes'],['gorev','Görevler',null],['vardiya','Vardiya',null],['hedef','Hedefler',null],['hakedis','Hakedişler',null],['primler','Primler','manage_commissions'],['egitim','Eğitimler',null],['kasa','Kasa','view_cash'],['odemeler','Ödemeler','view_payments'],['satisrapor','Satış Raporu','view_all_sales'],['sermaye','Sermaye Raporu','view_cost'],['kazancrapor','Kazanç Raporu','view_payments'],['masraf','Masraflar','manage_expenses'],['musteriler','Müşteriler',null],['firmalar','Firmalar',null],['konsinye','Konsinye','view_consignment'],['yonetim','Yönetim','manage_users']];
+const TABS=[['panel','Genel Bakış',null],['notlar','Notlarım',null],['satis','Satış','make_sale'],['stok','Cihazlar',null],['aksesuar','Aksesuarlar',null],['sayim','Stok Sayım','stock_count'],['sorgu','Sorgulamalar',null],['alislar','Alışlar','make_purchase'],['satislar','Satışlar',null],['iadeler','İade&Değişim','process_refund'],['fireler','Fireler','record_waste'],['servis','Teknik Servis','manage_service'],['siparis','Siparişler','manage_orders'],['eksikler','Eksikler','manage_shortages'],['teklif','Teklifler','manage_quotes'],['gorev','Görevler',null],['vardiya','Vardiya',null],['hedef','Hedefler',null],['hakedis','Hakedişler',null],['primler','Primler','manage_commissions'],['egitim','Eğitimler',null],['kasa','Kasa','view_cash'],['odemeler','Ödemeler','view_payments'],['satisrapor','Satış Raporu','view_all_sales'],['sermaye','Sermaye Raporu','view_cost'],['kazancrapor','Kazanç Raporu','view_payments'],['masraf','Masraflar','manage_expenses'],['musteriler','Müşteriler',null],['firmalar','Firmalar',null],['konsinye','Konsinye','view_consignment'],['yonetim','Yönetim','manage_users']];
 
 /* ================= İKONLAR (ince çizgili, 24x24) ================= */
 const IC={
+notebook:'<path d="M6 3h11a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6z"/><path d="M6 3v18M10 8h6M10 12h6"/><path d="M4 7h3M4 12h3M4 17h3"/>',pin:'<path d="M12 17v5"/><path d="M9 3h6l-1 6 3 3v2H7v-2l3-3z"/>',
+folder:'<path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>',share:'<circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="M8.6 13.5l6.8 4M15.4 6.5l-6.8 4"/>',
+trash:'<path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3"/>',
 menu:'<path d="M4 6h16M4 12h16M4 18h16"/>',x:'<path d="M6 6l12 12M18 6L6 18"/>',
 search:'<circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/>',
 bell:'<path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/>',
@@ -390,9 +532,9 @@ activity:'<path d="M22 12h-4l-3 9L9 3l-3 9H2"/>',
 mobile_bell:'<path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/>'};
 const ic=(n,c)=>`<svg class="ic${c?' '+c:''}" viewBox="0 0 24 24" aria-hidden="true">${IC[n]||''}</svg>`;
 /* ☰ menü: gruplar ve ikonlar (tüm sekmeler burada; "Satış" ekranı Satışlar'daki "Satış yap" ve paneldeki "Yeni satış" ile açılır) */
-const MENU=[[null,['panel']],['Mağaza',['satislar','stok','aksesuar','musteriler','firmalar','alislar']],['Operasyon',['servis','siparis','teklif','eksikler','iadeler','fireler','sayim','sorgu']],
+const MENU=[[null,['panel','notlar']],['Mağaza',['satislar','stok','aksesuar','musteriler','firmalar','alislar']],['Operasyon',['servis','siparis','teklif','eksikler','iadeler','fireler','sayim','sorgu']],
   ['Personel',['gorev','vardiya','hedef','hakedis','primler','egitim']],['Finans',['kasa','odemeler','masraf','konsinye']],['Raporlar',['satisrapor','sermaye','kazancrapor']],['Yönetim',['yonetim']]];
-const TAB_IC={panel:'grid',satislar:'bag',satis:'bag',stok:'phone',aksesuar:'headphones',musteriler:'users',firmalar:'building',alislar:'truck',servis:'wrench',siparis:'pkg',teklif:'file',eksikler:'clip',iadeler:'undo',fireler:'flame',sayim:'scan',sorgu:'shield',
+const TAB_IC={panel:'grid',notlar:'notebook',satislar:'bag',satis:'bag',stok:'phone',aksesuar:'headphones',musteriler:'users',firmalar:'building',alislar:'truck',servis:'wrench',siparis:'pkg',teklif:'file',eksikler:'clip',iadeler:'undo',fireler:'flame',sayim:'scan',sorgu:'shield',
   gorev:'check',vardiya:'cal',hedef:'target',hakedis:'note',primler:'award',egitim:'book',kasa:'wallet',odemeler:'card',masraf:'receipt',konsinye:'hand',satisrapor:'bars',sermaye:'pie',kazancrapor:'trend',yonetim:'sliders'};
 
 /* ================= YARDIMCILAR ================= */
@@ -477,6 +619,7 @@ const RT_SAFETY_MIN=20,RT_OFFLINE_MIN=2,RT_AWAY_SEC=60;
 const rtKey=t=>RT_KEYS[t]||(NOID.has(t)?null:'id');
 function rtEvent(p){
   if(p&&p.table==='rt_pings'){const n=p.new&&p.new.nonce,w=n&&LIVE.wait.get(n);if(w){LIVE.wait.delete(n);w(true)}return}   // 052: işlem sonu işareti
+  if(p&&/^note(s|_)/.test(p.table||'')){ntRt(p);return}   // 054 Notlarım
   if(!S.d||!p||!LOAD_NAMES.includes(p.table))return;
   if(RT_FULL.has(p.table)||(p.table==='profiles'&&S.user&&((p.new&&p.new.id)||(p.old&&p.old.id))===S.user.id&&p.eventType!=='INSERT'))LIVE.fullNext=true;
   const k=rtKey(p.table),row=(p.eventType==='DELETE'?p.old:p.new)||{},v=k&&row[k];
@@ -513,7 +656,7 @@ async function syncData(){
   for(let i=0;LIVE.busy&&i<100;i++)await new Promise(res=>setTimeout(res,30));
   LIVE.stats.fast++;await rtFlush(true);LIVE.lastSync=Date.now()}
 /* yazı yazılırken / pencere açıkken çizme; bitince çiz */
-const rtBusyUi=()=>{const a=document.activeElement;return !!document.querySelector('#modal .modal')||!!document.getElementById('qs-ov')||!!(a&&a.matches&&a.matches('input:not([type=checkbox]):not([type=radio]),textarea,select')&&a.id!=='dq')};
+const rtBusyUi=()=>{const a=document.activeElement;return !!document.querySelector('#modal .modal')||!!document.getElementById('qs-ov')||!!(a&&((a.isContentEditable)||(a.matches&&a.matches('input:not([type=checkbox]):not([type=radio]),textarea,select')&&a.id!=='dq')))};
 function rtRender(){if(!S.d)return;if(rtBusyUi()){S.rtDirty=true;return}S.rtDirty=false;render()}
 document.addEventListener('focusout',()=>setTimeout(()=>{if(S.rtDirty&&!rtBusyUi())rtRender()},250));
 async function rtFull(){if(!S.d||!S.user||LIVE.busy)return;LIVE.busy=true;try{await loadAll();S.dash=null;S.agr={};if(!S.me||!S.me.active)return location.reload();rtRender()}catch(e){}finally{LIVE.busy=false}}
@@ -583,7 +726,7 @@ function subscribe(){
    Kendi işleminiz için gelen bildirim okunmuş sayılır. Tıklanan bildirim ilgili ekranı açar. */
 const NREF={sales:'satislar',sale_returns:'iadeler',service_orders:'servis',customer_orders:'siparis',follow_ups:'siparis',tasks:'gorev',quotes:'teklif',shortages:'eksikler',
   accessories:'aksesuar',shifts:'vardiya',targets:'hedef',day_closings:'kasa',expenses:'odemeler',term_debts:'odemeler',entitlements:'hakedis',commissions:'primler',
-  products:'stok',device_inspections:'stok',role_permissions:'yonetim',profiles:'yonetim',trainings:'egitim'};
+  products:'stok',device_inspections:'stok',role_permissions:'yonetim',profiles:'yonetim',trainings:'egitim',notes:'notlar'};
 const NKIND={satis:['bag','b'],iade:['undo','w'],servis:['wrench','b'],siparis:['pkg','p'],gorev:['check','v'],vardiya:['clock','v'],kasa:['wallet','r'],odeme:['card','w'],
   stok:['headphones','p'],hedef:['target','g'],hakedis:['hand','g'],teklif:['file','v'],ozet:['bars','b'],denetim:['shield','w']};
 const nMeta=n=>{if(n.ref_table==='sales'&&n.kind==='iade')return NKIND.iade;if(n.ref_table==='accessories'&&n.kind==='siparis')return NKIND.siparis;if(n.ref_table==='device_inspections')return ['tag','p'];return NKIND[n.kind]||['bell','b']};
@@ -611,6 +754,7 @@ function notifOpen(id){const n=(S.d.notifications||[]).find(x=>x.id===id);S.noti
   if(n.ref_table==='sales'&&n.ref_id)after=()=>{S.ui.openSale=n.ref_id};
   else if(n.ref_table==='service_orders'&&n.ref_id){const sv=(S.d.service_orders||[]).find(x=>x.id===n.ref_id);if(sv)after=()=>{S.ui.svq=sv.ticket_no;S.ui.svf='';S.ui.svk='';S.ui.svv='liste'}}
   else if(n.ref_table==='trainings'&&n.ref_id)after=()=>{S.ui.egOpen=n.ref_id};
+  else if(n.ref_table==='notes')after=()=>{const N=NT();N.q='';if(n.ref_id)S.ui.ntOpen=n.ref_id;else{N.view='bugun';N.day=today()}};
   else if(n.ref_table==='device_inspections'&&prOn())after=()=>{S.ui.pl_dev=true;S.ui.plq=(n.title.split(' · ')[1]||'')};
   if(!tab||!TABS.some(t=>t[0]===tab&&(!t[2]||can(t[2]))))return render();
   if(location.hash.slice(1)===tab){S.navAfter=after;route()}else{S.navAfter=after;location.hash=tab}}
@@ -669,7 +813,7 @@ async function boot(){
     if(!S.me||!S.me.active)return renderBlocked();
     if(!(await qsBoot(data.session)))return;
     if(S.me.must_change_password)return renderPwChange();
-    subscribe();rtSubscribe();swListen();swReg();fxStart();route()}
+    subscribe();rtSubscribe();swListen();swReg();fxStart();if(!location.hash.slice(1)&&prefGet('nt_start','0')==='1'){try{history.replaceState(null,'','#notlar')}catch(e){}}route()}
   catch(e){document.getElementById('app').innerHTML=`<div class="wrap"><main><div class="card"><h1>Bağlantı kurulamadı</h1><p class="sub">${esc(msg(e))}</p><button class="btn pri" data-a="retry">Tekrar dene</button></div></main></div>`}}
 function renderLogin(err){
   const L=qsShared()?qsList():[];
@@ -729,13 +873,13 @@ function pwModal(){S.uOpen=false;render();modal(`<h2>Şifremi değiştir</h2><in
    silinir ve sunucuda kapatılır. Kişisel alanlar (qs_secure_tabs) ortak bilgisayarda kişinin kendi şifresiyle açılır. */
 const QS_KEY='anka_qs';
 const QS_TABS=[['hakedis','Hakedişler'],['primler','Primler'],['odemeler','Ödemeler'],['kazancrapor','Kazanç Raporu'],['sermaye','Sermaye Raporu'],['satisrapor','Satış Raporu'],
-  ['kasa','Kasa'],['masraf','Masraflar'],['konsinye','Konsinye'],['alislar','Alışlar'],['egitim','Eğitimler'],['yonetim','Yönetim']];
+  ['kasa','Kasa'],['masraf','Masraflar'],['konsinye','Konsinye'],['alislar','Alışlar'],['egitim','Eğitimler'],['notlar','Notlarım'],['yonetim','Yönetim']];
 const qsGet=()=>{let v;try{v=JSON.parse(localStorage.getItem(QS_KEY)||'{}')}catch(e){v={}}if(!v||typeof v!=='object')v={};v.users=v.users||{};return v};
 const qsPut=v=>{try{localStorage.setItem(QS_KEY,JSON.stringify(v))}catch(e){}};
 const qsShared=()=>!!qsGet().shared;
 const qsOn=()=>qsShared()&&(!S.d||appSet('qs_on','1')!=='0');
 const qsDev=()=>qsGet().name||'Ortak bilgisayar';
-const qsSecTabs=()=>S.d?appSet('qs_secure_tabs','hakedis,primler,odemeler,kazancrapor,yonetim,konsinye').split(',').filter(Boolean):[];
+const qsSecTabs=()=>S.d?appSet('qs_secure_tabs','hakedis,primler,odemeler,kazancrapor,yonetim,konsinye,notlar').split(',').filter(Boolean):[];
 const qsSecLocked=tab=>qsOn()&&qsSecTabs().includes(tab)&&!((S.unlockUntil||0)>Date.now());
 /* oturumu bu cihazın listesine yazar (anahtarlar yenilendikçe güncellenir; "gün" ilk girişte konur) */
 function qsStore(session,extra){if(!session||!session.user||!qsShared())return;const v=qsGet(),u=session.user,o=v.users[u.id]||{};
@@ -965,7 +1109,7 @@ function render(){
   const tab=S.ui.tab,ae=document.activeElement,keepQ=ae&&ae.id==='dq';
   const unread=nUnreadCount();
   const secLock=qsSecLocked(tab);
-  const page=secLock?qsLockPage(tab):qsUnlockBar(tab)+{panel:vPanel,satis:vSatis,stok:vStok,aksesuar:vAksesuar,sayim:vSayim,sorgu:vSorgu,alislar:vAlislar,satislar:vSatislar,iadeler:vIadeler,fireler:vFireler,odemeler:vOdemeler,kazancrapor:vKazancRapor,satisrapor:vSatisRapor,sermaye:vSermaye,hakedis:vHakedis,primler:vPrimler,kasa:vKasa,masraf:vMasraf,musteriler:vMusteriler,firmalar:vFirmalar,konsinye:vKonsinye,servis:vServis,siparis:vSiparis,eksikler:vEksik,teklif:vTeklif,gorev:vGorev,vardiya:vVardiya,hedef:vHedef,egitim:vEgitim,yonetim:vYonetim}[tab]();
+  const page=secLock?qsLockPage(tab):qsUnlockBar(tab)+{panel:vPanel,notlar:vNotlar,satis:vSatis,stok:vStok,aksesuar:vAksesuar,sayim:vSayim,sorgu:vSorgu,alislar:vAlislar,satislar:vSatislar,iadeler:vIadeler,fireler:vFireler,odemeler:vOdemeler,kazancrapor:vKazancRapor,satisrapor:vSatisRapor,sermaye:vSermaye,hakedis:vHakedis,primler:vPrimler,kasa:vKasa,masraf:vMasraf,musteriler:vMusteriler,firmalar:vFirmalar,konsinye:vKonsinye,servis:vServis,siparis:vSiparis,eksikler:vEksik,teklif:vTeklif,gorev:vGorev,vardiya:vVardiya,hedef:vHedef,egitim:vEgitim,yonetim:vYonetim}[tab]();
   const grp=tabGroup(tab);
   document.getElementById('app').innerHTML=`<header class="top"><div class="wrap">
     <button class="ib" data-a="drawer-open" aria-label="Menüyü aç" title="Menü (Ctrl+K)">${ic('menu')}</button>
@@ -986,6 +1130,7 @@ function render(){
   if(tab==='stok')stokList();
   if(tab==='hedef')loadTargets();
   if(tab==='egitim'&&S.ui.egOpen){const el=document.getElementById('eg-'+S.ui.egOpen);if(el)el.scrollIntoView({block:'center'});setTimeout(()=>{S.ui.egOpen=''},50)}
+  if(tab==='notlar')ntAfter();
   if(tab==='primler')primLoad();
   if(tab==='konsinye')konsinyeLoad();
 }
@@ -1256,6 +1401,7 @@ function vPanel(){const d=S.d,t=today(),y=addDays(t,-1),mine=!pnAll();
   const goals=pnGoals(),team=pnTeam(L),best=pnBest(L.acc);
   return `<div class="pg-head"><div style="min-width:0"><div class="pg-eyebrow">Mağazanız bir bakışta</div><h1 class="pg-title">Genel Bakış<i>.</i></h1><div class="sub" style="font-size:14.5px">Merhaba${first?' '+esc(first):''}, ${mine?'bugün satışların nasıl gidiyor?':'mağazanızda bugün neler oluyor?'}</div></div><div class="sp"></div>
     <span class="chip">${ic('cal','sm')}${esc(dateTxt)}</span><button class="btn lgb" data-a="fg-open">${ic('tag','sm')}Fiyat gör</button>${can('make_sale')?`<a class="btn pri lgb" href="#satis">${ic('plus','sm')}Yeni satış</a>`:''}</div>
+  ${pnMyTasks()}
   <div class="kpis">
     ${pnSplitKpi(mine?'Bugünkü satışım':'Bugünkü satış','wallet','b',today_,yest,'düne göre','dün satış yoktu',`Toplam ${pnMoney(today_.dev.rev+today_.acc.rev)} · ${num(tN)} işlem`,'satislar')}
     ${pnSplitKpi(mine?'Bu ayki satışım':'Bu ayki satış','bars','p',month,pmonth,'geçen aya göre','geçen ay bu dönemde satış yoktu',`Toplam ${pnMoney(month.dev.rev+month.acc.rev)} · ${num(mN)} işlem`,pnOk('satisrapor')?'satisrapor':'satislar')}
@@ -1296,7 +1442,7 @@ function vPanel(){const d=S.d,t=today(),y=addDays(t,-1),mine=!pnAll();
 
 /* ================= MODAL ================= */
 function modal(html){document.getElementById('modal').innerHTML=`<div class="ov" data-a="ov"><div class="modal" role="dialog" aria-modal="true">${html}</div></div>`;const f=document.querySelector('#modal input:not([type=hidden]),#modal select');if(f)f.focus()}
-function closeModal(){if(S.rtDirty)setTimeout(()=>{if(S.d&&S.rtDirty&&!rtBusyUi())rtRender()},0);S.dg=null;S.rd=null;S.pf=null;S.pfd=null;S.accHost=false;S.gs=null;S.qw=null;S.qconv=null;S.ins=null;document.getElementById('modal').innerHTML=''}
+function closeModal(){if(S.nt)ntModalClosed();if(S.rtDirty)setTimeout(()=>{if(S.d&&S.rtDirty&&!rtBusyUi())rtRender()},0);S.dg=null;S.rd=null;S.pf=null;S.pfd=null;S.accHost=false;S.gs=null;S.qw=null;S.qconv=null;S.ins=null;document.getElementById('modal').innerHTML=''}
 function setErr(m){const e=document.getElementById('f-err');if(e){e.textContent=m;e.hidden=false}}
 async function resolveContact(kind,id){
   const v=g(id);if(v!=='__new__')return v||null;
@@ -4729,7 +4875,7 @@ const A={
     const w=qsGet(),nm=w.name;w.shared=false;w.users={};qsPut(w);S.unlockUntil=0;qsDevLog(false,nm);toast('Ortak bilgisayar kapatıldı; diğer kullanıcıların oturumları sonlandırıldı');render()},
   async 'qs-save'(t){const want={qs_on:document.getElementById('qs-on').checked?'1':'0',qs_idle_min:String(g('qs-idle')),qs_secure_min:String(g('qs-smin')),
       qs_secure_tabs:[...document.querySelectorAll('.qs-t')].filter(x=>x.checked).map(x=>x.value).join(',')};
-    const def={qs_on:'1',qs_idle_min:'5',qs_secure_min:'10',qs_secure_tabs:'hakedis,primler,odemeler,kazancrapor,yonetim,konsinye'};
+    const def={qs_on:'1',qs_idle_min:'5',qs_secure_min:'10',qs_secure_tabs:'hakedis,primler,odemeler,kazancrapor,yonetim,konsinye,notlar'};
     t.disabled=true;try{let n=0;for(const k of Object.keys(want)){if(want[k]===appSet(k,def[k]))continue;await call('set_security_setting',{p_key:k,p_value:want[k]});n++}
       toast(n?'Ayarlar kaydedildi':'Değişiklik yok');if(n)await reload()}catch(e){t.disabled=false}},
   taskfilter(t){S.ui.tf=t.dataset.v;render()},taskwho(t){S.ui.tw=t.dataset.v;render()},
@@ -5127,6 +5273,532 @@ const A={
     try{for(let ix=0;ix<CATS.length*SUBS.length;ix++){const v=nv('rt-'+ix);if(v==null)continue;await call('set_consignment_rate',{p_agreement:id,p_cat:CATS[Math.floor(ix/SUBS.length)],p_sub:SUBS[ix%SUBS.length],p_share:v,p_valid_from:g('rt-date')});n++}
       toast(n?n+' pay güncellendi':'Değişiklik yok');closeModal();await reload()}catch(e){setErr(msg(e))}}
 };
+/* ================= NOTLARIM (054): notlar ve yapılacaklar ================= */
+const NT_COLORS=[['','Renksiz'],['sari','Sarı'],['yesil','Yeşil'],['mavi','Mavi'],['mor','Mor'],['pembe','Pembe'],['gri','Gri']];
+const NT_PRI=[['yuksek','Yüksek'],['normal','Normal'],['dusuk','Düşük']];
+const NT_REP=[['','Tekrarlama yok'],['gun','Her gün'],['haftaici','Hafta içi her gün'],['hafta','Her hafta'],['ay','Her ay'],['ayson','Her ayın son günü'],['yil','Her yıl'],['n','Her … günde']];
+const NT_REM=[['','Hatırlatma yok'],['0','Zamanında'],['15','15 dk önce'],['60','1 saat önce'],['1440','1 gün önce']];
+const NT_MON=['Ocak','Şubat','Mart','Nisan','Mayıs','Haziran','Temmuz','Ağustos','Eylül','Ekim','Kasım','Aralık'];
+const NT_WD=['Pazartesi','Salı','Çarşamba','Perşembe','Cuma','Cumartesi','Pazar'],NT_WDS=['Pzt','Sal','Çar','Per','Cum','Cmt','Paz'];
+const NT_VIEWS=[['bugun','Bugün'],['hafta','Hafta'],['ay','Ay'],['tum','Tüm notlar']];
+const ntUid=()=>{try{if(crypto.randomUUID)return crypto.randomUUID()}catch(e){}const h=[...Array(32)].map(()=>Math.floor(Math.random()*16).toString(16));h[12]='4';h[16]=(8+Math.floor(Math.random()*4)).toString(16);const s=h.join('');return `${s.slice(0,8)}-${s.slice(8,12)}-${s.slice(12,16)}-${s.slice(16,20)}-${s.slice(20)}`};
+const NT=()=>S.nt||(S.nt={loaded:false,notes:[],folders:[],shares:[],files:[],prefs:null,view:'bugun',day:today(),wk:'',mon:'',side:'all',q:'',sort:'upd',grid:prefGet('nt_grid','0')==='1',mob:'list',sel:'',show:{},dirty:new Map(),timers:new Map()});
+const ntWd=d=>(parse(d).getDay()+6)%7;
+const ntMonday=d=>addDays(d,-ntWd(d));
+const ntMonthEnd=m=>{const d=parse(m);return iso(new Date(d.getFullYear(),d.getMonth()+1,0))};
+const ntDayTxt=d=>{const t=today();if(d===t)return 'Bugün';if(d===addDays(t,1))return 'Yarın';if(d===addDays(t,-1))return 'Dün';const x=parse(d);return x.getDate()+' '+NT_MON[x.getMonth()]+(x.getFullYear()!==new Date().getFullYear()?' '+x.getFullYear():'')};
+const ntLong=d=>{const x=parse(d);return x.getDate()+' '+NT_MON[x.getMonth()]+' '+x.getFullYear()+', '+NT_WD[ntWd(d)]};
+const ntHM=ts=>{const d=new Date(ts);return pad(d.getHours())+':'+pad(d.getMinutes())};
+const ntRel=ts=>{if(!ts)return '';const d=new Date(ts),s=(Date.now()-d)/1e3;if(s<60)return 'az önce';if(s<3600)return Math.floor(s/60)+' dk önce';const dd=iso(d);return (dd===today()?'bugün':ntDayTxt(dd))+' '+ntHM(ts)};
+const ntGet=id=>NT().notes.find(n=>n.id===id);
+const ntMine=n=>!!n&&n.owner_id===S.user.id;
+const ntShare=n=>NT().shares.find(s=>s.note_id===n.id&&s.user_id===S.user.id);
+const ntCanEd=n=>!!n&&(ntMine(n)||!!(ntShare(n)||{}).can_edit);
+const ntLive=n=>!n.deleted_at&&!n.archived;
+const ntPeriod=(p,d)=>NT().notes.find(n=>n.period===p&&n.period_date===d&&!n.deleted_at&&ntMine(n));
+const NT_TPL=document.createElement('template');
+function ntPlain(html){NT_TPL.innerHTML=String(html||'').replace(/<(br|\/p|\/div|\/li|\/h\d|\/blockquote)\b[^>]*>/gi,' $&');return NT_TPL.content.textContent.replace(/\s+/g,' ').trim()}
+const ntTitle=n=>(n.title||'').trim()||ntPlain(n.body).slice(0,60)||(n.kind==='is'?'Adsız yapılacak':'Adsız not');
+/* güvenli HTML: yalnız biçim etiketleri; betik, görsel, olay öznitelikleri silinir (paylaşılan notlar da bu yoldan gösterilir) */
+const NT_OK=new Set(['P','DIV','BR','B','STRONG','I','EM','U','S','STRIKE','DEL','H1','H2','H3','UL','OL','LI','BLOCKQUOTE','HR','A','SPAN','CODE','PRE','MARK']);
+const NT_DROP=new Set(['SCRIPT','STYLE','IFRAME','OBJECT','EMBED','LINK','META','TEMPLATE','SVG','MATH','FORM','INPUT','BUTTON','TEXTAREA','SELECT','IMG','VIDEO','AUDIO','SOURCE','PICTURE','CANVAS','NOSCRIPT','TITLE','HEAD','BASE','FRAME','FRAMESET']);
+function ntSan(html){const t=document.createElement('template');t.innerHTML=String(html||'');
+  const walk=p=>{[...p.childNodes].forEach(c=>{if(c.nodeType===3)return;if(c.nodeType!==1){c.remove();return}
+    const tg=c.tagName;if(NT_DROP.has(tg)){c.remove();return}walk(c);
+    if(!NT_OK.has(tg)){c.replaceWith(...c.childNodes);return}
+    [...c.attributes].forEach(a=>{const k=a.name,keep=(tg==='A'&&k==='href'&&/^(https?:|mailto:|tel:)/i.test(a.value.trim()))||(tg==='UL'&&k==='data-chk')||(tg==='LI'&&k==='data-on');if(!keep)c.removeAttribute(k)});
+    if(tg==='A'){c.setAttribute('target','_blank');c.setAttribute('rel','noopener noreferrer')}})};
+  walk(t.content);return t.innerHTML.length>200000?t.innerHTML.slice(0,200000):t.innerHTML}
+const ntPriR=p=>p==='yuksek'?0:p==='dusuk'?2:1;
+const ntCmp=(a,b)=>(a.done-b.done)||((a.sort||0)-(b.sort||0))||String(a.due_time||'99').localeCompare(String(b.due_time||'99'))||(ntPriR(a.priority)-ntPriR(b.priority))||String(a.created_at).localeCompare(String(b.created_at));
+const ntTasks=()=>NT().notes.filter(n=>n.kind==='is'&&ntLive(n));
+const ntOverdue=()=>ntTasks().filter(n=>!n.done&&n.due_date&&n.due_date<today()).sort((a,b)=>a.due_date.localeCompare(b.due_date)||ntCmp(a,b));
+const ntOn=d=>ntTasks().filter(n=>n.due_date===d).sort(ntCmp);
+const ntDefaults=()=>({owner_id:S.user.id,kind:'not',title:'',body:'',folder_id:null,tags:[],color:null,pinned:false,archived:false,deleted_at:null,period:null,period_date:null,due_date:null,due_time:null,priority:'normal',done:false,done_at:null,checklist:[],repeat:null,next_id:null,remind_min:null,remind_at:null,reminded_at:null,sort:0,version:1,created_at:new Date().toISOString(),updated_at:new Date().toISOString(),updated_by:S.user.id});
+
+/* ---------- yükleme ve eşitleme ---------- */
+async function ntLoad(force){const N=NT();if(N.loading||(N.loaded&&!force))return;N.loading=true;
+  try{const q=t=>sb.from(t).select('*');
+    const R=await Promise.all([q('notes').order('updated_at',{ascending:false}).limit(5000),q('note_folders').order('sort'),q('note_shares'),q('note_files'),q('note_prefs')]);
+    const er=R.find(r=>r.error);
+    if(er){if(/relation|does not exist|schema cache|could not find/i.test(er.error.message||''))N.missing=true;else throw er.error}
+    else{N.missing=false;N.notes=[];(R[0].data||[]).forEach(ntMerge);N.folders=R[1].data||[];N.shares=R[2].data||[];N.files=R[3].data||[];N.prefs=(R[4].data||[])[0]||null}
+    N.err=''}
+  catch(e){N.err=msg(e)}
+  finally{N.loading=false;N.loaded=true}
+  if(!N.purged&&!N.missing&&!N.err){N.purged=true;ntPurge()}
+  if(S.d&&(S.ui.tab==='notlar'||S.ui.tab==='panel'))rtRender()}
+function ntMerge(row){const N=NT();if(!row||!row.id)return;const d=N.dirty.get(row.id)||(row.period?N.dirty.get('p:'+row.period+':'+row.period_date):null);
+  const i=N.notes.findIndex(n=>n.id===row.id),v={...(i>=0?N.notes[i]:{}),...row,...(d||{})};if(i>=0)N.notes[i]=v;else N.notes.push(v)}
+async function ntPurge(){try{const r=await sb.rpc('notes_trash_paths');const P=(r.data||[]).filter(Boolean);
+    if(P.length)await sb.storage.from('anka-notes').remove(P);if(P.length||NT().notes.some(n=>n.deleted_at&&Date.now()-new Date(n.deleted_at)>30*864e5)){await sb.rpc('notes_purge');NT().notes=NT().notes.filter(n=>!(n.deleted_at&&Date.now()-new Date(n.deleted_at)>30*864e5))}}catch(e){}}
+/* canlı güncelleme (051): diğer cihaz ve paylaşılan kişilerin değişiklikleri */
+function ntRt(p){const N=S.nt;if(!N||!N.loaded||N.missing)return;const t=p.table,nw=p.new||{},od=p.old||{};
+  if(t==='note_shares'){clearTimeout(N.rtT);N.rtT=setTimeout(()=>ntLoad(true),600);return}
+  if(t==='notes'){if(p.eventType==='DELETE'){N.notes=N.notes.filter(n=>n.id!==od.id)}
+    else{const cur=ntGet(nw.id);if(cur&&nw.version!=null&&cur.version!=null&&nw.version<=cur.version&&nw.updated_by===S.user.id)return;ntMerge(nw)}}
+  else{const L={note_folders:'folders',note_files:'files',note_prefs:'prefs'}[t];if(!L)return;
+    if(L==='prefs'){if(p.eventType!=='DELETE'&&nw.user_id===S.user.id)N.prefs=nw;return}
+    const id=nw.id||od.id;N[L]=N[L].filter(x=>x.id!==id);if(p.eventType!=='DELETE')N[L].push(nw);if(L==='folders')N.folders.sort((a,b)=>(a.sort||0)-(b.sort||0))}
+  clearTimeout(N.rdT);N.rdT=setTimeout(()=>{if(S.ui.tab==='notlar'||S.ui.tab==='panel'){rtRender();ntModalRefresh(true)}},250)}
+
+/* ---------- kaydetme ---------- */
+function ntStatus(key,t,bad){document.querySelectorAll(`[data-nt-st="${CSS.escape(key)}"]`).forEach(e=>{e.textContent=t;e.classList.toggle('bad',!!bad)})}
+function ntInput(el){const N=NT(),key=el.dataset.key;if(!key)return;const d=N.dirty.get(key)||{};
+  if(el.hasAttribute('data-nt-body'))d.body=el.innerHTML;else d.title=el.value;
+  N.dirty.set(key,d);const n=key.startsWith('p:')?ntPeriod(...key.split(':').slice(1)):ntGet(key);if(n)Object.assign(n,d);
+  ntStatus(key,'Kaydediliyor…');clearTimeout(N.timers.get(key));N.timers.set(key,setTimeout(()=>ntFlushOne(key),800))}
+async function ntEnsurePeriod(per,date){let n=ntPeriod(per,date);if(n)return n;
+  const r=await sb.rpc('note_period',{p_period:per,p_date:date});if(r.error)throw r.error;
+  const f=await sb.from('notes').select('*').eq('id',r.data).maybeSingle();
+  ntMerge(f.data||{...ntDefaults(),id:r.data,period:per,period_date:per==='hafta'?ntMonday(date):per==='ay'?monthStart(date):date});return ntGet(r.data)}
+async function ntFlushOne(key){const N=NT();clearTimeout(N.timers.get(key));N.timers.delete(key);const d=N.dirty.get(key);if(!d)return;
+  try{let id=key;if(key.startsWith('p:')){const [,per,date]=key.split(':');id=(await ntEnsurePeriod(per,date)).id}
+    const patch={};if(d.body!==undefined)patch.body=ntSan(d.body);if(d.title!==undefined)patch.title=String(d.title).slice(0,200);
+    N.dirty.delete(key);
+    const {data,error}=await sb.from('notes').update(patch).eq('id',id).select().single();if(error)throw error;
+    if(data)ntMerge(data);ntStatus(key,'Kaydedildi · '+ntHM(Date.now()))}
+  catch(e){if(!N.dirty.has(key))N.dirty.set(key,d);ntStatus(key,'Kaydedilemedi, yeniden denenecek: '+msg(e),true);clearTimeout(N.timers.get(key));N.timers.set(key,setTimeout(()=>ntFlushOne(key),5000))}}
+function ntFlushAll(){const N=S.nt;if(!N)return;[...N.timers.keys()].forEach(ntFlushOne)}
+window.addEventListener('beforeunload',ntFlushAll);
+document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='hidden')ntFlushAll()});
+async function ntUpd(id,patch,opt={}){const n=ntGet(id);if(!n)return false;const prev={};Object.keys(patch).forEach(k=>prev[k]=n[k]);Object.assign(n,patch);
+  if(!opt.quiet)ntRender();
+  const {data,error}=await sb.from('notes').update(patch).eq('id',id).select().single();
+  if(error){Object.assign(n,prev);toast(msg(error),true);ntRender();return false}
+  if(data)ntMerge(data);if(patch.done===true&&n.repeat)setTimeout(()=>ntLoad(true),500);
+  if(!opt.quiet)ntRender();return true}
+async function ntCreate(fields,opt={}){const row={...ntDefaults(),id:ntUid(),...fields};NT().notes.push(row);
+  const ins={...row};['remind_at','reminded_at','next_id','done_at','version','updated_at','updated_by'].forEach(k=>delete ins[k]);
+  const {data,error}=await sb.from('notes').insert(ins).select().single();
+  if(error){NT().notes=NT().notes.filter(n=>n.id!==row.id);toast(msg(error),true);ntRender();return null}
+  if(data)ntMerge(data);if(!opt.quiet)ntRender();return ntGet(row.id)}
+/* boş bırakılan yeni not / yapılacak (başlıksız, içeriksiz) kapatılınca silinir */
+function ntCleanup(id){const N=S.nt;if(!N||!id)return;const n=ntGet(id);if(!n||!ntMine(n)||n.period||N.dirty.has(id)||N.timers.has(id))return;
+  if((n.title||'').trim()||ntPlain(n.body)||(n.checklist||[]).length||N.files.some(f=>f.note_id===id)||N.shares.some(s=>s.note_id===id)||Date.now()-new Date(n.created_at)>36e5)return;
+  N.notes=N.notes.filter(x=>x.id!==id);if(N.sel===id)N.sel='';sb.from('notes').delete().eq('id',id).then(()=>{},()=>{})}
+function ntModalClosed(){const N=S.nt;if(!N)return;ntFlushAll();const id=N.modal;N.modal=null;N.hist=null;if(id)setTimeout(()=>{ntCleanup(id);if(S.ui.tab==='notlar'||S.ui.tab==='panel')render()},0)}
+function ntRender(){if(S.ui.tab==='notlar'||S.ui.tab==='panel')render();ntModalRefresh()}
+function ntModalRefresh(live){const m=S.nt&&S.nt.modal;if(!m)return;const box=document.querySelector('#modal .modal[data-nt-modal]');if(!box){S.nt.modal=null;return}
+  const a=document.activeElement;if(live&&a&&box.contains(a)&&(a.isContentEditable||a.matches('input,textarea,select')))return;
+  const n=ntGet(m);if(!n){closeModal();return}const keep=box.querySelector('[data-nt-body]');const html=ntModalHtml(n);box.innerHTML=html;ntAfter(box);
+  if(keep&&a===keep){const b=box.querySelector('[data-nt-body]');if(b)b.focus()}}
+
+/* ---------- hızlı ekleme: "Ahmet'i ara yarın 14:00 #tedarik !yüksek" ---------- */
+const NT_WDN=['pazartesi','salı','çarşamba','perşembe','cuma','cumartesi','pazar'];
+const NT_MONN=['ocak','şubat','mart','nisan','mayıs','haziran','temmuz','ağustos','eylül','ekim','kasım','aralık'];
+function nqParse(txt,base){let s=' '+String(txt||'')+' ';const r={tags:[],priority:'normal',due_date:null,due_time:null,repeat:null};const t0=today();
+  const lo=()=>s.toLocaleLowerCase('tr');
+  const take=(re,f)=>{const m=re.exec(lo());if(!m)return false;const v=f(m);if(v===false)return false;s=s.slice(0,m.index)+' '+s.slice(m.index+m[0].length);return true};
+  const nextWd=(w,strict)=>{let d=t0;for(let i=0;i<8;i++){if(ntWd(d)===w&&(!strict||d!==t0))return d;d=addDays(d,1)}return d};
+  const nextDom=n=>{const x=parse(t0);for(let k=0;k<14;k++){const d=new Date(x.getFullYear(),x.getMonth()+k,n);if(d.getDate()===n&&iso(d)>=t0)return iso(d)}return t0};
+  const B='(?=[\\s,.;!?]|$)',A='(?:^|\\s)';
+  while(take(new RegExp(A+'#([\\p{L}\\p{N}_-]{1,30})','u'),m=>{const v=m[1];if(!r.tags.includes(v))r.tags.push(v)}));
+  take(new RegExp(A+'!(yüksek|yuksek|acil|önemli|onemli|y)'+B),()=>{r.priority='yuksek'})||take(new RegExp(A+'!(düşük|dusuk|d)'+B),()=>{r.priority='dusuk'})||take(new RegExp(A+'!normal'+B),()=>{});
+  // tekrar
+  take(new RegExp(A+'(?:her\\s+hafta\\s*içi|hafta\\s*içi\\s+her\\s+gün)'+B),()=>{r.repeat='haftaici';r.due_date=ntWd(t0)<5?t0:nextWd(0)})||
+  take(new RegExp(A+'her\\s+gün'+B),()=>{r.repeat='gun';r.due_date=t0})||
+  take(new RegExp(A+'her\\s+('+NT_WDN.join('|')+')'+B),m=>{r.repeat='hafta';r.due_date=nextWd(NT_WDN.indexOf(m[1]))})||
+  take(new RegExp(A+'her\\s+hafta'+B),()=>{r.repeat='hafta';r.due_date=t0})||
+  take(new RegExp(A+'(?:her\\s+ayın\\s+son\\s+günü|her\\s+ay\\s+sonu)'+B),()=>{r.repeat='ayson';r.due_date=ntMonthEnd(monthStart(t0))})||
+  take(new RegExp(A+"her\\s+ayın\\s+(\\d{1,2})(?:['’]?(?:i|ı|u|ü|si|sı|su|sü|inde|ında|unda|ünde))?"+B),m=>{const n=+m[1];if(n<1||n>31)return false;r.repeat='ay';r.due_date=nextDom(n)})||
+  take(new RegExp(A+'her\\s+ay'+B),()=>{r.repeat='ay';r.due_date=t0})||
+  take(new RegExp(A+'her\\s+yıl'+B),()=>{r.repeat='yil';r.due_date=t0})||
+  take(new RegExp(A+'her\\s+(\\d{1,3})\\s+günde(?:\\s+bir)?'+B),m=>{const n=+m[1];if(n<1)return false;r.repeat='n:'+n;r.due_date=t0});
+  take(new RegExp(A+'tarihsiz'+B),()=>{r.nodate=true});
+  // saat
+  take(new RegExp(A+'(?:saat\\s*)?([01]?\\d|2[0-3]):([0-5]\\d)'+B),m=>{r.due_time=pad(+m[1])+':'+m[2]})||
+  take(new RegExp(A+'(?:saat\\s*)?([01]?\\d|2[0-3])\\.([0-5]\\d)'+B),m=>{if(+m[2]<=12&&!/saat/.test(m[0]))return false;r.due_time=pad(+m[1])+':'+m[2]})||
+  take(new RegExp(A+'saat\\s+([01]?\\d|2[0-3])(?:[\'’]?(?:de|da|te|ta))?'+B),m=>{r.due_time=pad(+m[1])+':00'});
+  // tarih
+  if(!r.due_date){
+    take(new RegExp(A+'bugün'+B),()=>{r.due_date=t0})||
+    take(new RegExp(A+'(?:öbür\\s*gün|yarından\\s+sonra)'+B),()=>{r.due_date=addDays(t0,2)})||
+    take(new RegExp(A+'yarın'+B),()=>{r.due_date=addDays(t0,1)})||
+    take(new RegExp(A+'(?:haftaya|gelecek\\s+hafta|önümüzdeki\\s+hafta)'+B),()=>{r.due_date=addDays(t0,7)})||
+    take(new RegExp(A+'ay\\s*sonu'+B),()=>{r.due_date=ntMonthEnd(monthStart(t0))})||
+    take(new RegExp(A+'(\\d{1,2})\\s+('+NT_MONN.join('|')+'|'+NT_MONN.map(x=>x.slice(0,3)).join('|')+')(?:\\s+(\\d{4}))?'+B),m=>{const d=+m[1],mo=NT_MONN.findIndex(x=>x===m[2]||x.slice(0,3)===m[2]);const y0=parse(t0).getFullYear();let y=m[3]?+m[3]:y0;let x=new Date(y,mo,d);if(x.getDate()!==d)return false;if(!m[3]&&iso(x)<t0)x=new Date(y0+1,mo,d);r.due_date=iso(x)})||
+    take(new RegExp(A+'(\\d{1,2})[./](\\d{1,2})(?:[./](\\d{4}))?'+B),m=>{const d=+m[1],mo=+m[2]-1;if(mo<0||mo>11)return false;const y0=parse(t0).getFullYear();let x=new Date(m[3]?+m[3]:y0,mo,d);if(x.getDate()!==d)return false;if(!m[3]&&iso(x)<t0)x=new Date(y0+1,mo,d);r.due_date=iso(x)})||
+    take(new RegExp(A+'(?:bu\\s+)?('+NT_WDN.join('|')+')(?:\\s+günü)?(?:[\'’]?(?:ye|ya|e|a|de|da))?'+B),m=>{r.due_date=nextWd(NT_WDN.indexOf(m[1]),!/bu\s/.test(m[0]))})}
+  if(r.nodate){r.due_date=null;r.due_time=null;r.repeat=null}else if(!r.due_date&&r.due_time)r.due_date=base||t0;
+  r.title=s.replace(/\s+/g,' ').trim();return r}
+function nqHint(r){const a=[];if(r.due_date)a.push(ic('cal','sm')+esc(ntDayTxt(r.due_date))+(r.due_date!==today()&&r.due_date!==addDays(today(),1)?'':' · '+fmtDate(r.due_date).slice(0,5)));
+  if(r.due_time)a.push(ic('clock','sm')+r.due_time);if(r.repeat)a.push(ic('undo','sm')+esc(ntRepTxt(r.repeat)));if(r.priority!=='normal')a.push(`<span class="ntp ${r.priority}">${r.priority==='yuksek'?'Yüksek':'Düşük'}</span>`);
+  r.tags.forEach(t=>a.push('#'+esc(t)));return a.length?a.map(x=>`<span class="chip">${x}</span>`).join(''):''}
+const ntRepTxt=v=>!v?'':v.startsWith('n:')?'Her '+v.slice(2)+' günde':(NT_REP.find(x=>x[0]===v)||[0,v])[1];
+async function nqAdd(el,base){const v=el.value.trim();if(!v)return;const r=nqParse(v,base);if(!r.title){toast('Yapılacağın adını yazın',true);return}
+  const rem=prefGet('nt_rem',''),due=r.nodate?null:(r.due_date||base||today()),rm=!due||rem==='none'?null:rem===''?(r.due_time?0:null):+rem;
+  const f={kind:'is',title:r.title.slice(0,200),tags:r.tags,priority:r.priority,due_date:due,due_time:r.due_time,repeat:r.repeat,remind_min:rm};
+  if(NT().side.startsWith('f:')&&NT().view==='tum')f.folder_id=NT().side.slice(2);
+  el.value='';const h=document.getElementById(el.dataset.hint||'nq-hint');if(h)h.innerHTML='';
+  const n=await ntCreate(f);if(n)toast('Eklendi'+(n.due_date?' · '+ntDayTxt(n.due_date):'')+(n.due_time?' '+n.due_time:''));
+  const e2=document.getElementById(el.id);if(e2)e2.focus()}
+
+/* ---------- görünüm parçaları ---------- */
+function ntRow(n,o={}){const N=NT(),ck=n.checklist||[],cd=ck.filter(x=>x.d).length,fc=N.files.filter(f=>f.note_id===n.id).length,sh=N.shares.filter(s=>s.note_id===n.id).length,od=!n.done&&n.due_date&&n.due_date<today();
+  const meta=[o.date!==false&&n.due_date?`<span class="${od?'bad':''}">${ic('cal','sm')}${esc(ntDayTxt(n.due_date))}</span>`:'',n.due_time?`<span>${ic('clock','sm')}${n.due_time.slice(0,5)}</span>`:'',
+    n.remind_min!=null&&!n.done?`<span title="Hatırlatma">${ic('bell','sm')}</span>`:'',n.repeat?`<span title="${esc(ntRepTxt(n.repeat))}">${ic('undo','sm')}${o.compact?'':esc(ntRepTxt(n.repeat))}</span>`:'',
+    ck.length?`<span>${ic('check','sm')}${cd}/${ck.length}</span>`:'',fc?`<span>${ic('clip','sm')}${fc}</span>`:'',sh||!ntMine(n)?`<span title="Paylaşılan">${ic('users','sm')}${ntMine(n)?'':esc(initials(pname(n.owner_id)))}</span>`:'',
+    ...(o.compact?[]:(n.tags||[]).map(t=>`<span class="tg">#${esc(t)}</span>`))].filter(Boolean).join('');
+  return `<div class="nt-task${n.done?' done':''} pr-${n.priority}${n.color?' nc-'+n.color:''}" data-id="${n.id}" draggable="${ntCanEd(n)}">
+    <button class="nt-chk${n.done?' on':''}" data-a="nt-done" data-id="${n.id}" aria-label="${n.done?'Tamamlanmadı yap':'Tamamlandı'}" aria-pressed="${n.done}"${ntCanEd(n)?'':' disabled'}>${ic('check','sm')}</button>
+    <button class="nt-tm" data-a="nt-open" data-id="${n.id}"><b>${esc(ntTitle(n))}</b>${meta?`<span class="nt-meta">${meta}</span>`:''}</button>
+    ${!n.done&&ntCanEd(n)&&!o.compact?`<span class="nt-ra"><button class="ib sm" data-a="nt-post" data-id="${n.id}" data-v="1" title="Yarına ertele" aria-label="Yarına ertele">+1</button></span>`:''}</div>`}
+function ntList(L,o={}){return L.length?`<div class="nt-list" ${o.drop?`data-drop="${o.drop}"`:''}>${L.map(n=>ntRow(n,o)).join('')}</div>`:(o.empty?`<div class="nt-empty" ${o.drop?`data-drop="${o.drop}"`:''}>${o.empty}</div>`:'')}
+function ntQuick(base,id){id=id||'nq';const ph=base&&base!==today()?`${ntDayTxt(base)} için yapılacak ekle…`:'Hızlı ekle: Ahmet\'i ara yarın 14:00 #tedarik !yüksek';
+  return `<div class="nt-quick"><span class="pl">${ic('plus','sm')}</span><input class="in" id="${id}" data-c="nq" data-base="${base||''}" data-hint="${id}-hint" placeholder="${esc(ph)}" autocomplete="off" aria-label="Hızlı yapılacak ekle"><button class="btn pri sm" data-a="nq-add" data-for="${id}">Ekle</button></div><div class="nt-hint" id="${id}-hint" aria-live="polite"></div>`}
+function ntFold(key,title,L,o={}){const N=NT(),open=N.show[key]!==undefined?N.show[key]:!!o.open;if(!L.length)return '';
+  return `<div class="nt-fold"><button class="nt-fh" data-a="nt-fold" data-k="${key}" aria-expanded="${open}">${ic('down','sm')}<span>${title}</span><span class="pill">${L.length}</span></button>${open?ntList(L,o):''}</div>`}
+function ntPeriodEd(per,date,ph){const n=ntPeriod(per,date);return ntEd(n,{period:per,date,key:'p:'+per+':'+date,ph})}
+function ntDone7(){const a=ntMonday(today());return ntTasks().filter(n=>n.done&&n.done_at&&iso(new Date(n.done_at))>=a).length}
+
+function vNotlar(){const N=NT();
+  if(!N.loaded){ntLoad();return `<div class="row"><h1>Notlarım</h1></div><div class="card"><div class="empty">Notlar yükleniyor…</div></div>`}
+  if(N.missing)return `<div class="row"><h1>Notlarım</h1></div><div class="card"><p><b>Notlarım henüz kurulmamış.</b></p><p class="sub">Supabase > SQL Editor'da <code>054_notlar.sql</code> dosyasını çalıştırın, sonra sayfayı yenileyin.</p></div>`;
+  if(S.ui.ntOpen){const id=S.ui.ntOpen;S.ui.ntOpen='';const n=ntGet(id);if(n){if(n.kind==='is'&&!n.period)setTimeout(()=>ntOpenModal(id),0);else{N.view='tum';N.sel=id;N.side=ntMine(n)?'all':'shared';N.mob='edit'}}}
+  const v=N.view,q=N.q;
+  const head=`<div class="nt-head"><h1>Notlarım</h1><div class="seg" role="tablist">${NT_VIEWS.map(([k,t])=>`<button data-a="nt-view" data-v="${k}" aria-pressed="${v===k&&!q}">${t}</button>`).join('')}</div><div class="sp"></div>
+    <label class="nt-search">${ic('search','sm')}<input type="search" id="nt-q" data-c="ntq" placeholder="Notlarda ara…" value="${esc(q)}" autocomplete="off" aria-label="Notlarda ara"></label>
+    <button class="btn" data-a="nt-new" data-k="not">${ic('plus','sm')}Not</button><button class="btn pri" data-a="nt-new" data-k="is">${ic('plus','sm')}Yapılacak</button>
+    <button class="ib" data-a="nt-set" aria-label="Notlarım ayarları" title="Ayarlar">${ic('sliders')}</button></div>${N.err?`<div class="card bad">${esc(N.err)}</div>`:''}`;
+  const body=q?ntSearch(q):v==='hafta'?ntWeek():v==='ay'?ntMonth():v==='tum'?ntAll():ntToday();
+  return `<div class="nt">${head}${body}<button class="nt-fab" data-a="nt-fab" aria-label="Yeni ekle">${ic('plus')}</button></div>`}
+
+function ntToday(){const N=NT(),d=N.day||today(),t=today(),isT=d===t;
+  const L=ntOn(d),open=L.filter(n=>!n.done),done=L.filter(n=>n.done),od=isT?ntOverdue():[],nod=isT?ntTasks().filter(n=>!n.done&&!n.due_date).sort(ntCmp):[];
+  const nav=`<div class="nt-nav"><button class="ib" data-a="nt-day" data-v="-1" aria-label="Önceki gün">${ic('down','sm rotl')}</button><b>${esc(ntLong(d))}</b><button class="ib" data-a="nt-day" data-v="1" aria-label="Sonraki gün">${ic('down','sm rotr')}</button>${isT?'':'<button class="btn sm" data-a="nt-day" data-v="0">Bugüne dön</button>'}<input class="in sm" type="date" data-c="nt-dayp" value="${d}" aria-label="Gün seç"></div>`;
+  const w7=ntDone7();
+  return `${nav}<div class="nt-2"><section class="card nt-tasks"><div class="row"><h2>${isT?'Bugünkü işlerim':esc(ntDayTxt(d))+' yapılacakları'}</h2><div class="sp"></div><span class="sub">${open.length} açık${done.length?' · '+done.length+' bitti':''}</span></div>
+    ${ntQuick(d)}
+    ${od.length?`<div class="nt-sec bad"><div class="row"><b>${ic('alert','sm')}Gecikenler (${od.length})</b><div class="sp"></div><button class="lnk" data-a="nt-od-today">Tümünü bugüne taşı</button></div>${ntList(od)}</div>`:''}
+    ${ntList(open,{date:false,drop:d,empty:od.length?'':isT?'Bugün için iş yok. Yukarıdan ekleyebilirsiniz.':'Bu güne iş yok.'})}
+    ${ntFold('done:'+d,'Tamamlananlar',done,{date:false})}${ntFold('nodate','Tarihsiz işler',nod,{open:false})}
+    ${w7?`<p class="sub nt-w7">${ic('award','sm')}Bu hafta ${w7} iş tamamladınız.</p>`:''}</section>
+    <section class="card nt-pnote"><h2>Günlük not</h2>${ntPeriodEd('gun',d,'Bugünün notları: görüşmeler, fikirler, yapılanlar…')}</section></div>`}
+
+function ntWeek(){const N=NT(),a=N.wk||ntMonday(today()),t=today(),days=[...Array(7)].map((_,i)=>addDays(a,i));
+  const wn=(()=>{const d=parse(addDays(a,3)),j=new Date(d.getFullYear(),0,4);return 1+Math.round(((d-j)/864e5-3+((j.getDay()+6)%7))/7)})();
+  const cols=days.map((d,i)=>{const L=ntOn(d);return `<div class="nt-day${d===t?' today':''}${i>4?' we':''}" data-drop="${d}"><div class="nt-dh"><button class="lnk" data-a="nt-goday" data-d="${d}"><b>${NT_WDS[i]}</b> ${parse(d).getDate()}</button><div class="sp"></div><button class="ib sm" data-a="nt-addday" data-d="${d}" aria-label="${esc(ntLong(d))} için ekle">${ic('plus','sm')}</button></div>${ntList(L.filter(n=>!n.done),{date:false,compact:true})}${L.some(n=>n.done)?`<div class="nt-dd">${L.filter(n=>n.done).length} tamamlandı</div>`:''}</div>`}).join('');
+  return `<div class="nt-nav"><button class="ib" data-a="nt-wk" data-v="-1" aria-label="Önceki hafta">${ic('down','sm rotl')}</button><b>${wn}. hafta · ${parse(a).getDate()} ${NT_MON[parse(a).getMonth()]} – ${parse(days[6]).getDate()} ${NT_MON[parse(days[6]).getMonth()]}</b><button class="ib" data-a="nt-wk" data-v="1" aria-label="Sonraki hafta">${ic('down','sm rotr')}</button>${a===ntMonday(t)?'':'<button class="btn sm" data-a="nt-wk" data-v="0">Bu hafta</button>'}<div class="sp"></div><span class="sub">İşleri günler arasında sürükleyip bırakabilirsiniz.</span></div>
+    ${ntQuick(a<=t&&t<=days[6]?t:a)}<div class="nt-week">${cols}</div>
+    <section class="card nt-pnote"><h2>Haftanın notu ve hedefleri</h2>${ntPeriodEd('hafta',a,'Bu haftanın hedefleri, öncelikleri ve değerlendirmesi…')}</section>`}
+
+function ntMonth(){const N=NT(),m=N.mon||monthStart(today()),t=today(),x=parse(m),last=ntMonthEnd(m),start=ntMonday(m),cells=[];
+  for(let d=start;d<=last||ntWd(d)!==0;d=addDays(d,1))cells.push(d);
+  const pn=new Set(NT().notes.filter(n=>n.period==='gun'&&!n.deleted_at&&ntMine(n)&&ntPlain(n.body)).map(n=>n.period_date));
+  const g=cells.map(d=>{const L=ntOn(d),op=L.filter(n=>!n.done),inM=d.slice(0,7)===m.slice(0,7),od=d<t&&op.length;
+    return `<button class="nt-cell${inM?'':' out'}${d===t?' today':''}${od?' od':''}" data-a="nt-goday" data-d="${d}" data-drop="${d}" aria-label="${esc(ntLong(d))}: ${L.length} iş"><span class="n">${parse(d).getDate()}${pn.has(d)?'<i class="pdot" title="Günlük not var"></i>':''}</span>
+      ${op.slice(0,3).map(n=>`<span class="ct pr-${n.priority}">${esc(ntTitle(n))}</span>`).join('')}${op.length>3?`<span class="more">+${op.length-3}</span>`:''}${L.length&&!op.length?`<span class="ok">${ic('check','sm')}${L.length}</span>`:''}</button>`}).join('');
+  return `<div class="nt-nav"><button class="ib" data-a="nt-mon" data-v="-1" aria-label="Önceki ay">${ic('down','sm rotl')}</button><b>${NT_MON[x.getMonth()]} ${x.getFullYear()}</b><button class="ib" data-a="nt-mon" data-v="1" aria-label="Sonraki ay">${ic('down','sm rotr')}</button>${m===monthStart(t)?'':'<button class="btn sm" data-a="nt-mon" data-v="0">Bu ay</button>'}</div>
+    <div class="card nt-cal"><div class="nt-calh">${NT_WDS.map(w=>`<span>${w}</span>`).join('')}</div><div class="nt-calg">${g}</div></div>
+    <section class="card nt-pnote"><h2>Ayın notu ve hedefleri</h2>${ntPeriodEd('ay',m,'Bu ayın hedefleri, planları ve değerlendirmesi…')}</section>`}
+
+/* ---------- Tüm notlar ---------- */
+function ntSideList(){const N=NT(),me=S.user.id,A=N.notes.filter(n=>!n.period),own=A.filter(n=>n.owner_id===me),L=A.filter(ntLive);
+  const tags={};L.forEach(n=>(n.tags||[]).forEach(t=>tags[t]=(tags[t]||0)+1));
+  return {items:[['all','Tümü','note',L.length],['pin','Sabitlenenler','pin',L.filter(n=>n.pinned).length],['not','Notlar','file',L.filter(n=>n.kind==='not').length],['is','Yapılacaklar','check',L.filter(n=>n.kind==='is'&&!n.done).length],
+    ['shared','Benimle paylaşılanlar','users',L.filter(n=>n.owner_id!==me).length],['mine-sh','Paylaştıklarım','share',L.filter(n=>n.owner_id===me&&N.shares.some(s=>s.note_id===n.id)).length]],
+    folders:N.folders.map(f=>[f,L.filter(n=>n.folder_id===f.id&&n.owner_id===me).length]),tags:Object.entries(tags).sort((a,b)=>b[1]-a[1]||a[0].localeCompare(b[0],'tr')),
+    arch:own.filter(n=>n.archived&&!n.deleted_at).length,trash:N.notes.filter(n=>n.owner_id===me&&n.deleted_at).length}}
+function ntFiltered(){const N=NT(),s=N.side,me=S.user.id;let L=N.notes.filter(n=>!n.period||s==='cop');
+  if(s==='cop')L=L.filter(n=>n.deleted_at&&n.owner_id===me);else if(s==='arsiv')L=L.filter(n=>n.archived&&!n.deleted_at&&n.owner_id===me);else{L=L.filter(ntLive);
+    if(s==='pin')L=L.filter(n=>n.pinned);else if(s==='not')L=L.filter(n=>n.kind==='not');else if(s==='is')L=L.filter(n=>n.kind==='is');else if(s==='shared')L=L.filter(n=>n.owner_id!==me);
+    else if(s==='mine-sh')L=L.filter(n=>n.owner_id===me&&N.shares.some(x=>x.note_id===n.id));else if(s.startsWith('f:'))L=L.filter(n=>n.folder_id===s.slice(2)&&n.owner_id===me);else if(s.startsWith('t:'))L=L.filter(n=>(n.tags||[]).includes(s.slice(2)))}
+  const so=N.sort,cmp=so==='olus'?(a,b)=>String(b.created_at).localeCompare(String(a.created_at)):so==='baslik'?(a,b)=>ntTitle(a).localeCompare(ntTitle(b),'tr'):so==='tarih'?(a,b)=>String(a.due_date||'9999').localeCompare(String(b.due_date||'9999'))||ntCmp(a,b):(a,b)=>String(b.updated_at).localeCompare(String(a.updated_at));
+  return L.sort((a,b)=>(s!=='cop'&&s!=='arsiv'?(b.pinned-a.pinned):0)||(a.kind==='is'&&b.kind==='is'&&so!=='baslik'?a.done-b.done:0)||cmp(a,b))}
+function ntCard(n,q){const N=NT(),txt=ntPlain(n.body),sel=N.sel===n.id;let sn=txt.slice(0,160);
+  if(q){const i=txt.toLocaleLowerCase('tr').indexOf(q.toLocaleLowerCase('tr'));sn=i>40?'…'+txt.slice(i-30,i+130):txt.slice(0,160)}
+  const hl=s=>{const e=esc(s);if(!q)return e;const qe=esc(q).replace(/[.*+?^${}()|[\]\\]/g,'\\$&');return e.replace(new RegExp(qe,'gi'),m=>`<mark>${m}</mark>`)};
+  const fc=N.files.filter(f=>f.note_id===n.id).length,sh=N.shares.some(s=>s.note_id===n.id);
+  return `<button class="nt-card${sel?' sel':''}${n.color?' nc-'+n.color:''}${n.kind==='is'&&n.done?' done':''}" data-a="nt-sel" data-id="${n.id}">
+    <span class="h">${n.pinned?ic('pin','sm'):''}${n.kind==='is'?`<span class="nt-chk mini${n.done?' on':''}">${ic('check','sm')}</span>`:''}<b>${hl(ntTitle(n))}</b></span>
+    ${sn&&sn!==ntTitle(n)?`<span class="sn">${hl(sn)}</span>`:''}
+    <span class="nt-meta">${n.period?`<span>${ic('cal','sm')}${n.period==='gun'?'Günlük':n.period==='hafta'?'Haftalık':'Aylık'}</span>`:''}${n.kind==='is'&&n.due_date?`<span class="${!n.done&&n.due_date<today()?'bad':''}">${ic('cal','sm')}${esc(ntDayTxt(n.due_date))}${n.due_time?' '+n.due_time.slice(0,5):''}</span>`:''}<span>${esc(ntRel(n.deleted_at||n.updated_at))}</span>${fc?`<span>${ic('clip','sm')}${fc}</span>`:''}${sh?`<span>${ic('users','sm')}</span>`:''}${!ntMine(n)?`<span>${ic('users','sm')}${esc(pname(n.owner_id))}</span>`:''}${(n.tags||[]).map(t=>`<span class="tg">#${hl(t)}</span>`).join('')}</span></button>`}
+function ntAll(){const N=NT(),SL=ntSideList(),s=N.side,L=ntFiltered(),sel=N.sel&&ntGet(N.sel);
+  const it=(k,t,i,c)=>`<button class="nt-si" data-a="nt-side" data-v="${esc(k)}" aria-pressed="${s===k}">${ic(i,'sm')}<span>${esc(t)}</span>${c?`<span class="c">${c}</span>`:''}</button>`;
+  const side=`<nav class="nt-side card" aria-label="Not klasörleri">${SL.items.map(x=>it(...x)).join('')}
+    <div class="nt-sg"><span>Klasörler</span><button class="ib sm" data-a="nt-folder" aria-label="Yeni klasör" title="Yeni klasör">${ic('plus','sm')}</button></div>
+    ${SL.folders.map(([f,c])=>`<div class="nt-fr">${it('f:'+f.id,f.name,'folder',c)}<button class="ib sm" data-a="nt-folder" data-id="${f.id}" aria-label="${esc(f.name)} klasörünü düzenle">${ic('sliders','sm')}</button></div>`).join('')||'<div class="sub nt-none">Klasör yok</div>'}
+    ${SL.tags.length?`<div class="nt-sg"><span>Etiketler</span></div><div class="nt-tags">${SL.tags.map(([t,c])=>`<button class="tg${s==='t:'+t?' on':''}" data-a="nt-side" data-v="t:${esc(t)}">#${esc(t)} <small>${c}</small></button>`).join('')}</div>`:''}
+    <div class="nt-sg"></div>${it('arsiv','Arşiv','pkg',SL.arch)}${it('cop','Çöp kutusu','trash',SL.trash)}</nav>`;
+  const title=s==='cop'?'Çöp kutusu':s==='arsiv'?'Arşiv':s.startsWith('f:')?(N.folders.find(f=>f.id===s.slice(2))||{}).name||'Klasör':s.startsWith('t:')?'#'+s.slice(2):(SL.items.find(x=>x[0]===s)||[0,'Tümü'])[1];
+  const list=`<section class="nt-lp card"><div class="row"><button class="ib sm nt-back" data-a="nt-mob" data-v="side" aria-label="Klasörler">${ic('menu','sm')}</button><h2>${esc(title)}</h2><span class="pill">${L.length}</span><div class="sp"></div>
+      ${s==='cop'?(L.length?`<button class="btn sm danger" data-a="nt-empty">Çöpü boşalt</button>`:''):`<select class="in sm" data-c="nt-sort" aria-label="Sıralama">${opts([['upd','Son düzenlenen'],['olus','Oluşturma'],['baslik','Başlık'],['tarih','Son tarih']],N.sort)}</select><button class="ib sm" data-a="nt-grid" aria-pressed="${N.grid}" aria-label="${N.grid?'Liste görünümü':'Kart görünümü'}" title="${N.grid?'Liste':'Kart'} görünümü">${ic(N.grid?'menu':'grid','sm')}</button>`}</div>
+    ${s==='cop'?'<p class="sub">Çöp kutusundaki notlar 30 gün sonra kendiliğinden silinir.</p>':''}
+    <div class="nt-cards${N.grid?' grid':''}">${L.map(n=>ntCard(n)).join('')||'<div class="empty">Burada not yok.</div>'}</div></section>`;
+  const ed=`<section class="nt-ep card">${sel?`<button class="lnk nt-back" data-a="nt-mob" data-v="list">${ic('down','sm rotl')}Listeye dön</button>`+(sel.deleted_at?ntTrashEd(sel):ntEd(sel,{})):'<div class="empty nt-ph">Soldan bir not seçin ya da <button class="lnk" data-a="nt-new" data-k="not">yeni not</button> oluşturun.</div>'}</section>`;
+  return `<div class="nt-all mob-${N.mob||'list'}${sel?' has-sel':''}">${side}${list}${ed}</div>`}
+function ntSearch(q){const N=NT(),ql=q.toLocaleLowerCase('tr');
+  const L=N.notes.filter(n=>!n.deleted_at&&(ntTitle(n)+' '+ntPlain(n.body)+' '+(n.tags||[]).map(t=>'#'+t).join(' ')+' '+(n.checklist||[]).map(c=>c.t).join(' ')).toLocaleLowerCase('tr').includes(ql))
+    .sort((a,b)=>String(b.updated_at).localeCompare(String(a.updated_at)));
+  return `<div class="card"><div class="row"><h2>“${esc(q)}” için ${L.length} sonuç</h2><div class="sp"></div><button class="btn sm" data-a="nt-q-clear">Aramayı temizle</button></div>
+    <div class="nt-cards">${L.map(n=>ntCard(n,q)).join('')||'<div class="empty">Sonuç yok.</div>'}</div></div>`}
+function ntTrashEd(n){return `<div class="nt-ed"><h2>${esc(ntTitle(n))}</h2><p class="sub">Çöp kutusunda · ${esc(ntRel(n.deleted_at))} silindi. ${Math.max(0,30-Math.floor((Date.now()-new Date(n.deleted_at))/864e5))} gün sonra kalıcı silinecek.</p>
+  <div class="row"><button class="btn pri" data-a="nt-restore" data-id="${n.id}">Geri al</button><button class="btn danger" data-a="nt-purge" data-id="${n.id}">Kalıcı sil</button></div><div class="nt-body ro">${ntSan(n.body)}</div></div>`}
+
+/* ---------- düzenleyici ---------- */
+const NT_TOOLS=[['bold','B','Kalın (Ctrl+B)'],['italic','<i>İ</i>','İtalik (Ctrl+I)'],['strikeThrough','<s>S</s>','Üstü çizili'],['|'],['h2','B1','Başlık'],['h3','B2','Alt başlık'],['|'],['ul','•','Madde listesi'],['ol','1.','Numaralı liste'],['chk','☑','Yapılacak listesi'],['quote','❝','Alıntı'],['hr','—','Ayırıcı çizgi'],['link','🔗','Bağlantı'],['|'],['clear','Tx','Biçimi temizle']];
+function ntTools(key){return `<div class="nt-tools" role="toolbar" aria-label="Biçimlendirme">${NT_TOOLS.map(([c,t,l])=>c==='|'?'<span class="sep"></span>':`<button type="button" data-a="nt-cmd" data-cmd="${c}" data-key="${esc(key)}" title="${esc(l)}" aria-label="${esc(l)}">${t}</button>`).join('')}
+  <button type="button" class="lnk" data-a="nt-line2task" data-key="${esc(key)}" title="İmlecin bulunduğu satırı yapılacak olarak ekler">${ic('check','sm')}Satırı yapılacağa çevir</button></div>`}
+function ntTaskFields(n,ro){const dis=ro?' disabled':'',ck=n.checklist||[],cd=ck.filter(x=>x.d).length,rep=n.repeat||'',repN=rep.startsWith('n:')?rep.slice(2):'';
+  return `<div class="nt-tf"><label class="f">Son tarih<input class="in" type="date" data-c="nt-f" data-f="due_date" data-id="${n.id}" value="${n.due_date||''}"${dis}></label>
+    <label class="f">Saat<input class="in" type="time" data-c="nt-f" data-f="due_time" data-id="${n.id}" value="${n.due_time?n.due_time.slice(0,5):''}"${dis}></label>
+    <label class="f">Öncelik<select class="in" data-c="nt-f" data-f="priority" data-id="${n.id}"${dis}>${opts(NT_PRI,n.priority)}</select></label>
+    <label class="f">Tekrar<select class="in" data-c="nt-f" data-f="repeat" data-id="${n.id}"${dis}>${opts(NT_REP,rep.startsWith('n:')?'n':rep)}</select></label>
+    ${rep.startsWith('n:')?`<label class="f">Kaç günde bir<input class="in" type="number" min="1" max="999" data-c="nt-f" data-f="repeat_n" data-id="${n.id}" value="${repN}"${dis}></label>`:''}
+    <label class="f">Hatırlatma<select class="in" data-c="nt-f" data-f="remind_min" data-id="${n.id}"${dis}>${opts(NT_REM,n.remind_min==null?'':String(n.remind_min))}</select></label></div>
+    ${n.remind_min!=null&&n.due_date?`<p class="sub nt-remh">${ic('bell','sm')}Hatırlatma: ${esc(ntDayTxt(n.due_date))} ${n.due_time?n.due_time.slice(0,5):'09:00'}${n.remind_min?' · '+NT_REM.find(x=>x[0]===String(n.remind_min))?.[1]:''} · zil ve telefon bildirimi${n.reminded_at?' (gönderildi)':''}</p>`:n.remind_min!=null?'<p class="sub nt-remh bad">Hatırlatma için son tarih seçin.</p>':''}
+    <div class="nt-steps"><div class="row"><b>Alt adımlar</b>${ck.length?`<span class="pill">${cd}/${ck.length}</span>`:''}</div>
+    ${ck.map((c,i)=>`<div class="nt-step${c.d?' on':''}"><button class="nt-chk sm${c.d?' on':''}" data-a="nt-step-t" data-id="${n.id}" data-i="${i}" aria-label="${c.d?'Geri al':'Tamamla'}"${dis}>${ic('check','sm')}</button><input class="in" data-c="nt-step" data-id="${n.id}" data-i="${i}" value="${esc(c.t)}"${ro?' readonly':''} aria-label="Adım ${i+1}">${ro?'':`<button class="ib sm" data-a="nt-step-x" data-id="${n.id}" data-i="${i}" aria-label="Adımı sil">${ic('x','sm')}</button>`}</div>`).join('')}
+    ${ro?'':`<input class="in nt-stepadd" data-c="nt-stepadd" data-id="${n.id}" placeholder="+ Adım ekle (Enter)" aria-label="Adım ekle">`}</div>`}
+function ntEdBar(n,o){const N=NT(),own=ntMine(n),sh=N.shares.filter(s=>s.note_id===n.id),my=ntShare(n);
+  if(!own)return `<div class="nt-bar"><span class="chip">${ic('users','sm')}Paylaşan: ${esc(pname(n.owner_id)||'—')} · ${my&&my.can_edit?'Düzenleyebilirsiniz':'Salt okunur'}</span><div class="sp"></div>
+    ${ntCanEd(n)?ntFileBtns(n):''}<button class="btn sm" data-a="nt-hist" data-id="${n.id}">${ic('clock','sm')}Geçmiş</button><button class="btn sm" data-a="nt-leave" data-id="${n.id}">Paylaşımdan çık</button></div>`;
+  return `<div class="nt-bar"><button class="ib sm" data-a="nt-pin" data-id="${n.id}" aria-pressed="${n.pinned}" title="${n.pinned?'Sabitlemeyi kaldır':'Sabitle'}" aria-label="Sabitle">${ic('pin','sm')}</button>
+    <span class="nt-sw" role="radiogroup" aria-label="Renk">${NT_COLORS.map(([k,t])=>`<button class="sw nc-${k||'yok'}" data-a="nt-color" data-id="${n.id}" data-v="${k}" aria-pressed="${(n.color||'')===k}" title="${t}" aria-label="${t}"></button>`).join('')}</span>
+    <select class="in sm" data-c="nt-f" data-f="folder_id" data-id="${n.id}" aria-label="Klasör">${opts([['','Klasörsüz'],...N.folders.map(f=>[f.id,f.name])],n.folder_id||'')}</select>
+    <input class="in sm nt-tagin" data-c="nt-tags" data-id="${n.id}" value="${esc((n.tags||[]).map(t=>'#'+t).join(' '))}" placeholder="#etiket" list="nt-taglist" aria-label="Etiketler (boşlukla ayırın)">
+    <datalist id="nt-taglist">${[...new Set(N.notes.flatMap(x=>x.tags||[]))].map(t=>`<option value="#${esc(t)}">`).join('')}</datalist>
+    <div class="sp"></div>
+    <button class="btn sm" data-a="nt-share" data-id="${n.id}">${ic('users','sm')}Paylaş${sh.length?' ('+sh.length+')':''}</button>${ntFileBtns(n)}
+    <button class="btn sm" data-a="nt-hist" data-id="${n.id}">${ic('clock','sm')}Geçmiş</button>
+    ${n.period?'':`<button class="btn sm" data-a="nt-kind" data-id="${n.id}">${n.kind==='is'?'Nota çevir':'Yapılacağa çevir'}</button><button class="btn sm" data-a="nt-arch" data-id="${n.id}">${n.archived?'Arşivden çıkar':'Arşivle'}</button>`}
+    <button class="btn sm danger" data-a="nt-del" data-id="${n.id}">Sil</button></div>`}
+function ntFileBtns(n){return `<label class="btn sm" title="Fotoğraf veya PDF ekle">${ic('clip','sm')}Ek<input type="file" data-c="nt-file" data-id="${n.id}" accept="image/*,application/pdf" multiple hidden></label><button class="btn sm" data-a="nt-cam" data-id="${n.id}" title="Kamera ile çek">${ic('scan','sm')}Kamera</button>`}
+function ntFilesHtml(n,ro){const F=NT().files.filter(f=>f.note_id===n.id).sort((a,b)=>String(a.created_at).localeCompare(String(b.created_at)));if(!F.length)return '';
+  return `<div class="nt-files">${F.map(f=>{const img=/^image\//.test(f.mime||'');return `<div class="nt-file">${img?`<img class="nt-th" alt="" data-path="${esc(f.path)}">`:`<span class="nt-pdf">${ic('file')}</span>`}<button class="lnk" data-a="nt-fopen" data-path="${esc(f.path)}" title="${esc(f.file_name)}">${esc(f.file_name)}</button><small>${f.size_bytes?Math.round(f.size_bytes/1024)+' KB':''}</small>${!ro&&(f.created_by===S.user.id||ntMine(n))?`<button class="ib sm" data-a="nt-fdel" data-id="${f.id}" aria-label="Eki sil">${ic('x','sm')}</button>`:''}</div>`}).join('')}</div>`}
+function ntEd(n,o={}){const key=o.key||n.id,ro=n?!ntCanEd(n):false,isT=n&&n.kind==='is';
+  let h=`<div class="nt-ed${n&&n.color?' nc-'+n.color:''}${o.period?' per':''}" data-key="${esc(key)}">`;
+  if(!o.period){h+=`<div class="nt-edh">${isT?`<button class="nt-chk lg${n.done?' on':''}" data-a="nt-done" data-id="${n.id}" aria-label="${n.done?'Tamamlanmadı yap':'Tamamlandı'}" aria-pressed="${n.done}"${ro?' disabled':''}>${ic('check')}</button>`:''}
+    <input class="nt-title" data-nt-title data-key="${esc(key)}" value="${esc(n.title)}" placeholder="${isT?'Yapılacak':'Başlık'}"${ro?' readonly':''} maxlength="200" aria-label="Başlık"></div>`+ntEdBar(n,o)+(isT?ntTaskFields(n,ro):'')}
+  if(!ro)h+=ntTools(key);
+  h+=`<div class="nt-body${ro?' ro':''}"${ro?'':' contenteditable="true"'} data-nt-body data-key="${esc(key)}" data-ph="${esc(o.ph||'Yazmaya başlayın… “/” yazınca komut menüsü açılır.')}" spellcheck="true" role="textbox" aria-multiline="true" aria-label="Not içeriği">${n?ntSan(n.body):''}</div>`;
+  if(n)h+=ntFilesHtml(n,ro);
+  h+=`<div class="nt-foot"><span data-nt-st="${esc(key)}">${n?'Son düzenleme '+esc(ntRel(n.updated_at))+(n.updated_by&&n.updated_by!==S.user.id?' · '+esc(pname(n.updated_by)):''):'Yazınca kendiliğinden kaydedilir.'}</span>${o.period&&n?`<div class="sp"></div>${ntFileBtns(n)}<button class="btn sm" data-a="nt-hist" data-id="${n.id}">${ic('clock','sm')}Geçmiş</button>`:''}</div></div>`;
+  return h}
+function ntModalHtml(n){return `<div class="nt-mh"><span class="sub">${n.kind==='is'?'Yapılacak':'Not'}${n.due_date?' · '+esc(ntDayTxt(n.due_date)):''}</span><div class="sp"></div><button class="ib" data-a="close" aria-label="Kapat">${ic('x')}</button></div>${n.deleted_at?ntTrashEd(n):ntEd(n,{})}`}
+function ntOpenModal(id,focusTitle){const n=ntGet(id);if(!n)return;NT().modal=id;modal(ntModalHtml(n));const box=document.querySelector('#modal .modal');if(box){box.setAttribute('data-nt-modal','1');box.classList.add('nt-modal');ntAfter(box)}
+  const f=document.querySelector(focusTitle?'#modal .nt-title':'#modal .nt-body');if(f&&focusTitle)f.focus();else if(document.activeElement)document.activeElement.blur()}
+async function ntAfter(root){root=root||document;const imgs=[...root.querySelectorAll('img.nt-th[data-path]')].filter(i=>!i.src);if(!imgs.length)return;
+  try{const r=await sb.storage.from('anka-notes').createSignedUrls(imgs.map(i=>i.dataset.path),600);(r.data||[]).forEach(x=>{imgs.filter(i=>i.dataset.path===x.path).forEach(i=>{if(x.signedUrl)i.src=x.signedUrl})})}catch(e){}}
+
+/* ---------- komutlar (düzenleyici) ---------- */
+function ntBodyOf(key){return document.querySelector(`[data-nt-body][data-key="${CSS.escape(key)}"]`)}
+function ntExec(cmd,key){const b=ntBodyOf(key);if(!b)return;if(document.activeElement!==b&&!b.contains(document.getSelection().anchorNode))b.focus();
+  const ex=(c,v)=>document.execCommand(c,false,v);
+  if(cmd==='h2'||cmd==='h3'){const cur=ntBlock(b);ex('formatBlock',cur&&cur.tagName===cmd.toUpperCase()?'p':cmd)}
+  else if(cmd==='quote'){const cur=ntBlock(b);ex('formatBlock',cur&&cur.closest('blockquote')?'p':'blockquote')}
+  else if(cmd==='ul')ntToList(b,'UL',false);else if(cmd==='ol')ntToList(b,'OL',false);else if(cmd==='chk')ntToList(b,'UL',true);else if(cmd==='hr')ex('insertHorizontalRule');
+  else if(cmd==='link'){const sel=document.getSelection(),t=String(sel||'').trim();let u=/^(https?:\/\/|www\.)/i.test(t)?t:window.prompt('Bağlantı adresi (https://…)','https://');if(!u)return;if(/^www\./i.test(u))u='https://'+u;if(!/^(https?:|mailto:|tel:)/i.test(u)){toast('Geçerli bir bağlantı yazın',true);return}
+    if(sel&&!sel.isCollapsed)ex('createLink',u);else ex('insertHTML',`<a href="${esc(u)}">${esc(u)}</a>&nbsp;`)}
+  else if(cmd==='clear'){ex('removeFormat');ex('formatBlock','p')}
+  else ex(cmd);
+  ntInput(b)}
+/* liste dönüştürme (tarayıcının insertUnorderedList komutu <p> içinde tutarsız davrandığı için elle) */
+function ntToList(b,type,chk){const sel=document.getSelection();let li=ntLi(b);
+  const caret=n=>{const r=document.createRange();r.selectNodeContents(n);r.collapse(false);sel.removeAllRanges();sel.addRange(r)};
+  if(li){const L=li.parentElement,same=L.tagName===type&&(type!=='UL'||!!L.hasAttribute('data-chk')===!!chk);
+    if(same){const p=document.createElement('p');while(li.firstChild)p.appendChild(li.firstChild);if(!p.firstChild)p.appendChild(document.createElement('br'));
+      const after=[...L.children].slice([...L.children].indexOf(li)+1);L.after(p);if(after.length){const L2=L.cloneNode(false);after.forEach(x=>L2.appendChild(x));p.after(L2)}li.remove();if(!L.children.length)L.remove();caret(p);return}
+    const N=document.createElement(type);if(chk)N.setAttribute('data-chk','1');while(L.firstChild)N.appendChild(L.firstChild);L.replaceWith(N);caret(li);return}
+  let blk=ntBlock(b);if(!blk){const p=document.createElement('p');while(b.firstChild)p.appendChild(b.firstChild);b.appendChild(p);blk=p}
+  const L=document.createElement(type);if(chk)L.setAttribute('data-chk','1');const it=document.createElement('li');while(blk.firstChild)it.appendChild(blk.firstChild);if(!it.firstChild)it.appendChild(document.createElement('br'));L.appendChild(it);
+  const prev=blk.previousElementSibling;blk.replaceWith(L);if(prev&&prev.tagName===type&&!!prev.hasAttribute('data-chk')===!!chk){prev.appendChild(it);L.remove()}caret(it)}
+function ntBlock(b){let n=document.getSelection().anchorNode;while(n&&n!==b&&!(n.nodeType===1&&/^(P|DIV|H1|H2|H3|LI|BLOCKQUOTE|PRE)$/.test(n.tagName)))n=n.parentNode;return n&&n!==b?n:null}
+function ntLi(b){let n=document.getSelection().anchorNode;while(n&&n!==b){if(n.nodeType===1&&n.tagName==='LI')return n;n=n.parentNode}return null}
+const NT_SLASH=[['h2','Başlık'],['h3','Alt başlık'],['ul','Madde listesi'],['ol','Numaralı liste'],['chk','Yapılacak listesi'],['quote','Alıntı'],['hr','Ayırıcı çizgi'],['date','Bugünün tarihi'],['time','Şu anki saat']];
+function ntSlash(b){ntSlashClose();const sel=document.getSelection();if(!sel.rangeCount)return;const r=sel.getRangeAt(0).getBoundingClientRect(),br=b.getBoundingClientRect();
+  const m=document.createElement('div');m.id='nt-slash';m.className='nt-slash';m.setAttribute('role','listbox');m.dataset.key=b.dataset.key;m.dataset.i='0';
+  m.innerHTML=NT_SLASH.map(([k,t],i)=>`<button type="button" role="option" data-a="nt-slash" data-v="${k}" aria-selected="${i===0}">${esc(t)}</button>`).join('');
+  document.body.appendChild(m);const x=(r.left||br.left)+window.scrollX,y=(r.bottom||br.top+24)+window.scrollY+4;m.style.left=Math.min(x,window.innerWidth-220)+'px';m.style.top=y+'px'}
+function ntSlashClose(){const m=document.getElementById('nt-slash');if(m)m.remove()}
+function ntSlashRun(k){const m=document.getElementById('nt-slash');if(!m)return;const key=m.dataset.key,b=ntBodyOf(key);ntSlashClose();if(!b)return;b.focus();
+  document.execCommand('delete');   // "/" karakterini sil
+  if(k==='date'){document.execCommand('insertText',false,ntLong(today()))}else if(k==='time'){document.execCommand('insertText',false,ntHM(Date.now()))}else ntExec(k,key);ntInput(b)}
+/* markdown kısayolları: "- " madde, "1. " numaralı, "[] " yapılacak, "# " başlık, "## " alt başlık, "> " alıntı */
+function ntMd(b){const sel=document.getSelection();if(!sel.isCollapsed)return;const nd=sel.anchorNode;if(!nd||nd.nodeType!==3)return;const blk=ntBlock(b)||b;
+  const raw=nd.textContent.slice(0,sel.anchorOffset),pre=raw.replace(/\u00a0/g,' ');let cmd=null;
+  if(/^[-*] $/.test(pre))cmd='ul';else if(/^1[.)] $/.test(pre))cmd='ol';else if(/^\[ ?\] $/.test(pre))cmd='chk';else if(/^# $/.test(pre))cmd='h2';else if(/^## $/.test(pre))cmd='h3';else if(/^> $/.test(pre))cmd='quote';
+  if(!cmd)return;let first=nd;while(first&&first!==blk&&!first.previousSibling)first=first.parentNode;if(first!==blk&&first!==nd&&nd.previousSibling)return;if(nd.previousSibling)return;
+  if(cmd==='ul'||cmd==='ol'||cmd==='chk'){if(ntLi(b))return}
+  const rg=document.createRange();rg.setStart(nd,0);rg.setEnd(nd,raw.length);sel.removeAllRanges();sel.addRange(rg);document.execCommand('delete');
+  if(!blk.textContent&&blk!==b&&!blk.querySelector('br'))blk.appendChild(document.createElement('br'));ntExec(cmd,b.dataset.key)}
+function ntLine2Task(key){const b=ntBodyOf(key);if(!b)return;const blk=b.contains(document.getSelection().anchorNode)?ntBlock(b):null;const t=(blk?blk.textContent:'').replace(/\s+/g,' ').trim();
+  if(!t){toast('İmleci yapılacak olarak eklemek istediğiniz satıra koyun',true);return}
+  const r=nqParse(t);ntCreate({kind:'is',title:(r.title||t).slice(0,200),tags:r.tags,priority:r.priority,due_date:r.due_date,due_time:r.due_time,repeat:r.repeat},{quiet:true}).then(n=>{if(n){toast('Yapılacak eklendi: '+ntTitle(n));if(blk&&blk.tagName==='LI'&&blk.parentElement.hasAttribute('data-chk')){blk.setAttribute('data-on','1');ntInput(b)}}})}
+
+/* ---------- pencereler ---------- */
+function ntShareModal(id){const n=ntGet(id);if(!n||!ntMine(n))return;const N=NT(),cur=new Map(N.shares.filter(s=>s.note_id===id).map(s=>[s.user_id,s]));
+  const P=[...S.d.profileMap.values()].filter(p=>p.active!==false&&p.id!==S.user.id).sort((a,b)=>String(a.full_name).localeCompare(String(b.full_name),'tr'));
+  modal(`<h2>Paylaş · ${esc(ntTitle(n))}</h2><p class="sub">Seçtiğiniz kişiler bu notu “Notlarım > Benimle paylaşılanlar” bölümünde görür. Klasör, renk ve etiketler yalnız sizindir.</p>
+   <div class="nt-shl">${P.map(p=>{const s=cur.get(p.id);return `<div class="nt-shr"><label class="ck"><input type="checkbox" class="nt-shc" value="${p.id}"${s?' checked':''}> <span class="avatar sm">${esc(initials(p.full_name))}</span>${esc(p.full_name)}</label>
+     <select class="in sm nt-she" data-u="${p.id}" aria-label="${esc(p.full_name)} izni">${opts([['0','Salt okunur'],['1','Düzenleyebilir']],s&&s.can_edit?'1':'0')}</select></div>`}).join('')||'<div class="empty">Paylaşılacak başka kullanıcı yok.</div>'}</div>
+   <div class="err" id="f-err" hidden></div><div class="actions"><button class="btn" data-a="close">Vazgeç</button><button class="btn pri" data-a="nt-share-save" data-id="${id}">Kaydet</button></div>`)}
+async function ntShareSave(id){const N=NT(),cur=N.shares.filter(s=>s.note_id===id),want=new Map([...document.querySelectorAll('.nt-shc')].filter(c=>c.checked).map(c=>[c.value,document.querySelector(`.nt-she[data-u="${c.value}"]`).value==='1']));
+  try{for(const s of cur){if(!want.has(s.user_id)){const r=await sb.from('note_shares').delete().eq('note_id',id).eq('user_id',s.user_id);if(r.error)throw r.error}
+      else if(want.get(s.user_id)!==s.can_edit){const r=await sb.from('note_shares').update({can_edit:want.get(s.user_id)}).eq('note_id',id).eq('user_id',s.user_id);if(r.error)throw r.error}}
+    const add=[...want].filter(([u])=>!cur.some(s=>s.user_id===u)).map(([u,e])=>({note_id:id,user_id:u,can_edit:e}));
+    if(add.length){const r=await sb.from('note_shares').insert(add);if(r.error)throw r.error}
+    N.shares=N.shares.filter(s=>s.note_id!==id).concat([...want].map(([u,e])=>({note_id:id,user_id:u,can_edit:e,created_at:(cur.find(s=>s.user_id===u)||{}).created_at||new Date().toISOString()})));
+    closeModal();toast(want.size?want.size+' kişiyle paylaşıldı':'Paylaşım kaldırıldı');ntRender()}
+  catch(e){setErr(msg(e))}}
+async function ntHistModal(id){const n=ntGet(id);if(!n)return;ntFlushAll();modal(`<h2>Geçmiş sürümler · ${esc(ntTitle(n))}</h2><div class="empty">Yükleniyor…</div>`);
+  const {data,error}=await sb.from('note_versions').select('*').eq('note_id',id).order('created_at',{ascending:false}).limit(20);
+  if(error){modal(`<h2>Geçmiş sürümler</h2><div class="err">${esc(msg(error))}</div><div class="actions"><button class="btn" data-a="close">Kapat</button></div>`);return}
+  NT().hist={id,L:data||[],sel:(data||[])[0]&&data[0].id};ntHistDraw()}
+function ntHistDraw(){const H=NT().hist;if(!H)return;const n=ntGet(H.id),v=H.L.find(x=>x.id===H.sel),ro=!ntCanEd(n);
+  modal(`<h2>Geçmiş sürümler · ${esc(ntTitle(n))}</h2><p class="sub">Notun son 20 hali saklanır. Yazarken en çok 10 dakikada bir, başka biri düzenleyince her seferinde kayıt alınır.</p>
+   ${H.L.length?`<div class="nt-hist"><div class="nt-hl">${H.L.map(x=>`<button data-a="nt-hsel" data-id="${x.id}" aria-pressed="${x.id===H.sel}"><b>${esc(fmtDate(String(x.saved_at).slice(0,10)))} ${ntHM(x.saved_at)}</b><small>${esc(pname(x.saved_by)||'')}</small><small>${esc(ntPlain(x.body).slice(0,50))}</small></button>`).join('')}</div>
+   <div class="nt-hv">${v?`<h3>${esc(v.title||'(başlıksız)')}</h3><div class="nt-body ro">${ntSan(v.body)||'<p class="sub">(boş)</p>'}</div>`:''}</div></div>`:'<div class="empty">Henüz eski sürüm yok. Not düzenlendikçe burada birikir.</div>'}
+   <div class="err" id="f-err" hidden></div><div class="actions"><button class="btn" data-a="close">Kapat</button>${v&&!ro?`<button class="btn pri" data-a="nt-hrest" data-id="${v.id}">Bu sürümü geri yükle</button>`:''}</div>`)}
+function ntFolderModal(id){const f=id&&NT().folders.find(x=>x.id===id);
+  modal(`<h2>${f?'Klasörü düzenle':'Yeni klasör'}</h2><div class="form"><label class="f">Ad<input class="in" id="ntf-name" maxlength="60" value="${esc(f?f.name:'')}" placeholder="örn. Tedarikçiler"></label>
+   <label class="f">Renk<select class="in" id="ntf-color">${opts(NT_COLORS,f&&f.color||'')}</select></label></div>
+   <div class="err" id="f-err" hidden></div><div class="actions">${f?`<button class="btn danger" data-a="nt-fdel-folder" data-id="${f.id}">Klasörü sil</button><div class="sp"></div>`:''}<button class="btn" data-a="close">Vazgeç</button><button class="btn pri" data-a="nt-folder-save" data-id="${f?f.id:''}">Kaydet</button></div>`)}
+function ntSetModal(){const P=NT().prefs;modal(`<h2>Notlarım ayarları</h2><div class="form">
+   <label class="ck"><input type="checkbox" id="nts-m"${!P||P.morning!==false?' checked':''}> 09:30'da “Bugünkü işleriniz” özeti gönderilsin (zil ve telefon)</label>
+   <label class="ck"><input type="checkbox" id="nts-s"${prefGet('nt_start','0')==='1'?' checked':''}> Uygulama açılınca Notlarım > Bugün açılsın (bu cihazda)</label>
+   <label class="f">Hızlı eklemede varsayılan hatırlatma<select class="in" id="nts-r">${opts([['','Saat yazılırsa zamanında, yoksa yok'],['none','Hatırlatma yok'],['15','15 dk önce'],['60','1 saat önce'],['1440','1 gün önce']],prefGet('nt_rem',''))}</select></label></div>
+   <div class="nt-help"><b>Kısayollar</b><ul><li><code>- </code> madde, <code>1. </code> numaralı liste, <code>[] </code> yapılacak listesi, <code># </code> başlık, <code>## </code> alt başlık, <code>&gt; </code> alıntı</li><li><code>/</code> komut menüsü · <kbd>Ctrl</kbd>+<kbd>B</kbd> kalın · <kbd>Ctrl</kbd>+<kbd>I</kbd> italik · <kbd>Ctrl</kbd>+<kbd>S</kbd> hemen kaydet</li>
+   <li>Hızlı ekleme: <i>bugün, yarın, öbür gün, cuma, haftaya, ay sonu, 15 kasım, 15.11</i> · saat <i>14:00</i> · <i>#etiket</i> · <i>!yüksek / !düşük</i> · <i>her gün, her hafta içi, her pazartesi, her ayın 5'i, her ay sonu, her 3 günde</i></li><li>Telefonda işi sağa kaydırınca tamamlanır, sola kaydırınca yarına ertelenir.</li></ul></div>
+   <div class="err" id="f-err" hidden></div><div class="actions"><button class="btn" data-a="close">Vazgeç</button><button class="btn pri" data-a="nt-set-save">Kaydet</button></div>`)}
+function ntFab(){modal(`<h2>Hızlı ekle</h2><div class="seg" style="margin-bottom:10px"><button data-a="nt-fabk" data-v="is" aria-pressed="true">Yapılacak</button><button data-a="nt-fabk" data-v="not" aria-pressed="false">Not</button></div>
+  <div id="nt-fabb">${ntQuick(NT().view==='bugun'?NT().day:today(),'nqm')}</div><div class="actions"><button class="btn" data-a="close">Kapat</button></div>`)}
+
+/* ---------- dosyalar ---------- */
+async function ntUpload(id,files){const n=ntGet(id);if(!n)return;let ok=0;
+  for(const f0 of files){try{const f=await shrink(f0);if(f.size>10485760){toast(f0.name+': 10 MB sınırını aşıyor',true);continue}
+      if(!/^(image\/|application\/pdf)/.test(f.type)){toast(f0.name+': yalnız fotoğraf veya PDF eklenebilir',true);continue}
+      const safe=f.name.replace(/[^\w.\-]+/g,'_').slice(-80),path=`${id}/${ntUid().slice(0,8)}-${safe}`;
+      const up=await sb.storage.from('anka-notes').upload(path,f,{contentType:f.type});if(up.error)throw up.error;
+      const row={id:ntUid(),note_id:id,path,file_name:f.name.slice(0,200),mime:f.type,size_bytes:f.size,created_by:S.user.id,created_at:new Date().toISOString()};
+      const r=await sb.from('note_files').insert(row);if(r.error){await sb.storage.from('anka-notes').remove([path]);throw r.error}
+      NT().files.push(row);ok++}catch(e){toast(f0.name+': '+msg(e),true)}}
+  if(ok){toast(ok+' ek eklendi');ntRender()}}
+async function ntFilesRemove(noteIds){const P=NT().files.filter(f=>noteIds.includes(f.note_id)).map(f=>f.path);if(P.length)try{await sb.storage.from('anka-notes').remove(P)}catch(e){}}
+
+/* ---------- Genel Bakış kartı ---------- */
+function pnMyTasks(){const N=NT();if(!N.loaded){ntLoad();return ''}if(N.missing)return '';
+  const t=today(),L=[...ntOverdue(),...ntOn(t).filter(n=>!n.done)],top=L.slice(0,5),dn=ntOn(t).filter(n=>n.done).length;
+  return `<section class="card pn-my" id="pn-my"><div class="row"><h2>${ic('check','sm')}Bugünkü işlerim</h2><span class="pill">${L.length}</span>${dn?`<span class="sub">${dn} tamamlandı</span>`:''}<div class="sp"></div><a class="lnk" href="#notlar">Notlarım ${ic('down','sm rotr')}</a></div>
+   ${top.length?ntList(top,{compact:true}):'<p class="sub">Bugün için iş yok.</p>'}${L.length>5?`<a class="lnk" href="#notlar">+${L.length-5} iş daha</a>`:''}${ntQuick(t,'nqp')}</section>`}
+
+/* ---------- olaylar ---------- */
+Object.assign(A,{
+  'nt-view'(t){const N=NT();N.view=t.dataset.v;N.q='';if(N.view==='tum'&&!N.mob)N.mob='list';render()},
+  'nt-day'(t){const N=NT(),v=+t.dataset.v;N.day=v===0?today():addDays(N.day||today(),v);render()},
+  'nt-wk'(t){const N=NT(),v=+t.dataset.v;N.wk=v===0?ntMonday(today()):addDays(N.wk||ntMonday(today()),7*v);render()},
+  'nt-mon'(t){const N=NT(),v=+t.dataset.v,d=parse(N.mon||monthStart(today()));N.mon=v===0?monthStart(today()):iso(new Date(d.getFullYear(),d.getMonth()+v,1));render()},
+  'nt-goday'(t){const N=NT();N.day=t.dataset.d;N.view='bugun';render();window.scrollTo(0,0)},
+  'nt-addday'(t){const d=t.dataset.d;ntCreate({kind:'is',title:'',due_date:d},{quiet:true}).then(n=>{if(n){render();ntOpenModal(n.id,true)}})},
+  'nq-add'(t){const el=document.getElementById(t.dataset.for);if(el)nqAdd(el,el.dataset.base||undefined)},
+  'nt-new'(t){const k=t.dataset.k,N=NT(),f={kind:k};if(k==='is')f.due_date=N.view==='bugun'?N.day:null;if(N.view==='tum'&&N.side.startsWith('f:'))f.folder_id=N.side.slice(2);
+    ntCreate(f,{quiet:true}).then(n=>{if(!n)return;if(k==='not'){N.view='tum';N.q='';N.sel=n.id;N.mob='edit';if(!['all','not'].includes(N.side)&&!N.side.startsWith('f:'))N.side='all';render();const i=document.querySelector('.nt-ep .nt-title');if(i)i.focus()}else{render();ntOpenModal(n.id,true)}})},
+  'nt-open'(t){const n=ntGet(t.dataset.id);if(!n)return;ntOpenModal(n.id)},
+  'nt-sel'(t){const N=NT(),n=ntGet(t.dataset.id);if(!n)return;ntFlushAll();if(N.sel&&N.sel!==n.id){const o=N.sel;setTimeout(()=>ntCleanup(o),900)}if(N.view!=='tum'||N.q){if(n.kind==='is'&&!n.period&&!n.deleted_at){ntOpenModal(n.id);return}N.view='tum';N.q='';N.side=ntMine(n)?(n.deleted_at?'cop':n.archived?'arsiv':'all'):'shared'}N.sel=n.id;N.mob='edit';render()},
+  'nt-side'(t){const N=NT();if(N.sel){const o=N.sel;ntFlushAll();setTimeout(()=>ntCleanup(o),900)}N.side=t.dataset.v;N.mob='list';const L=ntFiltered();if(!L.some(n=>n.id===N.sel))N.sel='';render()},
+  'nt-mob'(t){NT().mob=t.dataset.v;if(t.dataset.v!=='edit')ntFlushAll();render()},
+  'nt-grid'(){const N=NT();N.grid=!N.grid;prefSet('nt_grid',N.grid?'1':'0');render()},
+  'nt-fold'(t){const N=NT(),k=t.dataset.k,cur=N.show[k]!==undefined?N.show[k]:t.getAttribute('aria-expanded')==='true';N.show[k]=!cur;render()},
+  'nt-q-clear'(){NT().q='';render()},
+  async 'nt-done'(t){const n=ntGet(t.dataset.id);if(!n||!ntCanEd(n))return;const v=!n.done;if(await ntUpd(n.id,{done:v})&&v)toast(n.repeat?'Tamamlandı · sonraki: '+ntRepTxt(n.repeat).toLocaleLowerCase('tr'):'Tamamlandı')},
+  'nt-post'(t){const n=ntGet(t.dataset.id);if(!n)return;const base=n.due_date&&n.due_date>today()?n.due_date:today();ntUpd(n.id,{due_date:addDays(base,+t.dataset.v||1)}).then(o=>o&&toast('Ertelendi · '+ntDayTxt(ntGet(n.id).due_date)))},
+  async 'nt-od-today'(){const L=ntOverdue().filter(ntCanEd);for(const n of L)await ntUpd(n.id,{due_date:today()},{quiet:true});ntRender();toast(L.length+' iş bugüne taşındı')},
+  'nt-pin'(t){const n=ntGet(t.dataset.id);if(n)ntUpd(n.id,{pinned:!n.pinned})},
+  'nt-color'(t){ntUpd(t.dataset.id,{color:t.dataset.v||null})},
+  'nt-kind'(t){const n=ntGet(t.dataset.id);if(!n)return;ntUpd(n.id,{kind:n.kind==='is'?'not':'is'}).then(o=>o&&toast(n.kind==='is'?'Yapılacak oldu':'Not oldu'))},
+  'nt-arch'(t){const n=ntGet(t.dataset.id);if(!n)return;const v=!n.archived;ntUpd(n.id,{archived:v},{quiet:true}).then(o=>{if(!o)return;toast(v?'Arşivlendi':'Arşivden çıkarıldı');if(NT().modal===n.id)closeModal();if(v&&NT().side!=='arsiv')NT().sel='';ntRender()})},
+  'nt-del'(t){const n=ntGet(t.dataset.id);if(!n)return;if(!armed(t,'Çöpe taşınsın mı?'))return;ntUpd(n.id,{deleted_at:new Date().toISOString()},{quiet:true}).then(o=>{if(!o)return;toast('Çöp kutusuna taşındı (30 gün saklanır)');if(NT().modal===n.id)closeModal();if(NT().sel===n.id)NT().sel='';ntRender()})},
+  'nt-restore'(t){ntUpd(t.dataset.id,{deleted_at:null},{quiet:true}).then(o=>{if(o){toast('Geri alındı');ntRender()}})},
+  async 'nt-purge'(t){if(!armed(t,'Kalıcı silinsin mi?'))return;const id=t.dataset.id;await ntFilesRemove([id]);const r=await sb.from('notes').delete().eq('id',id);if(r.error)return toast(msg(r.error),true);
+    const N=NT();N.notes=N.notes.filter(n=>n.id!==id);N.files=N.files.filter(f=>f.note_id!==id);if(N.sel===id)N.sel='';if(N.modal===id)closeModal();toast('Kalıcı silindi');ntRender()},
+  async 'nt-empty'(t){if(!armed(t,'Çöp kutusu boşaltılsın mı?'))return;const N=NT(),ids=N.notes.filter(n=>n.deleted_at&&ntMine(n)).map(n=>n.id);await ntFilesRemove(ids);
+    for(const id of ids){const r=await sb.from('notes').delete().eq('id',id);if(r.error){toast(msg(r.error),true);break}N.notes=N.notes.filter(n=>n.id!==id)}N.files=N.files.filter(f=>!ids.includes(f.note_id));N.sel='';toast('Çöp kutusu boşaltıldı');render()},
+  async 'nt-leave'(t){if(!armed(t,'Paylaşımdan çıkılsın mı?'))return;const id=t.dataset.id,r=await sb.from('note_shares').delete().eq('note_id',id).eq('user_id',S.user.id);if(r.error)return toast(msg(r.error),true);
+    const N=NT();N.shares=N.shares.filter(s=>!(s.note_id===id&&s.user_id===S.user.id));N.notes=N.notes.filter(n=>n.id!==id);if(N.sel===id)N.sel='';if(N.modal===id)closeModal();toast('Paylaşımdan çıkıldı');ntRender()},
+  'nt-share'(t){ntFlushAll();ntShareModal(t.dataset.id)},'nt-share-save'(t){ntShareSave(t.dataset.id)},
+  'nt-hist'(t){ntHistModal(t.dataset.id)},'nt-hsel'(t){NT().hist.sel=t.dataset.id;ntHistDraw()},
+  async 'nt-hrest'(t){if(!armed(t,'Geri yüklensin mi?'))return;const H=NT().hist,r=await sb.rpc('note_restore',{p_version:t.dataset.id});if(r.error)return setErr(msg(r.error));
+    const f=await sb.from('notes').select('*').eq('id',H.id).maybeSingle();NT().dirty.delete(H.id);if(f.data)ntMerge(f.data);else{const v=H.L.find(x=>x.id===t.dataset.id),n=ntGet(H.id);if(v&&n)Object.assign(n,{title:v.title,body:v.body})}
+    NT().hist=null;closeModal();toast('Sürüm geri yüklendi');ntRender()},
+  'nt-folder'(t){ntFolderModal(t.dataset.id)},
+  async 'nt-folder-save'(t){const id=t.dataset.id,name=(g('ntf-name')||'').trim(),color=g('ntf-color')||null,N=NT();if(!name)return setErr('Klasör adı yazın');
+    if(N.folders.some(f=>f.id!==id&&f.name.toLocaleLowerCase('tr')===name.toLocaleLowerCase('tr')))return setErr('Bu adda klasör var');
+    if(id){const r=await sb.from('note_folders').update({name,color}).eq('id',id);if(r.error)return setErr(msg(r.error));Object.assign(N.folders.find(f=>f.id===id),{name,color})}
+    else{const row={id:ntUid(),owner_id:S.user.id,name,color,sort:N.folders.length,created_at:new Date().toISOString()};const r=await sb.from('note_folders').insert(row);if(r.error)return setErr(msg(r.error));N.folders.push(row);N.side='f:'+row.id;N.view='tum'}
+    closeModal();render()},
+  async 'nt-fdel-folder'(t){if(!armed(t,'Klasör silinsin mi? (notlar silinmez)'))return;const id=t.dataset.id,r=await sb.from('note_folders').delete().eq('id',id);if(r.error)return setErr(msg(r.error));
+    const N=NT();N.folders=N.folders.filter(f=>f.id!==id);N.notes.forEach(n=>{if(n.folder_id===id)n.folder_id=null});if(N.side==='f:'+id)N.side='all';closeModal();render()},
+  async 'nt-set-save'(){const m=document.getElementById('nts-m').checked,N=NT();prefSet('nt_start',document.getElementById('nts-s').checked?'1':'0');prefSet('nt_rem',g('nts-r')||'');
+    if(!N.prefs||N.prefs.morning!==m){const r=await sb.from('note_prefs').upsert({user_id:S.user.id,morning:m});if(r.error)return setErr(msg(r.error));N.prefs={user_id:S.user.id,morning:m}}closeModal();toast('Ayarlar kaydedildi')},
+  'nt-set'(){ntSetModal()},'nt-fab'(){ntFab()},
+  'nt-fabk'(t){document.querySelectorAll('[data-a="nt-fabk"]').forEach(b=>b.setAttribute('aria-pressed',String(b===t)));const box=document.getElementById('nt-fabb');
+    if(t.dataset.v==='not'){closeModal();A['nt-new']({dataset:{k:'not'}})}else if(box)box.innerHTML=ntQuick(today(),'nqm')},
+  'nt-cmd'(t){ntExec(t.dataset.cmd,t.dataset.key)},'nt-slash'(t){ntSlashRun(t.dataset.v)},'nt-line2task'(t){ntLine2Task(t.dataset.key)},
+  async 'nt-step-t'(t){const n=ntGet(t.dataset.id);if(!n||!ntCanEd(n))return;const ck=(n.checklist||[]).map((c,i)=>i===+t.dataset.i?{...c,d:!c.d}:c);ntUpd(n.id,{checklist:ck})},
+  'nt-step-x'(t){const n=ntGet(t.dataset.id);if(!n)return;ntUpd(n.id,{checklist:(n.checklist||[]).filter((c,i)=>i!==+t.dataset.i)})},
+  'nt-cam'(t){const id=t.dataset.id;camOpen('foto',f=>ntUpload(id,[f]),'Nota fotoğraf ekle')},
+  async 'nt-fopen'(t){const w=window.open('','_blank');try{const r=await sb.storage.from('anka-notes').createSignedUrl(t.dataset.path,300);if(r.error)throw r.error;if(w)w.location=r.data.signedUrl;else location.href=r.data.signedUrl}catch(e){if(w)w.close();toast(msg(e),true)}},
+  async 'nt-fdel'(t){if(!armed(t,'Silinsin mi?'))return;const N=NT(),f=N.files.find(x=>x.id===t.dataset.id);if(!f)return;const r=await sb.from('note_files').delete().eq('id',f.id);if(r.error)return toast(msg(r.error),true);
+    try{await sb.storage.from('anka-notes').remove([f.path])}catch(e){}N.files=N.files.filter(x=>x.id!==f.id);toast('Ek silindi');ntRender()},
+});
+document.addEventListener('mousedown',e=>{if(e.target.closest&&e.target.closest('[data-a="nt-cmd"],[data-a="nt-slash"],[data-a="nt-line2task"]'))e.preventDefault()});
+document.addEventListener('input',e=>{const t=e.target;if(!t||!t.closest)return;
+  const b=t.closest('[data-nt-body]');if(b){if(e.inputType==='insertParagraph'){const li=ntLi(b);if(li)li.removeAttribute('data-on')}ntInput(b);if(e.inputType==='insertText'&&e.data===' ')ntMd(b);
+    if(e.inputType==='insertText'&&e.data==='/'){const sel=document.getSelection(),nd=sel.anchorNode;if(nd&&nd.nodeType===3&&nd.textContent.slice(0,sel.anchorOffset).replace(/ /g,' ').trim()==='/')ntSlash(b);else ntSlashClose()}else if(document.getElementById('nt-slash'))ntSlashClose();return}
+  if(t.hasAttribute('data-nt-title')){ntInput(t);return}
+  if(t.dataset.c==='nq'){const h=document.getElementById(t.dataset.hint);if(h)h.innerHTML=t.value.trim()?nqHint(nqParse(t.value,t.dataset.base||undefined)):'';return}
+  if(t.dataset.c==='ntq'){const N=NT();N.q=t.value;const p=t.selectionStart;render();const n=document.getElementById('nt-q');if(n){n.focus();try{n.setSelectionRange(p,p)}catch(x){}}return}});
+document.addEventListener('change',e=>{const t=e.target,c=t.dataset&&t.dataset.c;if(!c||!c.startsWith('nt'))return;
+  if(c==='nt-file'){const fl=[...t.files];t.value='';if(fl.length)ntUpload(t.dataset.id,fl);return}
+  if(c==='nt-dayp'){if(t.value){NT().day=t.value;render()}return}
+  if(c==='nt-sort'){NT().sort=t.value;render();return}
+  const n=ntGet(t.dataset.id);if(!n)return;
+  if(c==='nt-tags'){const tags=[...new Set(t.value.split(/[\s,]+/).map(x=>x.replace(/^#+/,'').trim().toLocaleLowerCase('tr')).filter(Boolean))].slice(0,20);ntUpd(n.id,{tags});return}
+  if(c==='nt-step'){const ck=(n.checklist||[]).map((x,i)=>i===+t.dataset.i?{...x,t:t.value.slice(0,200)}:x).filter(x=>x.t.trim());ntUpd(n.id,{checklist:ck},{quiet:true});return}
+  if(c==='nt-f'){const f=t.dataset.f;let v=t.value;
+    if(f==='repeat'){v=v==='n'?'n:'+(n.repeat&&n.repeat.startsWith('n:')?n.repeat.slice(2):'2'):(v||null);if(v&&!n.due_date){ntUpd(n.id,{repeat:v,due_date:today()});return}}
+    else if(f==='repeat_n'){const k=Math.max(1,Math.min(999,parseInt(v)||1));ntUpd(n.id,{repeat:'n:'+k});return}
+    else if(f==='remind_min'){v=v===''?null:+v;if(v!=null&&!n.due_date){ntUpd(n.id,{remind_min:v,due_date:today()});return}}
+    else if(f==='due_time'){v=v||null;if(v&&!n.due_date){ntUpd(n.id,{due_time:v,due_date:today()});return}}
+    else v=v||null;
+    if(f==='priority'&&!v)v='normal';ntUpd(n.id,{[f]:v})}});
+document.addEventListener('keydown',e=>{const t=e.target;if(!t||!t.closest)return;
+  const sl=document.getElementById('nt-slash');
+  if(sl&&t.closest('[data-nt-body]')){const B=[...sl.querySelectorAll('button')];let i=+sl.dataset.i||0;
+    if(e.key==='ArrowDown'||e.key==='ArrowUp'){e.preventDefault();i=(i+(e.key==='ArrowDown'?1:-1)+B.length)%B.length;sl.dataset.i=i;B.forEach((b,k)=>b.setAttribute('aria-selected',String(k===i)));return}
+    if(e.key==='Enter'){e.preventDefault();ntSlashRun(B[i].dataset.v);return}if(e.key==='Escape'){e.preventDefault();ntSlashClose();return}}
+  if(e.key==='Enter'&&!e.shiftKey&&t.closest('[data-nt-body]')){const b=t.closest('[data-nt-body]'),li=ntLi(b);   // boş liste satırında Enter → listeden çık
+    if(li&&!li.textContent.trim()&&!li.querySelector('ul,ol')){e.preventDefault();const L=li.parentElement;ntToList(b,L.tagName,L.hasAttribute('data-chk'));ntInput(b);return}}
+  if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==='s'&&t.closest('.nt-ed')){e.preventDefault();ntFlushAll();return}
+  if(e.key==='Enter'&&t.dataset&&t.dataset.c==='nq'){e.preventDefault();nqAdd(t,t.dataset.base||undefined);return}
+  if(e.key==='Enter'&&t.dataset&&t.dataset.c==='nt-stepadd'){e.preventDefault();const n=ntGet(t.dataset.id),v=t.value.trim();if(!n||!v)return;t.value='';ntUpd(n.id,{checklist:[...(n.checklist||[]),{t:v.slice(0,200),d:false}]}).then(()=>{const x=document.querySelector(`[data-c="nt-stepadd"][data-id="${n.id}"]`);if(x)x.focus()});return}
+  if(e.key==='Enter'&&t.hasAttribute&&t.hasAttribute('data-nt-title')){e.preventDefault();const b=t.closest('.nt-ed').querySelector('[data-nt-body]');if(b)b.focus();return}});
+/* düzenleyici her zaman paragraf (<p>) bloklarıyla çalışsın: kısayollar ve listeler doğru davranır */
+document.addEventListener('focusin',e=>{const b=e.target&&e.target.closest&&e.target.closest('[data-nt-body][contenteditable="true"]');if(!b)return;
+  try{document.execCommand('defaultParagraphSeparator',false,'p')}catch(x){}
+  if(!b.firstElementChild&&!b.textContent.trim()){b.innerHTML='<p><br></p>';const r=document.createRange();r.setStart(b.firstChild,0);r.collapse(true);const s=document.getSelection();s.removeAllRanges();s.addRange(r)}
+  else if([...b.childNodes].some(n=>n.nodeType===3&&n.textContent.trim())){const html=b.innerHTML;b.innerHTML='';const p=document.createElement('p');NT_TPL.innerHTML=html;
+    [...NT_TPL.content.childNodes].forEach(n=>{if(n.nodeType===1&&/^(P|DIV|H1|H2|H3|UL|OL|BLOCKQUOTE|HR|PRE)$/.test(n.tagName)){if(p.childNodes.length){b.appendChild(p.cloneNode(true));p.innerHTML=''}b.appendChild(n)}else p.appendChild(n)});if(p.childNodes.length)b.appendChild(p)}});
+/* yapılacak listesi kutuları: satırın solundaki kutuya tıklayınca işaretlenir */
+document.addEventListener('click',e=>{const li=e.target.closest&&e.target.closest('[data-nt-body] ul[data-chk] > li');if(!li)return;const r=li.getBoundingClientRect();if(e.clientX-r.left>26)return;
+  const b=li.closest('[data-nt-body]');if(!b.isContentEditable)return;if(li.hasAttribute('data-on'))li.removeAttribute('data-on');else li.setAttribute('data-on','1');ntInput(b)});
+document.addEventListener('focusout',e=>{if(e.target&&e.target.closest&&e.target.closest('[data-nt-body]'))setTimeout(ntSlashClose,150)});
+/* sürükle-bırak: işi başka güne / sıraya taşı */
+document.addEventListener('dragstart',e=>{const r=e.target.closest&&e.target.closest('.nt-task[draggable="true"]');if(!r)return;e.dataTransfer.setData('text/nt',r.dataset.id);e.dataTransfer.effectAllowed='move';r.classList.add('drag')});
+document.addEventListener('dragend',e=>{document.querySelectorAll('.nt-task.drag,.drop-on').forEach(x=>x.classList.remove('drag','drop-on'))});
+document.addEventListener('dragover',e=>{const z=e.target.closest&&e.target.closest('[data-drop]');if(!z||![...e.dataTransfer.types].includes('text/nt'))return;e.preventDefault();document.querySelectorAll('.drop-on').forEach(x=>x!==z&&x.classList.remove('drop-on'));z.classList.add('drop-on')});
+document.addEventListener('drop',e=>{const z=e.target.closest&&e.target.closest('[data-drop]');if(!z)return;const id=e.dataTransfer.getData('text/nt');if(!id)return;e.preventDefault();z.classList.remove('drop-on');
+  const n=ntGet(id),d=z.dataset.drop;if(!n)return;const tgt=e.target.closest('.nt-task');
+  if(tgt&&tgt.dataset.id!==id&&n.due_date===d){const L=ntOn(d).filter(x=>!x.done&&x.id!==id),i=L.findIndex(x=>x.id===tgt.dataset.id);L.splice(i<0?L.length:i,0,n);
+    L.forEach((x,k)=>{const s=(k+1)*10;if(x.sort!==s)ntUpd(x.id,{sort:s},{quiet:true})});ntRender();return}
+  if(n.due_date!==d)ntUpd(id,{due_date:d}).then(o=>o&&toast('Taşındı · '+ntDayTxt(d)))});
+/* telefonda kaydırma: sağa → tamamla, sola → yarına ertele */
+(()=>{let s=null;document.addEventListener('touchstart',e=>{const r=e.target.closest&&e.target.closest('.nt-task');if(!r||r.classList.contains('done')&&false)return;const p=e.touches[0];s={r,x:p.clientX,y:p.clientY,dx:0}},{passive:true});
+  document.addEventListener('touchmove',e=>{if(!s)return;const p=e.touches[0];s.dx=p.clientX-s.x;if(Math.abs(p.clientY-s.y)>Math.abs(s.dx)){s.r.style.transform='';s=null;return}s.r.style.transform=`translateX(${Math.max(-90,Math.min(90,s.dx))}px)`;s.r.classList.toggle('sw-r',s.dx>60);s.r.classList.toggle('sw-l',s.dx<-60)},{passive:true});
+  document.addEventListener('touchend',()=>{if(!s)return;const {r,dx}=s;s=null;r.style.transform='';r.classList.remove('sw-r','sw-l');const id=r.dataset.id,n=ntGet(id);if(!n||!ntCanEd(n))return;
+    if(dx>70)A['nt-done']({dataset:{id}});else if(dx<-70&&!n.done)A['nt-post']({dataset:{id,v:'1'}})})})();
+
 document.addEventListener('click',e=>{
   if(S.uOpen&&!e.target.closest('.umenu')){S.uOpen=false;render()}
   if(S.notifOpen&&!e.target.closest('.bell')){S.notifOpen=false;render()}
