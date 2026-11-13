@@ -1992,7 +1992,7 @@ function vSatis(){psInit();psCheck();
    <div class="ps-row ps-cust"><span class="avatar">${cust?esc(initials(cust.name)):'?'}</span>
     <div class="cq">${cust?`<b>${esc(cust.name)}</b><small>${esc([cust.phone,acqShort(cust)].filter(Boolean).join(' · '))||'Müşteri'} <button class="lnk" data-a="ps-cclr">Kaldır</button></small>`:`<input id="ps-cq" type="search" autocomplete="off" placeholder="Müşteri seçin (ad veya telefon)" value="${esc(u.cq||'')}" data-c="pscq" aria-label="Müşteri ara"><small>Satış, iade ve değişim için isteğe bağlı</small>`}</div>
     <button class="btn soft" data-a="ps-cust">${ic('userplus','sm')} Müşteri seç</button>
-    <button class="ps-tool sq" data-a="ps-more" aria-expanded="${!!u.more}" title="Satış bilgileri: satışı yapan, tarih, not, takas">${ic('down')}${c.note||c.trades.length||(c.date&&c.date!==today())||(c.staff&&c.staff!==S.user.id)?'<i class="dot"></i>':''}</button></div>
+    <button class="ps-tool sq" data-a="ps-more" aria-expanded="${!!u.more}" title="Satış bilgileri: satışı yapan, tarih, not">${ic('down')}${c.note||c.trades.length||(c.date&&c.date!==today())||(c.staff&&c.staff!==S.user.id)?'<i class="dot"></i>':''}</button></div>
    <div class="ps-rel" id="ps-cres">${!cust&&u.cq?psCustDd(u.cq):''}</div>
    ${u.more?psMoreHtml(c):''}
    <div class="ps-fis" role="tablist" aria-label="Açık fişler">${Array.from({length:PS_N},(_,k)=>{const n=k+1,f=S.fis.f[n],cnt=psCount(f),ft=cnt?psTotals(f):null;
@@ -2027,7 +2027,8 @@ function psMoreHtml(c){const today0=today(),bd=can('backdate_sale');
    ${can('sell_for_others')?`<label class="f">Satışı yapan<select class="in" data-c="pssel">${opts(sellerOpts(),c.staff||S.user.id)}</select></label>`:`<label class="f">Satışı yapan<input class="in" value="${esc(S.me.full_name||'')}" disabled></label>`}
    <label class="f">İşlem tarihi<input class="in" type="date" data-c="psdate" value="${esc(c.date||today0)}" max="${today0}" ${bd&&c.mode==='satis'?'':'disabled title="'+(c.mode!=='satis'?'İade ve değişim bugünün tarihiyle kaydedilir':'Geçmiş tarihli satış yetkiniz yok')+'"'}></label>
    <label class="f full">Satış notu<input class="in" data-c="psnote" maxlength="300" value="${esc(c.note||'')}" placeholder="Örn. kutusuz teslim, faturası e-postayla gönderilecek"></label></div>
-   ${c.mode==='satis'?`<div class="row" style="margin-top:8px"><button class="btn sm" data-a="ps-trade">${ic('swap','sm')} Takas cihazı ekle</button>${c.trades.length?`<span class="sub">${c.trades.length} takas cihazı · −${money(sum(c.trades,x=>psNum(x.value)))}</span>`:'<span class="sub">Müşteriden alınan cihazın değeri ödenecek tutardan düşer.</span>'}</div>`:''}</div>`}
+   </div>`}
+
 /* yalnız tutarları yeniler (yazarken sayfa yeniden çizilmez) */
 function psRefresh(){const c=S.cart,t=psTotals(c),el=document.getElementById('ps-sums'),a=document.getElementById('ps-amt');if(!el||!a)return;
   el.innerHTML=psSumHtml(c,t);a.innerHTML=money(c.mode==='iade'?t.ret:Math.abs(t.net)).replace(' ₺','')+'<small>₺</small>';
@@ -2101,11 +2102,6 @@ function psProforma(){const c=S.cart,t=psTotals(c),d=S.d,sh=shopSet(),cu=c.custo
    ${t.misc?`<div class="sum"><span>Muhtelif</span><b>${money(t.misc)}</b></div>`:''}${t.isk?`<div class="sum"><span>İskonto</span><b>−${money(t.isk)}</b></div>`:''}${t.trade?`<div class="sum"><span>Takas</span><b>−${money(t.trade)}</b></div>`:''}
    <div class="sum big"><span>TOPLAM</span><b>${money(t.net)}</b></div><p style="text-align:center;font-size:11px">Bu belge bilgi amaçlıdır, mali belge yerine geçmez.</p></div>
    <div class="actions no-print"><button class="btn" data-a="close">Kapat</button><button class="btn pri" data-a="q-print">Yazdır</button></div>`)}
-function psTradeModal(){modal(`<h2>Takas cihazı ekle</h2><p class="sub">Müşteriden alınan cihazın değeri ödenecek tutardan düşer; cihaz satış tamamlanınca stoğa girer.</p>
-  <div class="form"><label class="f">Kategori<select class="in" id="t-cat">${opts(CATS,CATS[0])}</select></label><label class="f">Alt kategori<select class="in" id="t-sub">${opts(SUBS,'2.El')}</select></label>
-  <label class="f full">Marka / Model<input class="in" id="t-model"></label><label class="f">IMEI<span class="inl"><input class="in mono" id="t-imei" inputmode="numeric"><button type="button" class="btn sm" data-a="scan" data-t="t-imei" aria-label="Kamerayla okut">Tara</button></span></label><label class="f">Pil (%)<input class="in" id="t-bat" type="number" min="0" max="100"></label>
-  <label class="f">Kozmetik<select class="in" id="t-cos">${opts(COSM,'','-')}</select></label><label class="f">Takas değeri (₺)<input class="in" id="t-val" type="number" min="0" step="0.01" inputmode="decimal"></label></div>
-  <div class="err" id="t-err" hidden></div><div class="actions"><button class="btn" data-a="close">Vazgeç</button><button class="btn pri" data-a="trade-add">Takas cihazını ekle</button></div>`)}
 
 /* ---------- hızlı ürün yönetimi ---------- */
 function pqCard(){if(!can('manage_pos_quick'))return '';const G=psGroups(),all=(S.d.pos_groups||[]);
@@ -6561,7 +6557,6 @@ Object.assign(A,{
   'ps-cnew'(){psCustNew()},
   async 'ps-csave'(t){t.disabled=true;try{const id=await resolveContact('musteri','s-cust');S.cart.nn='';S.cart.nt='';S.cart.nch='';S.cart.nsrc='';closeModal();await syncData();S.cart.customer=id;S.ps.cq='';toast('Müşteri eklendi ve seçildi');render()}catch(e){t.disabled=false;setErr(msg(e))}},
   'ps-more'(){S.ps.more=!S.ps.more;render()},
-  'ps-trade'(){psTradeModal()},
   'trade-add'(){
     const v=nv('t-val'),m=g('t-model'),er=document.getElementById('t-err');
     if(!m||v==null||v<0){er.textContent='Model ve takas değerini girin.';er.hidden=false;return}
