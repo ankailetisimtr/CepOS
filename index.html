@@ -472,6 +472,104 @@ button.pill.ti-pill{cursor:pointer;font:inherit;font-size:12px}button.pill.ti-pi
 .bk-rates{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:8px}.bk-r{display:flex;flex-direction:column;gap:2px;font-size:12px;color:var(--muted)}.bk-r small{min-height:14px}
 .bk-r .pc{display:flex;align-items:center;gap:4px}.bk-r .pc .in{text-align:right;color:var(--text)}.bk-r .pc i{font-style:normal;color:var(--muted)}
 .note.warn{background:var(--warn-soft);border-radius:8px;padding:8px 10px;font-size:13px}
+/* Satış ekranı (058) */
+.sr{position:absolute!important;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.ic.xl{width:44px;height:44px;stroke-width:1.4}
+.ps{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.1fr);gap:16px;height:calc(100dvh - 84px);min-height:640px;margin-top:12px}
+html.ps-full header.top{display:none}html.ps-full .wrap{max-width:none}html.ps-full body{padding-bottom:0}html.ps-full .ps{height:calc(100dvh - 24px);margin-top:12px}
+.ps-l,.ps-r{display:flex;flex-direction:column;gap:12px;min-height:0;min-width:0}
+.ps-l{background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:16px;box-shadow:var(--shadow)}
+.ps-row{display:flex;gap:10px;align-items:stretch;min-width:0}
+.ps-search{flex:1;min-width:0;display:flex;align-items:center;gap:12px;height:58px;padding:0 16px;border:2px solid var(--accent);border-radius:14px;background:var(--surface);color:var(--accent);box-shadow:0 0 0 4px var(--accent-soft);cursor:text}
+.ps-search.m-iade{border-color:var(--bad);color:var(--bad);box-shadow:0 0 0 4px var(--bad-soft)}.ps-search.m-degisim{border-color:var(--warn);color:var(--warn);box-shadow:0 0 0 4px var(--warn-soft)}
+.ps-search input{flex:1;min-width:0;border:0;outline:0;background:none;font-size:17px;color:var(--fg)}.ps-search input::placeholder{color:var(--muted)}
+.ps-tool{flex:none;width:66px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;border:1px solid var(--line);border-radius:14px;background:var(--surface);color:var(--fg);font-size:12px;cursor:pointer;position:relative;padding:0}
+.ps-tool:hover{border-color:var(--accent);color:var(--accent)}.ps-tool span{color:var(--muted)}.ps-tool.sq{width:52px;height:52px}.ps-tool[aria-expanded="true"] .ic{transform:rotate(180deg)}
+.ps-tool .dot{position:absolute;top:8px;right:8px;width:8px;height:8px;border-radius:50%;background:var(--pink)}
+.ps-rel{position:relative;z-index:6}.ps-rel:empty{display:none}
+.ps-res{position:absolute;left:0;right:0;top:-6px;max-height:min(52vh,420px);overflow:auto;background:var(--surface);border:1px solid var(--line);border-radius:14px;box-shadow:0 18px 40px rgba(10,20,30,.18);padding:6px}
+.ps-res .empty{padding:14px}
+.ps-ri{display:flex;width:100%;align-items:center;gap:12px;padding:10px 12px;border:0;background:none;border-radius:10px;text-align:left;cursor:pointer;color:var(--fg);font:inherit}
+.ps-ri:hover,.ps-ri.on{background:var(--accent-soft)}.ps-ri:disabled{opacity:.5;cursor:not-allowed}
+.ps-ri .nm{flex:1;min-width:0;display:flex;flex-direction:column}.ps-ri .nm small,.ps-ri .pr small{color:var(--muted);font-size:12px}.ps-ri .nm b{font-weight:600}
+.ps-ri .pr{display:flex;flex-direction:column;align-items:flex-end;font-weight:600;white-space:nowrap}
+.ps-cust{align-items:center;gap:12px}.ps-cust .avatar{width:46px;height:46px;font-size:15px}
+.ps-cust .cq{flex:1;min-width:0;display:flex;flex-direction:column}.ps-cust .cq b{font-size:16px}.ps-cust .cq small{color:var(--muted);font-size:12.5px}
+.ps-cust .cq input{border:0;outline:0;background:none;font-size:17px;padding:2px 0;color:var(--fg);min-width:0}.ps-cust .cq input::placeholder{color:var(--muted)}
+.ps-cust .btn.soft{height:52px;border-radius:14px;background:var(--accent-soft);border-color:transparent;color:var(--accent);font-weight:600;white-space:nowrap}
+.lnk{border:0;background:none;color:var(--accent);cursor:pointer;padding:0;font:inherit;text-decoration:underline}
+.ps-more{border:1px dashed var(--line);border-radius:14px;padding:12px;background:var(--surface2)}
+.ps-fis{display:grid;grid-template-columns:repeat(8,minmax(0,1fr));gap:8px}
+.ps-fis button{position:relative;height:56px;border:0;border-radius:14px;background:var(--surface2);color:var(--fg);font-size:18px;font-weight:500;cursor:pointer}
+.ps-fis button:hover{outline:2px solid var(--accent-soft)}
+.ps-fis button.on{background:var(--accent);color:var(--accent-fg);box-shadow:0 6px 16px rgba(10,112,184,.28)}
+.ps-fis button.has:not(.on){background:var(--accent-soft);color:var(--accent)}
+.ps-fis button.m-iade:not(.on){background:var(--bad-soft);color:var(--bad)}.ps-fis button.m-degisim:not(.on){background:var(--warn-soft);color:var(--warn)}
+.ps-fis button i{position:absolute;top:5px;right:6px;min-width:18px;height:18px;padding:0 5px;border-radius:9px;background:var(--pink);color:#fff;font:600 11px/18px var(--font);font-style:normal}
+.ps-cart{flex:1;min-height:120px;overflow:auto;border-bottom:2px dashed var(--line);margin:0 -4px;padding:0 4px}
+.ps-empty{height:100%;min-height:150px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;text-align:center;color:var(--muted);padding:16px}
+.ps-empty .ic{color:var(--accent)}.ps-empty b{color:var(--fg);font-size:17px;font-weight:600}.ps-empty span{max-width:440px}.ps-empty.sm{grid-column:1/-1;min-height:220px}
+.ps-line{display:grid;grid-template-columns:minmax(0,1fr) auto 112px 108px 32px;gap:10px;align-items:center;padding:10px 4px;border-bottom:1px solid var(--line)}
+.ps-line .nm{min-width:0;display:flex;flex-direction:column}.ps-line .nm b{font-weight:600;overflow:hidden;text-overflow:ellipsis}.ps-line .nm small{color:var(--muted);font-size:12px}
+.ps-line .qt{display:flex;align-items:center;gap:4px}.ps-line .qt input{width:46px;text-align:center;padding-inline:4px}.ps-line .qt>b{min-width:24px;text-align:center}
+.ps-line .pr input{width:100%;text-align:right}.ps-line .tt{text-align:right;white-space:nowrap}
+.ps-line.ret{background:var(--bad-soft);border-radius:10px;border-bottom:0;margin-bottom:6px;padding-inline:10px}.ps-line.trade .tt{color:var(--bad)}
+.ps-rf{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}.in.sm{height:32px;padding:4px 8px;font-size:13px;width:auto;max-width:100%}
+.ib.sm{width:30px;height:30px;border-radius:8px;font-size:16px}
+.ps-x{width:32px;height:32px;border:0;border-radius:8px;background:none;color:var(--muted);cursor:pointer;display:grid;place-items:center}.ps-x:hover{background:var(--bad-soft);color:var(--bad)}
+.ps-tools{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(0,1.25fr) 58px 58px 58px;gap:8px;align-items:stretch}
+.ps-inl{display:flex;gap:6px;min-width:0}.ps-inl .in{min-width:0;height:52px;border-radius:12px}.ps-inl select.in{width:62px;flex:none}.ps-inl .btn{height:52px;border-radius:12px;color:var(--accent);font-weight:600;flex:none}
+.ps-ic{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;height:52px;border:1px solid var(--line);border-radius:12px;background:var(--surface);color:var(--fg);cursor:pointer;font-size:11px;padding:0}
+.ps-ic span{color:var(--muted)}.ps-ic:hover{border-color:var(--accent);color:var(--accent)}.ps-ic:disabled{opacity:.45;cursor:not-allowed}
+.ps-ic.on.bad{background:var(--bad);border-color:var(--bad);color:#fff}.ps-ic.on.warn{background:var(--warn);border-color:var(--warn);color:#fff}.ps-ic.on span{color:inherit}
+.ps-ic.dng{color:var(--bad)}.ps-ic.dng:hover{background:var(--bad-soft);border-color:var(--bad)}
+.ps-chip{font-size:13px;color:var(--muted)}
+.ps-paid{display:flex;align-items:center;gap:10px;flex-wrap:wrap}.ps-paid>label{font-weight:500;min-width:56px}
+.ps-paid>.in{flex:1;min-width:120px;height:52px;border-radius:12px;font-size:20px;text-align:center}
+.ps-qp{display:flex;gap:6px}.ps-qp .btn{height:52px;min-width:54px;border-radius:26px;font-size:13px}
+.ps-total{display:flex;align-items:flex-end;gap:12px;background:var(--accent-soft);border-radius:16px;padding:14px 20px}
+.ps-total.m-iade{background:var(--bad-soft)}.ps-total.m-degisim{background:var(--warn-soft)}
+.ps-total .l{flex:1;min-width:0}.ps-total .k{font-size:13px;letter-spacing:.06em;color:var(--muted);font-weight:600}.ps-total .sub{font-size:13px}
+.ps-total .v{font-size:clamp(30px,3vw,46px);font-weight:600;line-height:1;letter-spacing:-.02em;white-space:nowrap;font-variant-numeric:tabular-nums}.ps-total .v small{font-size:22px;margin-left:4px}
+.ps-sr{display:flex;justify-content:space-between;gap:12px;font-size:13px;margin-top:3px;max-width:330px}.ps-sr.big{font-size:16px;font-weight:600}.ps-sr.pos b{color:var(--good)}.ps-sr.neg b{color:var(--bad)}
+.ps-top{display:flex;gap:10px;align-items:center;min-width:0}
+.ps-top .chip{display:inline-flex;align-items:center;gap:8px;height:46px;padding:0 16px;border:1px solid var(--line);border-radius:23px;background:var(--surface);white-space:nowrap;font-size:14px;box-shadow:var(--shadow)}
+.ps-top .chip .ic{color:var(--accent)}.ps-top .chip.pst{flex:1;min-width:0;color:var(--muted);overflow:hidden;text-overflow:ellipsis}
+.ps-top .chip.pst i{width:9px;height:9px;border-radius:50%;background:var(--muted);flex:none}.ps-top .chip.pst.on i{background:var(--accent)}.ps-top .chip.pst.ok i{background:var(--good)}.ps-top .chip.pst.ok{color:var(--good)}
+.ps-top .chip.pst.bad i{background:var(--bad)}.ps-top .chip.pst.bad{color:var(--bad)}.ps-top .chip.pst.warn i{background:var(--warn)}.ps-top .chip.pst.warn{color:var(--warn)}
+.ps-top .ib2{width:46px;justify-content:center;padding:0;cursor:pointer;color:var(--fg)}
+.ps-tabs{display:flex;gap:10px;overflow-x:auto;padding:2px 2px 6px;scrollbar-width:thin}
+.ps-tabs button{flex:none;display:flex;align-items:center;gap:10px;min-width:150px;height:72px;padding:0 14px;border:2px solid transparent;border-radius:16px;background:var(--surface);box-shadow:var(--shadow);cursor:pointer;text-align:left;color:var(--fg)}
+.ps-tabs button>span:last-child{display:flex;flex-direction:column;min-width:0}.ps-tabs b{font-weight:600;letter-spacing:.02em;text-transform:uppercase;overflow:hidden;text-overflow:ellipsis;max-width:120px}.ps-tabs small{color:var(--muted);font-size:12px}
+.ps-tabs .gi{width:38px;height:38px;border-radius:50%;display:grid;place-items:center;background:var(--surface2);color:var(--gc,var(--accent));flex:none}
+.ps-tabs button.on{border-color:var(--gc,var(--accent));background:var(--accent-soft)}.ps-tabs button.on .gi{background:var(--gc,var(--accent));color:#fff}.ps-tabs button.on b{color:var(--gc,var(--accent))}
+.ps-tabs .ps-tedit{min-width:0;flex-direction:column;justify-content:center;gap:2px;font-size:12px;color:var(--muted);border:1px dashed var(--line);box-shadow:none;background:none}
+.ps-tiles{flex:1;min-height:0;overflow:auto;display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));grid-auto-rows:minmax(150px,auto);gap:12px;align-content:start;padding:2px}
+.ps-tile{display:flex;flex-direction:column;justify-content:space-between;gap:8px;padding:10px;border:1px solid var(--line);border-radius:16px;background:var(--surface);box-shadow:var(--shadow);cursor:pointer;color:var(--fg);text-align:center;position:relative;overflow:hidden}
+.ps-tile::before{content:"";position:absolute;inset:0 0 auto;height:4px;background:var(--gc)}
+.ps-tile .tn{flex:1;display:flex;align-items:center;justify-content:center;background:var(--surface2);border-radius:12px;padding:10px 8px;font-size:14.5px;font-weight:500;line-height:1.3;text-transform:uppercase;overflow:hidden;display:-webkit-box;-webkit-line-clamp:5;-webkit-box-orient:vertical}
+.ps-tile .tf{display:flex;align-items:baseline;justify-content:space-between;gap:6px}.ps-tile .tf b{font-size:17px;font-weight:600}.ps-tile .tf small{font-size:11.5px;color:var(--muted)}.ps-tile .tf small.warn{color:var(--warn)}.ps-tile .tf small.neg{color:var(--bad)}
+.ps-tile:hover:not(:disabled){border-color:var(--gc);transform:translateY(-1px)}.ps-tile:active:not(:disabled){transform:scale(.98)}.ps-tile:disabled{opacity:.5;cursor:not-allowed}
+.ps-pay{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+.ps-pb{display:flex;align-items:center;gap:12px;height:78px;padding:0 16px;border:1px solid var(--line);border-radius:16px;background:var(--surface);color:var(--fg);cursor:pointer;text-align:left;box-shadow:var(--shadow)}
+.ps-pb>span:last-child{display:flex;flex-direction:column}.ps-pb b{font-size:19px;font-weight:600}.ps-pb small{font-size:12px;opacity:.8}
+.ps-pb .pi{width:44px;height:44px;border-radius:12px;display:grid;place-items:center;background:rgba(255,255,255,.18);flex:none}
+.ps-pb.g{background:#2E7D5B;border-color:#2E7D5B;color:#fff}.ps-pb.b{background:var(--accent);border-color:var(--accent);color:var(--accent-fg)}.ps-pb.v{background:var(--violet);border-color:var(--violet);color:#fff}
+.ps-pb.n .pi{background:var(--violet-soft);color:var(--violet)}
+.ps-pb:hover:not(:disabled){filter:brightness(1.06);transform:translateY(-1px)}.ps-pb:disabled{opacity:.42;cursor:not-allowed;transform:none}
+.ps-cf{margin-top:12px}.ps-cf .sum.big b{font-size:22px}
+.pq{display:grid;grid-template-columns:260px minmax(0,1fr);gap:16px;margin-top:12px}.pq h3{margin:4px 0 8px;font-size:14px}.pq h3 small{color:var(--muted);font-weight:400}
+.pq-gi{display:flex;align-items:center;gap:6px;border:1px solid var(--line);border-left:4px solid var(--gc);border-radius:10px;padding:4px 6px;margin-bottom:6px}.pq-gi.on{background:var(--accent-soft)}
+.pq-gi .nm{flex:1;min-width:0;border:0;background:none;text-align:left;cursor:pointer;display:flex;flex-direction:column;padding:4px;color:var(--fg)}.pq-gi .nm small{color:var(--muted);font-size:12px}
+.pq-gi .mv,.pq-it .mv{display:flex;gap:2px}.pq-add{display:flex;gap:6px}
+.pq-list{max-height:34vh;overflow:auto}.pq-it{display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid var(--line)}.pq-it .nm{flex:1;min-width:0;display:flex;flex-direction:column}.pq-it .nm small{color:var(--muted);font-size:12px}.pq-it>.in{width:180px}
+#pq-res{max-height:28vh;overflow:auto;margin-top:6px}
+@media (max-width:1100px){.ps-tools{grid-template-columns:1fr 1fr 52px 52px 52px}.ps-pb{height:68px;padding:0 10px;gap:8px}.ps-pb .pi{width:36px;height:36px}.ps-pb b{font-size:16px}}
+@media (max-width:980px){.ps{grid-template-columns:1fr;height:auto;min-height:0}.ps-cart{max-height:none;min-height:140px}.ps-tiles{max-height:60vh}
+  .ps-r{order:2}.ps-pay{position:sticky;bottom:0;z-index:7;background:var(--bg);padding:8px 0}.pq{grid-template-columns:1fr}}
+@media (max-width:620px){.ps-l{padding:12px;border-radius:14px}.ps-tool{width:52px}.ps-tool span{display:none}.ps-search{height:52px}.ps-fis{grid-template-columns:repeat(8,minmax(0,1fr));gap:4px}.ps-fis button{height:46px;font-size:16px}
+  .ps-tools{grid-template-columns:repeat(6,minmax(0,1fr))}.ps-tools .ps-inl{grid-column:span 3}.ps-tools .ps-ic{grid-column:span 2;height:46px}.ps-cust .cq small{display:none}.ps-fis button i{top:2px;right:2px}.ps-line{grid-template-columns:minmax(0,1fr) auto 32px;}.ps-line .pr{grid-column:1/2}.ps-line .tt{grid-column:2/3}
+  .ps-total .v{font-size:34px}.ps-pay{grid-template-columns:repeat(2,minmax(0,1fr))}.ps-top{flex-wrap:wrap}.ps-top .chip.pst{order:3;flex-basis:100%}.ps-cust .btn.soft{padding:0 10px}.ps-qp .btn{min-width:44px}.pq-it>.in{width:110px}}
 </style>
 </head>
 <body>
@@ -503,6 +601,7 @@ const TABS=[['panel','Genel Bakış',null],['notlar','Notlarım',null],['satis',
 
 /* ================= İKONLAR (ince çizgili, 24x24) ================= */
 const IC={
+  cart:'<circle cx="9" cy="20" r="1.4"/><circle cx="17" cy="20" r="1.4"/><path d="M3 4h2l2.4 11.2a1.5 1.5 0 0 0 1.5 1.2h8.6a1.5 1.5 0 0 0 1.5-1.1L21 8H6"/>',printer:'<path d="M6 9V3h12v6"/><rect x="3" y="9" width="18" height="8" rx="2"/><path d="M6 14h12v7H6z"/>',swap:'<path d="M7 4 3 8l4 4"/><path d="M3 8h14"/><path d="m17 20 4-4-4-4"/><path d="M21 16H7"/>',cash:'<rect x="2.5" y="6" width="19" height="12" rx="2"/><circle cx="12" cy="12" r="2.5"/><path d="M6 9.5v.01M18 14.5v.01"/>',bank:'<path d="M3 10h18L12 4z"/><path d="M5 10v8M9.5 10v8M14.5 10v8M19 10v8"/><path d="M3 20h18"/>',split:'<circle cx="12" cy="12" r="9"/><path d="M12 3v9l6.5 6"/>',pencil:'<path d="M4 20h4L19 9l-4-4L4 16z"/><path d="m13.5 6.5 4 4"/>',shrink:'<path d="M9 4v5H4M15 4v5h5M9 20v-5H4M15 20v-5h5"/>',
 notebook:'<path d="M6 3h11a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6z"/><path d="M6 3v18M10 8h6M10 12h6"/><path d="M4 7h3M4 12h3M4 17h3"/>',pin:'<path d="M12 17v5"/><path d="M9 3h6l-1 6 3 3v2H7v-2l3-3z"/>',
 folder:'<path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>',share:'<circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="M8.6 13.5l6.8 4M15.4 6.5l-6.8 4"/>',
 trash:'<path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3"/>',
@@ -597,7 +696,7 @@ async function all(table,order,asc){
     out=out.concat(data||[]);if(!data||data.length<1000)break;from+=1000}
   return out}
 /* uygulamanın yüklediği tablolar ve sıralamaları (canlı güncelleme de bunları kullanır) */
-const LOAD_NAMES=['pos_banks','pos_bank_rates','trainings','training_progress','training_questions','training_paths','training_path_items','training_assignments','notification_reads','notification_state','price_refs','price_deductions','device_inspections','term_debts','term_debt_payments','work_schedules','shift_changes','owner_closings','entitlements','staff_pay_profiles','exchanges','service_costs','shortages','accessory_categories','accessory_families','expense_categories','expense_templates','expenses','cash_accounts','app_settings','day_closings','day_closing_lines','fx_rates','purchases','purchase_lines','profiles','staff_settings','role_permissions','contacts','products','product_costs','sales','sale_items','sale_payments','sale_trade_ins','sale_item_costs','commissions','sale_returns','cash_entries','party_entries','consignment_agreements','consignment_rates','notifications','service_orders','service_events','customer_orders','follow_ups','quotes','quote_items','attachments','shifts','time_clock','tasks','push_subscriptions','accessories','accessory_costs','accessory_moves','sale_accessory_items','sale_accessory_costs','sale_accessory_returns'];
+const LOAD_NAMES=['pos_groups','pos_group_items','pos_banks','pos_bank_rates','trainings','training_progress','training_questions','training_paths','training_path_items','training_assignments','notification_reads','notification_state','price_refs','price_deductions','device_inspections','term_debts','term_debt_payments','work_schedules','shift_changes','owner_closings','entitlements','staff_pay_profiles','exchanges','service_costs','shortages','accessory_categories','accessory_families','expense_categories','expense_templates','expenses','cash_accounts','app_settings','day_closings','day_closing_lines','fx_rates','purchases','purchase_lines','profiles','staff_settings','role_permissions','contacts','products','product_costs','sales','sale_items','sale_payments','sale_trade_ins','sale_item_costs','commissions','sale_returns','cash_entries','party_entries','consignment_agreements','consignment_rates','notifications','service_orders','service_events','customer_orders','follow_ups','quotes','quote_items','attachments','shifts','time_clock','tasks','push_subscriptions','accessories','accessory_costs','accessory_moves','sale_accessory_items','sale_accessory_costs','sale_accessory_returns'];
 const LOAD_ORDERS={device_inspections:'created_at',term_debts:'created_at',term_debt_payments:'created_at',work_schedules:'valid_from',shift_changes:'created_at',owner_closings:'created_at',entitlements:'created_at',staff_pay_profiles:'updated_at',exchanges:'created_at',service_costs:'created_at',shortages:'created_at',accessory_categories:'sort',accessory_families:'created_at',expenses:'created_at',expense_templates:'created_at',expense_categories:'sort',day_closings:'closed_at',cash_accounts:'sort',sales:'sold_at',cash_entries:'created_at',notifications:'created_at',party_entries:'created_at',service_orders:'received_at',service_events:'at',quotes:'created_at',attachments:'created_at',time_clock:'clock_in',tasks:'created_at',accessory_moves:'created_at',purchases:'created_at',fx_rates:'fetched_at'};
 const dropCaches=()=>{S.wd=null;S.prm=undefined;S.hp=undefined;S.ops=undefined;S.svp=undefined;S.work=undefined;S.team=null;S.tp=null};
 async function loadAll(){
@@ -675,7 +774,7 @@ async function syncData(){
   for(let i=0;LIVE.busy&&i<100;i++)await new Promise(res=>setTimeout(res,30));
   LIVE.stats.fast++;await rtFlush(true);LIVE.lastSync=Date.now()}
 /* yazı yazılırken / pencere açıkken çizme; bitince çiz */
-const rtBusyUi=()=>{const a=document.activeElement;return !!document.querySelector('#modal .modal')||!!document.getElementById('qs-ov')||!!(a&&((a.isContentEditable)||(a.matches&&a.matches('input:not([type=checkbox]):not([type=radio]),textarea,select')&&a.id!=='dq')))};
+const rtBusyUi=()=>{const a=document.activeElement;return !!document.querySelector('#modal .modal')||!!document.getElementById('qs-ov')||!!(a&&((a.isContentEditable)||(a.matches&&a.matches('input:not([type=checkbox]):not([type=radio]),textarea,select')&&a.id!=='dq'&&!((a.id==='ps-q'||a.id==='ps-cq')&&!a.value))))};
 function rtRender(){if(!S.d)return;if(rtBusyUi()){S.rtDirty=true;return}S.rtDirty=false;render()}
 document.addEventListener('focusout',()=>setTimeout(()=>{if(S.rtDirty&&!rtBusyUi())rtRender()},250));
 async function rtFull(){if(!S.d||!S.user||LIVE.busy)return;LIVE.busy=true;try{await loadAll();S.dash=null;S.agr={};if(!S.me||!S.me.active)return location.reload();rtRender()}catch(e){}finally{LIVE.busy=false}}
@@ -942,7 +1041,7 @@ function qsPick(lock,err,email){
   o.innerHTML=`<div class="qs-box"><div class="row" style="gap:10px;flex-wrap:nowrap">${logoImg('emb','Anka İletişim')}<div style="min-width:0"><h2 style="margin:0">${lock?'Kim kullanıyor?':'Kullanıcı değiştir'}</h2>
     <div class="sub">${esc(qsDev())} · bugün bu bilgisayarda giriş yapanlar</div></div><div class="sp"></div>${lock||!S.d?'':`<button class="ib" data-a="qs-close" aria-label="Kapat">${ic('x')}</button>`}</div>
     ${lock?'<p class="sub">Bir süredir işlem yapılmadı. Devam etmek için adınızı seçin; şifre sorulmaz.</p>':'<p class="sub">Adınızı seçin, şifre sorulmaz. Satışlar ve işlemler seçilen kişi adına kaydedilir.</p>'}
-    ${cartN&&!lock?`<div class="qs-warn">Sepette ${cartN} kalem var; başka kullanıcıya geçerseniz sepet boşalır.</div>`:''}
+    ${cartN&&!lock?`<div class="sub">Açık satış fişleri bu bilgisayarda saklanır; geçişten sonra kaldığınız yerden devam edebilirsiniz.</div>`:''}
     <div class="qs-grid">${L.map(tile).join('')||'<div class="sub">Bugün bu bilgisayarda giriş yapan yok.</div>'}</div>
     <div class="err" id="qs-err"${err?'':' hidden'}>${esc(err||'')}</div>
     <button class="btn" data-a="qs-add"${email?' hidden':''}>${ic('userplus')}Başka kullanıcıyla giriş</button>
@@ -1125,7 +1224,8 @@ async function loadWork(){
   if(S.uOpen)render()}
 function render(){
   if(!S.d||!S.me)return;
-  const tab=S.ui.tab,ae=document.activeElement,keepQ=ae&&ae.id==='dq';
+  const tab=S.ui.tab,ae=document.activeElement,keepQ=ae&&ae.id==='dq',aeId=ae&&ae.id,aeSel=ae&&typeof ae.selectionStart==='number'?ae.selectionStart:null;
+  if(tab!=='satis')document.documentElement.classList.remove('ps-full');
   const unread=nUnreadCount();
   const secLock=qsSecLocked(tab);
   const page=secLock?qsLockPage(tab):qsUnlockBar(tab)+{panel:vPanel,notlar:vNotlar,satis:vSatis,stok:vStok,aksesuar:vAksesuar,sayim:vSayim,sorgu:vSorgu,alislar:vAlislar,satislar:vSatislar,iadeler:vIadeler,fireler:vFireler,odemeler:vOdemeler,kazancrapor:vKazancRapor,satisrapor:vSatisRapor,sermaye:vSermaye,hakedis:vHakedis,primler:vPrimler,kasa:vKasa,masraf:vMasraf,musteriler:vMusteriler,firmalar:vFirmalar,konsinye:vKonsinye,servis:vServis,siparis:vSiparis,eksikler:vEksik,teklif:vTeklif,gorev:vGorev,vardiya:vVardiya,hedef:vHedef,egitim:vEgitim,yonetim:vYonetim}[tab]();
@@ -1152,6 +1252,8 @@ function render(){
   if(tab==='notlar')ntAfter();
   if(tab==='primler')primLoad();
   if(tab==='konsinye')konsinyeLoad();
+  if(tab==='satis')psAfter(aeId,aeSel);
+  if(S.fis)psSave();
 }
 
 /* ================= PRİMLER (yalnız işletme sahibi) ================= */
@@ -1461,7 +1563,7 @@ function vPanel(){const d=S.d,t=today(),y=addDays(t,-1),mine=!pnAll();
 
 /* ================= MODAL ================= */
 function modal(html){document.getElementById('modal').innerHTML=`<div class="ov" data-a="ov"><div class="modal" role="dialog" aria-modal="true">${html}</div></div>`;const f=document.querySelector('#modal input:not([type=hidden]),#modal select');if(f)f.focus()}
-function closeModal(){if(S.nt)ntModalClosed();if(S.rtDirty)setTimeout(()=>{if(S.d&&S.rtDirty&&!rtBusyUi())rtRender()},0);S.dg=null;S.rd=null;S.pf=null;S.pfd=null;S.accHost=false;S.gs=null;S.qw=null;S.qconv=null;S.ins=null;document.getElementById('modal').innerHTML=''}
+function closeModal(){if(S.nt)ntModalClosed();if(S.rtDirty)setTimeout(()=>{if(S.d&&S.rtDirty&&!rtBusyUi())rtRender()},0);S.dg=null;S.rd=null;S.pf=null;S.pfd=null;S.accHost=false;S.gs=null;S.qw=null;S.qconv=null;S.ins=null;document.getElementById('modal').innerHTML='';if(S.ui&&S.ui.tab==='satis'&&matchMedia('(pointer:fine)').matches)setTimeout(()=>{const q=document.getElementById('ps-q');if(q&&!document.querySelector('#modal .modal'))q.focus()},0)}
 function setErr(m){const e=document.getElementById('f-err');if(e){e.textContent=m;e.hidden=false}}
 async function resolveContact(kind,id){
   const v=g(id);if(v!=='__new__')return v||null;
@@ -1575,7 +1677,7 @@ function stokList(){
       <div class="meta"><span>Alış ${fmtDate(p.buy_date)}${src?' · '+esc(src.name):''} · ${esc(p.buy_source)}</span></div>${p.notes?`<div class="meta"><span>${esc(p.notes)}</span></div>`:''}</div>
       <div class="side"><div><span class="pill ${st[0]}">${st[1]}</span> <span class="pill ${cls}">${age} gün</span></div>
       <div class="sub">${showCost?`Maliyet <b>${money(d.cost.get(p.id))}</b>`:''}${p.target_price!=null?` ${showCost?'· ':''}Hedef <b>${money(p.target_price)}</b>`:''}</div>
-      <div class="acts">${p.status==='stokta'&&can('make_sale')?`<button class="btn sm pri" data-a="to-cart" data-id="${p.id}">Sat</button>`:''}${can('manage_products')?`<button class="btn sm" data-a="edit-product" data-id="${p.id}">Düzenle</button>${!sold?`<button class="btn sm" data-a="lbl-open" data-k="c" data-id="${p.id}">Etiket</button>`:''}`:''}${docBtn('products',p.id,'Foto')}${(()=>{const ir=(S.d.device_inspections||[]).find(x=>x.product_id===p.id);return ir?`<button class="btn sm" data-a="ins-report" data-id="${ir.id}">Kontrol raporu</button>`:''})()}</div></div></div>`}).join('')
+      <div class="acts">${p.status==='stokta'&&can('make_sale')?`<button class="btn sm pri" data-a="to-cart" data-id="${p.id}">Sat</button>`:''}${can('manage_products')?`<button class="btn sm" data-a="edit-product" data-id="${p.id}">Düzenle</button>${!sold?`<button class="btn sm" data-a="lbl-open" data-k="c" data-id="${p.id}">Etiket</button>`:''}`:''}${p.status==='stokta'?pqBtn('cihaz',p.id):''}${docBtn('products',p.id,'Foto')}${(()=>{const ir=(S.d.device_inspections||[]).find(x=>x.product_id===p.id);return ir?`<button class="btn sm" data-a="ins-report" data-id="${ir.id}">Kontrol raporu</button>`:''})()}</div></div></div>`}).join('')
     :'<div class="empty">Bu filtreyle eşleşen ürün yok.</div>'}
 function productModal(p,pre){
   const fm=!!S.pfd,e=!!p&&!pre&&!fm;p=pre||p||{cat:CATS[0],sub:SUBS[0],buy_date:today(),buy_source:'toptan',owner:'anka'};S.pinsp=e?'':(p.inspection_id||'');
@@ -1640,65 +1742,337 @@ async function saveProduct(id){
     closeModal();await reload()}
   catch(e){setErr(msg(e))}}
 
-/* ================= SATIŞ EKRANI ================= */
-function cartTotals(){
-  const c=S.cart,sub=sum(c.items,i=>i.price)+sum(c.acc,i=>i.qty*i.price),disc=sum(c.items,i=>i.discount)+sum(c.acc,i=>i.discount),trade=sum(c.trades,t=>t.value),net=sub-disc-trade,paid=sum(c.pays,p=>p.amount);
-  return{sub,disc,trade,net,paid,left:Math.round((net-paid)*100)/100}}
-function vSatis(){
-  const c=S.cart,t=cartTotals(),d=S.d;
-  const q=c.q.toLowerCase(),inCart=new Set(c.items.map(i=>i.pid));
-  const found=d.products.filter(p=>p.status==='stokta'&&!inCart.has(p.id)&&(!q||[p.model,p.imei,p.barcode].join(' ').toLowerCase().includes(q))).slice(0,q?12:6);
-  const accFound=q?d.accessories.filter(a=>a.active!==false&&a.stock_qty>0&&[a.name,a.barcode,a.sku,a.category].join(' ').toLowerCase().includes(q)).slice(0,8):[];
-  const staff=d.profiles.filter(isStaffP);
-  return `<h1>Satış</h1><div class="sale-grid"><div style="display:flex;flex-direction:column;gap:16px;min-width:0">
-   <div class="card"><h2>Ürün ekle</h2><label class="f">Model veya IMEI ile ara<span class="inl"><input class="in" id="cq" type="search" value="${esc(c.q)}" data-c="cartsearch" placeholder="Örn. iPhone veya IMEI"><button type="button" class="btn sm" data-a="scan" data-t="cq" aria-label="Kamerayla okut">Tara</button></span></label>
-    <div style="margin-top:8px">${found.map(p=>`<div class="item" style="padding:8px 0"><div class="main"><b>${esc(p.model)}</b>${p.owner==='konsinye'?' <span class="pill warn">Konsinye</span>':''}<div class="meta"><span>${esc(p.sub)}</span>${p.imei?`<span class="mono">${esc(p.imei)}</span>`:''}${p.battery!=null?`<span>Pil %${p.battery}</span>`:''}${p.target_price!=null?`<span>Hedef ${money(p.target_price)}</span>`:''}</div></div><div class="side"><button class="btn sm pri" data-a="to-cart" data-id="${p.id}">Sepete ekle</button></div></div>`).join('')+accFound.map(a=>`<div class="item" style="padding:8px 0"><div class="main"><b>${esc(a.name)}</b> <span class="pill">Adetli</span><div class="meta">${a.category?`<span>${esc(a.category)}</span>`:''}<span>Stok ${a.stock_qty}</span>${a.sale_price!=null?`<span>${money(a.sale_price)}</span>`:''}</div></div><div class="side"><button class="btn sm pri" data-a="acc-sell" data-id="${a.id}">Sepete ekle</button></div></div>`).join('')||(found.length||accFound.length?'':'<div class="empty">Stokta eşleşen ürün yok.</div>')}</div></div>
-   <div class="card"><h2>Sepet</h2>${c.acc.map((i,ix)=>{const a=d.accMap.get(i.aid)||{name:'',stock_qty:0};return `<div class="cartline"><div class="nm"><b>${esc(a.name)}</b><div class="sub">Adetli ürün · stokta ${a.stock_qty}</div></div>
-     <label class="f">Adet<input class="in" type="number" min="1" max="${a.stock_qty}" step="1" inputmode="numeric" value="${i.qty}" data-c="accqty" data-i="${ix}"></label>
-     <label class="f">Birim fiyat<input class="in" type="number" min="0" step="0.01" inputmode="decimal" value="${i.price}" data-c="accprice" data-i="${ix}"></label>
-     <label class="f">İndirim (toplam)<input class="in" type="number" min="0" step="0.01" inputmode="decimal" value="${i.discount||''}" data-c="accdisc" data-i="${ix}" ${can('give_discount')?'':'disabled title="İndirim yetkiniz yok"'}></label>
-     <button class="btn sm danger" data-a="acc-cart-del" data-i="${ix}">Çıkar</button></div>`}).join('')}${c.items.length?c.items.map((i,ix)=>{const p=d.productMap.get(i.pid)||{};return `<div class="cartline"><div class="nm"><b>${esc(p.model)}</b><div class="sub">${esc(p.sub||'')}${p.imei?' · '+esc(p.imei):''}</div></div>
-     <label class="f">Fiyat (₺)<input class="in" type="number" min="0" step="0.01" inputmode="decimal" value="${i.price}" data-c="cartprice" data-i="${ix}"></label>
-     <label class="f">İndirim<input class="in" type="number" min="0" step="0.01" inputmode="decimal" value="${i.discount||''}" data-c="cartdisc" data-i="${ix}" ${can('give_discount')?'':'disabled title="İndirim yetkiniz yok"'}></label>
-     <button class="btn sm danger" data-a="cart-del" data-i="${ix}">Çıkar</button></div>`}).join(''):(c.acc.length?'':'<div class="empty">Sepet boş.</div>')}</div>
-   <div class="card"><h2>Takas (müşteriden alınan cihaz)</h2>${c.trades.map((x,ix)=>`<div class="item" style="padding:8px 0"><div class="main"><b>${esc(x.model)}</b><div class="meta"><span>${esc(x.sub)}</span>${x.imei?`<span class="mono">${esc(x.imei)}</span>`:''}${x.inspection_id?insBadge(x.inspection_id):''}</div></div><div class="side"><b>${money(x.value)}</b><button class="btn sm danger" data-a="trade-del" data-i="${ix}">Çıkar</button></div></div>`).join('')}
-    <div class="form"><label class="f">Kategori<select class="in" id="t-cat">${opts(CATS,CATS[0])}</select></label><label class="f">Alt kategori<select class="in" id="t-sub">${opts(SUBS,'2.El')}</select></label>
-    <label class="f full">Marka / Model<input class="in" id="t-model"></label><label class="f">IMEI<span class="inl"><input class="in mono" id="t-imei" inputmode="numeric"><button type="button" class="btn sm" data-a="scan" data-t="t-imei" aria-label="Kamerayla okut">Tara</button></span></label><label class="f">Pil (%)<input class="in" id="t-bat" type="number" min="0" max="100"></label>
-    <label class="f">Kozmetik<select class="in" id="t-cos">${opts(COSM,'','-')}</select></label><label class="f">Takas değeri (₺)<input class="in" id="t-val" type="number" min="0" step="0.01" inputmode="decimal"></label></div>
-    <div class="err" id="t-err" hidden></div><button class="btn sm" style="margin-top:10px" data-a="trade-add">Takas cihazını ekle</button></div></div>
-  <div style="display:flex;flex-direction:column;gap:16px;min-width:0"><div class="card"><h2>Müşteri ve personel</h2><div class="form">
-    ${csel('s-cust','musteri',c.customer,'Müşteri')}
-    ${can('sell_for_others')?`<label class="f">Satışı yapan<select class="in" id="s-staff" data-c="cartstaff">${opts(sellerOpts(),c.staff||S.user.id)}</select></label>`:''}
-    <label class="f full">Not<input class="in" id="s-note" value="${esc(c.note)}" data-c="cartnote"></label></div></div>
-   <div class="card"><h2>Ödeme</h2><div class="sum"><span>Ara toplam</span><span id="su-sub">${money(t.sub)}</span></div>
-    <div class="sum" id="su-disc-r" ${t.disc?'':'hidden'}><span>İndirim</span><span class="neg" id="su-disc">−${money(t.disc)}</span></div>
-    <div class="sum" id="su-trade-r" ${t.trade?'':'hidden'}><span>Takas</span><span class="neg" id="su-trade">−${money(t.trade)}</span></div>
-    <div class="sum big"><span>Ödenecek</span><span id="su-net">${money(t.net)}</span></div>
-    ${c.pays.map((p,ix)=>`<div class="cartline" style="grid-template-columns:110px 1fr auto"><label class="f">Yöntem<select class="in" data-c="paymethod" data-i="${ix}">${opts(METHODS,p.method)}</select></label><label class="f">Tutar (₺)<input class="in" type="number" min="0" step="0.01" inputmode="decimal" value="${p.amount}" data-c="payamount" data-i="${ix}"></label><button class="btn sm danger" data-a="pay-del" data-i="${ix}">Sil</button></div>`).join('')}
-    <div class="row" style="margin-top:10px">${METHODS.map(m=>`<button class="btn sm" data-a="pay-add" data-m="${m[0]}" data-n="${m[1]}" ${t.left<=0?'disabled':''}>+ ${m[1]}${t.left>0?' '+money(t.left):''}</button>`).join('')}</div>
-    <div class="sum" style="margin-top:8px"><span>Ödenen</span><span id="su-paid">${money(t.paid)}</span></div><div class="sum"><span>Kalan</span><span id="su-left" class="${t.left===0?'pos':'neg'}">${money(t.left)}</span></div>
-    <div class="err" id="f-err" hidden></div><button class="btn pri" style="width:100%;margin-top:12px" data-a="complete-sale" ${(c.items.length||c.acc.length)&&t.left===0&&t.net>=0?'':'disabled'}>Satışı tamamla</button></div></div></div>`}
-function refreshSums(){
-  const t=cartTotals(),$=id=>document.getElementById(id);if(!$('su-net'))return;
-  $('su-sub').textContent=money(t.sub);$('su-disc').textContent='−'+money(t.disc);$('su-disc-r').hidden=!t.disc;
-  $('su-trade').textContent='−'+money(t.trade);$('su-trade-r').hidden=!t.trade;$('su-net').textContent=money(t.net);
-  $('su-paid').textContent=money(t.paid);const l=$('su-left');l.textContent=money(t.left);l.className=t.left===0?'pos':'neg';
-  document.querySelectorAll('[data-a="pay-add"]').forEach(b=>{b.disabled=t.left<=0;b.textContent='+ '+b.dataset.n+(t.left>0?' '+money(t.left):'')});
-  const c=document.querySelector('[data-a="complete-sale"]');if(c)c.disabled=!((S.cart.items.length||S.cart.acc.length)&&t.left===0&&t.net>=0)}
-function cartAdd(pid){
-  const p=S.d.productMap.get(pid);if(!p||p.status!=='stokta')return toast('Bu ürün satılabilir durumda değil',true);
-  if(S.cart.items.some(i=>i.pid===pid))return;
-  S.cart.items.push({pid,price:p.target_price==null?0:Number(p.target_price),discount:0});location.hash='satis';S.ui.tab='satis';render()}
-async function completeSale(){
-  const c=S.cart,t=cartTotals();
-  try{
-    const customer=await resolveContact('musteri','s-cust');
-    const res=await call('complete_sale',{p_customer:customer,p_items:c.items.map(i=>({product_id:i.pid,price:i.price,discount:i.discount||0})),p_accessories:c.acc.map(i=>({accessory_id:i.aid,qty:i.qty,price:i.price,discount:i.discount||0})),
-      p_trade_ins:c.trades,p_payments:c.pays.filter(p=>p.amount>0).map(p=>({method:p.method,amount:p.amount})),p_note:c.note||null,p_staff:c.staff||null});
-    S.cart={items:[],acc:[],trades:[],pays:[],customer:'',staff:'',note:'',q:'',nn:'',nt:''};
-    toast('Satış tamamlandı · '+res.sale_no);S.ui.openSale=res.id;S.mine=null;
-    await syncData();S.dash=null;location.hash='satislar';S.ui.tab='satislar';render();saleReceipt(res.id)}
-  catch(e){setErr(msg(e))}}
+/* ================= SATIŞ EKRANI (058) =================
+   Sol: arama / okutma, müşteri, 8 fiş, sepet, muhtelif-iskonto-iade-değişim-sil, ödenen, toplam.
+   Sağ: tarih, saat, durum, tam ekran; hızlı ürün başlıkları (en çok 10); ödeme düğmeleri.
+   Fişler bu cihazda saklanır (localStorage 'anka_fis'); sayfa yenilense de, kullanıcı değişse de kaybolmaz. */
+const PS_N=8,PS_KEY='anka_fis';
+const PS_COL={mavi:'var(--accent)',pembe:'var(--pink)',yesil:'var(--good)',turuncu:'var(--warn)',mor:'var(--violet)',gri:'var(--muted)'};
+const PS_COLN=[['mavi','Mavi'],['pembe','Pembe'],['yesil','Yeşil'],['turuncu','Turuncu'],['mor','Mor'],['gri','Gri']];
+const psNew=()=>({items:[],acc:[],trades:[],pays:[],rets:[],customer:'',staff:'',note:'',q:'',nn:'',nt:'',misc:0,isk:'',iskT:'tl',paid:'',mode:'satis',date:'',at:0});
+const psCount=c=>c.items.length+c.acc.length+c.trades.length+c.rets.length;
+function psInit(){if(S.fis)return;let st=null;try{st=JSON.parse(localStorage.getItem(PS_KEY)||'null')}catch(e){}
+  const f={};for(let i=1;i<=PS_N;i++){const o=Object.assign(psNew(),st&&st.f&&st.f[i]||{});['items','acc','trades','pays','rets'].forEach(k=>{if(!Array.isArray(o[k]))o[k]=[]});o.pays=[];f[i]=o}
+  let cur=st&&st.cur>=1&&st.cur<=PS_N?Number(st.cur):1;
+  const pre=S.cart;
+  if(pre&&(pre.items.length||pre.acc.length||pre.trades.length)){
+    if(psCount(f[cur])){const fr=Object.keys(f).find(k=>!psCount(f[k]));if(fr)cur=Number(fr)}
+    const t=f[cur];pre.items.forEach(i=>{if(!t.items.some(x=>x.pid===i.pid))t.items.push(i)});
+    pre.acc.forEach(a=>{const l=t.acc.find(x=>x.aid===a.aid);if(l)l.qty+=a.qty;else t.acc.push(a)});t.trades.push(...pre.trades);
+    if(pre.customer&&!t.customer)t.customer=pre.customer;if(!t.at)t.at=Date.now()}
+  S.fis={cur,f};S.cart=f[cur];S.ps=S.ps||{g:prefGet('ps_g')||''};psCheck()}
+let psSaveT=0;
+function psSave(){if(!S.fis)return;clearTimeout(psSaveT);psSaveT=setTimeout(()=>{try{localStorage.setItem(PS_KEY,JSON.stringify({cur:S.fis.cur,f:S.fis.f}))}catch(e){}},200)}
+/* satılmış / stoktan çıkmış cihazları fişlerden çıkarır */
+function psCheck(){if(!S.fis||!S.d)return;const gone=[];
+  Object.entries(S.fis.f).forEach(([k,c])=>{c.items=c.items.filter(i=>{const p=S.d.productMap.get(i.pid);if(p&&p.status==='stokta')return true;gone.push((p?p.model:'Cihaz')+' (Fiş '+k+')');return false});
+    c.acc=c.acc.filter(a=>S.d.accMap.get(a.aid))});
+  if(gone.length){toast('Artık stokta olmadığı için fişten çıkarıldı: '+gone.join(', '),true);psSave()}}
+const psWhere=(k,id)=>{const e=Object.entries(S.fis.f).find(([n,c])=>Number(n)!==S.fis.cur&&(k==='pid'?c.items.some(i=>i.pid===id):c.acc.some(a=>a.aid===id)));return e?e[0]:null};
+const psOtherQty=aid=>sum(Object.entries(S.fis.f).filter(([n])=>Number(n)!==S.fis.cur),([,c])=>sum(c.acc.filter(a=>a.aid===aid),a=>a.qty));
+function psGo(){if(S.ui.tab!=='satis'){location.hash='satis';S.ui.tab='satis'}render()}
+function psFlash(t,ok){if(!S.ps)S.ps={};S.ps.flash={t,ok:ok!==false,at:Date.now()}}
+const psNum=v=>{const n=Number(String(v==null?'':v).replace(/\s/g,'').replace(',','.'));return isFinite(n)?n:0};
+
+function cartAdd(pid){psInit();const p=S.d.productMap.get(pid);if(!p||p.status!=='stokta')return toast('Bu ürün satılabilir durumda değil',true);
+  if(S.cart.mode==='iade')return toast('İade modundayken satılacak ürün eklenmez; önce iade modunu kapatın',true);
+  if(S.cart.items.some(i=>i.pid===pid)){psGo();return toast(p.model+' zaten sepette',true)}
+  const o=psWhere('pid',pid);if(o){psGo();return toast(`${p.model} Fiş ${o}'te bekliyor`,true)}
+  S.cart.items.push({pid,price:p.target_price==null?0:Number(p.target_price),discount:0});if(!S.cart.at)S.cart.at=Date.now();psFlash(p.model+' eklendi');psGo()}
+function accAdd(aid){psInit();const a=S.d.accMap.get(aid);if(!a||a.active===false)return toast('Ürün bulunamadı',true);
+  if(S.cart.mode==='iade')return toast('İade modundayken satılacak ürün eklenmez; önce iade modunu kapatın',true);
+  const l=S.cart.acc.find(x=>x.aid===aid),have=l?l.qty:0;
+  if(have+1>a.stock_qty){psGo();return toast(`${a.name}: stokta yalnızca ${a.stock_qty} adet var`,true)}
+  const oth=psOtherQty(aid);if(oth&&have+1+oth>a.stock_qty)toast(`${a.name}: diğer fişlerde ${oth} adet bekliyor, stok ${a.stock_qty}`,true);
+  if(l)l.qty++;else S.cart.acc.push({aid,qty:1,price:a.sale_price==null?0:Number(a.sale_price),discount:0});if(!S.cart.at)S.cart.at=Date.now();psFlash(a.name+' eklendi');psGo()}
+
+/* tutarlar: muhtelif (+/-) ve iskonto (₺ / %) satış satırlarına ödeme sırasında dağıtılır; raporlar tutarlı kalır */
+function psTotals(c){c=c||S.cart;
+  const gross=r2(sum(c.items,i=>psNum(i.price))+sum(c.acc,a=>a.qty*psNum(a.price))),ldisc=r2(sum(c.items,i=>psNum(i.discount))+sum(c.acc,a=>psNum(a.discount)));
+  const base=r2(gross-ldisc),misc=r2(psNum(c.misc)),iv=Math.max(0,psNum(c.isk)),isk=c.iskT==='pct'?r2(Math.max(0,base+misc)*Math.min(iv,100)/100):r2(iv);
+  const trade=r2(sum(c.trades,t=>psNum(t.value))),ret=r2(sum(c.rets,r=>psNum(r.amount))),sale=r2(base+misc-isk);
+  const net=c.mode==='iade'?-ret:c.mode==='degisim'?r2(sale-ret):r2(sale-trade);
+  const paid=Math.max(0,psNum(c.paid));
+  return{gross,ldisc,base,misc,isk,trade,ret,sale,net,paid,diff:r2(paid-net),n:c.items.length+c.acc.length,qty:c.items.length+sum(c.acc,a=>a.qty)}}
+const cartTotals=()=>{const t=psTotals();return{sub:t.gross,disc:t.ldisc+t.isk,trade:t.trade,net:t.net,paid:t.paid,left:r2(t.net-t.paid)}};
+function psAlloc(c,t){
+  const it=c.items.map(i=>({product_id:i.pid,price:r2(psNum(i.price)),discount:r2(psNum(i.discount))}));
+  const ac=c.acc.map(a=>({accessory_id:a.aid,qty:a.qty,price:r2(psNum(a.price)),discount:r2(psNum(a.discount))}));
+  const L=[...it.map(o=>({o,q:1})),...ac.map(o=>({o,q:o.qty}))],val=l=>r2(l.o.price*l.q-l.o.discount);
+  const A=r2(t.isk-t.misc);
+  if(A>0){const tot=sum(L,val);if(A>tot+0.005)throw new Error('İskonto ve muhtelif indirim sepet tutarını aşamaz');
+    let left=A;const srt=[...L].sort((a,b)=>val(b)-val(a));
+    srt.forEach(l=>{const s=Math.min(r2(A*val(l)/tot),val(l),left);l.o.discount=r2(l.o.discount+s);left=r2(left-s)});
+    for(const l of srt){if(left<=0.004)break;const s=Math.min(val(l),left);l.o.discount=r2(l.o.discount+s);left=r2(left-s)}}
+  else if(A<0){const up=-A,one=L.filter(l=>l.q===1).sort((a,b)=>val(b)-val(a))[0];
+    if(one)one.o.price=r2(one.o.price+up);
+    else if(L.length){const l=[...L].sort((a,b)=>val(b)-val(a))[0],per=Math.ceil(up*100/l.q)/100;l.o.price=r2(l.o.price+per);l.o.discount=r2(l.o.discount+r2(per*l.q-up))}}
+  return{items:it,acc:ac}}
+
+/* ---------- arama / okutma ---------- */
+const psLow=s=>String(s||'').toLocaleLowerCase('tr');
+function psSaleResults(q){const d=S.d,t=psLow(q).trim();if(!t)return[];const inC=new Set(S.cart.items.map(i=>i.pid));
+  const dev=d.products.filter(p=>p.status==='stokta'&&!inC.has(p.id)&&psLow([p.model,p.imei,p.barcode,p.sub].join(' ')).includes(t)).slice(0,10).map(p=>({k:'d',id:p.id,name:p.model,meta:[p.sub,p.imei,p.battery!=null?'Pil %'+p.battery:''].filter(Boolean).join(' · '),price:p.target_price,stock:null,kons:p.owner==='konsinye'}));
+  const acc=d.accessories.filter(a=>a.active!==false&&psLow([a.name,a.barcode,a.sku,a.category].join(' ')).includes(t)).slice(0,12).map(a=>({k:'a',id:a.id,name:a.name,meta:[a.category,a.barcode].filter(Boolean).join(' · '),price:a.sale_price,stock:a.stock_qty}));
+  return [...dev,...acc]}
+/* iade / değişim modunda: satılmış ve iade edilmemiş kalemler (IMEI, barkod, ürün, müşteri, satış no) */
+function psRetResults(q){const d=S.d,v=String(q||'').trim(),V=v.toUpperCase();if(!v)return[];
+  const dev=d.products.find(p=>(p.imei&&p.imei.toUpperCase()===V)||(p.barcode&&p.barcode.toUpperCase()===V));
+  const acc=d.accessories.find(a=>(a.barcode&&a.barcode.toUpperCase()===V)||(a.sku&&a.sku.toUpperCase()===V));
+  let L=dgLines(dev||acc?'':v);
+  if(dev)L=dgLines('').concat(dgLines(dev.imei||dev.model)).filter(x=>x.kind==='cihaz'&&x.pid===dev.id);
+  if(acc){const all=[];S.d.sale_accessory_items.forEach(l=>{if(l.accessory_id===acc.id)all.push(l.id)});L=dgLines(acc.name).filter(x=>x.kind==='aksesuar'&&all.includes(x.id))}
+  const cu=S.cart.customer;if(cu)L.sort((a,b)=>(b.s.customer_id===cu)-(a.s.customer_id===cu));
+  const seen=new Set();return L.filter(x=>!seen.has(x.id)&&seen.add(x.id)&&!S.cart.rets.some(r=>r.id===x.id)).slice(0,20)}
+function psResHtml(){const c=S.cart,q=c.q||'',R=c.mode==='satis'?psSaleResults(q):psRetResults(q);if(!q.trim())return'';
+  if(!R.length)return `<div class="ps-res"><div class="empty">${c.mode==='satis'?'Stokta eşleşen ürün yok.':'Satılmış ve iade edilmemiş kalem bulunamadı. IMEI, barkod, ürün adı, müşteri veya satış no ile arayın.'}</div></div>`;
+  return `<div class="ps-res" role="listbox">${R.map((x,i)=>c.mode==='satis'
+    ?`<button class="ps-ri${i===0?' on':''}" data-a="ps-add" data-k="${x.k}" data-id="${x.id}" ${x.k==='a'&&x.stock<1?'disabled':''}><span class="nm"><b>${esc(x.name)}</b>${x.kons?' <span class="pill warn">Konsinye</span>':''}<small>${x.k==='d'?'Cihaz':'Aksesuar'}${x.meta?' · '+esc(x.meta):''}</small></span><span class="pr">${x.price!=null?money(x.price):'Fiyat yok'}${x.k==='a'?`<small class="${x.stock<1?'neg':''}">Stok ${x.stock}</small>`:''}</span></button>`
+    :(()=>{const cu=S.d.contactMap.get(x.s.customer_id)||{};return `<button class="ps-ri${i===0?' on':''}" data-a="ps-radd" data-id="${x.id}"><span class="nm"><b>${esc(x.name)}${x.kind==='aksesuar'&&x.rem>1?' × '+x.rem:''}</b><small>${esc(x.s.sale_no)} · ${fmtDate(x.s.sold_at)} · ${esc(cu.name||'Kayıtsız müşteri')}${x.detail?' · '+esc(x.detail):''}</small></span><span class="pr">${money(x.net)}</span></button>`})()).join('')}</div>`}
+function psCode(v){const c=S.cart;v=String(v||'').trim();if(!v)return;
+  if(c.mode!=='satis'){const R=psRetResults(v);if(R.length===1||(R.length&&R[0].detail&&R[0].detail.includes(v))){c.q='';return psRetAdd(R[0])}c.q=v;return psGo()}
+  const p=prodFind(v);if(p){c.q='';return cartAdd(p.id)}
+  const a=accFind(v);if(a){c.q='';return accAdd(a.id)}
+  const R=psSaleResults(v);if(R.length===1&&!(R[0].k==='a'&&R[0].stock<1)){c.q='';return R[0].k==='d'?cartAdd(R[0].id):accAdd(R[0].id)}
+  c.q=v;psGo();if(!R.length)toast('Stokta bu kodla / adla ürün yok: '+v,true)}
+function psRetAdd(x){const c=S.cart;if(!can('process_refund'))return toast('İade yetkiniz yok',true);
+  if(c.mode==='degisim'&&c.rets.length)return toast('Değişim modunda tek ürün iade alınır. Birden çok ürün için İade modunu kullanın, sonra yeni satış yapın.',true);
+  if(c.rets.some(r=>r.id===x.id))return toast('Bu kalem zaten listede',true);
+  const max=x.kind==='cihaz'?x.net:accRefundValue(x.line,x.rem);
+  c.rets.push({kind:x.kind,id:x.id,name:x.name,detail:x.detail||'',sale:x.s.sale_no,sold:x.s.sold_at,rem:x.rem,qty:1,amount:x.kind==='cihaz'?x.net:r2(accRefundValue(x.line,1)),auto:true,rc:'',disp:'stok',wr:'bozuk',why:''});
+  if(!c.customer&&x.s.customer_id)c.customer=x.s.customer_id;if(!c.at)c.at=Date.now();c.q='';psFlash(x.name+(c.mode==='iade'?' iade listesine eklendi':' değişime alındı'));psGo()}
+const psRetMax=r=>{if(r.kind==='cihaz'){const i=S.d.sale_items.find(x=>x.id===r.id);return i?r2(Number(i.price)-Number(i.discount)):psNum(r.amount)}const l=S.d.sale_accessory_items.find(x=>x.id===r.id);return l?r2(accRefundValue(l,r.qty)):psNum(r.amount)};
+
+/* ---------- müşteri ---------- */
+function psCustResults(q){const t=psLow(q).trim();if(!t)return[];const tt=t.replace(/\D/g,'');
+  return S.d.contacts.filter(c=>c.kind==='musteri'&&c.active!==false&&(psLow(c.name).includes(t)||(tt.length>=3&&String(c.phone||'').replace(/\D/g,'').includes(tt)))).slice(0,8)}
+function psCustModal(){S.ps.cmq='';modal(`<div class="row" style="gap:10px;margin-bottom:6px"><span class="icb b">${ic('users','lg')}</span><div><h2 style="margin:0">Müşteri seç</h2><div class="sub">Ad veya telefonla arayın; yoksa yeni müşteri ekleyin.</div></div></div>
+  <input class="in" id="ps-cmq" type="search" placeholder="Ad soyad veya telefon" autocomplete="off" data-c="pscmq"><div id="ps-cml" style="max-height:46vh;overflow:auto;margin-top:8px">${psCustList('')}</div>
+  <div class="actions"><button class="btn" data-a="close">Vazgeç</button><button class="btn pri" data-a="ps-cnew">${ic('userplus','sm')} Yeni müşteri</button></div>`);setTimeout(()=>{const i=document.getElementById('ps-cmq');if(i)i.focus()},30)}
+function psCustList(q){const t=psLow(q).trim(),tt=t.replace(/\D/g,''),cnt=new Map();S.d.sales.forEach(s=>{if(s.customer_id&&s.status!=='iptal')cnt.set(s.customer_id,(cnt.get(s.customer_id)||0)+1)});
+  const L=S.d.contacts.filter(c=>c.kind==='musteri'&&c.active!==false&&(!t||psLow(c.name).includes(t)||(tt.length>=3&&String(c.phone||'').replace(/\D/g,'').includes(tt))))
+    .sort((a,b)=>t?a.name.localeCompare(b.name,'tr'):(cnt.get(b.id)||0)-(cnt.get(a.id)||0)).slice(0,60);
+  return L.map(c=>`<button class="ps-ri" data-a="ps-cpick" data-id="${c.id}"><span class="nm"><b>${esc(c.name)}</b><small>${[c.phone,acqShort?acqShort(c):'',cnt.get(c.id)?cnt.get(c.id)+' alışveriş':''].filter(Boolean).map(esc).join(' · ')}</small></span></button>`).join('')||'<div class="empty">Müşteri bulunamadı.</div>'}
+function psCustNew(){modal(`<h2>Yeni müşteri</h2><input type="hidden" id="s-cust" value="__new__">${newContactBox('s-cust','musteri','__new__')}
+  <div class="err" id="f-err" hidden></div><div class="actions"><button class="btn" data-a="ps-cust">Geri</button><button class="btn pri" data-a="ps-csave">Kaydet ve seç</button></div>`);setTimeout(()=>{const i=document.getElementById('s-cust-nn');if(i)i.focus()},30)}
+
+/* ---------- hızlı ürünler ---------- */
+const psGroups=()=>(S.d.pos_groups||[]).filter(g=>g.active!==false).sort((a,b)=>a.sort-b.sort||a.name.localeCompare(b.name,'tr'));
+function psGroupTiles(gid){const d=S.d;
+  if(gid==='__top'){const since=addDays(today(),-30),sm=new Map(d.sales.map(s=>[s.id,s])),m=new Map();
+    d.sale_accessory_items.forEach(l=>{const s=sm.get(l.sale_id);if(!s||s.status==='iptal'||String(s.sold_at).slice(0,10)<since)return;m.set(l.accessory_id,(m.get(l.accessory_id)||0)+l.qty-l.returned_qty)});
+    return [...m.entries()].sort((a,b)=>b[1]-a[1]).map(([id])=>d.accMap.get(id)).filter(a=>a&&a.active!==false).slice(0,24).map(a=>({k:'a',id:a.id,name:a.name,price:a.sale_price,stock:a.stock_qty,ok:a.stock_qty>0}))}
+  return (d.pos_group_items||[]).filter(i=>i.group_id===gid).sort((a,b)=>a.sort-b.sort).map(i=>{
+    if(i.accessory_id){const a=d.accMap.get(i.accessory_id);return a&&{iid:i.id,k:'a',id:a.id,name:i.label||a.name,price:a.sale_price,stock:a.stock_qty,ok:a.active!==false&&a.stock_qty>0}}
+    const p=d.productMap.get(i.product_id);return p&&{iid:i.id,k:'d',id:p.id,name:i.label||p.model,price:p.target_price,stock:null,ok:p.status==='stokta',sold:p.status!=='stokta'}}).filter(Boolean)}
+const psGroupCount=gid=>(S.d.pos_group_items||[]).filter(i=>i.group_id===gid).length;
+
+/* ---------- görünüm ---------- */
+function psStatus(c,t){const f=S.ps.flash;if(f&&Date.now()-f.at<6000)return [f.t,f.ok?'ok':'bad'];
+  const open=Object.values(S.fis.f).filter(x=>psCount(x)).length;
+  if(c.mode==='iade')return ['İade modu · iade edilecek ürünü okutun'+(c.rets.length?' · '+c.rets.length+' kalem':''),'bad'];
+  if(c.mode==='degisim')return ['Değişim modu · '+(c.rets.length?'yeni ürünleri ekleyin':'değişime gelen ürünü okutun'),'warn'];
+  if(!psCount(c))return ['Satış bekleniyor'+(open?' · '+open+' açık fiş':''),'idle'];
+  return [`Fiş ${S.fis.cur} hazırlanıyor · ${t.qty} ürün`+(open>1?' · '+open+' açık fiş':''),'on']}
+function psLineHtml(){const c=S.cart,d=S.d,ro=c.mode==='iade';
+  const R=c.rets.map((r,ix)=>`<div class="ps-line ret"><div class="nm"><b>${esc(r.name)} <span class="pill bad">${c.mode==='iade'?'İade':'Değişime gelen'}</span></b><small>${esc(r.sale)} · ${fmtDate(r.sold)}${r.detail?' · '+esc(r.detail):''}</small>
+      <div class="ps-rf"><select class="in sm" data-c="psrc" data-i="${ix}" aria-label="İade nedeni"><option value="">İade nedeni seçin…</option>${RC.map(([k,l])=>`<option value="${k}" ${r.rc===k?'selected':''}>${esc(l)}</option>`).join('')}</select>
+      <select class="in sm" data-c="psdisp" data-i="${ix}" aria-label="Ürünün akıbeti"><option value="stok" ${r.disp==='stok'?'selected':''}>Stoğa geri al</option><option value="zayiat" ${r.disp==='zayiat'?'selected':''}>Zayiat (fire)</option></select>
+      ${r.disp==='zayiat'&&r.kind==='aksesuar'?`<select class="in sm" data-c="pswr" data-i="${ix}" aria-label="Fire nedeni">${FIRE_REASONS.filter(x=>x[0]!=='diger').map(([k,l])=>`<option value="${k}" ${r.wr===k?'selected':''}>${esc(l)}</option>`).join('')}</select>`:''}</div></div>
+    <div class="qt">${r.kind==='aksesuar'&&r.rem>1?`<button class="ib sm" data-a="ps-rq" data-i="${ix}" data-d="-1" aria-label="Azalt">−</button><b>${r.qty}</b><button class="ib sm" data-a="ps-rq" data-i="${ix}" data-d="1" aria-label="Artır" ${r.qty>=r.rem?'disabled':''}>+</button>`:`<b>1</b>`}</div>
+    <label class="pr"><span class="sr">${c.mode==='iade'?'İade tutarı':'Tanınan değer'}</span><input class="in" type="text" inputmode="decimal" value="${num(r.amount)}" data-c="psramt" data-i="${ix}" aria-label="${c.mode==='iade'?'İade tutarı':'Tanınan değer'}"></label>
+    <b class="tt neg">−${money(r.amount)}</b><button class="ps-x" data-a="ps-rdel" data-i="${ix}" aria-label="Çıkar">${ic('x','sm')}</button></div>`).join('');
+  if(ro)return R;
+  const D=c.items.map((i,ix)=>{const p=d.productMap.get(i.pid)||{};return `<div class="ps-line"><div class="nm"><b>${esc(p.model||'Cihaz')}${p.owner==='konsinye'?' <span class="pill warn">Konsinye</span>':''}</b><small>${esc(p.sub||'')}${p.imei?' · '+esc(p.imei):''}${psNum(i.discount)?' · indirim '+money(i.discount):''}</small></div>
+    <div class="qt"><b>1</b></div><label class="pr"><span class="sr">Fiyat</span><input class="in" type="text" inputmode="decimal" value="${num(i.price)}" data-c="psprice" data-k="d" data-i="${ix}" aria-label="${esc(p.model||'')} fiyatı"></label>
+    <b class="tt">${money(psNum(i.price)-psNum(i.discount))}</b><button class="ps-x" data-a="ps-del" data-k="d" data-i="${ix}" aria-label="Çıkar">${ic('x','sm')}</button></div>`}).join('');
+  const Ac=c.acc.map((l,ix)=>{const a=d.accMap.get(l.aid)||{name:'?',stock_qty:0};return `<div class="ps-line"><div class="nm"><b>${esc(a.name)}</b><small>Stok ${a.stock_qty}${a.barcode?' · '+esc(a.barcode):''}${psNum(l.discount)?' · indirim '+money(l.discount):''}</small></div>
+    <div class="qt"><button class="ib sm" data-a="ps-q" data-i="${ix}" data-d="-1" aria-label="Azalt">−</button><input class="in" type="text" inputmode="numeric" value="${l.qty}" data-c="psqty" data-i="${ix}" aria-label="Adet"><button class="ib sm" data-a="ps-q" data-i="${ix}" data-d="1" aria-label="Artır" ${l.qty>=a.stock_qty?'disabled':''}>+</button></div>
+    <label class="pr"><span class="sr">Birim fiyat</span><input class="in" type="text" inputmode="decimal" value="${num(l.price)}" data-c="psprice" data-k="a" data-i="${ix}" aria-label="${esc(a.name)} birim fiyatı"></label>
+    <b class="tt">${money(l.qty*psNum(l.price)-psNum(l.discount))}</b><button class="ps-x" data-a="ps-del" data-k="a" data-i="${ix}" aria-label="Çıkar">${ic('x','sm')}</button></div>`}).join('');
+  const T=c.trades.map((x,ix)=>`<div class="ps-line trade"><div class="nm"><b>${esc(x.model)} <span class="pill">Takas</span></b><small>${esc(x.sub||'')}${x.imei?' · '+esc(x.imei):''}${x.inspection_id?' · kontrol yapıldı':''}</small></div><div class="qt"><b>1</b></div><span></span><b class="tt neg">−${money(x.value)}</b><button class="ps-x" data-a="trade-del" data-i="${ix}" aria-label="Çıkar">${ic('x','sm')}</button></div>`).join('');
+  return R+D+Ac+T}
+function psSumHtml(c,t){const rows=[];
+  if(c.mode!=='iade'){if(t.ldisc||t.isk||t.misc||t.trade||c.rets.length)rows.push(['Ara toplam',money(t.base)]);
+    if(t.misc)rows.push(['Muhtelif / yuvarlama',(t.misc>0?'+':'−')+money(Math.abs(t.misc)),t.misc<0?'neg':'']);
+    if(t.isk)rows.push(['İskonto'+(c.iskT==='pct'?' %'+num(psNum(c.isk)):''),'−'+money(t.isk),'neg']);
+    if(t.trade&&c.mode==='satis')rows.push(['Takas','−'+money(t.trade),'neg']);
+    if(c.mode==='degisim'&&c.rets.length)rows.push(['Değişime gelen ürün','−'+money(t.ret),'neg'])}
+  if(t.paid>0&&c.mode==='satis'&&t.net>0)rows.push(t.diff>=0?['Para üstü',money(t.diff),'pos big']:['Eksik',money(-t.diff),'neg big']);
+  return rows.map(r=>`<div class="ps-sr ${r[2]||''}"><span>${r[0]}</span><b>${r[1]}</b></div>`).join('')}
+function psTotalHtml(c,t){const lab=c.mode==='iade'?'İADE EDİLECEK':c.mode==='degisim'?(t.net>=0?'MÜŞTERİ ÖDER':'MÜŞTERİYE ÖDENECEK'):'TOPLAM';
+  const amt=c.mode==='iade'?t.ret:Math.abs(t.net);
+  return `<div class="ps-total${c.mode!=='satis'?' m-'+c.mode:''}"><div class="l"><div class="k">${lab}</div><div class="sub">${c.mode==='iade'?c.rets.length+' kalem':t.n+' ürün · '+t.qty+' miktar'}</div><div id="ps-sums">${psSumHtml(c,t)}</div></div><div class="v" id="ps-amt">${money(amt).replace(' ₺','')}<small>₺</small></div></div>`}
+function vSatis(){psInit();psCheck();
+  const c=S.cart,t=psTotals(c),d=S.d,u=S.ps,cust=c.customer&&d.contactMap.get(c.customer),G=psGroups();
+  if(!u.g||(u.g!=='__top'&&!G.some(g=>g.id===u.g)))u.g=G.length?G[0].id:'__top';
+  const tiles=psGroupTiles(u.g),st=psStatus(c,t),now=new Date(),canQ=can('manage_pos_quick'),seller=c.staff||S.user.id;
+  const dt=now.toLocaleDateString('tr-TR',{day:'numeric',month:'long',weekday:'long'}),hm=now.toLocaleTimeString('tr-TR',{hour:'2-digit',minute:'2-digit'});
+  const payDis=c.mode==='satis'?!(t.n)||t.net<0:c.mode==='iade'?!c.rets.length:!(c.rets.length&&t.n);
+  const pb=(m,cls,icn,lab,k,dis)=>`<button class="ps-pb ${cls}" data-a="ps-pay" data-m="${m}" ${dis?'disabled':''}><span class="pi">${ic(icn,'lg')}</span><span><b>${lab}</b><small>${k}</small></span></button>`;
+  return `<h1 class="sr">Satış</h1><div class="ps${c.mode!=='satis'?' mode-'+c.mode:''}">
+  <section class="ps-l" aria-label="Fiş">
+   <div class="ps-row"><label class="ps-search${c.mode!=='satis'?' m-'+c.mode:''}">${ic('scan','lg')}<input id="ps-q" type="search" autocomplete="off" spellcheck="false" value="${esc(c.q||'')}" data-c="psq" placeholder="${c.mode==='iade'?'İade edilecek ürünü okutun: IMEI, barkod, satış no, müşteri':c.mode==='degisim'?(c.rets.length?'Yeni verilecek ürünü okutun veya yazın':'Değişime gelen ürünü okutun: IMEI, barkod, satış no'):'Barkod okutun veya ürün adı yazın'}" aria-label="Ürün ara"></label>
+    <button class="ps-tool" data-a="scan" data-t="ps-q" aria-label="Kamerayla okut" title="Kamerayla okut">${ic('search')}<span>Tara</span></button>
+    <button class="ps-tool" data-a="fg-open" title="Fiyat gör (F7)">${ic('tag')}<span>F7</span></button>
+    <button class="ps-tool" data-a="ps-print" title="${psCount(c)?'Ön fiş yazdır':'Son satışın fişini yazdır'}">${ic('printer')}<span>Yazdır</span></button></div>
+   <div class="ps-rel">${psResHtml()}</div>
+   <div class="ps-row ps-cust"><span class="avatar">${cust?esc(initials(cust.name)):'?'}</span>
+    <div class="cq">${cust?`<b>${esc(cust.name)}</b><small>${esc([cust.phone,acqShort(cust)].filter(Boolean).join(' · '))||'Müşteri'} <button class="lnk" data-a="ps-cclr">Kaldır</button></small>`:`<input id="ps-cq" type="search" autocomplete="off" placeholder="Müşteri seçin (ad veya telefon)" value="${esc(u.cq||'')}" data-c="pscq" aria-label="Müşteri ara"><small>Satış, iade ve değişim için isteğe bağlı</small>`}</div>
+    <button class="btn soft" data-a="ps-cust">${ic('userplus','sm')} Müşteri seç</button>
+    <button class="ps-tool sq" data-a="ps-more" aria-expanded="${!!u.more}" title="Satış bilgileri: satışı yapan, tarih, not, takas">${ic('down')}${c.note||c.trades.length||(c.date&&c.date!==today())||(c.staff&&c.staff!==S.user.id)?'<i class="dot"></i>':''}</button></div>
+   <div class="ps-rel" id="ps-cres">${!cust&&u.cq?psCustDd(u.cq):''}</div>
+   ${u.more?psMoreHtml(c):''}
+   <div class="ps-fis" role="tablist" aria-label="Açık fişler">${Array.from({length:PS_N},(_,k)=>{const n=k+1,f=S.fis.f[n],cnt=psCount(f),ft=cnt?psTotals(f):null;
+     return `<button role="tab" aria-selected="${n===S.fis.cur}" class="${n===S.fis.cur?'on':''}${cnt?' has':''}${f.mode!=='satis'?' m-'+f.mode:''}" data-a="ps-fis" data-n="${n}" title="${cnt?`Fiş ${n} · ${f.mode==='iade'?'iade · ':f.mode==='degisim'?'değişim · ':''}${cnt} kalem · ${money(f.mode==='iade'?ft.ret:ft.net)}${f.customer&&d.contactMap.get(f.customer)?' · '+esc(d.contactMap.get(f.customer).name):''}`:'Fiş '+n+' · boş'}">${n}${cnt?`<i>${cnt}</i>`:''}</button>`}).join('')}</div>
+   <div class="ps-cart">${psCount(c)?psLineHtml():`<div class="ps-empty">${ic(c.mode==='iade'?'undo':c.mode==='degisim'?'swap':'cart','xl')}<b>${c.mode==='iade'?'İade listesi boş':c.mode==='degisim'?'Değişime gelen ürünü okutun':'Fiş boş'}</b><span>${c.mode==='iade'?'Müşterinin iade ettiği ürünü okutun veya satış no / müşteri adıyla arayın.':c.mode==='degisim'?'Önce müşterinin getirdiği ürünü, sonra yerine verilecek ürünleri ekleyin; yalnız fark tahsil edilir veya ödenir.':'Barkodu okutun, ürün adı yazın ya da sağdan hızlı ürün seçin.'}</span></div>`}</div>
+   <div class="ps-tools">
+    <span class="ps-inl"><input class="in" id="ps-misc" type="text" inputmode="decimal" placeholder="Muhtelif tutar" aria-label="Muhtelif tutar (yuvarlama; eksi yazılabilir)" ${c.mode==='iade'?'disabled':''}><button class="btn" data-a="ps-misc" ${c.mode==='iade'?'disabled':''}>+ Ekle</button></span>
+    <span class="ps-inl"><input class="in" id="ps-isk" type="text" inputmode="decimal" placeholder="İskonto" value="${esc(c.isk||'')}" data-c="psisk" aria-label="İskonto" ${can('give_discount')&&c.mode!=='iade'?'':'disabled title="İndirim yetkiniz yok"'}><select class="in" data-c="psiskt" aria-label="İskonto türü" ${can('give_discount')&&c.mode!=='iade'?'':'disabled'}><option value="tl" ${c.iskT!=='pct'?'selected':''}>₺</option><option value="pct" ${c.iskT==='pct'?'selected':''}>%</option></select></span>
+    <button class="ps-ic${c.mode==='iade'?' on bad':''}" data-a="ps-mode" data-m="iade" title="İade modu" aria-pressed="${c.mode==='iade'}" ${can('process_refund')?'':'disabled'}>${ic('undo')}<span>İade</span></button>
+    <button class="ps-ic${c.mode==='degisim'?' on warn':''}" data-a="ps-mode" data-m="degisim" title="Değişim modu" aria-pressed="${c.mode==='degisim'}" ${can('process_refund')?'':'disabled'}>${ic('swap')}<span>Değişim</span></button>
+    <button class="ps-ic dng" data-a="ps-clear" title="Fişi temizle" ${psCount(c)||c.isk||c.misc?'':'disabled'}>${ic('trash')}<span>Sil</span></button></div>
+   ${c.misc?`<div class="ps-chip">Muhtelif / yuvarlama: <b>${psNum(c.misc)>0?'+':'−'}${money(Math.abs(psNum(c.misc)))}</b> <button class="lnk" data-a="ps-miscdel">Kaldır</button></div>`:''}
+   <div class="ps-paid"><label for="ps-paid">${c.mode==='satis'?'Ödenen':'Not'}</label>${c.mode==='satis'?`<input class="in" id="ps-paid" type="text" inputmode="decimal" placeholder="0" value="${esc(c.paid||'')}" data-c="pspaid" aria-label="Müşteriden alınan nakit">
+    <div class="ps-qp">${[20,50,100,200].map(v=>`<button class="btn" data-a="ps-paidadd" data-v="${v}">${v} ₺</button>`).join('')}<button class="btn" data-a="ps-paidadd" data-v="tam" title="Tam tutar">Tam</button></div>`
+    :`<span class="sub">${c.mode==='iade'?'Ödeme düğmesi iade şeklini seçer: tutar nakit, POS (karta iade) veya havale olarak geri ödenir.':'Fark müşteriden alınacaksa ödeme şeklini, müşteriye ödenecekse iade şeklini seçin.'}</span>`}</div>
+   ${psTotalHtml(c,t)}
+  </section>
+  <section class="ps-r" aria-label="Hızlı ürünler ve ödeme">
+   <div class="ps-top"><span class="chip">${ic('cal','sm')}${esc(dt)}</span><span class="chip">${ic('clock','sm')}<b id="ps-clock">${hm}</b></span>
+    <span class="chip pst ${st[1]}" id="ps-st"><i></i>${esc(st[0])}</span>
+    <button class="chip ib2" data-a="ps-full" title="Tam ekran" aria-label="Tam ekran">${ic(document.fullscreenElement||document.documentElement.classList.contains('ps-full')?'shrink':'expand','sm')}</button></div>
+   <div class="ps-tabs" role="tablist" aria-label="Hızlı ürün başlıkları">${G.map(g=>`<button role="tab" aria-selected="${u.g===g.id}" class="${u.g===g.id?'on':''}" style="--gc:${PS_COL[g.color]||PS_COL.mavi}" data-a="ps-g" data-id="${g.id}"><span class="gi">${ic('grid','sm')}</span><span><b>${esc(g.name)}</b><small>${psGroupCount(g.id)} ürün</small></span></button>`).join('')}
+    ${G.length?'':`<button role="tab" aria-selected="true" class="on" data-a="ps-g" data-id="__top"><span class="gi">${ic('trend','sm')}</span><span><b>Çok satanlar</b><small>son 30 gün · otomatik</small></span></button>`}
+    ${canQ?`<button class="ps-tedit" data-a="pq-open" title="Başlıkları ve ürünleri düzenle">${ic('pencil','sm')}<span>Düzenle</span></button>`:''}</div>
+   <div class="ps-tiles" style="--gc:${u.g==='__top'?'var(--accent)':PS_COL[(G.find(g=>g.id===u.g)||{}).color]||PS_COL.mavi}">${tiles.map(x=>`<button class="ps-tile${x.ok?'':' off'}" data-a="ps-tile" data-k="${x.k}" data-id="${x.id}" ${x.ok&&c.mode!=='iade'?'':'disabled'} title="${esc(x.name)}${x.k==='a'?' · stok '+x.stock:''}"><span class="tn">${esc(x.name)}</span><span class="tf">${x.k==='a'?`<small class="${x.stock<1?'neg':x.stock<=3?'warn':''}">${x.stock<1?'Stok yok':'Stok '+x.stock}</small>`:`<small>${x.sold?'Satıldı':'Cihaz'}</small>`}<b>${x.price!=null?money(x.price).replace(' ₺',''):'—'}</b></span></button>`).join('')||`<div class="ps-empty sm">${ic('grid','xl')}<b>${G.length?'Bu başlıkta ürün yok':'Henüz hızlı ürün başlığı yok'}</b><span>${canQ?'Düzenle ile başlık ve ürün ekleyin ya da ürün kartındaki "Satış ekranı" düğmesini kullanın.':'Yöneticiniz hızlı ürün başlıklarını Yönetim bölümünden ekleyebilir.'}</span>${canQ?'<button class="btn pri" data-a="pq-open">Hızlı ürünleri düzenle</button>':''}</div>`}</div>
+   <div class="ps-pay">${pb('nakit','g','cash','Nakit','F8',payDis)}${pb('pos','b','card','POS','F9',payDis)}${pb('havale','v','bank','Havale','F10',payDis)}${pb('parcali','n','split','Parçalı','F4',payDis||c.mode==='iade'||(c.mode==='degisim'&&t.net<=0))}</div>
+  </section></div>`}
+function psCustDd(q){const L=psCustResults(q);return `<div class="ps-res">${L.map((x,i)=>`<button class="ps-ri${i===0?' on':''}" data-a="ps-cpick" data-id="${x.id}"><span class="nm"><b>${esc(x.name)}</b><small>${esc(x.phone||'')}</small></span></button>`).join('')||`<div class="empty">Müşteri bulunamadı. <button class="lnk" data-a="ps-cnew">Yeni müşteri ekle</button></div>`}</div>`}
+function psMoreHtml(c){const today0=today(),bd=can('backdate_sale');
+  return `<div class="ps-more"><div class="form">
+   ${can('sell_for_others')?`<label class="f">Satışı yapan<select class="in" data-c="pssel">${opts(sellerOpts(),c.staff||S.user.id)}</select></label>`:`<label class="f">Satışı yapan<input class="in" value="${esc(S.me.full_name||'')}" disabled></label>`}
+   <label class="f">İşlem tarihi<input class="in" type="date" data-c="psdate" value="${esc(c.date||today0)}" max="${today0}" ${bd&&c.mode==='satis'?'':'disabled title="'+(c.mode!=='satis'?'İade ve değişim bugünün tarihiyle kaydedilir':'Geçmiş tarihli satış yetkiniz yok')+'"'}></label>
+   <label class="f full">Satış notu<input class="in" data-c="psnote" maxlength="300" value="${esc(c.note||'')}" placeholder="Örn. kutusuz teslim, faturası e-postayla gönderilecek"></label></div>
+   ${c.mode==='satis'?`<div class="row" style="margin-top:8px"><button class="btn sm" data-a="ps-trade">${ic('swap','sm')} Takas cihazı ekle</button>${c.trades.length?`<span class="sub">${c.trades.length} takas cihazı · −${money(sum(c.trades,x=>psNum(x.value)))}</span>`:'<span class="sub">Müşteriden alınan cihazın değeri ödenecek tutardan düşer.</span>'}</div>`:''}</div>`}
+/* yalnız tutarları yeniler (yazarken sayfa yeniden çizilmez) */
+function psRefresh(){const c=S.cart,t=psTotals(c),el=document.getElementById('ps-sums'),a=document.getElementById('ps-amt');if(!el||!a)return;
+  el.innerHTML=psSumHtml(c,t);a.innerHTML=money(c.mode==='iade'?t.ret:Math.abs(t.net)).replace(' ₺','')+'<small>₺</small>';
+  document.querySelectorAll('.ps-line').forEach(()=>{});psSave()}
+function refreshSums(){psRefresh()}
+function psAfter(aeId,sel){if(S.ui.tab!=='satis')return;const html=document.documentElement;html.classList.toggle('ps-full',!!(document.fullscreenElement||S.ps&&S.ps.fullCls));
+  if(document.querySelector('#modal .modal'))return;
+  let el=aeId&&aeId!=='dq'&&document.getElementById(aeId);
+  if(!el&&matchMedia('(pointer:fine)').matches)el=document.getElementById('ps-q');
+  if(el&&el.focus){el.focus();try{if(sel!=null&&el.setSelectionRange)el.setSelectionRange(sel,sel)}catch(e){}}}
+setInterval(()=>{const el=document.getElementById('ps-clock');if(el)el.textContent=new Date().toLocaleTimeString('tr-TR',{hour:'2-digit',minute:'2-digit'});
+  const f=S.ps&&S.ps.flash,st=document.getElementById('ps-st');if(f&&st&&Date.now()-f.at>6000&&Date.now()-f.at<7500&&S.ui.tab==='satis'&&!rtBusyUi())render()},1000);
+
+/* ---------- ödeme ---------- */
+function psCheckOut(m){const c=S.cart,t=psTotals(c);
+  if(c.mode==='satis'){if(!t.n)return 'Fiş boş. Önce ürün ekleyin.';if(t.net<0)return 'Takas değeri satış tutarından büyük olamaz.';
+    for(const l of c.acc){const a=S.d.accMap.get(l.aid);if(!a||l.qty>a.stock_qty)return (a?a.name:'Ürün')+' için stok yetersiz (stokta '+(a?a.stock_qty:0)+').'}
+    if(c.items.some(i=>psNum(i.price)<0)||c.acc.some(a=>psNum(a.price)<0))return 'Fiyatlar negatif olamaz.';
+    if((t.isk>0||t.misc<0)&&!can('give_discount'))return 'İskonto / indirim yetkiniz yok.';
+    if(m==='nakit'&&t.paid>0&&t.diff<0)return 'Ödenen tutar '+money(-t.diff)+' eksik. Tutarı düzeltin ya da Parçalı ödemeyi kullanın.';
+    if(c.date&&c.date>today())return 'Satış tarihi ileri bir tarih olamaz.';return ''}
+  if(!c.rets.length)return c.mode==='iade'?'İade edilecek ürünü okutun.':'Değişime gelen ürünü okutun.';
+  if(c.rets.some(r=>!r.rc))return 'Her kalem için iade nedenini seçin.';
+  for(const r of c.rets){const mx=psRetMax(r);if(psNum(r.amount)<0||psNum(r.amount)>mx+0.005)return r.name+': tutar 0 ile satış değeri ('+money(mx)+') arasında olmalı.'}
+  if(c.mode==='degisim'){if(!t.n)return 'Yerine verilecek ürünü ekleyin.';if(c.trades.length)return 'Değişimde takas cihazı kullanılamaz.';
+    if((t.isk>0||t.misc<0)&&!can('give_discount'))return 'İskonto / indirim yetkiniz yok.';
+    for(const l of c.acc){const a=S.d.accMap.get(l.aid);if(!a||l.qty>a.stock_qty)return (a?a.name:'Ürün')+' için stok yetersiz.'}}
+  return ''}
+const PS_M={nakit:'Nakit',pos:'POS',havale:'Havale',parcali:'Parçalı'};
+function psPay(m){const er=psCheckOut(m);if(er)return toast(er,true);const c=S.cart,t=psTotals(c);
+  if(m==='parcali')return psSplitModal();
+  const what=c.mode==='iade'?'İade':c.mode==='degisim'?'Değişim':'Satış',amt=c.mode==='iade'?t.ret:Math.abs(t.net);
+  const verb=c.mode==='iade'||(c.mode==='degisim'&&t.net<0)?'müşteriye ödenecek':'tahsil edilecek';
+  modal(`<div class="row" style="gap:10px"><span class="icb ${m==='nakit'?'g':m==='pos'?'b':'v'}">${ic(m==='nakit'?'cash':m==='pos'?'card':'bank','lg')}</span><div><h2 style="margin:0">${what} · ${PS_M[m]}</h2><div class="sub">Fiş ${S.fis.cur}${c.customer&&S.d.contactMap.get(c.customer)?' · '+esc(S.d.contactMap.get(c.customer).name):''}</div></div></div>
+   <div class="ps-cf"><div class="sum big"><span>${amt>0?PS_M[m]+' ile '+verb:'Ödeme yok (tutarlar eşit)'}</span><b>${money(amt)}</b></div>
+   ${c.mode==='satis'&&m==='nakit'&&t.paid>0?`<div class="sum"><span>Ödenen</span><b>${money(t.paid)}</b></div><div class="sum big"><span>Para üstü</span><b class="pos">${money(t.diff)}</b></div>`:''}
+   ${c.mode==='satis'&&t.trade?`<div class="sum"><span>Takas düşüldü</span><b>−${money(t.trade)}</b></div>`:''}
+   ${c.mode!=='satis'?`<div class="sub" style="margin-top:6px">${c.rets.map(r=>esc(r.name)+(r.qty>1?' × '+r.qty:'')+' · '+esc(RCL[r.rc]||'')+' · '+(r.disp==='stok'?'stoğa alınır':'zayiat')).join('<br>')}</div>`:''}
+   ${c.mode==='satis'&&c.date&&c.date!==today()?`<div class="note" style="margin-top:8px">İşlem tarihi: <b>${fmtDate(c.date)}</b></div>`:''}</div>
+   <div class="err" id="f-err" hidden></div><div class="actions"><button class="btn" data-a="close">Vazgeç <kbd>Esc</kbd></button><button class="btn pri" id="ps-ok" data-a="ps-do" data-m="${m}">${what}ı tamamla <kbd>Enter</kbd></button></div>`);
+  setTimeout(()=>{const b=document.getElementById('ps-ok');if(b)b.focus()},30)}
+function psSplitModal(){const c=S.cart,t=psTotals(c),amt=Math.abs(t.net);S.ps.sp={nakit:psNum(c.paid)>0?Math.min(psNum(c.paid),amt):0,pos:0,havale:0};S.ps.sp.pos=r2(amt-S.ps.sp.nakit);
+  modal(`<h2>Parçalı ödeme</h2><p class="sub">${c.mode==='degisim'?'Değişim farkı':'Toplam'} <b>${money(amt)}</b>. Tutarları girin; kalan otomatik hesaplanır.</p><div class="form">
+   ${['nakit','pos','havale'].map(k=>`<label class="f">${PS_M[k]}<input class="in" id="sp-${k}" type="text" inputmode="decimal" value="${S.ps.sp[k]?num(S.ps.sp[k]):''}" data-c="pssp" data-k="${k}"></label>`).join('')}</div>
+   <div class="sum big" style="margin-top:10px"><span>Kalan</span><b id="sp-left">${money(0)}</b></div><div class="err" id="f-err" hidden></div>
+   <div class="actions"><button class="btn" data-a="close">Vazgeç</button><button class="btn pri" data-a="ps-do" data-m="parcali">Tamamla</button></div>`);psSpLeft()}
+function psSpLeft(){const c=S.cart,amt=Math.abs(psTotals(c).net),sp=S.ps.sp,l=r2(amt-sp.nakit-sp.pos-sp.havale),el=document.getElementById('sp-left');if(el){el.textContent=money(l);el.className=Math.abs(l)<0.005?'pos':'neg'}return l}
+async function psDo(m,btn){const c=S.cart,t=psTotals(c),er=psCheckOut(m);if(er)return setErr(er);
+  let pays=[];const amt=Math.abs(t.net);
+  if(m==='parcali'){if(Math.abs(psSpLeft())>=0.005)return setErr('Tutarların toplamı '+money(amt)+' olmalı.');pays=['nakit','pos','havale'].filter(k=>S.ps.sp[k]>0).map(k=>({method:k,amount:r2(S.ps.sp[k])}))}
+  else if(amt>0)pays=[{method:m,amount:amt}];
+  if(btn)btn.disabled=true;
+  try{let res,saleId=null,txt='';
+    if(c.mode==='satis'){const al=psAlloc(c,t);let sold;if(c.date&&c.date!==today()){const n=new Date(),hh=String(n.getHours()).padStart(2,'0'),mm=String(n.getMinutes()).padStart(2,'0');sold=new Date(c.date+'T'+hh+':'+mm+':00').toISOString()}
+      res=await call('complete_sale',{p_customer:c.customer||null,p_items:al.items,p_accessories:al.acc,p_trade_ins:c.trades,p_payments:pays,p_note:c.note||null,p_staff:c.staff&&c.staff!==S.user.id?c.staff:null,...(sold?{p_sold_at:sold}:{})});
+      saleId=res.id;txt='Satış tamamlandı · '+res.sale_no}
+    else if(c.mode==='iade'){res=await call('return_batch',{p_lines:c.rets.map(r=>({kind:r.kind,id:r.id,qty:r.qty,amount:r2(psNum(r.amount)),method:m,reason_code:r.rc,reason:r.why||null,disposition:r.disp,waste_reason:r.disp==='zayiat'&&r.kind==='aksesuar'?r.wr:null}))});
+      txt='İade tamamlandı · '+c.rets.length+' kalem · '+money(t.ret)+' '+PS_M[m]+' ile ödendi'}
+    else{const r=c.rets[0],al=psAlloc(c,t);
+      res=await call('exchange_item',{p:{old_kind:r.kind,old_id:r.id,old_qty:r.kind==='aksesuar'?r.qty:1,credit:r2(psNum(r.amount)),reason_code:r.rc,reason:r.why||null,disposition:r.disp,waste_reason:r.kind==='aksesuar'&&r.disp==='zayiat'?r.wr:null,
+        new_items:al.items,new_accessories:al.acc,payments:t.net>0?pays:[],refund_method:t.net<0&&m!=='parcali'?m:'nakit',staff:c.staff&&c.staff!==S.user.id?c.staff:null,note:c.note||null}});
+      saleId=res.sale_id;txt='Değişim '+res.exchange_no+' tamamlandı · yeni satış '+res.sale_no}
+    closeModal();S.fis.f[S.fis.cur]=psNew();S.cart=S.fis.f[S.fis.cur];S.ps.more=false;S.ps.last=saleId||S.ps.last;psFlash(txt);psSave();
+    toast(txt);S.mine=null;await syncData();S.dash=null;render();if(saleId&&prefGet('ps_rc')!=='0')saleReceipt(saleId)}
+  catch(e){if(btn)btn.disabled=false;setErr(msg(e))}}
+function psProforma(){const c=S.cart,t=psTotals(c),d=S.d,sh=shopSet(),cu=c.customer&&d.contactMap.get(c.customer);
+  if(!psCount(c)){if(S.ps.last&&d.sales.some(s=>s.id===S.ps.last))return saleReceipt(S.ps.last);const ls=d.sales.filter(s=>s.status!=='iptal'&&s.created_by===S.user.id).sort((a,b)=>String(b.sold_at).localeCompare(String(a.sold_at)))[0];return ls?saleReceipt(ls.id):toast('Yazdırılacak fiş yok',true)}
+  const L=[...c.items.map(i=>{const p=d.productMap.get(i.pid)||{};return [p.model+(p.imei?' · '+p.imei:''),1,psNum(i.price)-psNum(i.discount)]}),...c.acc.map(a=>[(d.accMap.get(a.aid)||{}).name,a.qty,a.qty*psNum(a.price)-psNum(a.discount)])];
+  modal(`<div class="qdoc rc80"><div style="text-align:center"><b style="font-size:15px">${esc(sh.name)}</b><div>${esc(sh.phone||'')}</div><div style="margin:6px 0"><b>ÖN FİŞ · ÖDEME ALINMADI</b></div><div>${new Date().toLocaleString('tr-TR')}${cu?' · '+esc(cu.name):''}</div></div><hr>
+   ${L.map(l=>`<div class="sum"><span>${esc(l[0])}${l[1]>1?' × '+l[1]:''}</span><b>${money(l[2])}</b></div>`).join('')}<hr>
+   ${t.misc?`<div class="sum"><span>Muhtelif</span><b>${money(t.misc)}</b></div>`:''}${t.isk?`<div class="sum"><span>İskonto</span><b>−${money(t.isk)}</b></div>`:''}${t.trade?`<div class="sum"><span>Takas</span><b>−${money(t.trade)}</b></div>`:''}
+   <div class="sum big"><span>TOPLAM</span><b>${money(t.net)}</b></div><p style="text-align:center;font-size:11px">Bu belge bilgi amaçlıdır, mali belge yerine geçmez.</p></div>
+   <div class="actions no-print"><button class="btn" data-a="close">Kapat</button><button class="btn pri" data-a="q-print">Yazdır</button></div>`)}
+function psTradeModal(){modal(`<h2>Takas cihazı ekle</h2><p class="sub">Müşteriden alınan cihazın değeri ödenecek tutardan düşer; cihaz satış tamamlanınca stoğa girer.</p>
+  <div class="form"><label class="f">Kategori<select class="in" id="t-cat">${opts(CATS,CATS[0])}</select></label><label class="f">Alt kategori<select class="in" id="t-sub">${opts(SUBS,'2.El')}</select></label>
+  <label class="f full">Marka / Model<input class="in" id="t-model"></label><label class="f">IMEI<span class="inl"><input class="in mono" id="t-imei" inputmode="numeric"><button type="button" class="btn sm" data-a="scan" data-t="t-imei" aria-label="Kamerayla okut">Tara</button></span></label><label class="f">Pil (%)<input class="in" id="t-bat" type="number" min="0" max="100"></label>
+  <label class="f">Kozmetik<select class="in" id="t-cos">${opts(COSM,'','-')}</select></label><label class="f">Takas değeri (₺)<input class="in" id="t-val" type="number" min="0" step="0.01" inputmode="decimal"></label></div>
+  <div class="err" id="t-err" hidden></div><div class="actions"><button class="btn" data-a="close">Vazgeç</button><button class="btn pri" data-a="trade-add">Takas cihazını ekle</button></div>`)}
+
+/* ---------- hızlı ürün yönetimi ---------- */
+function pqCard(){if(!can('manage_pos_quick'))return '';const G=psGroups(),all=(S.d.pos_groups||[]);
+  return `<div class="card" id="pq-card"><div class="row"><h2 style="margin:0">Satış ekranı · hızlı ürünler</h2><div class="sp"></div><button class="btn pri" data-a="pq-open">${ic('pencil','sm')} Düzenle</button></div>
+   <p class="sub">Satış ekranının sağındaki başlıklar (en çok 10) ve kısayol ürünleri. Ürün kartlarındaki <b>Satış ekranı</b> düğmesiyle de ekleyebilirsiniz.</p>
+   ${all.length?`<div class="row" style="flex-wrap:wrap;gap:8px">${all.slice().sort((a,b)=>a.sort-b.sort).map(g=>`<span class="pill" style="border-left:4px solid ${PS_COL[g.color]||PS_COL.mavi};${g.active===false?'opacity:.55':''}">${esc(g.name)} · ${psGroupCount(g.id)} ürün${g.active===false?' · gizli':''}</span>`).join('')}</div>`:'<div class="empty">Henüz başlık yok. Düzenle ile ekleyin.</div>'}</div>`}
+function pqOpen(gid){if(!S.d.pos_groups)return toast('Önce 058_satis_ekrani.sql dosyasını çalıştırın',true);const all=(S.d.pos_groups||[]).slice().sort((a,b)=>a.sort-b.sort);S.pq={g:gid||(S.pq&&S.pq.g)||(all[0]&&all[0].id)||'',q:''};pqDraw()}
+function pqDraw(){const d=S.d,all=(d.pos_groups||[]).slice().sort((a,b)=>a.sort-b.sort||a.name.localeCompare(b.name,'tr')),P=S.pq;if(P.g&&!all.some(g=>g.id===P.g))P.g=all[0]?all[0].id:'';
+  const g=all.find(x=>x.id===P.g),items=g?(d.pos_group_items||[]).filter(i=>i.group_id===g.id).sort((a,b)=>a.sort-b.sort):[];
+  const nm=i=>i.accessory_id?((d.accMap.get(i.accessory_id)||{}).name||'Silinmiş ürün'):((d.productMap.get(i.product_id)||{}).model||'Silinmiş cihaz');
+  modal(`<div class="row"><h2 style="margin:0">Satış ekranı · hızlı ürünler</h2><div class="sp"></div><button class="ib" data-a="close" aria-label="Kapat">${ic('x')}</button></div>
+  <div class="pq"><div class="pq-g"><h3>Başlıklar <small>${all.length}/10</small></h3>
+    ${all.map((x,ix)=>`<div class="pq-gi${x.id===P.g?' on':''}" style="--gc:${PS_COL[x.color]||PS_COL.mavi}"><button class="nm" data-a="pq-g" data-id="${x.id}"><b>${esc(x.name)}</b><small>${psGroupCount(x.id)} ürün${x.active===false?' · gizli':''}</small></button>
+      <span class="mv"><button class="ib sm" data-a="pq-gmv" data-i="${ix}" data-d="-1" aria-label="Yukarı" ${ix?'':'disabled'}>↑</button><button class="ib sm" data-a="pq-gmv" data-i="${ix}" data-d="1" aria-label="Aşağı" ${ix<all.length-1?'':'disabled'}>↓</button></span></div>`).join('')||'<div class="sub">Henüz başlık yok.</div>'}
+    ${all.length<10?`<div class="pq-add"><input class="in" id="pq-gn" maxlength="24" placeholder="Yeni başlık (örn. KILIFLAR)"><button class="btn pri" data-a="pq-gadd">Ekle</button></div>`:'<p class="sub">En çok 10 başlık eklenebilir.</p>'}</div>
+   <div class="pq-i">${g?`<div class="form"><label class="f">Başlık adı<input class="in" id="pq-name" maxlength="24" value="${esc(g.name)}"></label><label class="f">Renk<select class="in" id="pq-color">${opts(PS_COLN,g.color)}</select></label></div>
+     <div class="row" style="margin:8px 0"><label class="sub"><input type="checkbox" id="pq-act" ${g.active!==false?'checked':''}> Satış ekranında göster</label><div class="sp"></div><button class="btn sm" data-a="pq-gsave">Başlığı kaydet</button><button class="btn sm danger" data-a="pq-gdel">Başlığı sil</button></div>
+     <h3>Ürünler <small>${items.length}/60</small></h3>
+     <div class="pq-list">${items.map((i,ix)=>`<div class="pq-it"><span class="mv"><button class="ib sm" data-a="pq-imv" data-i="${ix}" data-d="-1" aria-label="Yukarı" ${ix?'':'disabled'}>↑</button><button class="ib sm" data-a="pq-imv" data-i="${ix}" data-d="1" aria-label="Aşağı" ${ix<items.length-1?'':'disabled'}>↓</button></span>
+       <span class="nm"><b>${esc(nm(i))}</b><small>${i.accessory_id?'Aksesuar':'Cihaz'}${i.accessory_id&&d.accMap.get(i.accessory_id)?' · stok '+d.accMap.get(i.accessory_id).stock_qty+' · '+money(d.accMap.get(i.accessory_id).sale_price):''}</small></span>
+       <input class="in" data-c="pqlabel" data-id="${i.id}" maxlength="40" value="${esc(i.label||'')}" placeholder="Kısa ad (isteğe bağlı)" aria-label="Kısa ad"><button class="ib sm" data-a="pq-idel" data-id="${i.id}" aria-label="Çıkar">${ic('x','sm')}</button></div>`).join('')||'<div class="sub">Bu başlıkta ürün yok. Aşağıdan arayıp ekleyin.</div>'}</div>
+     <h3>Ürün ekle</h3><input class="in" id="pq-q" type="search" placeholder="Aksesuar adı, barkod, cihaz modeli veya IMEI" data-c="pqq" autocomplete="off" value="${esc(P.q)}"><div id="pq-res">${pqRes()}</div>`
+     :'<div class="empty">Soldan bir başlık ekleyin veya seçin.</div>'}</div></div>
+  <p class="sub">İpucu: Hizmet ve paket ürünleri (garanti paketi, temizlik, ekran koruma) için en çok satılanları ilk başlığa koyun. Kısa ad, uzun ürün adlarını kutuda okunur yapar.</p>`);document.querySelector('#modal .modal').classList.add('wide');
+  const q=document.getElementById('pq-q');if(q&&P.q){q.focus();q.setSelectionRange(P.q.length,P.q.length)}}
+function pqRes(){const P=S.pq,t=psLow(P.q).trim();if(!t||!P.g)return '';const have=new Set((S.d.pos_group_items||[]).filter(i=>i.group_id===P.g).map(i=>i.accessory_id||i.product_id));
+  const A=S.d.accessories.filter(a=>a.active!==false&&psLow([a.name,a.barcode,a.sku,a.category].join(' ')).includes(t)).slice(0,12);
+  const D=S.d.products.filter(p=>p.status==='stokta'&&psLow([p.model,p.imei,p.barcode].join(' ')).includes(t)).slice(0,6);
+  return [...A.map(a=>`<div class="pq-it"><span class="nm"><b>${esc(a.name)}</b><small>Aksesuar · stok ${a.stock_qty} · ${money(a.sale_price)}</small></span><button class="btn sm${have.has(a.id)?'':' pri'}" data-a="pq-iadd" data-k="aksesuar" data-id="${a.id}" ${have.has(a.id)?'disabled':''}>${have.has(a.id)?'Ekli':'Ekle'}</button></div>`),
+    ...D.map(p=>`<div class="pq-it"><span class="nm"><b>${esc(p.model)}</b><small>Cihaz · ${esc(p.sub||'')}${p.imei?' · '+esc(p.imei):''} · ${money(p.target_price)}</small></span><button class="btn sm${have.has(p.id)?'':' pri'}" data-a="pq-iadd" data-k="cihaz" data-id="${p.id}" ${have.has(p.id)?'disabled':''}>${have.has(p.id)?'Ekli':'Ekle'}</button></div>`)].join('')||'<div class="sub">Eşleşen ürün yok.</div>'}
+async function pqDb(fn,ok){try{const r=await fn();if(r&&r.error)throw r.error;if(ok)toast(ok);await syncData();if(document.querySelector('#modal .pq'))pqDraw();else render()}catch(e){toast(msg(e),true)}}
+const pqIn=(kind,id)=>(S.d.pos_group_items||[]).filter(i=>(kind==='aksesuar'?i.accessory_id:i.product_id)===id).map(i=>i.group_id);
+function pqPick(kind,id){if(!S.d.pos_groups)return toast('Önce 058_satis_ekrani.sql dosyasını çalıştırın',true);const G=(S.d.pos_groups||[]).slice().sort((a,b)=>a.sort-b.sort),on=new Set(pqIn(kind,id));
+  const nm=kind==='aksesuar'?(S.d.accMap.get(id)||{}).name:(S.d.productMap.get(id)||{}).model;
+  modal(`<h2>Satış sayfasında göster</h2><p class="sub"><b>${esc(nm||'')}</b> hangi hızlı ürün başlıklarında görünsün?</p>
+   ${G.map(g=>`<label class="sum" style="cursor:pointer;border-left:4px solid ${PS_COL[g.color]||PS_COL.mavi};padding-left:10px"><span><input type="checkbox" class="pq-pick" value="${g.id}" ${on.has(g.id)?'checked':''}> ${esc(g.name)}</span><small class="sub">${psGroupCount(g.id)} ürün</small></label>`).join('')||'<div class="empty">Henüz başlık yok.</div>'}
+   ${G.length<10?`<div class="pq-add" style="margin-top:10px"><input class="in" id="pq-pn" maxlength="24" placeholder="Yeni başlık oluştur ve ekle"></div>`:''}
+   <div class="err" id="f-err" hidden></div><div class="actions"><button class="btn" data-a="close">Vazgeç</button><button class="btn pri" data-a="pq-pick-save" data-k="${kind}" data-id="${id}">Kaydet</button></div>`)}
+const pqBtn=(kind,id)=>can('manage_pos_quick')&&S.d.pos_groups?`<button class="btn sm" data-a="pq-pick" data-k="${kind}" data-id="${id}" title="Satış sayfasında göster">${ic('grid','sm')} Satış ekranı${pqIn(kind,id).length?' · '+pqIn(kind,id).length:''}</button>`:'';
+const pqPills=(kind,id)=>{const ids=pqIn(kind,id);if(!ids.length)return '';return ids.map(g=>(S.d.pos_groups||[]).find(x=>x.id===g)).filter(Boolean).map(g=>`<span class="pill" style="border-left:3px solid ${PS_COL[g.color]||PS_COL.mavi}" title="Satış ekranında">${esc(g.name)}</span>`).join(' ')};
 
 /* ================= SATIŞLAR / İADE ================= */
 function vSatislar(){
@@ -4280,7 +4654,7 @@ function targetModal(staff,name){
 const luhn=s=>{let t=0;[...s].reverse().forEach((c,i)=>{let d=+c;if(i%2){d*=2;if(d>9)d-=9}t+=d});return t%10===0};
 const isImei=s=>/^\d{15}$/.test(s);
 // okunan değer kabul edilir mi? 15 haneli ise sağlama hanesi tutmalı; EAN/UPC gibi ürün barkodları reddedilir
-const EANOK=new Set(['fg-q','sg-code','sc-scan','cq','ac-bar','aq','q','pf-aq']);
+const EANOK=new Set(['ps-q','fg-q','sg-code','sc-scan','cq','ac-bar','aq','q','pf-aq']);
 function scanOk(v,ean){v=String(v||'').trim();if(!v)return null;
   if(isImei(v))return luhn(v)?v:null;
   if(/^\d{12,14}$/.test(v))return ean?v:null;
@@ -4294,6 +4668,7 @@ function scanDone(v){const t=scanState&&scanState.target;scanStop();if(t)scanApp
 const prodFind=code=>{const v=String(code||'').trim().toUpperCase();return v&&S.d.products.find(x=>x.status==='stokta'&&((x.imei&&x.imei.toUpperCase()===v)||(x.barcode&&x.barcode.toUpperCase()===v)))};
 function scanApply(target,v){
   if(target==='sc-scan')return scScan(v);
+  if(target==='ps-q')return psCode(v);
   if(target==='cq'){const p=prodFind(v);
     if(p){toast(p.model+' sepete eklendi');return cartAdd(p.id)}
     const ac=accFind(v);if(ac)return accAdd(ac.id);
@@ -4616,12 +4991,7 @@ const accLow=a=>a.active!==false&&Number(a.min_stock)>0&&Number(a.stock_qty)<=Nu
 const accUsd=id=>S.d.accUsd&&S.d.accUsd.has(id)?S.d.accUsd.get(id):null;
 const accAvg=id=>{const c=S.d.accCost&&S.d.accCost.get(id);return c==null?null:Number(c)};
 const accFind=code=>{const v=String(code||'').trim().toUpperCase();return v&&S.d.accessories.find(a=>a.active!==false&&((a.barcode&&a.barcode.toUpperCase()===v)||(a.sku&&a.sku.toUpperCase()===v)))};
-function accAdd(aid){
-  const a=S.d.accMap.get(aid);if(!a||a.active===false)return toast('Ürün bulunamadı',true);
-  const l=S.cart.acc.find(x=>x.aid===aid),have=l?l.qty:0;
-  if(have+1>a.stock_qty)return toast(`${a.name}: stokta yalnızca ${a.stock_qty} adet var`,true);
-  if(l)l.qty++;else S.cart.acc.push({aid,qty:1,price:a.sale_price==null?0:Number(a.sale_price),discount:0});
-  location.hash='satis';S.ui.tab='satis';render()}
+
 function vAksesuar(){
   if(S.ui.kz_acc&&isOwner())return kzView('acc');
   if(S.ui.sh_acc&&can('view_cost'))return shView('acc');
@@ -4638,11 +5008,11 @@ function vAksesuar(){
   const totalQty=sum(l,a=>a.stock_qty),totalVal=showCost?sum(l,a=>a.stock_qty*(accAvg(a.id)||0)):null;
   const row=(a,inFam)=>{const low=accLow(a),avg=accAvg(a.id),m=a.sale_price!=null&&avg!=null?Number(a.sale_price)-avg:null;
     return `<div class="item"><div class="main"><b>${esc(inFam?a.variant_label:a.name)}</b>${a.category&&!inFam?` <span class="pill">${esc(a.category)}</span>`:''}${a.active===false?' <span class="pill bad">Pasif</span>':''}${low?` <span class="pill ${a.stock_qty===0?'bad':'warn'}">${a.stock_qty===0?'Stok bitti':'Stok azaldı'}</span>`:''}
-      <div class="meta">${a.barcode?`<span class="mono">${esc(a.barcode)}</span>`:''}${a.sku?`<span>${esc(a.sku)}</span>`:''}${Number(a.min_stock)>0?`<span>Asgari ${a.min_stock}</span>`:''}</div>${a.notes?`<div class="meta"><span>${esc(a.notes)}</span></div>`:''}</div>
+      <div class="meta">${a.barcode?`<span class="mono">${esc(a.barcode)}</span>`:''}${a.sku?`<span>${esc(a.sku)}</span>`:''}${Number(a.min_stock)>0?`<span>Asgari ${a.min_stock}</span>`:''}</div>${a.notes?`<div class="meta"><span>${esc(a.notes)}</span></div>`:''}${pqPills('aksesuar',a.id)?`<div class="meta">${pqPills('aksesuar',a.id)}</div>`:''}</div>
       <div class="side"><div class="num"><b class="${a.stock_qty===0?'neg':''}" style="font-size:18px">${a.stock_qty}</b> <span class="sub">adet</span></div>
       <div class="sub num">${a.sale_price==null?'Fiyat yok':'Satış '+money(a.sale_price)}${showCost&&avg!=null?` · Maliyet ${money(avg)}${accUsd(a.id)!=null?` <span class="pill" title="Dolar maliyetli: TL karşılığı canlı kurla güncellenir">$${fxN(accUsd(a.id))}</span>`:''}`:''}${showCost&&m!=null?` · <span class="${sgn(m)}">Kâr ${money(m)}</span>`:''}</div>
       <div class="acts">${can('make_sale')&&a.active!==false&&a.stock_qty>0?`<button class="btn sm pri" data-a="acc-sell" data-id="${a.id}">Sat</button>`:''}
-      ${canFire()&&!mg?`<button class="btn sm" data-a="acc-write" data-id="${a.id}">Fire</button>`:''}${mg?`<button class="btn sm" data-a="acc-recv" data-id="${a.id}">Alış</button><button class="btn sm" data-a="acc-count" data-id="${a.id}">Sayım</button><button class="btn sm" data-a="acc-write" data-id="${a.id}">Fire</button><button class="btn sm" data-a="lbl-open" data-k="a" data-id="${a.id}">Etiket</button><button class="btn sm" data-a="acc-edit" data-id="${a.id}">Düzenle</button>${!a.family_id?`<button class="btn sm" data-a="fam-conv" data-id="${a.id}">Varyant ekle</button>`:''}`:''}
+      ${canFire()&&!mg?`<button class="btn sm" data-a="acc-write" data-id="${a.id}">Fire</button>`:''}${mg?`<button class="btn sm" data-a="acc-recv" data-id="${a.id}">Alış</button><button class="btn sm" data-a="acc-count" data-id="${a.id}">Sayım</button><button class="btn sm" data-a="acc-write" data-id="${a.id}">Fire</button><button class="btn sm" data-a="lbl-open" data-k="a" data-id="${a.id}">Etiket</button><button class="btn sm" data-a="acc-edit" data-id="${a.id}">Düzenle</button>${pqBtn('aksesuar',a.id)}${!a.family_id?`<button class="btn sm" data-a="fam-conv" data-id="${a.id}">Varyant ekle</button>`:''}`:''}
       ${(showCost||mg)?`<button class="btn sm" data-a="acc-moves" data-id="${a.id}">Hareketler</button>`:''}</div></div></div>`};
   const av=u.av==='fire'&&canSeeMoves()?'fire':'urun';
   return `<div class="row"><h1>Aksesuarlar</h1><div class="sp"></div>${can('view_cost')?'<button class="btn" data-a="sh-open" data-k="acc">Stok Sağlığı</button>':''}${isOwner()?'<button class="btn" data-a="kz-open" data-k="acc">Kazanç Raporu</button>':''}${mg&&av==='urun'?'<button class="btn" data-a="acat">Kategoriler</button><button class="btn" data-a="lbl-open" data-k="a">Barkod / etiket</button><button class="btn" data-a="fam-new">+ Varyantlı ürün</button><button class="btn" data-a="acc-usd">Maliyet para birimi</button><button class="btn pri" data-a="acc-new">+ Yeni ürün</button>':''}</div>
@@ -4900,6 +5270,7 @@ function vYonetim(){
     <td><input class="in" style="width:120px" type="number" min="0" step="1000" value="${st.monthly_target??0}" data-c="pset" data-f="monthly_target" data-id="${p.id}"></td>`}</tr>`}).join('')}</table></div></div>
   ${qsCard()}
   ${bankCard()}
+  ${pqCard()}
   <div class="card"><h2>Yetkiler</h2><p class="sub" style="margin-top:0">İşletme sahibi her zaman tüm yetkilere sahiptir.</p><div class="tw"><table><tr><th>Yetki</th>${ROLES.map(r=>`<th>${r[1]}</th>`).join('')}</tr>
    ${perms.map(([k,lab])=>`<tr><td>${esc(lab||k)}</td>${ROLES.map(([r])=>{const row=d.role_permissions.find(x=>x.role===r&&x.permission===k);return `<td><input type="checkbox" data-c="perm" data-r="${r}" data-p="${k}" ${row&&row.allowed?'checked':''} ${r==='owner'?'disabled checked':''}></td>`}).join('')}</tr>`).join('')}</table></div></div>`}
 
@@ -5014,7 +5385,6 @@ const A={
   'trade-del'(t){S.cart.trades.splice(+t.dataset.i,1);render()},
   'pay-add'(t){const l=cartTotals().left;if(l>0){S.cart.pays.push({method:t.dataset.m,amount:l});render()}},
   'pay-del'(t){S.cart.pays.splice(+t.dataset.i,1);render()},
-  'complete-sale'(t){t.disabled=true;completeSale().finally(()=>{t.disabled=false})},
   refund(t){refundModal(t.dataset.id)},
   async 'do-refund'(t){try{const i=S.d.sale_items.find(x=>x.id===t.dataset.id),R=S.rd||{disp:'stok'};dispRead('rd',R);const er=await dispCheck('rd','cihaz',R);if(er)return setErr(er);
     if(R.disp==='stok'){await call('return_sale_item',{p_sale_item:t.dataset.id,p_refund:nv('r-amt')??0,p_method:g('r-met'),p_reason:g('r-why')||null,p_restock:true,p_reason_code:g('r-rc')||null},'İade kaydedildi');closeModal();S.mine=null;await reload();return}
@@ -6076,6 +6446,110 @@ document.addEventListener('drop',e=>{const z=e.target.closest&&e.target.closest(
   document.addEventListener('touchend',()=>{if(!s)return;const {r,dx}=s;s=null;r.style.transform='';r.classList.remove('sw-r','sw-l');const id=r.dataset.id,n=ntGet(id);if(!n||!ntCanEd(n))return;
     if(dx>70)A['nt-done']({dataset:{id}});else if(dx<-70&&!n.done)A['nt-post']({dataset:{id,v:'1'}})})})();
 
+/* ---------- satış ekranı işleyicileri (058) ---------- */
+Object.assign(A,{
+  'ps-add'(t){const c=S.cart;c.q='';t.dataset.k==='d'?cartAdd(t.dataset.id):accAdd(t.dataset.id)},
+  'ps-radd'(t){const x=psRetResults(S.cart.q).find(y=>y.id===t.dataset.id);if(x)psRetAdd(x)},
+  'ps-tile'(t){if(S.cart.mode==='iade')return toast('İade modunda satılacak ürün eklenmez',true);t.dataset.k==='d'?cartAdd(t.dataset.id):accAdd(t.dataset.id)},
+  'ps-g'(t){S.ps.g=t.dataset.id;prefSet('ps_g',t.dataset.id);render()},
+  'ps-fis'(t){const n=Number(t.dataset.n);if(n===S.fis.cur)return;S.cart.q='';S.fis.cur=n;S.cart=S.fis.f[n];S.ps.more=false;S.ps.cq='';psCheck();psSave();render()},
+  'ps-del'(t){const c=S.cart;(t.dataset.k==='d'?c.items:c.acc).splice(+t.dataset.i,1);render()},
+  'ps-q'(t){const l=S.cart.acc[+t.dataset.i];if(!l)return;const a=S.d.accMap.get(l.aid)||{stock_qty:0},n=l.qty+Number(t.dataset.d);
+    if(n<1){S.cart.acc.splice(+t.dataset.i,1);return render()}if(n>a.stock_qty)return toast(`Stokta ${a.stock_qty} adet var`,true);l.qty=n;render()},
+  'ps-rq'(t){const r=S.cart.rets[+t.dataset.i];if(!r)return;const n=Math.min(r.rem,Math.max(1,r.qty+Number(t.dataset.d)));r.qty=n;
+    if(r.auto){const l=S.d.sale_accessory_items.find(x=>x.id===r.id);if(l)r.amount=r2(accRefundValue(l,n))}render()},
+  'ps-rdel'(t){S.cart.rets.splice(+t.dataset.i,1);render()},
+  'ps-cust'(){psCustModal()},
+  'ps-cpick'(t){S.cart.customer=t.dataset.id;S.ps.cq='';closeModal();render()},
+  'ps-cclr'(){S.cart.customer='';render()},
+  'ps-cnew'(){psCustNew()},
+  async 'ps-csave'(t){t.disabled=true;try{const id=await resolveContact('musteri','s-cust');S.cart.nn='';S.cart.nt='';S.cart.nch='';S.cart.nsrc='';closeModal();await syncData();S.cart.customer=id;S.ps.cq='';toast('Müşteri eklendi ve seçildi');render()}catch(e){t.disabled=false;setErr(msg(e))}},
+  'ps-more'(){S.ps.more=!S.ps.more;render()},
+  'ps-trade'(){psTradeModal()},
+  'trade-add'(){
+    const v=nv('t-val'),m=g('t-model'),er=document.getElementById('t-err');
+    if(!m||v==null||v<0){er.textContent='Model ve takas değerini girin.';er.hidden=false;return}
+    const tr={cat:g('t-cat'),sub:g('t-sub'),model:m,imei:g('t-imei'),battery:g('t-bat'),cosmetic:g('t-cos'),value:v};
+    if(insCat(tr.cat)&&insOn()){insOpen({context:'takas',cat:tr.cat,sub:tr.sub,model:tr.model,imei:tr.imei,price:tr.value,contact:S.cart.customer,
+      done:(row,up)=>{closeModal();S.cart.trades.push({...tr,...(up!=null?{value:up}:{}),sub:row.sub||tr.sub,model:row.model||tr.model,imei:row.imei||tr.imei,battery:row.battery==null?tr.battery:String(row.battery),cosmetic:row.cosmetic_score?insCosm(row.cosmetic_score):tr.cosmetic,inspection_id:row.id});render()},back:()=>closeModal()});return}
+    S.cart.trades.push(tr);closeModal();render()},
+  'trade-del'(t){S.cart.trades.splice(+t.dataset.i,1);render()},
+  'ps-misc'(){const v=psNum(g('ps-misc'));if(!v)return toast('Muhtelif tutarı yazın (yuvarlama için eksi de yazılabilir, örn. -2,50)',true);
+    if(v<0&&!can('give_discount'))return toast('Eksi muhtelif tutar indirim sayılır; indirim yetkiniz yok',true);S.cart.misc=r2(psNum(S.cart.misc)+v);render()},
+  'ps-miscdel'(){S.cart.misc=0;render()},
+  'ps-mode'(t){const c=S.cart,m=t.dataset.m,to=c.mode===m?'satis':m;
+    if(to==='iade'&&(c.items.length||c.acc.length||c.trades.length)){const fr=Object.keys(S.fis.f).find(k=>!psCount(S.fis.f[k]));
+      if(!fr)return toast('İade modu için boş bir fiş gerekir; bir fişi tamamlayın veya temizleyin',true);
+      S.fis.cur=Number(fr);S.cart=S.fis.f[fr];toast('Sepetteki ürünler korunuyor; iade için Fiş '+fr+' açıldı')}
+    const cc=S.cart;if(to==='satis'&&cc.rets.length&&!armed(t,(cc.mode==='iade'?'İade':'Değişim')+' listesi silinsin mi? (tekrar tıklayın)'))return;
+    if(to==='satis'||(to==='degisim'&&cc.mode==='iade')){if(cc.mode==='iade'&&to==='degisim')cc.rets=cc.rets.slice(0,1);else cc.rets=[]}
+    if(to==='degisim'&&cc.trades.length){cc.trades=[];toast('Değişimde takas kullanılamaz; takas cihazı çıkarıldı',true)}
+    cc.mode=to;cc.q='';cc.paid='';if(to!=='satis'){cc.date=''}psFlash(to==='satis'?'Satış moduna dönüldü':to==='iade'?'İade modu açık':'Değişim modu açık',to==='satis');render()},
+  'ps-clear'(t){if(!armed(t,'Fiş temizlensin mi? (tekrar tıklayın)'))return;S.fis.f[S.fis.cur]=psNew();S.cart=S.fis.f[S.fis.cur];S.ps.more=false;psFlash('Fiş '+S.fis.cur+' temizlendi');render()},
+  'ps-paidadd'(t){const c=S.cart;c.paid=t.dataset.v==='tam'?String(Math.max(0,psTotals(c).net)):String(r2(psNum(c.paid)+Number(t.dataset.v)));render()},
+  'ps-pay'(t){psPay(t.dataset.m)},
+  'ps-do'(t){psDo(t.dataset.m,t)},
+  'ps-print'(){psProforma()},
+  'ps-full'(){const on=!(document.fullscreenElement||S.ps.fullCls);S.ps.fullCls=on;document.documentElement.classList.toggle('ps-full',on);
+    try{if(on&&document.documentElement.requestFullscreen)document.documentElement.requestFullscreen().catch(()=>{});else if(!on&&document.fullscreenElement)document.exitFullscreen()}catch(e){}render()},
+  'pq-open'(){pqOpen()},
+  'pq-g'(t){S.pq.g=t.dataset.id;S.pq.q='';pqDraw()},
+  'pq-gadd'(){const n=g('pq-gn').trim();if(!n)return toast('Başlık adını yazın',true);const all=S.d.pos_groups||[];
+    pqDb(async()=>{const r=await sb.from('pos_groups').insert({name:n,sort:all.length?Math.max(...all.map(x=>x.sort))+1:1}).select('id').single();if(!r.error)S.pq.g=r.data.id;return r},'Başlık eklendi')},
+  'pq-gsave'(){const n=g('pq-name').trim();if(!n)return toast('Başlık adını yazın',true);pqDb(()=>sb.from('pos_groups').update({name:n,color:g('pq-color'),active:document.getElementById('pq-act').checked}).eq('id',S.pq.g),'Başlık kaydedildi')},
+  'pq-gdel'(t){if(!armed(t,'Başlık ve içindeki kısayollar silinsin mi? Ürünler silinmez (tekrar tıklayın)'))return;pqDb(()=>sb.from('pos_groups').delete().eq('id',S.pq.g),'Başlık silindi')},
+  'pq-gmv'(t){const all=(S.d.pos_groups||[]).slice().sort((a,b)=>a.sort-b.sort||a.name.localeCompare(b.name,'tr')).map(x=>x.id),i=+t.dataset.i,j=i+Number(t.dataset.d);[all[i],all[j]]=[all[j],all[i]];
+    pqDb(()=>call('pos_quick_reorder',{p_kind:'group',p_ids:all}))},
+  'pq-imv'(t){const all=(S.d.pos_group_items||[]).filter(i=>i.group_id===S.pq.g).sort((a,b)=>a.sort-b.sort).map(x=>x.id),i=+t.dataset.i,j=i+Number(t.dataset.d);[all[i],all[j]]=[all[j],all[i]];
+    pqDb(()=>call('pos_quick_reorder',{p_kind:'item',p_ids:all}))},
+  'pq-idel'(t){pqDb(()=>sb.from('pos_group_items').delete().eq('id',t.dataset.id))},
+  'pq-iadd'(t){const it=(S.d.pos_group_items||[]).filter(i=>i.group_id===S.pq.g);
+    pqDb(()=>sb.from('pos_group_items').insert({group_id:S.pq.g,[t.dataset.k==='aksesuar'?'accessory_id':'product_id']:t.dataset.id,sort:it.length?Math.max(...it.map(x=>x.sort))+1:1}),'Eklendi')},
+  'pq-pick'(t){pqPick(t.dataset.k,t.dataset.id)},
+  async 'pq-pick-save'(t){const ids=[...document.querySelectorAll('.pq-pick')].filter(x=>x.checked).map(x=>x.value),nn=(g('pq-pn')||'').trim();t.disabled=true;
+    try{if(nn){const all=S.d.pos_groups||[];const r=await sb.from('pos_groups').insert({name:nn,sort:all.length?Math.max(...all.map(x=>x.sort))+1:1}).select('id').single();if(r.error)throw r.error;ids.push(r.data.id)}
+      await call('pos_quick_set',{p_kind:t.dataset.k,p_id:t.dataset.id,p_groups:ids});closeModal();toast(ids.length?'Satış ekranında '+ids.length+' başlıkta gösteriliyor':'Satış ekranından kaldırıldı');await syncData();render()}catch(e){t.disabled=false;setErr(msg(e))}}
+});
+document.addEventListener('input',e=>{const t=e.target,k=t.dataset&&t.dataset.c;if(!k||!k.startsWith('ps')&&!k.startsWith('pq'))return;const c=S.cart;
+  switch(k){
+    case 'psq':{c.q=t.value;const w=t.closest('.ps-l')&&document.querySelector('.ps-l .ps-rel');if(w)w.innerHTML=psResHtml();psSave();break}
+    case 'pscq':{S.ps.cq=t.value;const w=document.getElementById('ps-cres');if(w)w.innerHTML=t.value.trim()?psCustDd(t.value):'';break}
+    case 'pscmq':{const w=document.getElementById('ps-cml');if(w)w.innerHTML=psCustList(t.value);break}
+    case 'psprice':{const L=t.dataset.k==='d'?c.items:c.acc,l=L[+t.dataset.i];if(l){l.price=psNum(t.value);const tt=t.closest('.ps-line').querySelector('.tt');if(tt)tt.textContent=money((t.dataset.k==='d'?1:l.qty)*psNum(l.price)-psNum(l.discount));psRefresh()}break}
+    case 'psqty':{const l=c.acc[+t.dataset.i],a=l&&S.d.accMap.get(l.aid);const n=Math.round(psNum(t.value));if(l&&n>=1){if(n>a.stock_qty){toast(`Stokta ${a.stock_qty} adet var`,true);break}l.qty=n;const tt=t.closest('.ps-line').querySelector('.tt');if(tt)tt.textContent=money(l.qty*psNum(l.price)-psNum(l.discount));psRefresh()}break}
+    case 'psramt':{const r=c.rets[+t.dataset.i];if(r){r.amount=psNum(t.value);r.auto=false;const tt=t.closest('.ps-line').querySelector('.tt');if(tt)tt.textContent='−'+money(r.amount);psRefresh()}break}
+    case 'psisk':c.isk=t.value;psRefresh();break;
+    case 'pspaid':c.paid=t.value;psRefresh();break;
+    case 'psnote':c.note=t.value;psSave();break;
+    case 'pssp':S.ps.sp[t.dataset.k]=psNum(t.value);psSpLeft();break;
+    case 'pqq':S.pq.q=t.value;{const w=document.getElementById('pq-res');if(w)w.innerHTML=pqRes()}break}});
+document.addEventListener('change',e=>{const t=e.target,k=t.dataset&&t.dataset.c;if(!k||!k.startsWith('ps')&&!k.startsWith('pq'))return;const c=S.cart;
+  switch(k){
+    case 'psrc':c.rets[+t.dataset.i].rc=t.value;psSave();break;
+    case 'psdisp':c.rets[+t.dataset.i].disp=t.value;render();break;
+    case 'pswr':c.rets[+t.dataset.i].wr=t.value;psSave();break;
+    case 'psiskt':c.iskT=t.value;psRefresh();break;
+    case 'pssel':c.staff=t.value===S.user.id?'':t.value;psSave();break;
+    case 'psdate':{const v=t.value;if(v>today()){t.value=today();return toast('Satış tarihi ileri bir tarih olamaz',true)}c.date=v===today()?'':v;render();break}
+    case 'pqlabel':pqDb(()=>sb.from('pos_group_items').update({label:t.value.trim()||null}).eq('id',t.dataset.id));break}});
+document.addEventListener('keydown',e=>{const t=e.target;if(!S.d||S.ui.tab!=='satis'||!S.fis)return;
+  const modalOpen=!!document.querySelector('#modal .modal');
+  if(t&&t.id==='ps-q'){if(e.key==='Enter'){e.preventDefault();const v=t.value.trim();if(!v)return;
+      const c=S.cart;if(c.mode==='satis'&&!prodFind(v)&&!accFind(v)){const R=psSaleResults(v).filter(x=>!(x.k==='a'&&x.stock<1));if(R.length){c.q='';return R[0].k==='d'?cartAdd(R[0].id):accAdd(R[0].id)}}
+      if(c.mode!=='satis'){const R=psRetResults(v);if(R.length){c.q='';return psRetAdd(R[0])}}
+      return psCode(v)}
+    if(e.key==='Escape'&&t.value){e.preventDefault();e.stopPropagation();S.cart.q='';t.value='';const w=document.querySelector('.ps-l .ps-rel');if(w)w.innerHTML='';return}}
+  if(t&&t.id==='ps-cq'&&e.key==='Enter'){e.preventDefault();const L=psCustResults(t.value);if(L.length){S.cart.customer=L[0].id;S.ps.cq='';render()}return}
+  if(t&&t.id==='ps-cmq'&&e.key==='Enter'){e.preventDefault();const b=document.querySelector('#ps-cml [data-a="ps-cpick"]');if(b)b.click();return}
+  if(t&&t.id==='ps-misc'&&e.key==='Enter'){e.preventDefault();A['ps-misc']();return}
+  if(t&&t.id==='pq-gn'&&e.key==='Enter'){e.preventDefault();A['pq-gadd']();return}
+  if(t&&(t.id==='ps-paid')&&e.key==='Enter'){e.preventDefault();A['ps-pay']({dataset:{m:'nakit'}});return}
+  if(modalOpen)return;
+  const fk={F8:'nakit',F9:'pos',F10:'havale',F4:'parcali'}[e.key];
+  if(fk){e.preventDefault();psPay(fk);return}
+  if(e.key==='F7'){e.preventDefault();fgModal();return}
+  if(e.altKey&&/^[1-8]$/.test(e.key)){e.preventDefault();A['ps-fis']({dataset:{n:e.key}});return}});
+document.addEventListener('fullscreenchange',()=>{if(!document.fullscreenElement&&S.ps&&S.ps.fullCls){S.ps.fullCls=false;document.documentElement.classList.remove('ps-full');if(S.ui.tab==='satis')render()}});
 document.addEventListener('click',e=>{
   if(S.uOpen&&!e.target.closest('.umenu')){S.uOpen=false;render()}
   if(S.notifOpen&&!e.target.closest('.bell')){S.notifOpen=false;render()}
