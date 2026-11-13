@@ -1834,9 +1834,15 @@ function skRender(){const S0=S.sd,P=S0.plan,res=Number(P.pending_expenses)+Numbe
 function skLive(){const P=S.sd&&S.sd.plan;if(!P)return;let tot=0;P.accounts.forEach(a=>{const v=nv('sk-a-'+a.code)||0;S.sd.amt[a.code]=v;tot+=v;const o=document.getElementById('sk-o-'+a.code);if(o)o.textContent=money(Number(a.balance)-v)});
   const t=document.getElementById('sk-tot');if(t)t.textContent=money(tot);const w=document.getElementById('sk-warn');if(w){const pr=Number(P.net_profit);w.textContent=tot>0&&pr>=0&&tot>pr+0.005?'⚠ Aktarım dönem kârını ('+money(pr)+') aşıyor; fazlası sermaye çekimi sayılır.':tot>0&&pr<0?'⚠ Dönem zararda; aktarım sermaye çekimi sayılır.':''}}
 function skMoveModal(){modal(`<h2>Sahip kasası hareketi</h2><div class="form"><label class="f">Hareket<select class="in" id="skm-kind" data-c="skmkind">${opts([['cekim','Sahip kasasından harcama / çekim'],['giris','Sahip kasasına giriş (kendi paranız)'],['aktarim','Anka hesabından sahip kasasına aktar'],['geri','Sahip kasasından Anka hesabına geri aktar']],'cekim')}</select></label>
-   <label class="f" id="skm-accw" style="display:none">Anka hesabı<select class="in" id="skm-acc">${opts(SK_ACC.map(a=>[a,accName(a)]),'enpara')}</select></label>
-   <label class="f">Tutar (₺)<input class="in" id="skm-amt" type="number" min="0" step="0.01" inputmode="decimal"></label><label class="f">Tarih<input class="in" id="skm-date" type="date" value="${today()}" max="${today()}"></label><label class="f full">Not<input class="in" id="skm-note" maxlength="200"></label></div>
-  <div class="err" id="f-err" hidden></div><div class="actions"><button class="btn" data-a="close">Vazgeç</button><button class="btn pri" data-a="sk-move-save">Kaydet</button></div>`)}
+   <label class="f" id="skm-accw" style="display:none">Anka hesabı<select class="in" id="skm-acc" data-c="skmacc">${opts(SK_ACC.map(a=>[a,accName(a)]),'enpara')}</select></label>
+   <label class="f">Tutar (₺)<input class="in" id="skm-amt" data-c="skmamt" type="number" min="0" step="0.01" inputmode="decimal"></label><label class="f">Tarih<input class="in" id="skm-date" type="date" value="${today()}" max="${today()}"></label><label class="f full">Not<input class="in" id="skm-note" maxlength="200"></label></div>
+  <div class="note" id="skm-prev" style="margin-top:10px" hidden></div>
+  <div class="err" id="f-err" hidden></div><div class="actions"><button class="btn" data-a="close">Vazgeç</button><button class="btn pri" data-a="sk-move-save">Kaydet</button></div>`);skmPrev()}
+function skmPrev(){const el=document.getElementById('skm-prev');if(!el)return;const k=g('skm-kind'),acc=g('skm-acc'),a=nv('skm-amt')||0;
+  const w=document.getElementById('skm-accw');if(w)w.style.display=['aktarim','geri'].includes(k)?'block':'none';
+  if(k!=='aktarim'||acc!=='odeal'||!(odealPct()>0)){el.hidden=true;el.innerHTML='';return}
+  const c=odealComm(a);el.hidden=false;
+  el.innerHTML=`<b>ÖdeAl nakit çekim kesintisi ${odealTxt()}</b><div class="sum"><span>ÖdeAl'den çıkan</span><b>${money(a)}</b></div><div class="sum"><span>Pos Komisyonu (masraf)</span><b class="neg">−${money(c)}</b></div><div class="sum"><span>Sahip kasasına geçecek</span><b>${money(Math.max(a-c,0))}</b></div><div class="sub">Komisyon otomatik "Pos Komisyonu" masrafı olarak ÖdeAl'den ödenmiş yazılır.</div>`}
 
 /* ================= MASRAFLAR ================= */
 const EX_GROUPS=['Sabit giderler','Personel','Vergi ve resmi','Profesyonel hizmet','İşletme','Diğer'];
@@ -1936,8 +1942,7 @@ function transferModal(){
 const GS_STEPS=['gunluk','biriken','havale','pos'];
 const GS_T={gunluk:'Nakit günlük kasa',biriken:'Nakit biriken kasa',havale:'Havale',pos:'POS'};
 const num0=v=>{const n=Number(String(v).replace(',','.'));return v===''||v==null||!isFinite(n)?0:n};
-const posRateDefault=()=>{const s=(S.d.app_settings||[]).find(x=>x.key==='pos_commission_rate');return s?Number(s.value):0};
-function gsOpen(){S.gs={i:0,gunluk:{ok:true,counted:'',to_biriken:'',to_enpara:'',note:''},biriken:{ok:true,counted:'',action:'beklemede',amount:'',note:''},havale:{ok:true,counted:'',note:''},pos:{ok:true,counted:'',rate:String(posRateDefault()),note:'',make_default:false}};gsModal()}
+function gsOpen(){S.gs={i:0,gunluk:{ok:true,counted:'',to_biriken:'',to_enpara:'',note:''},biriken:{ok:true,counted:'',action:'beklemede',amount:'',note:''},havale:{ok:true,counted:'',note:''},pos:{ok:true,counted:'',note:''}};gsModal()}
 function gsExp(s){const g=S.gs;
   if(s==='gunluk')return r2(cashBal('nakit_gunluk'));
   if(s==='biriken')return r2(cashBal('nakit_biriken')+num0(g.gunluk.to_biriken));
@@ -1945,13 +1950,13 @@ function gsExp(s){const g=S.gs;
   return r2(cashBal('pos'))}
 const gsCnt=s=>{const x=S.gs[s];return x.ok?gsExp(s):r2(num0(x.counted))};
 function gsCalc(){const g=S.gs,gc=gsCnt('gunluk'),tb=num0(g.gunluk.to_biriken),te=num0(g.gunluk.to_enpara),keep=r2(gc-tb-te);
-  const bc=gsCnt('biriken'),hc=gsCnt('havale'),pc=gsCnt('pos'),rate=num0(g.pos.rate),comm=r2(Math.max(pc,0)*rate/100);
+  const bc=gsCnt('biriken'),hc=gsCnt('havale'),pc=gsCnt('pos'),rate=0,comm=0;
   return {gc,tb,te,keep,bc,hc,pc,rate,comm,net:r2(pc-comm),bam:g.biriken.action==='aktar'?num0(g.biriken.amount):0}}
 function gsDiff(s){const x=S.gs[s];return x.ok?0:r2(gsCnt(s)-gsExp(s))}
 function gsSums(){const g=S.gs;if(!g)return;const k=gsCalc(),s=GS_STEPS[g.i];
   const d=document.getElementById('gs-diff');if(d){const v=gsDiff(s);d.innerHTML=g[s].ok?'':`Fark: <b class="${v<0?'neg':'pos'}">${v>0?'+':''}${money(v)}</b> ${v?'(açıklama zorunlu, "Kasa farkı" olarak kaydedilir)':''}`}
   const kp=document.getElementById('gs-keep');if(kp)kp.innerHTML=`Kasada kalacak (ertesi güne açılış): <b class="${k.keep<0?'neg':''}">${money(k.keep)}</b>`;
-  const p=document.getElementById('gs-pos');if(p)p.innerHTML=`Brüt <b>${money(k.pc)}</b> · komisyon %${k.rate} = <b>${money(k.comm)}</b> · ÖdeAl'a net <b>${money(k.net)}</b>`;
+  const p=document.getElementById('gs-pos');if(p)p.innerHTML=`ÖdeAl'a aktarılacak <b>${money(k.pc)}</b> · komisyonsuz`;
   const be=document.getElementById('gs-bexp');if(be)be.textContent=money(gsExp('biriken'))}
 function gsModal(){const g=S.gs,i=g.i,s=GS_STEPS[i],x=g[s],k=gsCalc(),exp=i<4?gsExp(s):0;
   const bar=`<div class="row" style="gap:6px;margin-bottom:8px">${[...GS_STEPS.map(t=>GS_T[t]),'Özet'].map((t,j)=>`<span class="pill ${j===i?'stock':j<i?'':'warn'}" style="opacity:${j<=i?1:.55}">${j+1}. ${esc(t)}</span>`).join('')}</div>`;
@@ -1969,9 +1974,8 @@ function gsModal(){const g=S.gs,i=g.i,s=GS_STEPS[i],x=g[s],k=gsCalc(),exp=i<4?gs
     if(s==='biriken')body+=`<h2 style="margin-top:14px">Biriken kasa için ne yapılsın?</h2><div class="seg"><button data-a="gs-bact" data-v="beklemede" aria-pressed="${x.action==='beklemede'}">Beklemede</button><button data-a="gs-bact" data-v="aktar" aria-pressed="${x.action==='aktar'}">Aktar</button></div>
       ${x.action==='aktar'?`<div class="form" style="margin-top:8px"><label class="f">EnPara banka hesabına aktarılacak (₺)<input class="in" type="number" min="0" step="0.01" inputmode="decimal" data-c="gs" data-s="biriken" data-f="amount" value="${esc(x.amount)}"></label></div>`:'<p class="sub">Beklemede: tutar biriken kasada kalır, sonraki günlerde eklenenlerle birlikte durur.</p>'}`;
     if(s==='havale')body+='<p class="sub" style="margin-top:12px">Doğruysa tutarın tamamı otomatik olarak <b>EnPara banka hesabına</b> aktarılır.</p>';
-    if(s==='pos')body+=`<div class="form" style="margin-top:12px"><label class="f">Komisyon oranı (%)<input class="in" type="number" min="0" max="20" step="0.01" inputmode="decimal" data-c="gs" data-s="pos" data-f="rate" value="${esc(x.rate)}"></label>
-      ${can('manage_users')?`<label class="chk" style="align-self:end"><input type="checkbox" data-c="gs" data-s="pos" data-f="make_default" ${x.make_default?'checked':''}> Bu oranı varsayılan yap</label>`:''}<div class="full sub" id="gs-pos"></div></div>
-      <p class="sub">Doğruysa POS tutarı otomatik olarak <b>ÖdeAl banka hesabına</b> aktarılır; komisyon varsa masraf olarak yazılır.</p>`;
+    if(s==='pos')body+=`<div class="full sub" id="gs-pos" style="margin-top:12px"></div>
+      <p class="sub">Doğruysa POS tutarının tamamı otomatik olarak <b>ÖdeAl banka hesabına komisyonsuz</b> aktarılır. Kesinti, ÖdeAl'den sahip kasasına aktarım yapılırken uygulanır.</p>`;
   }else{
     const D=s2=>gsDiff(s2),fm=v=>`${v>0?'+':''}${money(v)}`;
     body=`<h2>Özet ve onay</h2><div class="card">
@@ -1980,7 +1984,7 @@ function gsModal(){const g=S.gs,i=g.i,s=GS_STEPS[i],x=g[s],k=gsCalc(),exp=i<4?gs
      <div class="sum"><span>Nakit biriken kasa${D('biriken')?` <span class="pill bad">fark ${fm(D('biriken'))}</span>`:''}</span><span>${money(k.bc)}</span></div>
      <div class="sub">${g.biriken.action==='aktar'?`→ EnPara'ya ${money(k.bam)} aktarılacak, kalan ${money(r2(k.bc-k.bam))} beklemede`:'→ Beklemede (aktarım yok)'}</div>
      <div class="sum"><span>Havale${D('havale')?` <span class="pill bad">fark ${fm(D('havale'))}</span>`:''}</span><span>${money(k.hc)}</span></div><div class="sub">→ EnPara'ya ${money(k.hc)}</div>
-     <div class="sum"><span>POS${D('pos')?` <span class="pill bad">fark ${fm(D('pos'))}</span>`:''}</span><span>${money(k.pc)}</span></div><div class="sub">→ ÖdeAl'a ${money(k.net)} (komisyon %${k.rate}: ${money(k.comm)})</div></div>
+     <div class="sum"><span>POS${D('pos')?` <span class="pill bad">fark ${fm(D('pos'))}</span>`:''}</span><span>${money(k.pc)}</span></div><div class="sub">→ ÖdeAl'a ${money(k.net)} (komisyonsuz)</div></div>
      <label class="f"><span>Gün sonu notu (isteğe bağlı)</span><input class="in" id="gs-note" value="${esc(g.note||'')}"></label>
      <p class="sub">Onayladığınızda tüm aktarımlar ve fark kayıtları birlikte yazılır. Yanlış olursa işletme sahibi son gün sonunu iptal edebilir.</p>`;
   }
@@ -1991,13 +1995,12 @@ function gsValidate(){const g=S.gs,s=GS_STEPS[g.i],x=g[s],k=gsCalc();
   if(!x.ok){if(x.counted===''||num0(x.counted)<0)return 'Sayılan tutarı yazın.';if(gsDiff(s)&&!String(x.note).trim())return 'Fark için açıklama yazın.'}
   if(s==='gunluk'){if(num0(x.to_biriken)<0||num0(x.to_enpara)<0)return 'Tutarlar negatif olamaz.';if(k.keep<-0.005)return 'Aktarılan tutar sayılan nakitten ('+money(k.gc)+') fazla olamaz.'}
   if(s==='biriken'&&x.action==='aktar'){const a=num0(x.amount);if(!(a>0))return 'Aktarılacak tutarı yazın.';if(a>k.bc+0.005)return 'Aktarılacak tutar biriken kasadaki tutardan ('+money(k.bc)+') fazla olamaz.'}
-  if(s==='pos'){if(k.rate<0||k.rate>20)return 'Komisyon oranı 0 ile 20 arasında olmalı.'}
   return ''}
 async function gsSave(t){const g=S.gs,k=gsCalc();g.note=(document.getElementById('gs-note')||{}).value||'';
   const pl={note:g.note||null,gunluk:{counted:k.gc,to_biriken:k.tb,to_enpara:k.te,note:g.gunluk.ok?null:g.gunluk.note},
     biriken:{counted:k.bc,action:g.biriken.action,amount:k.bam,note:g.biriken.ok?null:g.biriken.note},
     havale:{counted:k.hc,note:g.havale.ok?null:g.havale.note},
-    pos:{counted:k.pc,rate:k.rate,make_default:!!g.pos.make_default,note:g.pos.ok?null:g.pos.note}};
+    pos:{counted:k.pc,rate:0,make_default:false,note:g.pos.ok?null:g.pos.note}};
   try{const r=await call('close_day',{p:pl});S.gs=null;closeModal();await reload();toast('Gün sonu alındı · '+r.closing_no);gsDetail(r.id)}catch(e){setErr(msg(e))}}
 function gsDetail(id){const c=(S.d.day_closings||[]).find(x=>x.id===id);if(!c)return;const ls=(S.d.day_closing_lines||[]).filter(l=>l.closing_id===id),es=S.d.cash_entries.filter(e=>e.closing_id===id);
   const last=lastClosing(),canCancel=c.status==='tamam'&&can('cancel_day_closing')&&last&&last.id===c.id;
@@ -2503,16 +2506,22 @@ function tiCsv(){const b=tiBank(),n=tiN(b),q=v=>'"'+String(v??'').replace(/"/g,'
   a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv;charset=utf-8'}));a.download='Taksitli-Cihazlar-'+today()+'.csv';document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},500);return rows.length}
 
 /* Yönetim > Banka Komisyonları */
+const odealPct=()=>{const s=(S.d.app_settings||[]).find(x=>x.key==='odeal_withdraw_pct');return s&&s.value!==''&&isFinite(Number(s.value))?Number(s.value):3};
+const odealTxt=()=>'%'+String(odealPct()).replace('.',',');
+const odealComm=a=>Math.round(Math.max(Number(a)||0,0)*odealPct())/100;
+function odealCard(){const ed=can('manage_bank_rates')||can('manage_users'),p=odealPct(),c=odealComm(10000);
+  return `<div class="note" id="odeal-wd" style="margin-bottom:10px"><b>ÖdeAl nakit çekim kesintisi</b>${ed?` <span style="display:inline-flex;align-items:center;gap:4px;margin:0 6px;vertical-align:middle"><input class="in" id="odeal-pct" style="width:70px" inputmode="decimal" value="${num(p)}" aria-label="ÖdeAl nakit çekim kesintisi">%</span><button class="btn sm" data-a="odeal-pct-save">Kaydet</button>`:` <b>${odealTxt()}</b>`}
+   <div class="sub" style="margin-top:4px">Ödemeler ÖdeAl'e girerken (gün sonu POS aktarımı) kesinti yoktur. Yalnız <b>Sahip Kasası › Hareket › Anka hesabından sahip kasasına aktar › ÖdeAl</b> seçildiğinde aktarılan tutardan ${odealTxt()} düşülür ve fark otomatik <b>"Pos Komisyonu"</b> masrafı olarak yazılır (ör. 10.000 ₺ → sahip kasasına ${money(10000-c)}, masraf ${money(c)}). Diğer kasa hareketlerine komisyon yansımaz; cihaz satışlarındaki "bize yansıyan" kesinti yalnız hesapta gösterilir.</div></div>`}
 function bankCard(){const d=S.d;if(!(d.pos_banks||[]).length&&!can('manage_bank_rates'))return `<div class="card"><h2>Banka Komisyonları</h2><p class="sub"><code>056_banka_komisyon.sql</code> çalıştırılınca burada anlaşmalı bankalar ve taksit oranları görünür.</p></div>`;
-  const ed=can('manage_bank_rates'),B=tiBanks(true),def=B.find(b=>b.is_default),pr=posRateDefault(),dis=ed?'':' disabled';
+  const ed=can('manage_bank_rates'),B=tiBanks(true),dis=ed?'':' disabled';
   return `<div class="card" id="bank-card"><div class="row"><h2>Banka Komisyonları</h2><div class="sp"></div>${ed?'<button class="btn pri" data-a="bk-new">+ Banka ekle</button>':''}</div>
    <p class="sub" style="margin-top:0">Anlaşmalı banka / POS taksit oranları. Cihazlar > Taksitli Cihazlar ve taksit hesaplayıcı bu oranları kullanır. ${ed?'':'Değiştirme yetkiniz yok (Yetkiler > "Banka komisyon oranlarını yönetebilir").'}</p>
-   ${def&&ed&&can('manage_users')&&Number(def.merchant_pct)!==pr?`<div class="note warn" style="margin-bottom:8px">Gün sonunda POS → ÖdeAl aktarımında kullanılan komisyon oranı <b>${tiPct(pr)}</b>, ${esc(def.name)} için girdiğiniz "bize yansıyan" oran <b>${tiPct(def.merchant_pct)}</b>. Kasa hesabının tutması için aynı olmalı. <button class="btn sm" data-a="bk-posrate" data-v="${def.merchant_pct}">Gün sonu POS komisyonunu ${tiPct(def.merchant_pct)} yap</button></div>`:''}
+   ${odealCard()}
    ${B.map(b=>{const R=new Map(tiRates(b).map(r=>[r.inst,r.rate_pct])),ex=tiCalc(b,3,10000);return `<div class="bk${b.active?'':' off'}" data-bk="${b.id}"><div class="row" style="flex-wrap:wrap;gap:8px">
       <input class="in bk-name" data-bk="${b.id}" data-f="name" value="${esc(b.name)}" maxlength="40" aria-label="Banka adı"${dis}>${b.is_default?'<span class="pill stock">Varsayılan</span>':''}${b.active?'':'<span class="pill">Pasif</span>'}<div class="sp"></div>
       <span class="sub">Son güncelleme ${tiUpd(b)}${b.updated_by?' · '+esc(pname(b.updated_by)):''}</span></div>
      <div class="bk-f"><label class="f">Hesap yöntemi<select class="in" data-bk="${b.id}" data-f="method"${dis}>${opts([['bolme','Bölme: tutar ÷ (1 − oran)'],['carpma','Çarpma: tutar × (1 + oran)']],b.method)}</select></label>
-      <label class="f">Bize yansıyan ek kesinti (%)<input class="in" data-bk="${b.id}" data-f="merchant_pct" inputmode="decimal" value="${num(b.merchant_pct)}"${dis}></label>
+      <label class="f">Bize yansıyan ek kesinti (%) · yalnız cihaz hesabı<input class="in" data-bk="${b.id}" data-f="merchant_pct" inputmode="decimal" value="${num(b.merchant_pct)}"${dis}></label>
       <label class="f">Peşin fiyatına kampanya taksiti<select class="in" data-bk="${b.id}" data-f="campaign_inst"${dis}>${opts([...Array(12)].map((_,i)=>[String(i+1),i?i+1+' taksit':'Tek çekim']),String(b.campaign_inst))}</select></label>
       <label class="f">Not<input class="in" data-bk="${b.id}" data-f="note" value="${esc(b.note||'')}" maxlength="300"${dis}></label></div>
      <div class="bk-rates">${[...Array(12)].map((_,i)=>{const n=i+1,v=R.get(n),x=v!=null?tiCalc(b,n,10000):null;return `<label class="bk-r"><span>${n===1?'Tek çekim':n+' taksit'}</span><span class="pc"><input class="in" data-bk="${b.id}" data-inst="${n}" inputmode="decimal" value="${v!=null?num(v):''}" placeholder="—" aria-label="${n} taksit komisyon oranı"${dis}><i>%</i></span><small>${x?'10.000 → '+money(x.total):''}</small></label>`}).join('')}</div>
@@ -5068,7 +5077,8 @@ const A={
   async 'bk-del'(t){if(!armed(t,'Silinsin mi?'))return;const id=t.dataset.id,r=await sb.from('pos_banks').delete().eq('id',id);if(r.error)return toast(msg(r.error),true);S.d.pos_banks=S.d.pos_banks.filter(x=>x.id!==id);S.d.pos_bank_rates=S.d.pos_bank_rates.filter(x=>x.bank_id!==id);toast('Banka silindi');render()},
   async 'bk-log'(t){const b=S.d.pos_banks.find(x=>x.id===t.dataset.id),r=await sb.from('pos_rate_log').select('*').eq('bank_id',t.dataset.id).order('changed_at',{ascending:false}).limit(100);
     modal(`<h2>Değişiklik geçmişi · ${esc(b?b.name:'')}</h2>${r.error?`<div class="err">${esc(msg(r.error))}</div>`:`<div class="tw"><table><tr><th style="text-align:left">Tarih</th><th>Taksit</th><th>Eski</th><th>Yeni</th><th style="text-align:left">Değiştiren</th></tr>${(r.data||[]).map(x=>`<tr><td style="text-align:left">${fmtDate(String(x.changed_at).slice(0,10))} ${ntHM(x.changed_at)}</td><td>${x.inst===1?'Tek çekim':x.inst}</td><td>${x.old_pct!=null?tiPct(x.old_pct):'—'}</td><td>${x.new_pct!=null?tiPct(x.new_pct):'kaldırıldı'}</td><td style="text-align:left">${esc(pname(x.changed_by)||'')}</td></tr>`).join('')||'<tr><td colspan="5">Henüz değişiklik yok.</td></tr>'}</table></div>`}<div class="actions"><button class="btn" data-a="close">Kapat</button></div>`)},
-  async 'bk-posrate'(t){try{await call('set_setting',{p_key:'pos_commission_rate',p_value:String(t.dataset.v)});const s2=S.d.app_settings.find(x=>x.key==='pos_commission_rate');if(s2)s2.value=String(t.dataset.v);else S.d.app_settings.push({key:'pos_commission_rate',value:String(t.dataset.v)});toast('Gün sonu POS komisyonu güncellendi');render()}catch(e){toast(msg(e),true)}},
+  async 'odeal-pct-save'(t){const v=String(g('odeal-pct')||'').trim().replace(',','.');if(!/^\d+(\.\d+)?$/.test(v)||Number(v)>20)return toast('Oran 0 ile 20 arasında olmalı',true);t.disabled=true;
+    try{await call('set_setting',{p_key:'odeal_withdraw_pct',p_value:v});const A2=S.d.app_settings||(S.d.app_settings=[]),s2=A2.find(x=>x.key==='odeal_withdraw_pct');if(s2)s2.value=v;else A2.push({key:'odeal_withdraw_pct',value:v});toast('ÖdeAl çekim kesintisi %'+v.replace('.',',')+' olarak kaydedildi');render()}catch(e){t.disabled=false;toast(msg(e),true)}},
   'mr-open'(){S.ui.mrep=true;S.mrSel=new Set();render();window.scrollTo(0,0)},'mr-back'(){S.ui.mrep=false;render()},
   'mr-go'(){S.ui.mrf=g('mr-f');S.ui.mrt=g('mr-t');render()},'mr-range'(t){S.ui.mrf=t.dataset.f;S.ui.mrt=t.dataset.t;render()},
   'mr-csv'(){toast(mrCsv()+' müşteri indirildi')},
@@ -5311,7 +5321,7 @@ const A={
     t.disabled=true;try{const r=await call('owner_month_close',{p:{period:S.sd.per,date:g('sk-date')||today(),note:g('sk-note')||null,transfers:tr}},null);toast('Aktarım yapıldı · '+r.closing_no+' · '+money(r.total));closeModal();S.sd=null;await reload()}catch(e){t.disabled=false;setErr(msg(e))}},
   async 'sk-cancel'(t){if(!armed(t,'Aktarım geri alınsın mı? Tekrar tıklayın'))return;try{await call('cancel_owner_closing',{p_id:t.dataset.id,p_reason:null},'Aktarım iptal edildi');await reload()}catch(e){}},
   async 'sk-move-save'(t){const k=g('skm-kind'),a=nv('skm-amt');if(!(a>0))return setErr('Tutarı girin.');t.disabled=true;
-    try{await call('owner_cash_move',{p:{kind:k,account:['aktarim','geri'].includes(k)?g('skm-acc'):null,amount:a,date:g('skm-date')||today(),note:g('skm-note')||null}},'Kaydedildi');closeModal();await reload()}catch(e){t.disabled=false;setErr(msg(e))}},
+    const oc=k==='aktarim'&&g('skm-acc')==='odeal'?odealComm(a):0;try{await call('owner_cash_move',{p:{kind:k,account:['aktarim','geri'].includes(k)?g('skm-acc'):null,amount:a,date:g('skm-date')||today(),note:g('skm-note')||null}},oc>0?'Kaydedildi · sahip kasasına '+money(a-oc)+', Pos Komisyonu '+money(oc):'Kaydedildi');closeModal();await reload()}catch(e){t.disabled=false;setErr(msg(e))}},
   irperiod(t){S.ui.irp=t.dataset.v;render()},
   'ir-new'(){dgPick('iade')},'dg-new'(){dgPick('degisim')},
   'dg-pick'(t){const x=dgLines(S.dg.q).find(y=>y.kind===t.dataset.k&&y.id===t.dataset.id);if(!x)return;
@@ -6141,7 +6151,7 @@ document.addEventListener('change',async e=>{
     case 'svrb':svRbToggle();break;
     case 'skper':skOpen(t.value);break;
     case 'skflt':break;
-    case 'skmkind':{const w=document.getElementById('skm-accw');if(w)w.style.display=['aktarim','geri'].includes(t.value)?'block':'none';break}
+    case 'skmkind':case 'skmacc':skmPrev();break;
     case 'hkkind':hkKindUi();break;
     case 'hkchk':hkNet();break;
     case 'dgqty':{dgSave2();S.dg.credit=dgValue(S.dg);dgStep2();break}
@@ -6190,6 +6200,7 @@ document.addEventListener('input',e=>{
   if(t.dataset.c==='qwb'&&S.qw){const it=S.qw.buy[+t.dataset.i];if(it){it[t.dataset.f]=t.value;qwHint(+t.dataset.i);qwTotals()}return}
   if(t.dataset.c==='fmrow'&&S.fm){S.fm.rows[+t.dataset.i][t.dataset.f]=t.value;return}
   if(t.dataset.c==='fmtop'&&S.fm){S.fm[t.dataset.f]=t.value;return}
+  if(t.dataset.c==='skmamt'){skmPrev();return}
   if(t.dataset.c==='gs'&&S.gs){const x=S.gs[t.dataset.s];x[t.dataset.f]=t.type==='checkbox'?t.checked:t.value;gsSums();return}
   if(t.id==='q'){S.ui.q=t.value;stokList()}
   if(t.dataset.c==='oacc'){ordAccHint();return}
