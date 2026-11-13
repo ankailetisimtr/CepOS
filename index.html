@@ -463,6 +463,15 @@ tr.sub-r td{color:var(--muted);font-size:13px}
 .mr-stack{width:100%;max-width:56px;display:flex;flex-direction:column-reverse;border-radius:6px 6px 0 0;overflow:hidden;min-height:2px;background:var(--surface2)}.mr-stack i{display:block;min-height:3px}
 .mr-leg{display:flex;flex-wrap:wrap;gap:12px;font-size:12px;color:var(--muted)}.mr-leg i{display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:4px;vertical-align:-1px}
 i.ch-magaza{background:var(--accent)}i.ch-internet{background:var(--violet)}i.ch-sosyal{background:var(--pink)}i.ch-yok{background:var(--muted)}
+
+.ti-tbl td.ti-pos{background:var(--accent-soft)}.ti-tbl td.ti-pos b{color:var(--accent);font-size:15px}.ti-cp{width:110px;text-align:right}
+button.pill.ti-pill{cursor:pointer;font:inherit;font-size:12px}button.pill.ti-pill:hover{filter:brightness(.95);text-decoration:underline}
+.modal.ti-modal{width:min(980px,96vw);max-width:980px}
+.bk{border:1px solid var(--line);border-radius:10px;padding:12px;margin-top:10px;display:flex;flex-direction:column;gap:8px}.bk.off{opacity:.65}.bk-name{font-weight:600;max-width:260px}
+.bk-f{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:8px}.bk-f .f{margin:0}
+.bk-rates{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:8px}.bk-r{display:flex;flex-direction:column;gap:2px;font-size:12px;color:var(--muted)}.bk-r small{min-height:14px}
+.bk-r .pc{display:flex;align-items:center;gap:4px}.bk-r .pc .in{text-align:right;color:var(--text)}.bk-r .pc i{font-style:normal;color:var(--muted)}
+.note.warn{background:var(--warn-soft);border-radius:8px;padding:8px 10px;font-size:13px}
 </style>
 </head>
 <body>
@@ -576,7 +585,7 @@ const can=p=>!!S.me&&(S.me.role==='owner'||S.perms.has(p));
 const isOwner=()=>!!S.me&&S.me.role==='owner';
 const by=(arr)=>new Map(arr.map(x=>[x.id,x]));
 
-const NOID=new Set(['training_progress','training_path_items','training_assignments','notification_reads','notification_state','price_deductions','cash_accounts','app_settings','accessory_costs','sale_accessory_costs','fx_rates','staff_settings','role_permissions','product_costs','sale_item_costs']);
+const NOID=new Set(['pos_bank_rates','training_progress','training_path_items','training_assignments','notification_reads','notification_state','price_deductions','cash_accounts','app_settings','accessory_costs','sale_accessory_costs','fx_rates','staff_settings','role_permissions','product_costs','sale_item_costs']);
 async function all(table,order,asc){
   let out=[],from=0;
   for(;;){
@@ -588,7 +597,7 @@ async function all(table,order,asc){
     out=out.concat(data||[]);if(!data||data.length<1000)break;from+=1000}
   return out}
 /* uygulamanın yüklediği tablolar ve sıralamaları (canlı güncelleme de bunları kullanır) */
-const LOAD_NAMES=['trainings','training_progress','training_questions','training_paths','training_path_items','training_assignments','notification_reads','notification_state','price_refs','price_deductions','device_inspections','term_debts','term_debt_payments','work_schedules','shift_changes','owner_closings','entitlements','staff_pay_profiles','exchanges','service_costs','shortages','accessory_categories','accessory_families','expense_categories','expense_templates','expenses','cash_accounts','app_settings','day_closings','day_closing_lines','fx_rates','purchases','purchase_lines','profiles','staff_settings','role_permissions','contacts','products','product_costs','sales','sale_items','sale_payments','sale_trade_ins','sale_item_costs','commissions','sale_returns','cash_entries','party_entries','consignment_agreements','consignment_rates','notifications','service_orders','service_events','customer_orders','follow_ups','quotes','quote_items','attachments','shifts','time_clock','tasks','push_subscriptions','accessories','accessory_costs','accessory_moves','sale_accessory_items','sale_accessory_costs','sale_accessory_returns'];
+const LOAD_NAMES=['pos_banks','pos_bank_rates','trainings','training_progress','training_questions','training_paths','training_path_items','training_assignments','notification_reads','notification_state','price_refs','price_deductions','device_inspections','term_debts','term_debt_payments','work_schedules','shift_changes','owner_closings','entitlements','staff_pay_profiles','exchanges','service_costs','shortages','accessory_categories','accessory_families','expense_categories','expense_templates','expenses','cash_accounts','app_settings','day_closings','day_closing_lines','fx_rates','purchases','purchase_lines','profiles','staff_settings','role_permissions','contacts','products','product_costs','sales','sale_items','sale_payments','sale_trade_ins','sale_item_costs','commissions','sale_returns','cash_entries','party_entries','consignment_agreements','consignment_rates','notifications','service_orders','service_events','customer_orders','follow_ups','quotes','quote_items','attachments','shifts','time_clock','tasks','push_subscriptions','accessories','accessory_costs','accessory_moves','sale_accessory_items','sale_accessory_costs','sale_accessory_returns'];
 const LOAD_ORDERS={device_inspections:'created_at',term_debts:'created_at',term_debt_payments:'created_at',work_schedules:'valid_from',shift_changes:'created_at',owner_closings:'created_at',entitlements:'created_at',staff_pay_profiles:'updated_at',exchanges:'created_at',service_costs:'created_at',shortages:'created_at',accessory_categories:'sort',accessory_families:'created_at',expenses:'created_at',expense_templates:'created_at',expense_categories:'sort',day_closings:'closed_at',cash_accounts:'sort',sales:'sold_at',cash_entries:'created_at',notifications:'created_at',party_entries:'created_at',service_orders:'received_at',service_events:'at',quotes:'created_at',attachments:'created_at',time_clock:'clock_in',tasks:'created_at',accessory_moves:'created_at',purchases:'created_at',fx_rates:'fetched_at'};
 const dropCaches=()=>{S.wd=null;S.prm=undefined;S.hp=undefined;S.ops=undefined;S.svp=undefined;S.work=undefined;S.team=null;S.tp=null};
 async function loadAll(){
@@ -1053,10 +1062,10 @@ const fmtSeen=t=>{if(!t)return 'hiç giriş yapmadı';const d=new Date(t);return
 
 /* ================= YÖNLENDİRME / ÇERÇEVE ================= */
 /* menüden bir sekmeye tıklanınca rapor ekranları kapanır, sekmenin ana sayfası açılır; menü kapanır */
-function resetReps(){S.ui.mrep=false;S.ui.pl_dev=false;S.ui.kz_dev=false;S.ui.kz_acc=false;S.ui.pur_rep=false;S.ui.sh_dev=false;S.ui.sh_acc=false}
+function resetReps(){S.ui.ti_dev=false;S.ui.mrep=false;S.ui.pl_dev=false;S.ui.kz_dev=false;S.ui.kz_acc=false;S.ui.pur_rep=false;S.ui.sh_dev=false;S.ui.sh_acc=false}
 document.addEventListener('click',e=>{const a=e.target.closest&&e.target.closest('.dnav a[href^="#"]');if(!a)return;
   const same=a.getAttribute('href')==='#'+location.hash.slice(1)||(a.getAttribute('href')==='#panel'&&!location.hash.slice(1));drawer(false);
-  if(same&&S.d&&(S.ui.mrep||S.ui.pl_dev||S.ui.kz_dev||S.ui.kz_acc||S.ui.pur_rep||S.ui.sh_dev||S.ui.sh_acc)){resetReps();render()}});
+  if(same&&S.d&&(S.ui.ti_dev||S.ui.mrep||S.ui.pl_dev||S.ui.kz_dev||S.ui.kz_acc||S.ui.pur_rep||S.ui.sh_dev||S.ui.sh_acc)){resetReps();render()}});
 function route(){
   const h=location.hash.slice(1);
   S.ui.tab=TABS.some(t=>t[0]===h)?h:'panel';S.uOpen=false;
@@ -1542,7 +1551,8 @@ function vStok(){
   if(u.kz_dev&&isOwner())return kzView('dev');
   if(u.sh_dev&&can('view_cost'))return shView('dev');
   if(u.pl_dev&&prOn())return plView();
-  return `<div class="row"><h1>Cihazlar</h1><div class="sp"></div>${prOn()?'<button class="btn" data-a="pl-open">Fiyat Listesi</button>':''}${can('view_cost')?'<button class="btn" data-a="sh-open" data-k="dev">Stok Sağlığı</button>':''}${isOwner()?'<button class="btn" data-a="kz-open" data-k="dev">Kazanç Raporu</button>':''}${can('manage_products')?'<button class="btn" data-a="lbl-open" data-k="c">Barkod / etiket</button><button class="btn pri" data-a="new-product">+ Ürün alışı</button>':''}</div>
+  if(u.ti_dev)return tiView();
+  return `<div class="row"><h1>Cihazlar</h1><div class="sp"></div><button class="btn" data-a="ti-open">Taksitli Cihazlar</button>${prOn()?'<button class="btn" data-a="pl-open">Fiyat Listesi</button>':''}${can('view_cost')?'<button class="btn" data-a="sh-open" data-k="dev">Stok Sağlığı</button>':''}${isOwner()?'<button class="btn" data-a="kz-open" data-k="dev">Kazanç Raporu</button>':''}${can('manage_products')?'<button class="btn" data-a="lbl-open" data-k="c">Barkod / etiket</button><button class="btn pri" data-a="new-product">+ Ürün alışı</button>':''}</div>
   <div class="card"><div class="form">
     <label class="f full">Ara (model, IMEI, barkod, not)<span class="inl"><input class="in" id="q" type="search" value="${esc(u.q)}" data-c="stokfilter" placeholder="iPhone 13 veya IMEI"><button type="button" class="btn sm" data-a="scan" data-t="q" aria-label="Kamerayla okut">Tara</button></span></label>
     <label class="f">Durum<select class="in" id="fs" data-c="stokfilter">${opts([['','Tümü'],['stokta','Stokta'],['satildi','Satıldı'],['iade','Firmaya iade']],u.fs)}</select></label>
@@ -1561,7 +1571,7 @@ function stokList(){
     const st=p.status==='satildi'?['sold','Satıldı']:p.status==='iade'?['warn','Firmaya iade']:p.status==='zayiat'?['bad','Zayiat']:p.status==='serviste'?['warn','Serviste']:p.status==='rezerve'?['warn','Rezerve']:['stock','Stokta'];
     const src=d.contactMap.get(p.buy_contact_id);
     return `<div class="item"><div class="main"><b>${esc(p.model)}</b> <span class="pill">${esc(p.cat)} · ${esc(p.sub)}</span> ${invPill(p.sub)}${p.owner==='konsinye'?' <span class="pill warn">Konsinye</span>':''}
-      <div class="meta">${p.imei?`<span class="mono">${esc(p.imei)}</span>`:''}${p.barcode?`<span class="mono">${esc(p.barcode)}</span>`:''}${p.battery!=null?`<span>Pil %${p.battery}</span>`:''}${p.cosmetic?`<span>${esc(p.cosmetic)}</span>`:''}${p.warranty?`<span>${esc(p.warranty)}${p.warranty_period?' · '+esc(p.warranty_period):''}</span>`:p.warranty_period?`<span>Garanti: ${esc(p.warranty_period)}</span>`:''}${p.installment?`<span class="pill ${p.installment==='yapilabilir'?'stock':'warn'}">Taksit ${p.installment==='yapilabilir'?'yapılabilir':'yapılamaz'}</span>`:''}</div>
+      <div class="meta">${p.imei?`<span class="mono">${esc(p.imei)}</span>`:''}${p.barcode?`<span class="mono">${esc(p.barcode)}</span>`:''}${p.battery!=null?`<span>Pil %${p.battery}</span>`:''}${p.cosmetic?`<span>${esc(p.cosmetic)}</span>`:''}${p.warranty?`<span>${esc(p.warranty)}${p.warranty_period?' · '+esc(p.warranty_period):''}</span>`:p.warranty_period?`<span>Garanti: ${esc(p.warranty_period)}</span>`:''}${p.installment==='yapilabilir'&&!sold&&tiBank()&&p.target_price?`<button class="pill stock ti-pill" data-a="ti-dev" data-id="${p.id}" title="Taksit tablosunu aç">Taksit yapılabilir · ${(()=>{const b=tiBank(),n=tiN(b),c=tiCamp(b,n,tiCampTot(p));return c?n+' × '+money(c.mon):''})()}</button>`:p.installment?`<span class="pill ${p.installment==='yapilabilir'?'stock':'warn'}">Taksit ${p.installment==='yapilabilir'?'yapılabilir':'yapılamaz'}</span>`:''}</div>
       <div class="meta"><span>Alış ${fmtDate(p.buy_date)}${src?' · '+esc(src.name):''} · ${esc(p.buy_source)}</span></div>${p.notes?`<div class="meta"><span>${esc(p.notes)}</span></div>`:''}</div>
       <div class="side"><div><span class="pill ${st[0]}">${st[1]}</span> <span class="pill ${cls}">${age} gün</span></div>
       <div class="sub">${showCost?`Maliyet <b>${money(d.cost.get(p.id))}</b>`:''}${p.target_price!=null?` ${showCost?'· ':''}Hedef <b>${money(p.target_price)}</b>`:''}</div>
@@ -2421,6 +2431,94 @@ function mrCsv(){const [lo,hi]=mrRange(),D=mrData(),q=v=>'"'+String(v??'').repla
   const rows=[...D.by.values()].map(r=>{const s=r.sales.filter(x=>inR(x.day)),c=r.c;return [c.name,c.phone||'',c.customer_type==='kurumsal'?'Kurumsal':'Bireysel',acqTxt(c),c.referred_by?(S.d.contactMap.get(c.referred_by)||{}).name||'':'',c.marketing_ok?'Evet':'Hayır',String(c.created_at||'').slice(0,10),s.length,n(sum(s,x=>x.dev)),n(sum(s,x=>x.acc)),r.n,n(r.dev+r.acc),r.first||'',r.last||'']});
   const csv='﻿'+[['Müşteri raporu · '+lo+' – '+hi],['Müşteri','Telefon','Tür','Kazanım kanalı','Tavsiye eden','İleti izni','Kayıt tarihi','Dönem alışveriş','Dönem cihaz cirosu','Dönem aksesuar cirosu','Toplam alışveriş','Toplam ciro','İlk alışveriş','Son alışveriş'],...rows].map(r=>r.map(q).join(';')).join('\r\n'),a=document.createElement('a');
   a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv;charset=utf-8'}));a.download='Musteri-Raporu-'+lo+'_'+hi+'.csv';document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},500);return rows.length}
+/* ================= TAKSİT VE BANKA KOMİSYONLARI (056) =================
+   Excel "Taksit_Komisyon_Paneli" mantığı:
+   • Komisyon müşteriye yansır (Panel): Bölme → müşteriye = tutar / (1 − oran); Çarpma → tutar × (1 + oran).
+     Aylık = toplam / taksit (kuruş); banka kesintisi = toplam × oran; bize yansıyan = POS'a girilen tutar × %3; net = toplam − banka − bize yansıyan.
+   • Peşin fiyatına taksit (Telefonlar): POS'a girilecek = toplam − toplam × oran (çarpmada toplam / (1 + oran)). */
+const tiR2=x=>Math.round((Number(x)+(Number(x)>=0?1:-1)*1e-9)*100)/100;   // Excel ROUND gibi (kuruş, yarım yukarı)
+const tiBanks=(all)=>(S.d.pos_banks||[]).filter(b=>all||b.active).sort((a,b)=>(b.is_default-a.is_default)||((a.sort||0)-(b.sort||0))||a.name.localeCompare(b.name,'tr'));
+const tiBank=()=>{const L=tiBanks();return L.find(b=>b.id===S.ui.tib)||L[0]||null};
+const tiRates=b=>b?(S.d.pos_bank_rates||[]).filter(r=>r.bank_id===b.id).sort((x,y)=>x.inst-y.inst):[];
+const tiRate=(b,n)=>{const r=tiRates(b).find(x=>x.inst===n);return r?Number(r.rate_pct):null};
+const tiPct=p=>'%'+Number(p).toFixed(2).replace('.',',');
+function tiCalc(b,n,amt){const p=tiRate(b,n);if(p==null||!(amt>0))return null;const r=p/100,total=tiR2(b.method==='carpma'?amt*(1+r):amt/(1-r)),mon=tiR2(total/n),bank=tiR2(total*r),mer=tiR2(amt*Number(b.merchant_pct||0)/100);
+  return {n,p,amt,total,mon,pay:tiR2(mon*n),diff:tiR2(total-amt),bank,mer,net:tiR2(total-bank-mer)}}
+function tiCamp(b,n,tot){const p=tiRate(b,n);if(p==null||!(tot>0))return null;const r=p/100,pos=tiR2(b.method==='carpma'?tot/(1+r):tot-tot*r),mer=tiR2(pos*Number(b.merchant_pct||0)/100);
+  return {n,p,tot,pos,mon:tiR2(tot/n),bank:tiR2(tot-pos),mer,net:tiR2(pos-mer)}}
+const tiN=b=>{const L=tiRates(b).map(r=>r.inst),n=Number(S.ui.tin||b&&b.campaign_inst||3);return L.includes(n)?n:(L.includes(b&&b.campaign_inst)?b.campaign_inst:L[0]||1)};
+const tiCampTot=p=>Number(p.inst_campaign_price||p.target_price||0);
+const tiDevs=()=>S.d.products.filter(p=>['stokta','rezerve'].includes(p.status));
+const tiUpd=b=>b&&b.updated_at?fmtDate(String(b.updated_at).slice(0,10)):'';
+
+function tiView(){const d=S.d,u=S.ui,b=tiBank(),cost=can('view_cost'),mp=can('manage_products'),q=(u.tiq||'').toLocaleLowerCase('tr');
+  const back=`<div class="row"><button class="btn sm" data-a="ti-close">${ic('down','sm rotl')}Cihazlar</button><h1>Taksitli Cihazlar</h1><div class="sp"></div>${b?`<button class="btn" data-a="ti-calc">Taksit hesaplayıcı</button><button class="btn" data-a="ti-print">Vitrin listesi yazdır</button><button class="btn" data-a="ti-csv">CSV indir</button>`:''}</div>`;
+  if(!b)return back+`<div class="card"><p><b>Aktif banka yok.</b></p><p class="sub">Yönetim > Banka Komisyonları'ndan anlaşmalı bankayı ve taksit oranlarını girin. (Bölüm görünmüyorsa Supabase > SQL Editor'da <code>056_banka_komisyon.sql</code> dosyasını çalıştırın.)</p></div>`;
+  const n=tiN(b),all=tiDevs(),yes=all.filter(p=>p.installment==='yapilabilir'),unk=all.filter(p=>!p.installment),mode=u.tim==='unk'?'unk':'yes';
+  const L=(mode==='unk'?unk:yes).filter(p=>!q||[p.model,p.imei,p.barcode,p.sub,p.cat].join(' ').toLocaleLowerCase('tr').includes(q)).sort((a,b2)=>String(a.model).localeCompare(String(b2.model),'tr'));
+  const ctl=`<div class="card"><div class="row" style="flex-wrap:wrap;gap:8px">
+      ${tiBanks().length>1?`<label class="f" style="margin:0">Banka<select class="in" data-c="ti-bank">${opts(tiBanks().map(x=>[x.id,x.name]),b.id)}</select></label>`:`<span class="pill stock">${esc(b.name)}</span>`}
+      <label class="f" style="margin:0">Peşin fiyatına kampanya<select class="in" data-c="ti-n">${opts(tiRates(b).map(r=>[String(r.inst),r.inst===1?'Tek çekim':r.inst+' taksit']),String(n))}</select></label>
+      <label class="f" style="margin:0;flex:1;min-width:180px">Ara<input class="in" id="ti-q" data-c="ti-q" value="${esc(u.tiq||'')}" placeholder="Model, IMEI, barkod"></label></div>
+    <p class="sub" style="margin:6px 0 0">${esc(b.name)} · ${n===1?'tek çekim':n+' taksit'} oranı <b>${tiPct(tiRate(b,n))}</b>${cost?` · bize yansıyan ek kesinti ${tiPct(b.merchant_pct)}`:''} · oranlar ${tiUpd(b)} tarihinde güncellendi. <b>POS'a girilecek</b> tutarı girip ${n===1?'tek çekim':n+' taksit'} seçtiğinizde müşteriye kampanya toplamı yansır.</p>
+    <div class="seg" style="margin-top:8px"><button data-a="ti-mode" data-v="yes" aria-pressed="${mode==='yes'}">Taksit yapılabilir (${yes.length})</button><button data-a="ti-mode" data-v="unk" aria-pressed="${mode==='unk'}">Taksit durumu belirtilmemiş (${unk.length})</button></div></div>`;
+  if(mode==='unk')return back+ctl+`<div class="card"><p class="sub" style="margin-top:0">Stoktaki bu cihazlarda "Taksit imkanı" seçilmemiş. Buradan tek tıkla işaretleyebilirsiniz.</p><div class="tw"><table><tr><th style="text-align:left">Cihaz</th><th style="text-align:left">IMEI</th><th>Nakit fiyat</th><th></th></tr>
+    ${L.map(p=>`<tr><td style="text-align:left"><b>${esc(p.model)}</b><div class="sub">${esc(p.cat)} · ${esc(p.sub)}</div></td><td style="text-align:left" class="mono">${esc(p.imei||'')}</td><td>${p.target_price!=null?money(p.target_price):'-'}</td><td>${mp?`<button class="btn sm pri" data-a="ti-set" data-id="${p.id}" data-v="yapilabilir">Yapılabilir</button> <button class="btn sm" data-a="ti-set" data-id="${p.id}" data-v="yapilamaz">Yapılamaz</button>`:''}</td></tr>`).join('')||'<tr><td colspan="4">Hepsi belirtilmiş.</td></tr>'}</table></div></div>`;
+  const rows=L.map(p=>{const F=Number(p.target_price||0),T=tiCampTot(p),c=tiCamp(b,n,T);
+    return `<tr><td style="text-align:left"><b>${esc(p.model)}</b>${p.status==='rezerve'?' <span class="pill warn">Rezerve</span>':''}<div class="sub">${esc(p.cat)} · ${esc(p.sub)}${p.imei?' · <span class="mono">'+esc(p.imei)+'</span>':''}</div></td>
+      <td>${F?money(F):'<span class="sub">fiyat yok</span>'}</td>
+      <td>${mp?`<input class="in sm ti-cp" type="text" inputmode="decimal" data-c="ti-cp" data-id="${p.id}" value="${p.inst_campaign_price!=null?num(p.inst_campaign_price):''}" placeholder="${F?num(F):'tutar'}" aria-label="Kampanya toplamı">`:T?money(T):'-'}</td>
+      <td>${c?money(c.mon):'-'}</td><td class="ti-pos">${c?`<b>${money(c.pos)}</b>`:'-'}</td>
+      ${cost?`<td>${c?money(c.net):'-'}</td><td>${c&&F?`<span class="${F-c.net>0?'neg':''}">${money(F-c.net)}</span>`:'-'}</td>`:''}
+      <td><button class="btn sm" data-a="ti-dev" data-id="${p.id}">Taksit tablosu</button></td></tr>`}).join('');
+  return back+ctl+`<div class="card"><div class="tw"><table class="ti-tbl"><tr><th style="text-align:left">Cihaz</th><th>Nakit fiyat</th><th title="Müşterinin taksitle ödeyeceği toplam; boşsa nakit fiyat (peşin fiyatına taksit)">Kampanya toplamı</th><th>Aylık (${n})</th><th>POS'a girilecek</th>${cost?'<th title="Banka kesintisi ve bize yansıyan ek kesintiden sonra">Net elinize geçen</th><th title="Nakit satışa göre kampanyanın size maliyeti">Nakde göre maliyet</th>':''}<th></th></tr>${rows||`<tr><td colspan="${cost?8:6}">${yes.length?'Aramayla eşleşen cihaz yok.':'Stokta "taksit yapılabilir" işaretli cihaz yok. Cihaz düzenle > Taksit imkanı: Yapılabilir.'}</td></tr>`}</table></div>
+    <p class="sub">Kampanya toplamı boşsa nakit (hedef) fiyat kullanılır: müşteri ${n} taksitte nakit fiyatı öder. Farklı bir taksitli fiyat vermek için kutuya yazın (ör. nakit 25.000, taksitli 26.500). ${cost?'"Nakde göre maliyet" = nakit fiyat − net elinize geçen.':''}</p></div>`}
+
+/* taksit tablosu penceresi (cihaz veya serbest tutar) */
+function tiModal(o){S.tic={id:o.id||'',title:o.title||'Taksit hesaplayıcı',amt:o.amt||'',tot:o.tot||o.amt||'',mode:o.mode||'musteri',bank:(tiBank()||{}).id};tiModalDraw()}
+function tiModalDraw(){const c=S.tic;if(!c)return;const b=(S.d.pos_banks||[]).find(x=>x.id===c.bank)||tiBank(),cost=can('view_cost');if(!b)return;
+  const amt=Number(c.amt)||0,tot=Number(c.tot)||0,R=tiRates(b),m=c.mode==='kampanya';
+  const tb=m?`<table class="ti-tbl"><tr><th>Taksit</th><th>Oran</th><th>Müşteri öder (toplam)</th><th>Aylık taksit</th><th>POS'a girilecek</th>${cost?'<th>Banka kesintisi</th><th>Bize yansıyan</th><th>Net elinize geçen</th>':''}</tr>
+     ${R.map(r=>{const x=tiCamp(b,r.inst,tot);return x?`<tr><td><b>${r.inst===1?'Tek çekim':r.inst}</b></td><td>${tiPct(x.p)}</td><td>${money(x.tot)}</td><td>${money(x.mon)}</td><td class="ti-pos"><b>${money(x.pos)}</b></td>${cost?`<td>${money(x.bank)}</td><td>${money(x.mer)}</td><td><b>${money(x.net)}</b></td>`:''}</tr>`:''}).join('')}</table>`
+   :`<table class="ti-tbl"><tr><th>Taksit</th><th>Oran</th><th>Müşteriye yansıyan toplam</th><th>Aylık taksit</th><th>Fark (müşteri ek yükü)</th>${cost?(b.method==='carpma'?'<th>Banka kesintisi</th>':'')+'<th>Bize yansıyan</th><th>Net elinize geçen</th>':''}</tr>
+     ${R.map(r=>{const x=tiCalc(b,r.inst,amt);return x?`<tr><td><b>${r.inst===1?'Tek çekim':r.inst}</b></td><td>${tiPct(x.p)}</td><td><b>${money(x.total)}</b></td><td>${money(x.mon)}${x.pay!==x.total?`<div class="sub">${r.inst} × = ${money(x.pay)}</div>`:''}</td><td>${money(x.diff)}</td>${cost?`${b.method==='carpma'?`<td>${money(x.bank)}</td>`:''}<td>${money(x.mer)}</td><td><b>${money(x.net)}</b></td>`:''}</tr>`:''}).join('')}</table>`;
+  modal(`<div class="row"><h2>${esc(c.title)}</h2><div class="sp"></div>${tiBanks().length>1?`<select class="in sm" data-c="tic-bank" style="width:auto">${opts(tiBanks().map(x=>[x.id,x.name]),b.id)}</select>`:`<span class="pill stock">${esc(b.name)}</span>`}</div>
+   <div class="seg" style="margin:8px 0"><button data-a="tic-mode" data-v="musteri" aria-pressed="${!m}">Komisyon müşteriye yansısın</button><button data-a="tic-mode" data-v="kampanya" aria-pressed="${m}">Peşin fiyatına taksit (kampanya)</button></div>
+   <div class="row" style="flex-wrap:wrap;gap:8px">${m?`<label class="f" style="margin:0">Müşterinin taksitle ödeyeceği toplam (₺)<input class="in" id="tic-tot" data-c="tic-tot" inputmode="decimal" value="${tot?num(tot):''}"></label>`:`<label class="f" style="margin:0">POS'a girilecek tutar / nakit fiyat (₺)<input class="in" id="tic-amt" data-c="tic-amt" inputmode="decimal" value="${amt?num(amt):''}"></label>`}</div>
+   <p class="sub">${m?`Müşteri seçilen taksitte <b>${tot?money(tot):'girilen toplamı'}</b> öder. POS'a "POS'a girilecek" tutarı yazıp taksiti seçin; komisyonu müşteri değil siz karşılarsınız.`:`POS'a <b>${amt?money(amt):'tutarı'}</b> girip taksit seçildiğinde müşteriye yansıyan toplam ve aylık taksit aşağıdadır. Komisyon farkını müşteri öder.${b.method==='bolme'?' Banka kesintisi farka eşittir.':''}`}${cost?` Bize yansıyan ek kesinti: POS'a girilen tutarın ${tiPct(b.merchant_pct)}'ü.`:''}</p>
+   <div class="tw" id="tic-t">${(m?tot:amt)>0?tb:'<div class="empty">Tutar yazın.</div>'}</div>
+   <div class="actions"><button class="btn" data-a="close">Kapat</button>${(m?tot:amt)>0?'<button class="btn" data-a="tic-copy">Müşteriye mesaj olarak kopyala</button>':''}</div>`);
+  const box=document.querySelector('#modal .modal');if(box)box.classList.add('ti-modal')}
+function tiMsg(){const c=S.tic,b=(S.d.pos_banks||[]).find(x=>x.id===c.bank)||tiBank(),m=c.mode==='kampanya',p=c.id&&S.d.productMap.get(c.id);
+  const L=tiRates(b).map(r=>{if(m){const x=tiCamp(b,r.inst,Number(c.tot));return x&&(r.inst===1?`Tek çekim: ${money(x.tot)}`:`${r.inst} taksit: ${r.inst} × ${money(x.mon)} = ${money(x.tot)}`)}const x=tiCalc(b,r.inst,Number(c.amt));return x&&(r.inst===1?`Tek çekim: ${money(x.total)}`:`${r.inst} taksit: ${r.inst} × ${money(x.mon)} = ${money(x.total)}`)}).filter(Boolean);
+  return `${p?p.model+'\n':''}${p&&p.target_price?'Nakit: '+money(p.target_price)+'\n':''}Kredi kartına taksit seçenekleri:\n${L.join('\n')}\n${shopSet().name||'Anka İletişim'}`}
+function tiPrint(){const b=tiBank(),n=tiN(b),L=tiDevs().filter(p=>p.installment==='yapilabilir'&&p.target_price).sort((a,c)=>String(a.model).localeCompare(String(c.model),'tr')),sh=shopSet();
+  modal(`<div class="qdoc ti-doc"><h2 style="margin:0">${esc(sh.name||'Anka İletişim')} · Taksitli cihazlar</h2><p style="margin:2px 0 10px;color:#555">Kredi kartına ${n===1?'tek çekim':n+' taksit'} · ${fmtDate(today())}</p>
+   <table style="width:100%;border-collapse:collapse"><tr><th style="text-align:left">Cihaz</th><th>Nakit</th><th>${n} taksit toplam</th><th>Aylık</th></tr>${L.map(p=>{const T=tiCampTot(p);return `<tr><td style="text-align:left"><b>${esc(p.model)}</b><br><small>${esc(p.sub)}</small></td><td>${money(p.target_price)}</td><td><b>${money(T)}</b></td><td>${n} × ${money(tiR2(T/n))}</td></tr>`}).join('')||'<tr><td colspan="4">Liste boş.</td></tr>'}</table>
+   <p style="font-size:11px;color:#555;margin-top:8px">Fiyatlar değişebilir. Taksit seçenekleri kartınızın bankasına göre farklılık gösterebilir.</p></div>
+   <div class="actions no-print"><button class="btn" data-a="close">Kapat</button><button class="btn pri" data-a="q-print">Yazdır / PDF</button></div>`)}
+function tiCsv(){const b=tiBank(),n=tiN(b),q=v=>'"'+String(v??'').replace(/"/g,'""')+'"',f=v=>v==null?'':(Math.round(v*100)/100).toFixed(2).replace('.',','),cost=can('view_cost');
+  const rows=tiDevs().filter(p=>p.installment==='yapilabilir').map(p=>{const T=tiCampTot(p),c=tiCamp(b,n,T);return [p.imei||'',p.model,p.sub,f(p.target_price),f(T),c?f(c.mon):'',c?f(c.pos):'',...(cost?[c?f(c.net):'']:[])]});
+  const csv='﻿'+[[b.name+' · '+n+' taksit '+tiPct(tiRate(b,n))],['IMEI','Model','Alt kategori','Nakit fiyat','Kampanya toplamı',n+' taksit aylık',"POS'a girilecek",...(cost?['Net elinize geçen']:[])],...rows].map(r=>r.map(q).join(';')).join('\r\n'),a=document.createElement('a');
+  a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv;charset=utf-8'}));a.download='Taksitli-Cihazlar-'+today()+'.csv';document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},500);return rows.length}
+
+/* Yönetim > Banka Komisyonları */
+function bankCard(){const d=S.d;if(!(d.pos_banks||[]).length&&!can('manage_bank_rates'))return `<div class="card"><h2>Banka Komisyonları</h2><p class="sub"><code>056_banka_komisyon.sql</code> çalıştırılınca burada anlaşmalı bankalar ve taksit oranları görünür.</p></div>`;
+  const ed=can('manage_bank_rates'),B=tiBanks(true),def=B.find(b=>b.is_default),pr=posRateDefault(),dis=ed?'':' disabled';
+  return `<div class="card" id="bank-card"><div class="row"><h2>Banka Komisyonları</h2><div class="sp"></div>${ed?'<button class="btn pri" data-a="bk-new">+ Banka ekle</button>':''}</div>
+   <p class="sub" style="margin-top:0">Anlaşmalı banka / POS taksit oranları. Cihazlar > Taksitli Cihazlar ve taksit hesaplayıcı bu oranları kullanır. ${ed?'':'Değiştirme yetkiniz yok (Yetkiler > "Banka komisyon oranlarını yönetebilir").'}</p>
+   ${def&&ed&&can('manage_users')&&Number(def.merchant_pct)!==pr?`<div class="note warn" style="margin-bottom:8px">Gün sonunda POS → ÖdeAl aktarımında kullanılan komisyon oranı <b>${tiPct(pr)}</b>, ${esc(def.name)} için girdiğiniz "bize yansıyan" oran <b>${tiPct(def.merchant_pct)}</b>. Kasa hesabının tutması için aynı olmalı. <button class="btn sm" data-a="bk-posrate" data-v="${def.merchant_pct}">Gün sonu POS komisyonunu ${tiPct(def.merchant_pct)} yap</button></div>`:''}
+   ${B.map(b=>{const R=new Map(tiRates(b).map(r=>[r.inst,r.rate_pct])),ex=tiCalc(b,3,10000);return `<div class="bk${b.active?'':' off'}" data-bk="${b.id}"><div class="row" style="flex-wrap:wrap;gap:8px">
+      <input class="in bk-name" data-bk="${b.id}" data-f="name" value="${esc(b.name)}" maxlength="40" aria-label="Banka adı"${dis}>${b.is_default?'<span class="pill stock">Varsayılan</span>':''}${b.active?'':'<span class="pill">Pasif</span>'}<div class="sp"></div>
+      <span class="sub">Son güncelleme ${tiUpd(b)}${b.updated_by?' · '+esc(pname(b.updated_by)):''}</span></div>
+     <div class="bk-f"><label class="f">Hesap yöntemi<select class="in" data-bk="${b.id}" data-f="method"${dis}>${opts([['bolme','Bölme: tutar ÷ (1 − oran)'],['carpma','Çarpma: tutar × (1 + oran)']],b.method)}</select></label>
+      <label class="f">Bize yansıyan ek kesinti (%)<input class="in" data-bk="${b.id}" data-f="merchant_pct" inputmode="decimal" value="${num(b.merchant_pct)}"${dis}></label>
+      <label class="f">Peşin fiyatına kampanya taksiti<select class="in" data-bk="${b.id}" data-f="campaign_inst"${dis}>${opts([...Array(12)].map((_,i)=>[String(i+1),i?i+1+' taksit':'Tek çekim']),String(b.campaign_inst))}</select></label>
+      <label class="f">Not<input class="in" data-bk="${b.id}" data-f="note" value="${esc(b.note||'')}" maxlength="300"${dis}></label></div>
+     <div class="bk-rates">${[...Array(12)].map((_,i)=>{const n=i+1,v=R.get(n),x=v!=null?tiCalc(b,n,10000):null;return `<label class="bk-r"><span>${n===1?'Tek çekim':n+' taksit'}</span><span class="pc"><input class="in" data-bk="${b.id}" data-inst="${n}" inputmode="decimal" value="${v!=null?num(v):''}" placeholder="—" aria-label="${n} taksit komisyon oranı"${dis}><i>%</i></span><small>${x?'10.000 → '+money(x.total):''}</small></label>`}).join('')}</div>
+     <p class="sub" style="margin:4px 0">Örnek: 10.000 ₺ ${ex?`3 taksitte müşteriye ${money(ex.total)} (aylık ${money(ex.mon)}); size net ${money(ex.net)}.`:''} Boş bırakılan taksit sunulmaz.</p>
+     ${ed?`<div class="row" style="gap:6px"><button class="btn pri" data-a="bk-save" data-id="${b.id}">Kaydet</button>${!b.is_default&&b.active?`<button class="btn" data-a="bk-def" data-id="${b.id}">Varsayılan yap</button>`:''}<button class="btn" data-a="bk-act" data-id="${b.id}">${b.active?'Pasife al':'Aktif et'}</button><button class="btn" data-a="bk-log" data-id="${b.id}">Değişiklik geçmişi</button>${!b.is_default?`<button class="btn danger" data-a="bk-del" data-id="${b.id}">Sil</button>`:''}</div>`:''}</div>`}).join('')||'<div class="empty">Banka yok.</div>'}</div>`}
+
 /* Müşteri: Bireysel / Kurumsal (customer_type) · Firma: tedarikçi. Tür değişince alanlar yeniden çizilir, girilenler korunur. */
 const CTYPES=[['bireysel','Müşteri (Bireysel)'],['kurumsal','Müşteri (Kurumsal)']];
 function cFields(kind,ct,c){const v=k=>esc(c[k]==null?'':c[k]);
@@ -4792,6 +4890,7 @@ function vYonetim(){
     <td><input class="in" style="width:110px" type="number" min="0" step="100" value="${st.daily_target??0}" data-c="pset" data-f="daily_target" data-id="${p.id}"></td>
     <td><input class="in" style="width:120px" type="number" min="0" step="1000" value="${st.monthly_target??0}" data-c="pset" data-f="monthly_target" data-id="${p.id}"></td>`}</tr>`}).join('')}</table></div></div>
   ${qsCard()}
+  ${bankCard()}
   <div class="card"><h2>Yetkiler</h2><p class="sub" style="margin-top:0">İşletme sahibi her zaman tüm yetkilere sahiptir.</p><div class="tw"><table><tr><th>Yetki</th>${ROLES.map(r=>`<th>${r[1]}</th>`).join('')}</tr>
    ${perms.map(([k,lab])=>`<tr><td>${esc(lab||k)}</td>${ROLES.map(([r])=>{const row=d.role_permissions.find(x=>x.role===r&&x.permission===k);return `<td><input type="checkbox" data-c="perm" data-r="${r}" data-p="${k}" ${row&&row.allowed?'checked':''} ${r==='owner'?'disabled checked':''}></td>`}).join('')}</tr>`).join('')}</table></div></div>`}
 
@@ -4942,6 +5041,34 @@ const A={
   async 'save-transfer'(){try{await call('transfer_cash',{p_date:g('x-date'),p_from:g('x-from'),p_to:g('x-to'),p_amount:nv('x-amt'),p_note:g('x-note')||null},'Transfer yapıldı');closeModal();await reload()}catch(e){setErr(msg(e))}},
   'new-contact'(){contactModal()},
   'cch'(t){S.ui.cch=t.dataset.v;render()},
+  'ti-open'(){S.ui.ti_dev=true;render();window.scrollTo(0,0)},'ti-close'(){S.ui.ti_dev=false;render()},
+  'ti-mode'(t){S.ui.tim=t.dataset.v;render()},
+  'ti-calc'(){tiModal({})},'ti-print'(){tiPrint()},'ti-csv'(){toast(tiCsv()+' cihaz indirildi')},
+  'ti-dev'(t){const p=S.d.productMap.get(t.dataset.id);if(!p)return;const camp=p.inst_campaign_price!=null;tiModal({id:p.id,title:p.model+(p.imei?' · '+p.imei:''),amt:p.target_price||'',tot:tiCampTot(p)||'',mode:camp?'kampanya':'musteri'})},
+  'tic-mode'(t){S.tic.mode=t.dataset.v;tiModalDraw()},
+  async 'tic-copy'(){const ok=await copyText(tiMsg());toast(ok?'Taksit seçenekleri kopyalandı':'Kopyalanamadı',!ok)},
+  async 'ti-set'(t){const id=t.dataset.id,v=t.dataset.v,r=await sb.from('products').update({installment:v}).eq('id',id);if(r.error)return toast(msg(r.error),true);const p=S.d.productMap.get(id);if(p)p.installment=v;toast(v==='yapilabilir'?'Taksit yapılabilir olarak işaretlendi':'Taksit yapılamaz olarak işaretlendi');render()},
+  'bk-new'(){const B=tiBanks(true);modal(`<h2>Banka ekle</h2><div class="form"><label class="f full">Banka / POS adı<input class="in" id="bk-n" maxlength="40" placeholder="örn. Garanti BBVA"></label>${B.length?`<label class="f full">Oranları kopyala<select class="in" id="bk-c">${opts([['','Boş başla'],...B.map(b=>[b.id,b.name])],(B.find(b=>b.is_default)||{}).id||'')}</select></label>`:''}</div><div class="err" id="f-err" hidden></div><div class="actions"><button class="btn" data-a="close">Vazgeç</button><button class="btn pri" data-a="bk-add">Ekle</button></div>`)},
+  async 'bk-add'(){const n=(g('bk-n')||'').trim(),c=g('bk-c');if(!n)return setErr('Banka adını yazın');const d=S.d;if(tiBanks(true).some(b=>b.name.toLocaleLowerCase('tr')===n.toLocaleLowerCase('tr')))return setErr('Bu adla banka var');
+    const src=tiBanks(true).find(b=>b.id===c),id=ntUid(),row={id,name:n,method:src?src.method:'bolme',merchant_pct:src?src.merchant_pct:3,campaign_inst:src?src.campaign_inst:3,is_default:!tiBanks(true).length,active:true,sort:tiBanks(true).length,created_at:new Date().toISOString(),updated_at:new Date().toISOString()};
+    let r=await sb.from('pos_banks').insert(row);if(r.error)return setErr(msg(r.error));(d.pos_banks=d.pos_banks||[]).push(row);
+    if(src){const R=tiRates(src).map(x=>({bank_id:id,inst:x.inst,rate_pct:x.rate_pct}));if(R.length){r=await sb.from('pos_bank_rates').insert(R);if(r.error)return setErr(msg(r.error));(d.pos_bank_rates=d.pos_bank_rates||[]).push(...R)}}
+    closeModal();toast('Banka eklendi');render()},
+  async 'bk-save'(t){const id=t.dataset.id,d=S.d,b=d.pos_banks.find(x=>x.id===id);if(!b)return;const q=s=>document.querySelector(`#bank-card [data-bk="${id}"]${s}`),pv=v=>{const x=trNum(v);return x};
+    const name=(q('[data-f="name"]').value||'').trim(),mp=pv(q('[data-f="merchant_pct"]').value),patch={name,method:q('[data-f="method"]').value,merchant_pct:mp==null?0:mp,campaign_inst:+q('[data-f="campaign_inst"]').value,note:(q('[data-f="note"]').value||'').trim()||null};
+    if(!name)return toast('Banka adı boş olamaz',true);if(!(patch.merchant_pct>=0&&patch.merchant_pct<=20))return toast('Bize yansıyan ek kesinti 0 ile 20 arasında olmalı',true);
+    const want=[];for(let n=1;n<=12;n++){const raw=q(`[data-inst="${n}"]`).value.trim();if(raw==='')continue;const v=pv(raw);if(v==null||!(v>=0&&v<60))return toast(n+' taksit oranı 0 ile 60 arasında olmalı',true);want.push({inst:n,rate_pct:Math.round(v*1000)/1000})}
+    if(!want.length)return toast('En az bir taksit oranı girin',true);if(!want.some(w=>w.inst===patch.campaign_inst))return toast('Kampanya taksiti ('+patch.campaign_inst+') için oran girilmemiş',true);
+    const cur=tiRates(b);try{let r=await sb.from('pos_banks').update(patch).eq('id',id);if(r.error)throw r.error;
+      for(const w of want){const c=cur.find(x=>x.inst===w.inst);if(!c){r=await sb.from('pos_bank_rates').insert({bank_id:id,...w});if(r.error)throw r.error;d.pos_bank_rates.push({bank_id:id,...w})}else if(Number(c.rate_pct)!==w.rate_pct){r=await sb.from('pos_bank_rates').update({rate_pct:w.rate_pct}).eq('bank_id',id).eq('inst',w.inst);if(r.error)throw r.error;c.rate_pct=w.rate_pct}}
+      for(const c of cur)if(!want.some(w=>w.inst===c.inst)){r=await sb.from('pos_bank_rates').delete().eq('bank_id',id).eq('inst',c.inst);if(r.error)throw r.error;d.pos_bank_rates=d.pos_bank_rates.filter(x=>!(x.bank_id===id&&x.inst===c.inst))}
+      Object.assign(b,patch,{updated_at:new Date().toISOString(),updated_by:S.user.id});toast(b.name+' oranları kaydedildi');render()}catch(e){toast(msg(e),true)}},
+  async 'bk-def'(t){try{await call('set_default_bank',{p_id:t.dataset.id});S.d.pos_banks.forEach(b=>b.is_default=b.id===t.dataset.id);toast('Varsayılan banka değişti');render()}catch(e){toast(msg(e),true)}},
+  async 'bk-act'(t){const b=S.d.pos_banks.find(x=>x.id===t.dataset.id);if(!b)return;if(b.is_default&&b.active)return toast('Varsayılan banka pasife alınamaz; önce başka bankayı varsayılan yapın',true);const r=await sb.from('pos_banks').update({active:!b.active}).eq('id',b.id);if(r.error)return toast(msg(r.error),true);b.active=!b.active;render()},
+  async 'bk-del'(t){if(!armed(t,'Silinsin mi?'))return;const id=t.dataset.id,r=await sb.from('pos_banks').delete().eq('id',id);if(r.error)return toast(msg(r.error),true);S.d.pos_banks=S.d.pos_banks.filter(x=>x.id!==id);S.d.pos_bank_rates=S.d.pos_bank_rates.filter(x=>x.bank_id!==id);toast('Banka silindi');render()},
+  async 'bk-log'(t){const b=S.d.pos_banks.find(x=>x.id===t.dataset.id),r=await sb.from('pos_rate_log').select('*').eq('bank_id',t.dataset.id).order('changed_at',{ascending:false}).limit(100);
+    modal(`<h2>Değişiklik geçmişi · ${esc(b?b.name:'')}</h2>${r.error?`<div class="err">${esc(msg(r.error))}</div>`:`<div class="tw"><table><tr><th style="text-align:left">Tarih</th><th>Taksit</th><th>Eski</th><th>Yeni</th><th style="text-align:left">Değiştiren</th></tr>${(r.data||[]).map(x=>`<tr><td style="text-align:left">${fmtDate(String(x.changed_at).slice(0,10))} ${ntHM(x.changed_at)}</td><td>${x.inst===1?'Tek çekim':x.inst}</td><td>${x.old_pct!=null?tiPct(x.old_pct):'—'}</td><td>${x.new_pct!=null?tiPct(x.new_pct):'kaldırıldı'}</td><td style="text-align:left">${esc(pname(x.changed_by)||'')}</td></tr>`).join('')||'<tr><td colspan="5">Henüz değişiklik yok.</td></tr>'}</table></div>`}<div class="actions"><button class="btn" data-a="close">Kapat</button></div>`)},
+  async 'bk-posrate'(t){try{await call('set_setting',{p_key:'pos_commission_rate',p_value:String(t.dataset.v)});const s2=S.d.app_settings.find(x=>x.key==='pos_commission_rate');if(s2)s2.value=String(t.dataset.v);else S.d.app_settings.push({key:'pos_commission_rate',value:String(t.dataset.v)});toast('Gün sonu POS komisyonu güncellendi');render()}catch(e){toast(msg(e),true)}},
   'mr-open'(){S.ui.mrep=true;S.mrSel=new Set();render();window.scrollTo(0,0)},'mr-back'(){S.ui.mrep=false;render()},
   'mr-go'(){S.ui.mrf=g('mr-f');S.ui.mrt=g('mr-t');render()},'mr-range'(t){S.ui.mrf=t.dataset.f;S.ui.mrt=t.dataset.t;render()},
   'mr-csv'(){toast(mrCsv()+' müşteri indirildi')},
@@ -5982,6 +6109,12 @@ document.addEventListener('change',async e=>{
     case 'sc-n':{const l=scState().lines.find(x=>x.id===t.dataset.id);if(!l)break;const raw=t.value,v=raw===''?null:Math.max(0,Math.round(Number(raw)));await scSave([{id:l.id,counted:v}]);const row=document.querySelector('[data-line="'+l.id+'"]');if(row)row.outerHTML=scRow(l);scRefresh(true);break}
     case 'frdate':frLoad();break;
     case 'cdebt':S.ui.cdebt=t.checked;cariList();break;
+    case 'ti-bank':S.ui.tib=t.value;S.ui.tin='';render();break;
+    case 'ti-n':S.ui.tin=t.value;render();break;
+    case 'tic-bank':S.tic.bank=t.value;tiModalDraw();break;
+    case 'tic-amt':S.tic.amt=trNum(t.value)||'';t.blur();tiModalDraw();break;
+    case 'tic-tot':S.tic.tot=trNum(t.value)||'';t.blur();tiModalDraw();break;
+    case 'ti-cp':{const id=t.dataset.id,raw=t.value.trim(),v=raw===''?null:trNum(raw);if(raw!==''&&!(v>0)){toast('Geçerli bir tutar yazın',true);break}const r=await sb.from('products').update({inst_campaign_price:v}).eq('id',id);if(r.error){toast(msg(r.error),true);break}const p=S.d.productMap.get(id);if(p)p.inst_campaign_price=v;toast(v?'Kampanya toplamı kaydedildi':'Kampanya toplamı kaldırıldı (nakit fiyat kullanılır)');if(document.activeElement===t)t.blur();render();break}
     case 'acqch':{const a=document.getElementById('c-acqsrc-w'),b=document.getElementById('c-ref-w');if(a)a.hidden=t.value!=='internet';if(b)b.hidden=t.value!=='sosyal';break}
     case 'acqq':{const w=document.getElementById(t.dataset.p+'-nsrcw');if(w)w.hidden=t.value!=='internet';if(t.dataset.p==='s-cust')S.cart.nch=t.value;break}
     case 'acqqs':if(t.dataset.p==='s-cust')S.cart.nsrc=t.value;break;
