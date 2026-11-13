@@ -634,6 +634,7 @@ const TABS=[['panel','Genel Bakış',null],['notlar','Notlarım',null],['satis',
 
 /* ================= İKONLAR (ince çizgili, 24x24) ================= */
 const IC={
+  vol:'<path d="M4 9v6h4l5 4V5L8 9z"/><path d="M16 9.5a3.5 3.5 0 0 1 0 5"/><path d="M18.5 7a7 7 0 0 1 0 10"/>',mute:'<path d="M4 9v6h4l5 4V5L8 9z"/><path d="m17 10 4 4m0-4-4 4"/>',
   cart:'<circle cx="9" cy="20" r="1.4"/><circle cx="17" cy="20" r="1.4"/><path d="M3 4h2l2.4 11.2a1.5 1.5 0 0 0 1.5 1.2h8.6a1.5 1.5 0 0 0 1.5-1.1L21 8H6"/>',printer:'<path d="M6 9V3h12v6"/><rect x="3" y="9" width="18" height="8" rx="2"/><path d="M6 14h12v7H6z"/>',swap:'<path d="M7 4 3 8l4 4"/><path d="M3 8h14"/><path d="m17 20 4-4-4-4"/><path d="M21 16H7"/>',cash:'<rect x="2.5" y="6" width="19" height="12" rx="2"/><circle cx="12" cy="12" r="2.5"/><path d="M6 9.5v.01M18 14.5v.01"/>',bank:'<path d="M3 10h18L12 4z"/><path d="M5 10v8M9.5 10v8M14.5 10v8M19 10v8"/><path d="M3 20h18"/>',split:'<circle cx="12" cy="12" r="9"/><path d="M12 3v9l6.5 6"/>',pencil:'<path d="M4 20h4L19 9l-4-4L4 16z"/><path d="m13.5 6.5 4 4"/>',shrink:'<path d="M9 4v5H4M15 4v5h5M9 20v-5H4M15 20v-5h5"/>',
 notebook:'<path d="M6 3h11a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6z"/><path d="M6 3v18M10 8h6M10 12h6"/><path d="M4 7h3M4 12h3M4 17h3"/>',pin:'<path d="M12 17v5"/><path d="M9 3h6l-1 6 3 3v2H7v-2l3-3z"/>',
 folder:'<path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>',share:'<circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="M8.6 13.5l6.8 4M15.4 6.5l-6.8 4"/>',
@@ -865,6 +866,42 @@ function chimeUrgent(force){if(!force&&!sndOn())return false;const now=Date.now(
     g.gain.setValueAtTime(0.0001,t0+dt);g.gain.exponentialRampToValueAtTime(a,t0+dt+0.012);g.gain.exponentialRampToValueAtTime(0.0001,t0+dt+len);
     o.connect(g);g.connect(out);o.start(t0+dt);o.stop(t0+dt+len+0.05)}));
   return true}
+/* satış ekranı sesleri (Web Audio ile üretilir, dosya gerekmez). Satış ekranındaki hoparlör düğmesiyle kapatılır (cihaz + kişi tercihi). */
+const psSndOn=()=>prefGet('ps_snd','1')!=='0';
+const PS_LAST={};
+function psTone(c,out,f,dt,len,o){o=o||{};const t=c.currentTime+0.01+dt,os=c.createOscillator(),g=c.createGain();os.type=o.type||'sine';os.frequency.setValueAtTime(f,t);
+  if(o.to)os.frequency.exponentialRampToValueAtTime(o.to,t+len*0.9);const a=o.a||1;
+  g.gain.setValueAtTime(0.0001,t);g.gain.exponentialRampToValueAtTime(a,t+(o.att||0.008));g.gain.exponentialRampToValueAtTime(0.0001,t+len);
+  os.connect(g);g.connect(out);os.start(t);os.stop(t+len+0.03)}
+function psBell(c,out,f,dt,len,a){[[1,1],[2,0.28],[3.01,0.1],[4.2,0.05]].forEach(([h,m])=>psTone(c,out,f*h,dt,len*(h>1?0.55:1),{a:(a||1)*m,att:0.004}))}
+function psNoise(c,out,dt,len,freq,a){const n=Math.floor(c.sampleRate*len),b=c.createBuffer(1,n,c.sampleRate),d=b.getChannelData(0);for(let i=0;i<n;i++)d[i]=(Math.random()*2-1)*Math.pow(1-i/n,3);
+  const s=c.createBufferSource(),fl=c.createBiquadFilter(),g=c.createGain();s.buffer=b;fl.type='bandpass';fl.frequency.value=freq;fl.Q.value=1.2;g.gain.value=a;s.connect(fl);fl.connect(g);g.connect(out);s.start(c.currentTime+0.01+dt)}
+function psSnd(k){if(!psSndOn())return;const now=Date.now();if(now-(PS_LAST[k]||0)<45)return;PS_LAST[k]=now;
+  (window.__psSnd=window.__psSnd||[]).push(k);const c=sndCtx();if(!c)return;
+  const out=c.createGain();out.gain.value=0.16;out.connect(c.destination);
+  const N={C5:523.25,E5:659.25,G5:783.99,A5:880,C6:1046.5,D6:1174.66,E6:1318.51,F6:1396.91,G6:1567.98,A6:1760,B6:1975.53,C7:2093};
+  switch(k){
+    case 'add':psTone(c,out,N.G6,0,0.07,{a:0.8});psTone(c,out,N.C7,0.055,0.11,{a:0.7});break;                     // okuyucu "bip-bip"
+    case 'add-d':psBell(c,out,N.E6,0,0.16,0.8);psBell(c,out,N.B6,0.07,0.22,0.7);break;                              // cihaz: biraz daha dolgun
+    case 'ret':psTone(c,out,N.E6,0,0.08,{a:0.7});psTone(c,out,N.C6,0.07,0.14,{a:0.65});break;                     // iade satırı: aşağı
+    case 'up':psTone(c,out,N.A6,0,0.045,{a:0.5});break;
+    case 'down':psTone(c,out,N.E6,0,0.05,{a:0.45});break;
+    case 'del':psTone(c,out,700,0,0.09,{a:0.55,to:420,type:'triangle'});break;                                     // "tuk"
+    case 'tick':psTone(c,out,1250,0,0.035,{a:0.45,type:'triangle'});break;
+    case 'err':psTone(c,out,392,0,0.12,{a:0.7,type:'triangle'});psTone(c,out,311,0.12,0.2,{a:0.7,type:'triangle'});break; // nazik "ı-ıh"
+    case 'mode-iade':psTone(c,out,N.G6,0,0.07,{a:0.55});psTone(c,out,N.E6,0.07,0.07,{a:0.55});psTone(c,out,N.C6,0.14,0.14,{a:0.55});break;
+    case 'mode-degisim':psTone(c,out,N.E6,0,0.07,{a:0.55});psTone(c,out,N.A6,0.07,0.07,{a:0.55});psTone(c,out,N.E6,0.14,0.12,{a:0.55});break;
+    case 'mode-satis':psTone(c,out,N.C6,0,0.07,{a:0.5});psTone(c,out,N.G6,0.07,0.12,{a:0.5});break;
+    case 'pay-nakit':psTone(c,out,N.C6,0,0.08,{a:0.6});psTone(c,out,N.E6,0.07,0.12,{a:0.6});break;               // ödeme düğmeleri: her yöntemin kendi iki notası
+    case 'pay-pos':psTone(c,out,N.E6,0,0.08,{a:0.6});psTone(c,out,N.G6,0.07,0.12,{a:0.6});break;
+    case 'pay-havale':psTone(c,out,N.D6,0,0.08,{a:0.6});psTone(c,out,N.A6,0.07,0.12,{a:0.6});break;
+    case 'pay-parcali':psTone(c,out,N.C6,0,0.07,{a:0.55});psTone(c,out,N.E6,0.06,0.07,{a:0.55});psTone(c,out,N.G6,0.12,0.12,{a:0.55});break;
+    case 'done-nakit':psNoise(c,out,0,0.06,5200,0.5);psBell(c,out,N.C6,0.03,0.5,0.7);psBell(c,out,N.E6,0.1,0.5,0.7);psBell(c,out,N.G6,0.17,0.6,0.7);psBell(c,out,N.C7,0.25,0.9,0.75);psNoise(c,out,0.26,0.12,7000,0.35);break; // yazar kasa "ka-çing"
+    case 'done-pos':psTone(c,out,N.A6,0,0.07,{a:0.7});psTone(c,out,N.A6,0.1,0.07,{a:0.7});psBell(c,out,N.E6,0.22,0.6,0.6);psBell(c,out,N.A6,0.22,0.7,0.45);break;  // kart onayı "bi-bip" + akor
+    case 'done-havale':psBell(c,out,N.G5,0,0.5,0.6);psBell(c,out,N.D6,0.12,0.55,0.6);psBell(c,out,N.G6,0.24,0.8,0.65);break;
+    case 'done-parcali':psBell(c,out,N.C6,0,0.45,0.6);psBell(c,out,N.F6,0.1,0.5,0.6);psBell(c,out,N.A6,0.2,0.55,0.6);psBell(c,out,N.C7,0.3,0.85,0.65);break;
+    case 'done-iade':psBell(c,out,N.G6,0,0.4,0.55);psBell(c,out,N.E6,0.12,0.45,0.55);psBell(c,out,N.C6,0.24,0.75,0.6);break;
+    case 'done-degisim':psBell(c,out,N.C6,0,0.4,0.55);psBell(c,out,N.G6,0.11,0.45,0.55);psBell(c,out,N.E6,0.22,0.45,0.55);psBell(c,out,N.C7,0.33,0.8,0.6);break}}
 /* gelen bildirim: başkasının işlemi ve bana (ya da herkese) yönelikse göster + çal.
    acil → kırmızı uyarı + acil sesi · normal → yumuşak çan · bilgi → sessiz (yalnız listede) */
 function notifIn(n){n=n||{};const me=S.user&&S.user.id;if(n.recipient&&n.recipient!==me)return;
@@ -1808,17 +1845,17 @@ function psGo(){if(S.ui.tab!=='satis'){location.hash='satis';S.ui.tab='satis'}re
 function psFlash(t,ok){if(!S.ps)S.ps={};S.ps.flash={t,ok:ok!==false,at:Date.now()}}
 const psNum=v=>{const n=Number(String(v==null?'':v).replace(/\s/g,'').replace(',','.'));return isFinite(n)?n:0};
 
-function cartAdd(pid){psInit();const p=S.d.productMap.get(pid);if(!p||p.status!=='stokta')return toast('Bu ürün satılabilir durumda değil',true);
-  if(S.cart.mode==='iade')return toast('İade modundayken satılacak ürün eklenmez; önce iade modunu kapatın',true);
-  if(S.cart.items.some(i=>i.pid===pid)){psGo();return toast(p.model+' zaten sepette',true)}
-  const o=psWhere('pid',pid);if(o){psGo();return toast(`${p.model} Fiş ${o}'te bekliyor`,true)}
-  S.cart.items.push({pid,price:p.target_price==null?0:Number(p.target_price),discount:0});if(!S.cart.at)S.cart.at=Date.now();psFlash(p.model+' eklendi');psGo()}
+function cartAdd(pid){psInit();const p=S.d.productMap.get(pid);if(!p||p.status!=='stokta')return psSnd('err'),toast('Bu ürün satılabilir durumda değil',true);
+  if(S.cart.mode==='iade'){psSnd('err');return toast('İade modundayken satılacak ürün eklenmez; önce iade modunu kapatın',true)}
+  if(S.cart.items.some(i=>i.pid===pid)){psGo();psSnd('err');return toast(p.model+' zaten sepette',true)}
+  const o=psWhere('pid',pid);if(o){psGo();psSnd('err');return toast(`${p.model} Fiş ${o}'te bekliyor`,true)}
+  S.cart.items.push({pid,price:p.target_price==null?0:Number(p.target_price),discount:0});if(!S.cart.at)S.cart.at=Date.now();psFlash(p.model+' eklendi');psSnd('add-d');psGo()}
 function accAdd(aid){psInit();const a=S.d.accMap.get(aid);if(!a||a.active===false)return toast('Ürün bulunamadı',true);
-  if(S.cart.mode==='iade')return toast('İade modundayken satılacak ürün eklenmez; önce iade modunu kapatın',true);
+  if(S.cart.mode==='iade'){psSnd('err');return toast('İade modundayken satılacak ürün eklenmez; önce iade modunu kapatın',true)}
   const l=S.cart.acc.find(x=>x.aid===aid),have=l?l.qty:0;
-  if(have+1>aAvail(a)){psGo();return toast(`${a.name}: stokta yalnızca ${a.stock_qty} adet var`,true)}
+  if(have+1>aAvail(a)){psGo();psSnd('err');return toast(`${a.name}: stokta yalnızca ${a.stock_qty} adet var`,true)}
   const oth=isSvc(a)?0:psOtherQty(aid);if(oth&&have+1+oth>a.stock_qty)toast(`${a.name}: diğer fişlerde ${oth} adet bekliyor, stok ${a.stock_qty}`,true);
-  if(l)l.qty++;else S.cart.acc.push({aid,qty:1,price:a.sale_price==null?0:Number(a.sale_price),discount:0});if(!S.cart.at)S.cart.at=Date.now();psFlash(a.name+(a.price_open&&!l?' eklendi · fiyatını yazın':' eklendi'));psGo();
+  if(l)l.qty++;else S.cart.acc.push({aid,qty:1,price:a.sale_price==null?0:Number(a.sale_price),discount:0});if(!S.cart.at)S.cart.at=Date.now();psFlash(a.name+(a.price_open&&!l?' eklendi · fiyatını yazın':' eklendi'));psSnd('add');psGo();
   if(a.price_open&&!l)setTimeout(()=>{const ins=document.querySelectorAll('[data-c="psprice"][data-k="a"]'),i=S.cart.acc.findIndex(x=>x.aid===aid),el=ins[i];if(el){el.focus();el.select()}},30)}
 
 /* tutarlar: muhtelif (+/-) ve iskonto (₺ / %) satış satırlarına ödeme sırasında dağıtılır; raporlar tutarlı kalır */
@@ -1869,13 +1906,13 @@ function psCode(v){const c=S.cart;v=String(v||'').trim();if(!v)return;
   const p=prodFind(v);if(p){c.q='';return cartAdd(p.id)}
   const a=accFind(v);if(a){c.q='';return accAdd(a.id)}
   const R=psSaleResults(v);if(R.length===1&&!(R[0].k==='a'&&R[0].stock<1)){c.q='';return R[0].k==='d'?cartAdd(R[0].id):accAdd(R[0].id)}
-  c.q=v;psGo();if(!R.length)toast('Stokta bu kodla / adla ürün yok: '+v,true)}
-function psRetAdd(x){const c=S.cart;if(!can('process_refund'))return toast('İade yetkiniz yok',true);
-  if(c.mode==='degisim'&&c.rets.length)return toast('Değişim modunda tek ürün iade alınır. Birden çok ürün için İade modunu kullanın, sonra yeni satış yapın.',true);
-  if(c.rets.some(r=>r.id===x.id))return toast('Bu kalem zaten listede',true);
+  c.q=v;psGo();if(!R.length){psSnd('err');toast('Stokta bu kodla / adla ürün yok: '+v,true)}}
+function psRetAdd(x){const c=S.cart;if(!can('process_refund'))return psSnd('err'),toast('İade yetkiniz yok',true);
+  if(c.mode==='degisim'&&c.rets.length)return psSnd('err'),toast('Değişim modunda tek ürün iade alınır. Birden çok ürün için İade modunu kullanın, sonra yeni satış yapın.',true);
+  if(c.rets.some(r=>r.id===x.id))return psSnd('err'),toast('Bu kalem zaten listede',true);
   const max=x.kind==='cihaz'?x.net:accRefundValue(x.line,x.rem);
   c.rets.push({svc:x.kind==='aksesuar'&&isSvc(S.d.accMap.get(x.line.accessory_id)),kind:x.kind,id:x.id,name:x.name,detail:x.detail||'',sale:x.s.sale_no,sold:x.s.sold_at,rem:x.rem,qty:1,amount:x.kind==='cihaz'?x.net:r2(accRefundValue(x.line,1)),auto:true,rc:'',disp:'stok',wr:'bozuk',why:''});
-  if(!c.customer&&x.s.customer_id)c.customer=x.s.customer_id;if(!c.at)c.at=Date.now();c.q='';psFlash(x.name+(c.mode==='iade'?' iade listesine eklendi':' değişime alındı'));psGo()}
+  if(!c.customer&&x.s.customer_id)c.customer=x.s.customer_id;if(!c.at)c.at=Date.now();c.q='';psFlash(x.name+(c.mode==='iade'?' iade listesine eklendi':' değişime alındı'));psSnd('ret');psGo()}
 const psRetMax=r=>{if(r.kind==='cihaz'){const i=S.d.sale_items.find(x=>x.id===r.id);return i?r2(Number(i.price)-Number(i.discount)):psNum(r.amount)}const l=S.d.sale_accessory_items.find(x=>x.id===r.id);return l?r2(accRefundValue(l,r.qty)):psNum(r.amount)};
 
 /* ---------- müşteri ---------- */
@@ -1976,6 +2013,7 @@ function vSatis(){psInit();psCheck();
   <section class="ps-r" aria-label="Hızlı ürünler ve ödeme">
    <div class="ps-top"><span class="chip">${ic('cal','sm')}${esc(dt)}</span><span class="chip">${ic('clock','sm')}<b id="ps-clock">${hm}</b></span>
     <span class="chip pst ${st[1]}" id="ps-st"><i></i>${esc(st[0])}</span>
+    <button class="chip ib2" data-a="ps-snd" title="Satış ekranı sesleri: ${psSndOn()?'açık':'kapalı'}" aria-label="Satış ekranı sesleri" aria-pressed="${psSndOn()}">${ic(psSndOn()?'vol':'mute','sm')}</button>
     <button class="chip ib2" data-a="ps-full" title="Tam ekran" aria-label="Tam ekran">${ic(document.fullscreenElement||document.documentElement.classList.contains('ps-full')?'shrink':'expand','sm')}</button></div>
    <div class="ps-tabs" role="tablist" aria-label="Hızlı ürün başlıkları">${G.map(g=>`<button role="tab" aria-selected="${u.g===g.id}" class="${u.g===g.id?'on':''}" style="--gc:${PS_COL[g.color]||PS_COL.mavi}" data-a="ps-g" data-id="${g.id}"><span class="gi">${ic('grid','sm')}</span><span><b>${esc(g.name)}</b><small>${psGroupCount(g.id)} ürün</small></span></button>`).join('')}
     ${G.length?'':`<button role="tab" aria-selected="true" class="on" data-a="ps-g" data-id="__top"><span class="gi">${ic('trend','sm')}</span><span><b>Çok satanlar</b><small>son 30 gün · otomatik</small></span></button>`}
@@ -2019,7 +2057,7 @@ function psCheckOut(m){const c=S.cart,t=psTotals(c);
     for(const l of c.acc){const a=S.d.accMap.get(l.aid);if(!a||l.qty>aAvail(a))return (a?a.name:'Ürün')+' için stok yetersiz.';if(a.price_open&&!(psNum(l.price)>0))return a.name+' için satış fiyatını yazın.'}}
   return ''}
 const PS_M={nakit:'Nakit',pos:'POS',havale:'Havale',parcali:'Parçalı'};
-function psPay(m){const er=psCheckOut(m);if(er)return toast(er,true);const c=S.cart,t=psTotals(c);
+function psPay(m){const er=psCheckOut(m);if(er)return psSnd('err'),toast(er,true);const c=S.cart,t=psTotals(c);psSnd('pay-'+m);
   if(m==='parcali')return psSplitModal();
   const what=c.mode==='iade'?'İade':c.mode==='degisim'?'Değişim':'Satış',amt=c.mode==='iade'?t.ret:Math.abs(t.net);
   const verb=c.mode==='iade'||(c.mode==='degisim'&&t.net<0)?'müşteriye ödenecek':'tahsil edilecek';
@@ -2052,9 +2090,9 @@ async function psDo(m,btn){const c=S.cart,t=psTotals(c),er=psCheckOut(m);if(er)r
       res=await call('exchange_item',{p:{old_kind:r.kind,old_id:r.id,old_qty:r.kind==='aksesuar'?r.qty:1,credit:r2(psNum(r.amount)),reason_code:r.rc,reason:r.why||null,disposition:r.disp,waste_reason:r.kind==='aksesuar'&&r.disp==='zayiat'?r.wr:null,
         new_items:al.items,new_accessories:al.acc,payments:t.net>0?pays:[],refund_method:t.net<0&&m!=='parcali'?m:'nakit',staff:c.staff&&c.staff!==S.user.id?c.staff:null,note:c.note||null}});
       saleId=res.sale_id;txt='Değişim '+res.exchange_no+' tamamlandı · yeni satış '+res.sale_no}
-    closeModal();S.fis.f[S.fis.cur]=psNew();S.cart=S.fis.f[S.fis.cur];S.ps.more=false;S.ps.last=saleId||S.ps.last;psFlash(txt);psSave();
+    psSnd(c.mode==='satis'?'done-'+m:'done-'+c.mode);closeModal();S.fis.f[S.fis.cur]=psNew();S.cart=S.fis.f[S.fis.cur];S.ps.more=false;S.ps.last=saleId||S.ps.last;psFlash(txt);psSave();
     toast(txt);S.mine=null;await syncData();S.dash=null;render();if(saleId&&prefGet('ps_rc')!=='0')saleReceipt(saleId)}
-  catch(e){if(btn)btn.disabled=false;setErr(msg(e))}}
+  catch(e){if(btn)btn.disabled=false;psSnd('err');setErr(msg(e))}}
 function psProforma(){const c=S.cart,t=psTotals(c),d=S.d,sh=shopSet(),cu=c.customer&&d.contactMap.get(c.customer);
   if(!psCount(c)){if(S.ps.last&&d.sales.some(s=>s.id===S.ps.last))return saleReceipt(S.ps.last);const ls=d.sales.filter(s=>s.status!=='iptal'&&s.created_by===S.user.id).sort((a,b)=>String(b.sold_at).localeCompare(String(a.sold_at)))[0];return ls?saleReceipt(ls.id):toast('Yazdırılacak fiş yok',true)}
   const L=[...c.items.map(i=>{const p=d.productMap.get(i.pid)||{};return [p.model+(p.imei?' · '+p.imei:''),1,psNum(i.price)-psNum(i.discount)]}),...c.acc.map(a=>[(d.accMap.get(a.aid)||{}).name,a.qty,a.qty*psNum(a.price)-psNum(a.discount)])];
@@ -6510,13 +6548,13 @@ Object.assign(A,{
   'ps-radd'(t){const x=psRetResults(S.cart.q).find(y=>y.id===t.dataset.id);if(x)psRetAdd(x)},
   'ps-tile'(t){if(S.cart.mode==='iade')return toast('İade modunda satılacak ürün eklenmez',true);t.dataset.k==='d'?cartAdd(t.dataset.id):accAdd(t.dataset.id)},
   'ps-g'(t){S.ps.g=t.dataset.id;prefSet('ps_g',t.dataset.id);render()},
-  'ps-fis'(t){const n=Number(t.dataset.n);if(n===S.fis.cur)return;S.cart.q='';S.fis.cur=n;S.cart=S.fis.f[n];S.ps.more=false;S.ps.cq='';psCheck();psSave();render()},
-  'ps-del'(t){const c=S.cart;(t.dataset.k==='d'?c.items:c.acc).splice(+t.dataset.i,1);render()},
+  'ps-fis'(t){const n=Number(t.dataset.n);if(n===S.fis.cur)return;psSnd('tick');S.cart.q='';S.fis.cur=n;S.cart=S.fis.f[n];S.ps.more=false;S.ps.cq='';psCheck();psSave();render()},
+  'ps-del'(t){psSnd('del');const c=S.cart;(t.dataset.k==='d'?c.items:c.acc).splice(+t.dataset.i,1);render()},
   'ps-q'(t){const l=S.cart.acc[+t.dataset.i];if(!l)return;const a=S.d.accMap.get(l.aid)||{stock_qty:0},n=l.qty+Number(t.dataset.d);
-    if(n<1){S.cart.acc.splice(+t.dataset.i,1);return render()}if(n>aAvail(a))return toast(`Stokta ${a.stock_qty} adet var`,true);l.qty=n;render()},
+    if(n<1){psSnd('del');S.cart.acc.splice(+t.dataset.i,1);return render()}if(n>aAvail(a))return psSnd('err'),toast(`Stokta ${a.stock_qty} adet var`,true);psSnd(Number(t.dataset.d)>0?'up':'down');l.qty=n;render()},
   'ps-rq'(t){const r=S.cart.rets[+t.dataset.i];if(!r)return;const n=Math.min(r.rem,Math.max(1,r.qty+Number(t.dataset.d)));r.qty=n;
     if(r.auto){const l=S.d.sale_accessory_items.find(x=>x.id===r.id);if(l)r.amount=r2(accRefundValue(l,n))}render()},
-  'ps-rdel'(t){S.cart.rets.splice(+t.dataset.i,1);render()},
+  'ps-rdel'(t){psSnd('del');S.cart.rets.splice(+t.dataset.i,1);render()},
   'ps-cust'(){psCustModal()},
   'ps-cpick'(t){S.cart.customer=t.dataset.id;S.ps.cq='';closeModal();render()},
   'ps-cclr'(){S.cart.customer='';render()},
@@ -6542,12 +6580,13 @@ Object.assign(A,{
     const cc=S.cart;if(to==='satis'&&cc.rets.length&&!armed(t,(cc.mode==='iade'?'İade':'Değişim')+' listesi silinsin mi? (tekrar tıklayın)'))return;
     if(to==='satis'||(to==='degisim'&&cc.mode==='iade')){if(cc.mode==='iade'&&to==='degisim')cc.rets=cc.rets.slice(0,1);else cc.rets=[]}
     if(to==='degisim'&&cc.trades.length){cc.trades=[];toast('Değişimde takas kullanılamaz; takas cihazı çıkarıldı',true)}
-    cc.mode=to;cc.q='';cc.paid='';if(to!=='satis'){cc.date=''}psFlash(to==='satis'?'Satış moduna dönüldü':to==='iade'?'İade modu açık':'Değişim modu açık',to==='satis');render()},
-  'ps-clear'(t){if(!armed(t,'Fiş temizlensin mi? (tekrar tıklayın)'))return;S.fis.f[S.fis.cur]=psNew();S.cart=S.fis.f[S.fis.cur];S.ps.more=false;psFlash('Fiş '+S.fis.cur+' temizlendi');render()},
+    psSnd('mode-'+to);cc.mode=to;cc.q='';cc.paid='';if(to!=='satis'){cc.date=''}psFlash(to==='satis'?'Satış moduna dönüldü':to==='iade'?'İade modu açık':'Değişim modu açık',to==='satis');render()},
+  'ps-clear'(t){if(!armed(t,'Fiş temizlensin mi? (tekrar tıklayın)'))return;S.fis.f[S.fis.cur]=psNew();S.cart=S.fis.f[S.fis.cur];S.ps.more=false;psFlash('Fiş '+S.fis.cur+' temizlendi');psSnd('del');render()},
   'ps-paidadd'(t){const c=S.cart;c.paid=t.dataset.v==='tam'?String(Math.max(0,psTotals(c).net)):String(r2(psNum(c.paid)+Number(t.dataset.v)));render()},
   'ps-pay'(t){psPay(t.dataset.m)},
   'ps-do'(t){psDo(t.dataset.m,t)},
   'ps-print'(){psProforma()},
+  'ps-snd'(){const on=!psSndOn();prefSet('ps_snd',on?'1':'0');if(on)psSnd('add');toast(on?'Satış ekranı sesleri açık':'Satış ekranı sesleri kapalı');render()},
   'ps-full'(){const on=!(document.fullscreenElement||S.ps.fullCls);S.ps.fullCls=on;document.documentElement.classList.toggle('ps-full',on);
     try{if(on&&document.documentElement.requestFullscreen)document.documentElement.requestFullscreen().catch(()=>{});else if(!on&&document.fullscreenElement)document.exitFullscreen()}catch(e){}render()},
   'pq-open'(){pqOpen()},
