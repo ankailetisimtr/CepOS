@@ -454,6 +454,8 @@ button.fx{font-variant-numeric:tabular-nums;font-weight:600;white-space:nowrap}b
   .nt-head .btn{display:none}.nt-head .seg{order:4;width:100%}.nt-head .seg button{flex:1}
   .nt-fab{display:grid;place-items:center;position:fixed;right:18px;bottom:22px;width:56px;height:56px;border-radius:50%;background:var(--accent);color:var(--accent-fg);border:0;box-shadow:0 6px 18px rgba(0,0,0,.25);z-index:20;cursor:pointer}
   .nt-fab .ic{width:26px;height:26px}.nt-ra{opacity:1}.nt-hist{grid-template-columns:1fr}.nt-tools .lnk{margin-left:0}.nt-title{font-size:19px}}
+.pill.att{background:var(--pink-soft);color:var(--pink);border-color:transparent}
+.att-bar{height:4px;border-radius:2px;background:var(--surface2);margin-top:3px;min-width:60px}.att-bar i{display:block;height:100%;border-radius:2px;background:var(--pink)}
 </style>
 </head>
 <body>
@@ -601,6 +603,7 @@ function derive(d){
   d.accMap=by(d.accessories);d.accCost=new Map(d.accessory_costs.map(c=>[c.accessory_id,Number(c.avg_cost)]));d.accUsd=new Map(d.accessory_costs.filter(c=>c.usd_mode).map(c=>[c.accessory_id,Number(c.cost_usd)||0]));
   d.accLineCost=new Map(d.sale_accessory_costs.map(c=>[c.line_id,Number(c.unit_cost)]));
   d.payBySale=new Map();(d.sale_payments||[]).forEach(y=>{if(!d.payBySale.has(y.sale_id))d.payBySale.set(y.sale_id,[]);d.payBySale.get(y.sale_id).push(y)});
+  d.devSales=new Set(d.sale_items.map(i=>i.sale_id));
   d.accBySale=new Map();d.sale_accessory_items.forEach(l=>{if(!d.accBySale.has(l.sale_id))d.accBySale.set(l.sale_id,[]);d.accBySale.get(l.sale_id).push(l)});
   d.latestRate=new Map();d.consignment_rates.forEach(r=>{const k=r.agreement_id+'|'+r.cat+'|'+r.sub;const o=d.latestRate.get(k);if(!o||r.valid_from>=o.valid_from)d.latestRate.set(k,r)});
 }
@@ -1698,14 +1701,15 @@ function saleRow(s){
       <div class="side"><b>${money(net)}</b>${ic&&can('view_profit')?`<span class="sub ${sgn(net-ic.cost-ic.consignor_share)}">Anka kârı ${money(net-Number(ic.cost)-Number(ic.consignor_share))}</span>`:''}
       ${!i.returned&&can('process_refund')?`<button class="btn sm" data-a="refund" data-id="${i.id}">İade al</button>`:''}</div></div>`}).join('')}
       ${accL.map(l=>{const a=d.accMap.get(l.accessory_id)||{},net=accLineNet(l)-accRetPrev(l),uc=d.accLineCost.get(l.id),rem=l.qty-l.returned_qty;
-        return `<div class="item" style="padding:8px 0"><div class="main"><b>${esc(a.name)}</b> <span class="pill">x${l.qty}</span>${l.returned_qty?` <span class="pill bad">${l.returned_qty} adet iade</span>`:''}<div class="meta"><span>Birim ${money(l.unit_price)}</span>${Number(l.discount)?`<span>İndirim ${money(l.discount)}</span>`:''}</div></div>
+        return `<div class="item" style="padding:8px 0"><div class="main"><b>${esc(a.name)}</b> <span class="pill">x${l.qty}</span>${items.length?' <span class="pill att">Cihaz yanı</span>':''}${l.returned_qty?` <span class="pill bad">${l.returned_qty} adet iade</span>`:''}<div class="meta"><span>Birim ${money(l.unit_price)}</span>${Number(l.discount)?`<span>İndirim ${money(l.discount)}</span>`:''}</div></div>
         <div class="side"><b>${money(net)}</b>${uc!=null&&can('view_profit')?`<span class="sub ${sgn(net-uc*rem)}">Anka kârı ${money(net-uc*rem)}</span>`:''}
         ${rem>0&&can('process_refund')?`<button class="btn sm" data-a="acc-refund" data-id="${l.id}">İade al</button>`:''}</div></div>`}).join('')}
       <div class="sub">Ödemeler: ${d.sale_payments.filter(p=>p.sale_id===s.id).map(p=>`${METHODS.find(m=>m[0]===p.method)[1]} ${money(p.amount)}`).join(' · ')||'-'}</div>
       ${d.sale_trade_ins.filter(t=>t.sale_id===s.id).map(t=>`<div class="sub">Takas: ${esc((d.productMap.get(t.product_id)||{}).model||'')} ${money(t.value)}</div>`).join('')}
       ${s.note?`<div class="sub">Not: ${esc(s.note)}</div>`:''}
       <div style="margin-top:8px"><button class="btn sm pri" data-a="rc-open" data-id="${s.id}">Satış fişi</button> ${docBtn('sales',s.id,'Belgeler (fatura, fiş, garanti)')}</div>${s.status!=='iptal'&&can('process_refund')?`<div style="margin-top:8px"><button class="btn sm danger" data-a="cancel-sale" data-id="${s.id}">Satışın tamamını iptal et</button></div>`:''}</div>`}
-  return `<div class="item" style="cursor:pointer" data-a="opensale" data-id="${s.id}"><div class="main"><b>${esc(s.sale_no)}</b> <span class="pill ${stp[0]}">${stp[1]}</span><div class="meta"><span>${fmtTime(s.sold_at)}</span>${cust?`<span>${esc(cust.name)}</span>`:''}<span>${esc(st?st.full_name:'')}</span></div><div class="meta"><span>${esc(names.join(', '))}</span></div></div><div class="side"><b>${money(s.total)}</b>${open?'':`<button class="btn sm" data-a="rc-open" data-id="${s.id}">Fiş</button>`}</div>${det}</div>`}
+  const att=items.length&&accL.length;
+  return `<div class="item" style="cursor:pointer" data-a="opensale" data-id="${s.id}"><div class="main"><b>${esc(s.sale_no)}</b> <span class="pill ${stp[0]}">${stp[1]}</span>${att?' <span class="pill att" title="Cihazın yanına aksesuar satıldı">Cihaz yanı aksesuar</span>':''}<div class="meta"><span>${fmtTime(s.sold_at)}</span>${cust?`<span>${esc(cust.name)}</span>`:''}<span>${esc(st?st.full_name:'')}</span></div><div class="meta"><span>${esc(names.join(', '))}</span></div></div><div class="side"><b>${money(s.total)}</b>${open?'':`<button class="btn sm" data-a="rc-open" data-id="${s.id}">Fiş</button>`}</div>${det}</div>`}
 /* ---- Satış fişi (otomatik; satışa tıklayınca görüntülenir) ---- */
 function rcData(id){const d=S.d,s=d.sales.find(x=>x.id===id);if(!s)return null;
   const items=(d.itemsBySale.get(id)||[]).map(i=>({p:d.productMap.get(i.product_id)||{},i})),acc=(d.accBySale.get(id)||[]).map(l=>({a:d.accMap.get(l.accessory_id)||{},l})),
@@ -3075,6 +3079,44 @@ function srRows(kind){const d=S.d,ok=sl=>sl&&sl.status!=='iptal',out=[];
   else{d.sale_accessory_items.forEach(l=>{const sl=d.saleMap.get(l.sale_id);if(!ok(sl))return;const a=d.accMap.get(l.accessory_id)||{},q=Number(l.qty),rq=q-Number(l.returned_qty||0);if(rq<=0)return;
     out.push({date:dayOf(sl.sold_at),sub:a.category||'Kategorisiz',cat:a.category||'Kategorisiz',qty:rq,rev:(q*Number(l.unit_price)-Number(l.discount||0))*rq/q,name:a.name||'Ürün',id:l.accessory_id})})}
   return out}
+/* ---- Cihaz yanı aksesuar: cihaz satılan satışa eklenen aksesuarlar (satıştan otomatik işaretlenir; eski satışlar dahil) ---- */
+const attIs=sale_id=>S.d.devSales.has(sale_id);
+function attData(lo,hi){const d=S.d,ok=s=>s&&s.status!=='iptal'&&dayOf(s.sold_at)>=lo&&dayOf(s.sold_at)<=hi,out=[];
+  d.sales.forEach(s=>{if(!ok(s)||!attIs(s.id))return;const dev=(d.itemsBySale.get(s.id)||[]).map(i=>d.productMap.get(i.product_id)||{});
+    const L=(d.accBySale.get(s.id)||[]).map(l=>{const a=d.accMap.get(l.accessory_id)||{},q=Number(l.qty),rq=q-Number(l.returned_qty||0);
+      return {id:l.accessory_id,name:a.name||'Ürün',cat:a.category||'Kategorisiz',qty:Math.max(0,rq),rev:rq>0?(q*Number(l.unit_price)-Number(l.discount||0))*rq/q:0}}).filter(x=>x.qty>0);
+    out.push({s,date:dayOf(s.sold_at),staff:s.staff_id,sub:(dev[0]||{}).sub||'Belirtilmemiş',dcat:(dev[0]||{}).cat||'-',model:(dev[0]||{}).model||'Cihaz',L,qty:sum(L,x=>x.qty),rev:sum(L,x=>x.rev)})});
+  return out}
+function attSum(R){const n=R.length,m=R.filter(r=>r.qty>0).length,q=sum(R,r=>r.qty),v=sum(R,r=>r.rev);return {n,m,q,v,rate:n?m/n:0,perDev:n?v/n:0,perAtt:m?v/m:0}}
+function srAtt(lo,hi,plo,phi,span){const d=S.d,R=attData(lo,hi),P=attData(plo,phi),A=attSum(R),B=attSum(P);
+  const pctT=x=>'%'+(x*100).toFixed(1).replace('.',','),pp=(a,b)=>B.n?`<span class="${a<b?'neg':a>b?'pos':''}">${a>=b?'+':''}${((a-b)*100).toFixed(1).replace('.',',')} puan</span>`:'önceki dönemde cihaz satışı yok';
+  const dl=(a,b)=>b>0?`<span class="${a<b?'neg':a>b?'pos':''}">${a>b?'+':''}${((a-b)/b*100).toFixed(1).replace('.',',')}%</span>`:'-';
+  const accAll=srRows('acc').filter(r=>r.date>=lo&&r.date<=hi),accRev=sum(accAll,r=>r.rev),accQty=sum(accAll,r=>r.qty);
+  const grp=(kf)=>{const m=new Map();R.forEach(r=>{const k=kf(r),x=m.get(k)||{k,n:0,m:0,q:0,v:0};x.n++;if(r.qty>0)x.m++;x.q+=r.qty;x.v+=r.rev;m.set(k,x)});return [...m.values()]};
+  const rateRow=(x,first)=>`<tr><td style="text-align:left">${first}</td><td>${x.n}</td><td>${x.m}</td><td><b>${x.n?pctT(x.m/x.n):'-'}</b><div class="att-bar"><i style="width:${x.n?Math.round(x.m/x.n*100):0}%"></i></div></td><td>${x.q}</td><td><b>${money(x.v)}</b></td><td>${x.n?money(x.v/x.n):'-'}</td></tr>`;
+  const rateTbl=(title,first,rows)=>`<div class="card"><h2>${title}</h2><div class="tw"><table><tr><th style="text-align:left">${first}</th><th>Cihaz satışı</th><th>Aksesuar eklenen</th><th>Ekleme oranı</th><th>Aksesuar adedi</th><th>Aksesuar cirosu</th><th>Cihaz satışı başına</th></tr>${rows.map(x=>rateRow(x,esc(x.k))).join('')||'<tr><td colspan="7">Bu aralıkta cihaz satışı yok.</td></tr>'}</table></div></div>`;
+  const staff=grp(r=>{const p=d.profileMap.get(r.staff);return p?p.full_name:'Belirtilmemiş'}).sort((a,b)=>b.v-a.v||b.n-a.n),subs=grp(r=>r.sub).sort((a,b)=>b.n-a.n);
+  const pm=new Map();R.forEach(r=>r.L.forEach(l=>{const x=pm.get(l.name)||{k:l.name,cat:l.cat,q:0,v:0,s:new Set()};x.q+=l.qty;x.v+=l.rev;x.s.add(r.s.id);pm.set(l.name,x)}));
+  const prods=[...pm.values()].sort((a,b)=>b.v-a.v),cm=new Map();prods.forEach(p=>{const x=cm.get(p.cat)||{k:p.cat,q:0,v:0,s:new Set()};x.q+=p.q;x.v+=p.v;p.s.forEach(i=>x.s.add(i));cm.set(p.cat,x)});const cats=[...cm.values()].sort((a,b)=>b.v-a.v);
+  const ptbl=(title,first,rows,lim)=>`<div class="card"><h2>${title}</h2><div class="tw"><table><tr><th style="text-align:left">${first}</th><th>Adet</th><th>Ciro</th><th>Pay</th><th>Eklendiği cihaz satışı</th></tr>${rows.slice(0,lim).map(x=>`<tr><td style="text-align:left">${esc(x.k)}</td><td>${x.q}</td><td><b>${money(x.v)}</b></td><td>${A.v>0?Math.round(x.v/A.v*100)+'%':'-'}</td><td>${x.s.size}</td></tr>`).join('')||'<tr><td colspan="5">Bu aralıkta cihaz yanı aksesuar satışı yok.</td></tr>'}</table></div></div>`;
+  const mon=srMonths(),m6=attData(mon[0].k+'-01',today()),mrows=mon.map(m=>{const x=attSum(m6.filter(r=>r.date.slice(0,7)===m.k));return {l:m.l,...x}});
+  const trend=`<div class="card"><h2>Son 6 ay</h2><div class="tw"><table><tr><th style="text-align:left">Ay</th><th>Cihaz satışı</th><th>Aksesuar eklenen</th><th>Ekleme oranı</th><th>Aksesuar adedi</th><th>Aksesuar cirosu</th><th>Cihaz satışı başına</th></tr>${mrows.map(x=>rateRow({...x,v:x.v,q:x.q},x.l)).join('')}</table></div></div>`;
+  const miss=R.filter(r=>r.qty===0).sort((a,b)=>String(b.s.sold_at).localeCompare(String(a.s.sold_at))).slice(0,15);
+  const last=R.filter(r=>r.qty>0).sort((a,b)=>String(b.s.sold_at).localeCompare(String(a.s.sold_at))).slice(0,15);
+  const sl=(r)=>`<tr><td style="text-align:left"><button class="lnk" data-a="att-sale" data-id="${r.s.id}">${esc(r.s.sale_no)}</button></td><td style="text-align:left">${fmtDate(r.date)}</td><td style="text-align:left">${esc(r.model)}</td><td style="text-align:left">${esc((d.profileMap.get(r.staff)||{}).full_name||'')}</td><td style="text-align:left">${r.L.map(l=>esc(l.name)+(l.qty>1?' x'+l.qty:'')).join(', ')||'<span class="sub">—</span>'}</td><td>${r.qty?money(r.rev):'-'}</td></tr>`;
+  const lists=`<div class="grid g2"><div class="card"><h2>Son cihaz yanı aksesuar satışları</h2><div class="tw"><table><tr><th style="text-align:left">Satış</th><th style="text-align:left">Tarih</th><th style="text-align:left">Cihaz</th><th style="text-align:left">Personel</th><th style="text-align:left">Aksesuarlar</th><th>Ciro</th></tr>${last.map(sl).join('')||'<tr><td colspan="6">Yok.</td></tr>'}</table></div></div>
+    <div class="card"><h2>Aksesuar eklenmeyen cihaz satışları</h2><p class="sub">Aksesuar önerilmemiş ya da müşteri almamış olabilir.</p><div class="tw"><table><tr><th style="text-align:left">Satış</th><th style="text-align:left">Tarih</th><th style="text-align:left">Cihaz</th><th style="text-align:left">Personel</th><th style="text-align:left">Aksesuarlar</th><th>Ciro</th></tr>${miss.map(sl).join('')||'<tr><td colspan="6">Hepsine aksesuar eklenmiş.</td></tr>'}</table></div></div></div>`;
+  const tiles=`<div class="grid g4">${tile('Ekleme oranı',A.n?pctT(A.rate):'-',A.m+' / '+A.n+' cihaz satışına aksesuar eklendi · '+pp(A.rate,B.rate))}
+    ${tile('Cihaz yanı aksesuar',A.q+' adet',money(A.v)+' ciro · '+(B.v>0?'önceki döneme göre '+dl(A.v,B.v):'önceki dönemde yok'))}
+    ${tile('Cihaz satışı başına',A.n?money(A.perDev):'-','aksesuarlı satışta ortalama '+(A.m?money(A.perAtt):'-'))}
+    ${tile('Aksesuar cirosundaki payı',accRev>0?Math.round(A.v/accRev*100)+'%':'-','toplam aksesuar: '+money(accRev)+' · '+accQty+' adet · tek başına: '+money(accRev-A.v))}</div>`;
+  return tiles+rateTbl('Personel bazında','Personel',staff)+rateTbl('Cihaz alt kategorisine göre','Alt kategori',subs)
+    +`<div class="grid g2">${ptbl('Aksesuar kategorisine göre','Kategori',cats,50)}${ptbl('En çok eklenen aksesuarlar','Ürün',prods,30)}</div>`+trend+lists
+    +`<div class="sub">Cihaz yanı aksesuar: içinde en az bir cihaz bulunan satışa eklenen aksesuarlar. Kayıt satıştan otomatik oluşur, ayrıca bir şey girmeniz gerekmez; geçmiş satışlar da dahildir. İptal edilen satışlar ve iade edilen aksesuar adetleri sayılmaz. Ekleme oranı = aksesuar eklenen cihaz satışı ÷ cihaz satışı. "Önceki dönem" seçtiğiniz aralığın hemen öncesindeki aynı uzunluktaki dönemdir.</div>`}
+function srAttCsv(lo,hi){const d=S.d,q=v=>'"'+String(v??'').replace(/"/g,'""')+'"',n=v=>String((Math.round(v*100)/100).toFixed(2)).replace('.',','),R=attData(lo,hi);
+  const rows=R.map(r=>[r.s.sale_no,r.date,(d.profileMap.get(r.staff)||{}).full_name||'',r.model,r.sub,r.qty?'Evet':'Hayır',r.L.map(l=>l.name+(l.qty>1?' x'+l.qty:'')).join(', '),r.qty,n(r.rev)]);
+  const csv='﻿'+[['Cihaz yanı aksesuar · '+lo+' – '+hi],['Satış no','Tarih','Personel','Cihaz','Alt kategori','Aksesuar eklendi','Aksesuarlar','Aksesuar adedi','Aksesuar cirosu (₺)'],...rows].map(r=>r.map(q).join(';')).join('\r\n'),a=document.createElement('a');
+  a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv;charset=utf-8'}));a.download='Cihaz-Yani-Aksesuar-'+lo+'_'+hi+'.csv';document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},500);return rows.length}
 function srAgg(rows,kf){const m=new Map();rows.forEach(r=>{const k=kf(r),x=m.get(k)||{k,qty:0,rev:0};x.qty+=r.qty;x.rev+=r.rev;m.set(k,x)});return m}
 function vSatisRapor(){
   if(!can('view_all_sales'))return '<div class="card"><div class="empty">Bu bölümü görme yetkiniz yok.</div></div>';
@@ -3094,15 +3136,16 @@ function vSatisRapor(){
     <tr><td style="text-align:left"><b>Toplam</b></td>${mon.map(m=>`<td><b>${fmt(sum(rows,x=>val(x,m.k)))}</b></td>`).join('')}<td><b>${fmt(sum(rows,x=>mt==='qty'?x.qty:x.rev))}</b></td><td></td></tr></table></div></div>`};
   const bestM=mon.map(m=>({l:m.l,v:sum(m6.filter(r=>r.date.slice(0,7)===m.k),r=>r.rev)})).sort((a,b)=>b.v-a.v)[0];
   const head=`<div class="row"><h1>Satış Raporu</h1><div class="sp"></div><button class="btn" data-a="sa-csv">CSV indir</button></div>
-  <div class="row"><div class="seg">${[['dev','Cihazlar'],['acc','Aksesuarlar']].map(([v,t])=>`<button data-a="sa-k" data-v="${v}" aria-pressed="${k===v}">${t}</button>`).join('')}</div>${k==='dev'?`<div class="seg">${[['sub','Alt kategori'],['cat','Ana kategori · alt kategori']].map(([v,t])=>`<button data-a="sa-g" data-v="${v}" aria-pressed="${g===v}">${t}</button>`).join('')}</div>`:''}</div>
+  <div class="row"><div class="seg">${[['dev','Cihazlar'],['acc','Aksesuarlar'],['att','Cihaz yanı aksesuar']].map(([v,t])=>`<button data-a="sa-k" data-v="${v}" aria-pressed="${k===v}">${t}</button>`).join('')}</div>${k==='dev'?`<div class="seg">${[['sub','Alt kategori'],['cat','Ana kategori · alt kategori']].map(([v,t])=>`<button data-a="sa-g" data-v="${v}" aria-pressed="${g===v}">${t}</button>`).join('')}</div>`:''}</div>
   <div class="row"><input class="in" id="sr-f" type="date" value="${lo}" style="width:auto" aria-label="Başlangıç"><input class="in" id="sr-t" type="date" value="${hi}" style="width:auto" aria-label="Bitiş"><button class="btn pri" data-a="sa-go">Raporu getir</button>${[['Bu ay',today().slice(0,8)+'01',today()],['Geçen ay',(()=>{const d=new Date(+today().slice(0,4),+today().slice(5,7)-2,1);return iso(d)})(),(()=>{const d=new Date(+today().slice(0,4),+today().slice(5,7)-1,0);return iso(d)})()],['Son 30 gün',addDays(today(),-30),today()],['Son 90 gün',addDays(today(),-90),today()],['Bu yıl',today().slice(0,5)+'01-01',today()]].map(([t,a,b])=>`<button class="btn sm" data-a="sa-range" data-a1="${a}" data-b1="${b}">${t}</button>`).join('')}</div>`;
+  if(k==='att')return head+srAtt(lo,hi,plo,phi,span);
   const tiles=`<div class="grid g4">${tile(k==='dev'?'Satılan cihaz':'Satılan aksesuar',tq+' adet',pq?'önceki '+span+' gün: '+pq+' adet':'önceki dönemde satış yok')}${tile('Ciro',money(tr),pr>0?'önceki döneme göre '+((tr-pr)/pr*100>0?'+':'')+((tr-pr)/pr*100).toFixed(1).replace('.',',')+'%':'önceki dönem yok')}${tile('Ortalama satış fiyatı',tq?money(tr/tq):'-',k==='dev'?'cihaz başına':'adet başına')}${tile('Son 6 ayın en iyi ayı',bestM&&bestM.v>0?bestM.l:'-',bestM&&bestM.v>0?money(bestM.v):'satış yok')}</div>`;
   if(k==='dev')return head+tiles+tbl(g==='cat'?'Ana kategori · alt kategori bazında satış':'Alt kategori bazında satış','Alt kategori',keys)+mx('Son 6 ay · '+(g==='cat'?'ana kategori · alt kategori':'alt kategori')+' karşılaştırması','Alt kategori',gk,40)
    +`<div class="sub">Satış tarihine göre; iptal edilen satışlar ve iade edilen cihazlar dahil değildir. Ciro cihaz bazlı indirim düşülmüş fiyattır (satış geneli indirimi ve takas dahil değil). "Önceki dönem" seçtiğiniz aralığın hemen öncesindeki aynı uzunluktaki dönemdir. Maliyet ve kâr için Raporlar > Kazanç Raporu (yalnız işletme sahibi).</div>`;
   const prods=srAgg(cur.map(r=>({...r,pk:r.name})),r=>r.name),pprods=srAgg(prv,r=>r.name),pk=[...new Set([...prods.keys(),...pprods.keys()])].map(x=>({k:x,c:prods.get(x)||{qty:0,rev:0},p:pprods.get(x)||{qty:0,rev:0}})).sort((a,b)=>b.c.rev-a.c.rev);
   return head+tiles+tbl('Alt kategori bazında satış','Alt kategori',keys)+tbl('Ürün bazında satış','Ürün',pk,150)+mx('Son 6 ay · ürün bazında karşılaştırma (en çok satan 40 ürün)','Ürün',r=>r.name,40)
    +`<div class="sub">Satış tarihine göre; iptal edilen satışlar ve iade edilen adetler dahil değildir. "Önceki dönem" seçtiğiniz aralığın hemen öncesindeki aynı uzunluktaki dönemdir. Maliyet ve kâr için Raporlar > Kazanç Raporu (yalnız işletme sahibi).</div>`}
-function srCsv(){const u=S.ui,k=u.srk||'dev',mon=srMonths(),all=srRows(k).filter(r=>r.date.slice(0,7)>=mon[0].k),q=v=>'"'+String(v??'').replace(/"/g,'""')+'"';
+function srCsv(){if(S.ui.srk==='att'){const [a,b]=srRange();return srAttCsv(a,b)}const u=S.ui,k=u.srk||'dev',mon=srMonths(),all=srRows(k).filter(r=>r.date.slice(0,7)>=mon[0].k),q=v=>'"'+String(v??'').replace(/"/g,'""')+'"';
   const [lo,hi]=srRange(),cur=srRows(k).filter(r=>r.date>=lo&&r.date<=hi),by=(rows,kf)=>[...srAgg(rows,kf).values()];
   const rowsC=by(cur,k==='dev'?(r=>r.cat+' · '+r.sub):(r=>r.sub+' | '+r.name)).sort((a,b)=>b.rev-a.rev).map(x=>[x.k,x.qty,String(x.rev.toFixed(2)).replace('.',',')]);
   const m6=new Map();all.forEach(r=>{const key=k==='dev'?r.cat+' · '+r.sub:r.name,x=m6.get(key)||{};x[r.date.slice(0,7)]=(x[r.date.slice(0,7)]||0)+r.qty;m6.set(key,x)});
@@ -5130,6 +5173,7 @@ const A={
   'sh-f'(t){S.ui.shf=t.dataset.v;render()},
   'sh-csv'(t){const n=shCsv(t.dataset.k);toast(n+' satır indirildi')},
   'sa-k'(t){S.ui.srk=t.dataset.v;render()},
+  'att-sale'(t){const x=S.d.saleMap.get(t.dataset.id);if(x&&dayOf(x.sold_at)<addDays(today(),-30))S.ui.salesRange='all';S.ui.openSale=t.dataset.id;location.hash='#satislar'},
   'sa-g'(t){S.ui.srg=t.dataset.v;render()},
   'sa-m'(t){S.ui.srm=t.dataset.v;render()},
   'sa-go'(){S.ui.srf=g('sr-f')||S.ui.srf;S.ui.srt2=g('sr-t')||S.ui.srt2;render()},
