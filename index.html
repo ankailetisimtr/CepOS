@@ -473,7 +473,7 @@ button.pill.ti-pill{cursor:pointer;font:inherit;font-size:12px}button.pill.ti-pi
 .bk-r .pc{display:flex;align-items:center;gap:4px}.bk-r .pc .in{text-align:right;color:var(--text)}.bk-r .pc i{font-style:normal;color:var(--muted)}
 .note.warn{background:var(--warn-soft);border-radius:8px;padding:8px 10px;font-size:13px}
 /* Satış ekranı (058) */
-.pill.svc{background:var(--violet-soft);color:var(--violet);border-color:transparent}.ps-tile .tf small.svc{color:var(--violet)}.ps-line .pr input.need{border-color:var(--warn);box-shadow:0 0 0 3px var(--warn-soft)}
+.pill.svc{background:var(--pink-soft);color:var(--pink);border-color:transparent}.ps-tile .tf small.svc{color:var(--pink)}.ps-line .pr input.need{border-color:var(--warn);box-shadow:0 0 0 3px var(--warn-soft)}
 .sr{position:absolute!important;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
 .ic.xl{width:44px;height:44px;stroke-width:1.4}
 .ps{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.1fr);gap:16px;height:calc(100dvh - 84px);min-height:640px;margin-top:12px}
@@ -555,8 +555,8 @@ html.ps-full header.top{display:none}html.ps-full .wrap{max-width:none}html.ps-f
 .ps-pb{display:flex;align-items:center;gap:12px;height:78px;padding:0 16px;border:1px solid var(--line);border-radius:16px;background:var(--surface);color:var(--fg);cursor:pointer;text-align:left;box-shadow:var(--shadow)}
 .ps-pb>span:last-child{display:flex;flex-direction:column}.ps-pb b{font-size:19px;font-weight:600}.ps-pb small{font-size:12px;opacity:.8}
 .ps-pb .pi{width:44px;height:44px;border-radius:12px;display:grid;place-items:center;background:rgba(255,255,255,.18);flex:none}
-.ps-pb.g{background:#2E7D5B;border-color:#2E7D5B;color:#fff}.ps-pb.b{background:var(--accent);border-color:var(--accent);color:var(--accent-fg)}.ps-pb.v{background:var(--violet);border-color:var(--violet);color:#fff}
-.ps-pb.n .pi{background:var(--violet-soft);color:var(--violet)}
+.ps-pb.g{background:#2E7D5B;border-color:#2E7D5B;color:#fff}.ps-pb.b{background:var(--accent);border-color:var(--accent);color:var(--accent-fg)}.ps-pb.v{background:var(--pink);border-color:var(--pink);color:#fff}
+.ps-pb.n .pi{background:var(--pink-soft);color:var(--pink)}
 .ps-pb:hover:not(:disabled){filter:brightness(1.06);transform:translateY(-1px)}.ps-pb:disabled{opacity:.42;cursor:not-allowed;transform:none}
 .ps-cf{margin-top:12px}.ps-cf .sum.big b{font-size:22px}
 .pq{display:grid;grid-template-columns:260px minmax(0,1fr);gap:16px;margin-top:12px}.pq h3{margin:4px 0 8px;font-size:14px}.pq h3 small{color:var(--muted);font-weight:400}
@@ -565,7 +565,39 @@ html.ps-full header.top{display:none}html.ps-full .wrap{max-width:none}html.ps-f
 .pq-gi .mv,.pq-it .mv{display:flex;gap:2px}.pq-add{display:flex;gap:6px}
 .pq-list{max-height:34vh;overflow:auto}.pq-it{display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid var(--line)}.pq-it .nm{flex:1;min-width:0;display:flex;flex-direction:column}.pq-it .nm small{color:var(--muted);font-size:12px}.pq-it>.in{width:180px}
 #pq-res{max-height:28vh;overflow:auto;margin-top:6px}
-@media (max-width:1100px){.ps-tools{grid-template-columns:1fr 1fr 52px 52px 52px}.ps-pb{height:68px;padding:0 10px;gap:8px}.ps-pb .pi{width:36px;height:36px}.ps-pb b{font-size:16px}}
+/* satış ekranı: görünür alana sığar (yükseklik ve genişliğe göre ölçeklenir) */
+html.ps-on body{padding-bottom:0}html.ps-on main{padding:0}html.ps-on .wrap:not(.login){max-width:none}
+@media (min-width:981px){
+ .ps{--ch:clamp(36px,5.4vh,56px);--gp:clamp(6px,1.05vh,12px);height:calc(100dvh - var(--hd,63px) - 16px);min-height:0;margin-top:8px;gap:clamp(10px,1vw,16px)}
+ html.ps-full .ps{height:calc(100dvh - 16px);margin-top:8px}
+ .ps-l{padding:clamp(10px,1.5vh,16px);gap:var(--gp);overflow:hidden}.ps-r{gap:var(--gp)}
+ .ps-search{height:var(--ch);padding:0 12px;gap:10px}.ps-search input{font-size:clamp(14px,2vh,17px)}
+ .ps-tool{width:clamp(48px,4.4vw,66px);font-size:11px;gap:1px}
+ .ps-cust{gap:10px}.ps-cust .avatar{width:var(--ch);height:var(--ch);font-size:13px}.ps-cust .btn.soft{height:var(--ch);padding:0 12px}.ps-tool.sq{width:var(--ch);height:var(--ch)}
+ .ps-cust .cq b{font-size:15px}.ps-cust .cq input{font-size:clamp(14px,2vh,17px)}.ps-cust .cq small{font-size:12px}
+ .ps-fis{gap:clamp(4px,.6vw,8px)}.ps-fis button{height:clamp(32px,4.8vh,56px);font-size:clamp(14px,2vh,18px);border-radius:12px}
+ .ps-cart{min-height:56px}.ps-empty{min-height:0;padding:8px;gap:2px}.ps-empty .ic.xl{width:clamp(22px,4.5vh,44px);height:clamp(22px,4.5vh,44px)}.ps-empty b{font-size:15px}.ps-empty span{font-size:13px}
+ .ps-line{padding:clamp(4px,.8vh,10px) 4px;gap:8px;grid-template-columns:minmax(0,1fr) auto clamp(84px,7.5vw,112px) clamp(84px,7.5vw,108px) 30px}
+ .ps-line .in{height:clamp(30px,4.4vh,40px)}.ps-line .ib.sm{width:28px;height:28px}
+ .ps-tools{gap:6px;grid-template-columns:minmax(0,1.25fr) minmax(0,1.25fr) repeat(3,clamp(46px,4vw,58px))}
+ .ps-inl .in,.ps-inl .btn,.ps-ic{height:var(--ch)}.ps-inl .btn{padding:0 10px}.ps-ic{font-size:10.5px}
+ .ps-chip{font-size:12px;margin:-2px 0}
+ .ps-paid{gap:8px;flex-wrap:nowrap}.ps-paid>label{min-width:0}.ps-paid>.in{height:var(--ch);font-size:clamp(15px,2.4vh,20px);min-width:80px}.ps-paid>.sub{font-size:12px}
+ .ps-qp{gap:4px}.ps-qp .btn{height:var(--ch);min-width:clamp(40px,3.6vw,54px);padding:0 6px;font-size:12px}
+ .ps-total{padding:clamp(6px,1.3vh,14px) clamp(12px,1.4vw,20px);align-items:center}.ps-total .k{font-size:12px}.ps-total .sub{font-size:12px}
+ .ps-total .v{font-size:clamp(26px,5.4vh,46px)}.ps-total .v small{font-size:.5em}
+ #ps-sums{display:flex;flex-wrap:wrap;gap:1px 14px;margin-top:2px}.ps-sr{font-size:12px;margin-top:0;gap:6px;max-width:none;white-space:nowrap}.ps-sr.big{font-size:13.5px}
+ .ps-line .nm b{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;white-space:normal;font-size:13.5px;line-height:1.3}
+ .ps-top{gap:8px}.ps-top .chip{height:clamp(32px,4.8vh,46px);padding:0 12px;font-size:13px;gap:6px}.ps-top .ib2{width:clamp(32px,4.8vh,46px);padding:0}
+ .ps-tabs{gap:8px;padding:2px 2px 4px}.ps-tabs button{height:clamp(44px,7.2vh,72px);min-width:clamp(116px,9.5vw,150px);padding:0 10px;gap:8px;border-radius:14px}
+ .ps-tabs .gi{width:clamp(26px,4.2vh,38px);height:clamp(26px,4.2vh,38px)}.ps-tabs b{font-size:13px}.ps-tabs small{font-size:11px}
+ .ps-tiles{grid-template-columns:repeat(auto-fill,minmax(clamp(112px,9.5vw,150px),1fr));grid-auto-rows:clamp(92px,15vh,150px);gap:clamp(8px,1.1vh,12px)}
+ .ps-tile{padding:clamp(6px,.9vh,10px);gap:6px;border-radius:14px}.ps-tile .tn{font-size:clamp(11.5px,1.7vh,14.5px);padding:6px;-webkit-line-clamp:4}.ps-tile .tf b{font-size:clamp(13px,2vh,17px)}
+ .ps-pay{gap:clamp(6px,.7vw,10px)}.ps-pb{height:clamp(48px,8.4vh,78px);padding:0 clamp(8px,1vw,16px);gap:clamp(6px,.8vw,12px);border-radius:14px}
+ .ps-pb .pi{width:clamp(30px,4.8vh,44px);height:clamp(30px,4.8vh,44px)}.ps-pb b{font-size:clamp(14px,2.2vh,19px)}.ps-pb small{font-size:11px}
+}
+@media (min-width:981px) and (max-width:1250px){.ps-tool span{display:none}.ps-qp .btn[data-v="tam"]{display:none}.ps-pb .pi{display:none}.ps-cust .btn.soft{font-size:13px}}
+@media (max-width:980px){.ps-tools{grid-template-columns:1fr 1fr 52px 52px 52px}.ps-pb{height:68px;padding:0 10px;gap:8px}.ps-pb .pi{width:36px;height:36px}.ps-pb b{font-size:16px}}
 @media (max-width:980px){.ps{grid-template-columns:1fr;height:auto;min-height:0}.ps-cart{max-height:none;min-height:140px}.ps-tiles{max-height:60vh}
   .ps-r{order:2}.ps-pay{position:sticky;bottom:0;z-index:7;background:var(--bg);padding:8px 0}.pq{grid-template-columns:1fr}}
 @media (max-width:620px){.ps-l{padding:12px;border-radius:14px}.ps-tool{width:52px}.ps-tool span{display:none}.ps-search{height:52px}.ps-fis{grid-template-columns:repeat(8,minmax(0,1fr));gap:4px}.ps-fis button{height:46px;font-size:16px}
@@ -1227,6 +1259,7 @@ function render(){
   if(!S.d||!S.me)return;
   const tab=S.ui.tab,ae=document.activeElement,keepQ=ae&&ae.id==='dq',aeId=ae&&ae.id,aeSel=ae&&typeof ae.selectionStart==='number'?ae.selectionStart:null;
   if(tab!=='satis')document.documentElement.classList.remove('ps-full');
+  document.documentElement.classList.toggle('ps-on',tab==='satis');
   const unread=nUnreadCount();
   const secLock=qsSecLocked(tab);
   const page=secLock?qsLockPage(tab):qsUnlockBar(tab)+{panel:vPanel,notlar:vNotlar,satis:vSatis,stok:vStok,aksesuar:vAksesuar,sayim:vSayim,sorgu:vSorgu,alislar:vAlislar,satislar:vSatislar,iadeler:vIadeler,fireler:vFireler,odemeler:vOdemeler,kazancrapor:vKazancRapor,satisrapor:vSatisRapor,sermaye:vSermaye,hakedis:vHakedis,primler:vPrimler,kasa:vKasa,masraf:vMasraf,musteriler:vMusteriler,firmalar:vFirmalar,konsinye:vKonsinye,servis:vServis,siparis:vSiparis,eksikler:vEksik,teklif:vTeklif,gorev:vGorev,vardiya:vVardiya,hedef:vHedef,egitim:vEgitim,yonetim:vYonetim}[tab]();
@@ -1748,8 +1781,8 @@ async function saveProduct(id){
    Sağ: tarih, saat, durum, tam ekran; hızlı ürün başlıkları (en çok 10); ödeme düğmeleri.
    Fişler bu cihazda saklanır (localStorage 'anka_fis'); sayfa yenilense de, kullanıcı değişse de kaybolmaz. */
 const PS_N=8,PS_KEY='anka_fis';
-const PS_COL={mavi:'var(--accent)',pembe:'var(--pink)',yesil:'var(--good)',turuncu:'var(--warn)',mor:'var(--violet)',gri:'var(--muted)'};
-const PS_COLN=[['mavi','Mavi'],['pembe','Pembe'],['yesil','Yeşil'],['turuncu','Turuncu'],['mor','Mor'],['gri','Gri']];
+const PS_COL={mavi:'var(--accent)',pembe:'#E2579F',yesil:'var(--good)',turuncu:'var(--warn)',mor:'var(--pink)',gri:'var(--muted)'};
+const PS_COLN=[['mavi','Mavi'],['pembe','Pembe'],['yesil','Yeşil'],['turuncu','Turuncu'],['mor','Fuşya'],['gri','Gri']];
 const psNew=()=>({items:[],acc:[],trades:[],pays:[],rets:[],customer:'',staff:'',note:'',q:'',nn:'',nt:'',misc:0,isk:'',iskT:'tl',paid:'',mode:'satis',date:'',at:0});
 const psCount=c=>c.items.length+c.acc.length+c.trades.length+c.rets.length;
 function psInit(){if(S.fis)return;let st=null;try{st=JSON.parse(localStorage.getItem(PS_KEY)||'null')}catch(e){}
@@ -1962,7 +1995,7 @@ function psRefresh(){const c=S.cart,t=psTotals(c),el=document.getElementById('ps
   el.innerHTML=psSumHtml(c,t);a.innerHTML=money(c.mode==='iade'?t.ret:Math.abs(t.net)).replace(' ₺','')+'<small>₺</small>';
   document.querySelectorAll('.ps-line').forEach(()=>{});psSave()}
 function refreshSums(){psRefresh()}
-function psAfter(aeId,sel){if(S.ui.tab!=='satis')return;const html=document.documentElement;html.classList.toggle('ps-full',!!(document.fullscreenElement||S.ps&&S.ps.fullCls));
+function psAfter(aeId,sel){if(S.ui.tab!=='satis')return;{const h=document.querySelector('header.top');if(h)document.documentElement.style.setProperty('--hd',h.offsetHeight+'px')}const html=document.documentElement;html.classList.toggle('ps-full',!!(document.fullscreenElement||S.ps&&S.ps.fullCls));
   if(document.querySelector('#modal .modal'))return;
   let el=aeId&&aeId!=='dq'&&document.getElementById(aeId);
   if(!el&&matchMedia('(pointer:fine)').matches)el=document.getElementById('ps-q');
@@ -1990,7 +2023,7 @@ function psPay(m){const er=psCheckOut(m);if(er)return toast(er,true);const c=S.c
   if(m==='parcali')return psSplitModal();
   const what=c.mode==='iade'?'İade':c.mode==='degisim'?'Değişim':'Satış',amt=c.mode==='iade'?t.ret:Math.abs(t.net);
   const verb=c.mode==='iade'||(c.mode==='degisim'&&t.net<0)?'müşteriye ödenecek':'tahsil edilecek';
-  modal(`<div class="row" style="gap:10px"><span class="icb ${m==='nakit'?'g':m==='pos'?'b':'v'}">${ic(m==='nakit'?'cash':m==='pos'?'card':'bank','lg')}</span><div><h2 style="margin:0">${what} · ${PS_M[m]}</h2><div class="sub">Fiş ${S.fis.cur}${c.customer&&S.d.contactMap.get(c.customer)?' · '+esc(S.d.contactMap.get(c.customer).name):''}</div></div></div>
+  modal(`<div class="row" style="gap:10px"><span class="icb ${m==='nakit'?'g':m==='pos'?'b':'p'}">${ic(m==='nakit'?'cash':m==='pos'?'card':'bank','lg')}</span><div><h2 style="margin:0">${what} · ${PS_M[m]}</h2><div class="sub">Fiş ${S.fis.cur}${c.customer&&S.d.contactMap.get(c.customer)?' · '+esc(S.d.contactMap.get(c.customer).name):''}</div></div></div>
    <div class="ps-cf"><div class="sum big"><span>${amt>0?PS_M[m]+' ile '+verb:'Ödeme yok (tutarlar eşit)'}</span><b>${money(amt)}</b></div>
    ${c.mode==='satis'&&m==='nakit'&&t.paid>0?`<div class="sum"><span>Ödenen</span><b>${money(t.paid)}</b></div><div class="sum big"><span>Para üstü</span><b class="pos">${money(t.diff)}</b></div>`:''}
    ${c.mode==='satis'&&t.trade?`<div class="sum"><span>Takas düşüldü</span><b>−${money(t.trade)}</b></div>`:''}
@@ -2078,7 +2111,7 @@ const pqPills=(kind,id)=>{const ids=pqIn(kind,id);if(!ids.length)return '';retur
 
 /* ---------- hizmet ürünleri (059): stok takibi yok ---------- */
 function svcModal(a,conv){a=a||{};const e=!!a.id,sc=can('view_cost'),avg=e?accAvg(a.id):null,G=can('manage_pos_quick')&&S.d.pos_groups?(S.d.pos_groups||[]).slice().sort((x,y)=>x.sort-y.sort):[],on=new Set(e?pqIn('aksesuar',a.id):[]);
-  modal(`<div class="row" style="gap:10px"><span class="icb v">${ic('wrench','lg')}</span><div><h2 style="margin:0">${conv?'Hizmete çevir':e?'Hizmeti düzenle':'Yeni hizmet'}</h2><div class="sub">Stok takibi yok: satışta stok aranmaz ve düşmez; alış, sayım, fire yapılmaz.</div></div></div>
+  modal(`<div class="row" style="gap:10px"><span class="icb p">${ic('wrench','lg')}</span><div><h2 style="margin:0">${conv?'Hizmete çevir':e?'Hizmeti düzenle':'Yeni hizmet'}</h2><div class="sub">Stok takibi yok: satışta stok aranmaz ve düşmez; alış, sayım, fire yapılmaz.</div></div></div>
   <div class="form" style="margin-top:10px"><label class="f full">Hizmet adı<input class="in" id="svc-name" maxlength="120" value="${esc(a.name||'')}" placeholder="Örn. Ömür Boyu Garanti Paketi - Ekran Koruma"></label>
    ${catCtl('svc-cat','svc-newcat',a.category||'Hizmet')}
    <label class="f">Satış fiyatı (₺)<input class="in" id="svc-price" type="text" inputmode="decimal" value="${a.sale_price==null?'':num(a.sale_price)}" data-c="svcp" placeholder="${a.price_open?'İsteğe bağlı':''}"></label>
