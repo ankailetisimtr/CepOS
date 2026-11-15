@@ -2383,7 +2383,8 @@ function lyKurallar(){const R=S.lyrd||lyR(),mg=can('manage_loyalty'),dis=mg?'':'
 function lyTplNote(W){if(W.templates_error)return `<div class="note bad" style="margin-top:8px">${esc(W.templates_error)}</div>`;
   const T=W.templates||[],hit=T.find(t=>t.name===W.template&&t.language===W.lang),same=T.filter(t=>t.name===W.template),ok=hit&&hit.status==='APPROVED';
   const msg=ok?`Doğrulama şablonu hazır: <b>${esc(W.template)}</b> (${esc(W.lang)}) · onaylı.`
-    :hit?`Doğrulama şablonu <b>${esc(W.template)}</b> (${esc(W.lang)}) bulundu ama durumu <b>${esc(hit.status)}</b>; WhatsApp onayı bekleniyor.`
+    :hit?(/PENDING|IN_APPEAL/i.test(hit.status)?`Doğrulama şablonu <b>${esc(W.template)}</b> (${esc(W.lang)}) bulundu ama durumu <b>${esc(hit.status)}</b>; WhatsApp onayı bekleniyor.`
+      :`Doğrulama şablonu <b>${esc(W.template)}</b> (${esc(W.lang)}) kullanılamıyor: durumu <b>${esc(hit.status)}</b>. Netgsm › WhatsApp OTP › Ayarlar (kurulum ekranı) üzerinden şablonu yeniden <b>Oluştur</b>un; yine olmazsa Netgsm desteğine bu durumu iletin.`)
     :same.length?`<b>${esc(W.template)}</b> şablonu var ama dili <b>${same.map(t=>esc(t.language)).join(', ')}</b>. Supabase Secrets'a <code>WA_LANG</code> = <b>${esc(same[0].language)}</b> ekleyip fonksiyonu yeniden yayınlayın.`
     :`<b>${esc(W.template)}</b> şablonu bu numarada yok. Netgsm › WhatsApp OTP › Ayarlar (kurulum ekranı) › şablonu <b>Oluştur</b> ile açın; onaylanınca deneyin.`;
   return `<div class="note ${ok?'':'bad'}" style="margin-top:8px">${msg}${T.length?`<div class="sub" style="margin-top:6px">Netgsm'deki şablonlar: ${T.map(t=>`${esc(t.name)} (${esc(t.language)}, ${esc(t.status)})`).join(' · ')}</div>`:''}</div>`}
