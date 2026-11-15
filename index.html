@@ -626,6 +626,8 @@ html.ps-on body{padding-bottom:0}html.ps-on main{padding:0}html.ps-on .wrap:not(
 .ly-ip{position:relative;flex:1;min-width:180px}.ly-ipr{position:absolute;z-index:5;left:0;right:0;top:100%;background:var(--card);border:1px solid var(--line);border-radius:8px;max-height:220px;overflow:auto}
 .ly-ipr button{display:block;width:100%;text-align:left;padding:6px 10px;border:0;background:transparent;color:var(--text);cursor:pointer;font:inherit}.ly-ipr button:hover{background:color-mix(in srgb,var(--pink) 10%,transparent)}
 .ly-rules fieldset{border:1px solid var(--line);border-radius:10px;padding:10px;margin:0 0 10px}.ly-rules legend{font-weight:700;color:var(--pink);padding:0 6px}
+.ly-v{margin-top:10px;border:1px dashed color-mix(in srgb,var(--pink) 45%,var(--line));border-radius:10px;padding:10px;background:color-mix(in srgb,var(--pink) 4%,transparent)}
+.ly-v.ok{border-style:solid;border-color:color-mix(in srgb,var(--ok,#1a8f4e) 50%,var(--line))}.ly-vh{font-weight:700;display:inline-flex;gap:6px;align-items:center}
 .ly-save{position:sticky;bottom:0;background:var(--card);padding:10px 0;border-top:1px solid var(--line);display:flex;gap:8px;justify-content:flex-end}
 .ps-sum .ly b,.sum .ly{color:var(--pink)}
 </style>
@@ -659,6 +661,7 @@ const TABS=[['panel','Genel Bakış',null],['notlar','Notlarım',null],['satis',
 
 /* ================= İKONLAR (ince çizgili, 24x24) ================= */
 const IC={
+  wa:'<path d="M4 20l1.3-3.9A8 8 0 1 1 8 19.1z"/><path d="M9 10h6M9 13.5h4"/>',
   star:'<path d="m12 3.5 2.6 5.3 5.8.8-4.2 4.1 1 5.8L12 16.8l-5.2 2.7 1-5.8-4.2-4.1 5.8-.8z"/>',gift:'<rect x="3.5" y="8" width="17" height="4" rx="1"/><path d="M5 12v8h14v-8M12 8v12M12 8c-1.5-3-5-3.5-5-1.2C7 8 9.5 8 12 8zm0 0c1.5-3 5-3.5 5-1.2C17 8 14.5 8 12 8z"/>',
   vol:'<path d="M4 9v6h4l5 4V5L8 9z"/><path d="M16 9.5a3.5 3.5 0 0 1 0 5"/><path d="M18.5 7a7 7 0 0 1 0 10"/>',mute:'<path d="M4 9v6h4l5 4V5L8 9z"/><path d="m17 10 4 4m0-4-4 4"/>',
   cart:'<circle cx="9" cy="20" r="1.4"/><circle cx="17" cy="20" r="1.4"/><path d="M3 4h2l2.4 11.2a1.5 1.5 0 0 0 1.5 1.2h8.6a1.5 1.5 0 0 0 1.5-1.1L21 8H6"/>',printer:'<path d="M6 9V3h12v6"/><rect x="3" y="9" width="18" height="8" rx="2"/><path d="M6 14h12v7H6z"/>',swap:'<path d="M7 4 3 8l4 4"/><path d="M3 8h14"/><path d="m17 20 4-4-4-4"/><path d="M21 16H7"/>',cash:'<rect x="2.5" y="6" width="19" height="12" rx="2"/><circle cx="12" cy="12" r="2.5"/><path d="M6 9.5v.01M18 14.5v.01"/>',bank:'<path d="M3 10h18L12 4z"/><path d="M5 10v8M9.5 10v8M14.5 10v8M19 10v8"/><path d="M3 20h18"/>',split:'<circle cx="12" cy="12" r="9"/><path d="M12 3v9l6.5 6"/>',pencil:'<path d="M4 20h4L19 9l-4-4L4 16z"/><path d="m13.5 6.5 4 4"/>',shrink:'<path d="M9 4v5H4M15 4v5h5M9 20v-5H4M15 20v-5h5"/>',
@@ -1196,7 +1199,7 @@ async function qsEvents(){modal('<h2>Geçiş kayıtları</h2><p class="sub">Yük
 /* sunucu fonksiyonu çağrısı: hata mesajını Türkçe döndürür */
 async function fnCall(name,body){let r;try{r=await sb.functions.invoke(name,{body})}catch(e){throw new Error('Sunucuya ulaşılamadı: '+msg(e))}
   if(r.error){let m='',st=0;try{st=r.error.context&&r.error.context.status;const j=await r.error.context.json();m=j&&(j.error||j.msg||j.message)||''}catch(e){}
-    if((st===404&&!m)||/Requested function was not found|^NOT_FOUND$/i.test(m))m=`"${name}" sunucu fonksiyonu yayınlanmamış. KURULUM.md > Kullanıcı yönetimi bölümüne bakın.`;
+    if((st===404&&!m)||/Requested function was not found|^NOT_FOUND$/i.test(m))m=name==='sadakat'?'"sadakat" sunucu fonksiyonu yayınlanmamış. KURULUM.md > Sadakat 2. aşama (WhatsApp) bölümüne bakın.':`"${name}" sunucu fonksiyonu yayınlanmamış. KURULUM.md > Kullanıcı yönetimi bölümüne bakın.`;
     throw new Error(m||r.error.message||'İşlem yapılamadı')}
   if(r.data&&r.data.error)throw new Error(r.data.error);return r.data}
 /* Yönetim > Kullanıcılar: giriş bilgileri ve son giriş (yalnız kullanıcı yöneticisi) */
@@ -2078,7 +2081,8 @@ function psCheckOut(m){const c=S.cart,t=psTotals(c);
     if((t.isk>0||t.misc<0)&&!can('give_discount'))return 'İskonto / indirim yetkiniz yok.';
     if(m==='nakit'&&t.paid>0&&t.diff<0)return 'Ödenen tutar '+money(-t.diff)+' eksik. Tutarı düzeltin ya da Parçalı ödemeyi kullanın.';
     if(c.date&&c.date>today())return 'Satış tarihi ileri bir tarih olamaz.';
-    if(c.ly&&c.ly.mid&&(t.ly||lyRw(c))){const R=lyR(),i=c.ly.info||{};if(!can('loyalty_redeem_manual'))return 'Puan / ödül kullanımı için yetki gerekir (müdür, sahip). SMS doğrulaması 2. aşamada.';
+    if(c.ly&&c.ly.mid&&(t.ly||lyRw(c))){const R=lyR(),i=c.ly.info||{},nu=lyNeedUse();if(nu===null&&!can('loyalty_redeem_manual'))return 'Puan / ödül kullanımı için yetki gerekir (müdür, sahip).';
+      if(nu===true&&!c.ly.otp&&!c.ly.man)return 'Puan / ödül kullanımı için müşteri doğrulaması gerekir: Sadakat düğmesinden WhatsApp kodu ya da kasa kodu.';
       if(t.ly){if(t.ly<R.min_use)return 'En az '+R.min_use+' puan kullanılabilir.';if(t.ly>(i.avail||0))return 'Kullanılabilir puan yetersiz (bakiye '+(i.avail||0)+').';if(t.ly>Math.floor((t.sale+t.ly+t.lyr)*R.max_use_pct/100))return 'Bir fişte en çok %'+R.max_use_pct+' puanla ödenebilir.'}
       if(lyRw(c)&&!t.lyr)return 'Damga ödülü için fişte seçili (damga) ürünü olmalı.'}
     return ''}
@@ -2116,7 +2120,7 @@ async function psDo(m,btn){const c=S.cart,t=psTotals(c),er=psCheckOut(m);if(er)r
   if(btn)btn.disabled=true;
   try{let res,saleId=null,txt='';
     if(c.mode==='satis'){const al=psAlloc(c,t);let sold;if(c.date&&c.date!==today()){const n=new Date(),hh=String(n.getHours()).padStart(2,'0'),mm=String(n.getMinutes()).padStart(2,'0');sold=new Date(c.date+'T'+hh+':'+mm+':00').toISOString()}
-      if(c.ly&&c.ly.mid&&lyOn()){const rw=lyRw(c);res=await call('loyalty_sale',{p:{member:c.ly.mid,use_points:t.ly||0,reward_id:rw?rw.id:null,reward_value:t.lyr||0,
+      if(c.ly&&c.ly.mid&&lyOn()){const rw=lyRw(c);res=await call('loyalty_sale',{p:{member:c.ly.mid,use_points:t.ly||0,reward_id:rw?rw.id:null,reward_value:t.lyr||0,otp:c.ly.otp||null,manual:!!c.ly.man,
           sale:{customer:c.customer||null,items:al.items,accessories:al.acc,trade_ins:c.trades,payments:pays,note:c.note||null,staff:c.staff&&c.staff!==S.user.id?c.staff:null,sold_at:sold||null}}})}
       else res=await call('complete_sale',{p_customer:c.customer||null,p_items:al.items,p_accessories:al.acc,p_trade_ins:c.trades,p_payments:pays,p_note:c.note||null,p_staff:c.staff&&c.staff!==S.user.id?c.staff:null,...(sold?{p_sold_at:sold}:{})});
       saleId=res.id;txt='Satış tamamlandı · '+res.sale_no+(res.ly_note?' · sadakat: '+res.ly_note:res.ly_earned!=null?` · +${num(res.ly_earned)} puan${res.ly_welcome?' (+hoş geldin)':''}${res.ly_stamp?' · +1 damga':''} · bakiye ${num(res.ly_balance)}`:'')}
@@ -2198,7 +2202,11 @@ function svcProf(){const el=document.getElementById('svc-prof');if(!el||el.hidde
 
 /* ================= KAMPANYALAR · SADAKAT PROGRAMI (060) ================= */
 const LY_DEF={mode:'yuzde',pct_dev:1,pct_acc:3,pct_svc:3,fix_amount:100,fix_points:1,kons:true,wait_days:15,min_use:50,max_use_pct:50,expiry_months:0,welcome:50,birthday:50,daily_limit:3,return_deduct:true,
-  stamp_on:true,stamp_min:1000,stamp_rule:'ikisi',stamp_size:10,stamp_months:0,stamp_rewards:[{at:5,type:'yuzde',value:50,units:1},{at:10,type:'hediye',value:0,units:1}]};
+  stamp_on:true,stamp_min:1000,stamp_rule:'ikisi',stamp_size:10,stamp_months:0,stamp_rewards:[{at:5,type:'yuzde',value:50,units:1},{at:10,type:'hediye',value:0,units:1}],
+  otp_on:false,otp_join:true,otp_use:true,otp_manual:true,otp_ttl:5,kasa_ttl:10,portal_on:true};
+const LY_OTP_P={kayit:'Üye kaydı',kullanim:'Puan kullanımı',portal:'Portal girişi',kasa:'Kasa kodu',test:'Deneme',yetkili:'Doğrulamasız (yetkili)'},LY_OTP_S={olusturuldu:['Oluşturuldu',''],gonderildi:['Gönderildi',''],hata:['Hata','bad'],dogrulandi:['Doğrulandı','ok'],kullanildi:['Kullanıldı','ok'],iptal:['İptal','']};
+/* doğrulama gereksinimi: null = doğrulama kapalı (yalnız yetkili kullandırır), true = kod gerekir, false = gerekmez */
+const lyNeedUse=()=>{const R=lyR();return R.otp_on?R.otp_use!==false:null},lyNeedJoin=()=>{const R=lyR();return !!R.otp_on&&R.otp_join!==false},lyManOk=()=>lyR().otp_manual!==false&&can('loyalty_redeem_manual');
 const LY_KIND={kazan:['Alışveriş puanı','pos'],hosgeldin:['Hoş geldin puanı','pos'],dogumgunu:['Doğum günü puanı','pos'],harca:['Puan kullanıldı','neg'],harca_iade:['Kullanılan puan iade','pos'],iade_geri:['İade: puan geri alındı','neg'],
   iade_mahsup:['İade tutarından düşüldü',''],duzeltme:['Elle düzeltme',''],sure_doldu:['Süresi doldu','neg'],damga:['Damga',''],damga_geri:['Damga geri alındı','neg'],odul:['Damga ödülü kullanıldı',''],engel:['Puan verilmedi','warn']};
 const LY_EXP=[[0,'Süresiz'],[3,'3 ay'],[6,'6 ay'],[12,'1 yıl'],[24,'2 yıl']];
@@ -2234,25 +2242,38 @@ function lyBtn(c){if(!lyOn()||c.mode!=='satis')return '';const L=c.ly;
 async function lyFetch(q){return await call('loyalty_find',{p_q:q})}
 async function lyAuto(cid){const c=S.cart;if(!lyOn()||!cid||c.mode!=='satis'||(c.ly&&c.ly.mid))return;
   try{const i=await lyFetch(cid);if(i&&i.member&&S.cart===c&&c.customer===cid){c.ly={mid:i.member_id,phone:i.phone,name:i.name,info:i,use:0,rid:''};psSnd('tick');toast(`Sadakat üyesi · ${num(i.avail||0)} puan kullanılabilir${i.rewards&&i.rewards.some(r=>r.ready)?' · damga ödülü var':''}`);render()}}catch(e){}}
-function lyModal(){const c=S.cart,cu=c.customer&&S.d.contactMap.get(c.customer);S.lyq={phone:(c.ly&&c.ly.phone)||lyPhone(cu&&cu.phone)||'',info:c.ly&&c.ly.info||null,err:''};lyDraw();
+function lyModal(){const c=S.cart,cu=c.customer&&S.d.contactMap.get(c.customer);S.lyq={phone:(c.ly&&c.ly.phone)||lyPhone(cu&&cu.phone)||'',info:c.ly&&c.ly.info||null,err:'',
+    v:c.ly&&c.ly.otp?{ok:{id:c.ly.otp,kind:c.ly.vk,pur:'kullanim'}}:{man:!!(c.ly&&c.ly.man)}};lyDraw();
   if(S.lyq.phone&&!S.lyq.info)lySearch()}
 async function lySearch(){const Q=S.lyq,p=lyPhone(Q.phone);if(!p){Q.err='Geçerli bir cep telefonu yazın (05XX XXX XX XX)';return lyDraw()}
-  Q.err='';Q.busy=true;lyDraw();try{Q.info=await lyFetch(p)}catch(e){Q.err=msg(e);Q.info=null}Q.busy=false;lyDraw()}
-function lyDraw(){const Q=S.lyq,i=Q.info,c=S.cart,R=lyR(),t=psTotals(c),linked=c.ly&&c.ly.mid&&i&&c.ly.mid===i.member_id,man=can('loyalty_redeem_manual');
+  Q.err='';Q.busy=true;if(!Q.info||Q.info.phone!==p){Q.v={};Q.use=null;Q.bd='';Q.kvkk=false}lyDraw();try{Q.info=await lyFetch(p)}catch(e){Q.err=msg(e);Q.info=null}Q.busy=false;lyDraw()}
+function lyKeep(){const Q=S.lyq;if(!Q)return;const e=id=>document.getElementById(id);if(e('ly-use'))Q.use=e('ly-use').value;if(e('ly-bd'))Q.bd=e('ly-bd').value;if(e('ly-kvkk'))Q.kvkk=e('ly-kvkk').checked;
+  if(e('ly-man'))(Q.v=Q.v||{}).man=e('ly-man').checked;if(e('ly-code'))(Q.v=Q.v||{}).code=e('ly-code').value;if(e('s-cust-nn'))S.cart.nn=e('s-cust-nn').value}
+function lyVBlock(pur){const Q=S.lyq,v=Q.v=Q.v||{},ok=v.ok&&v.ok.pur===pur,sent=v.sent&&v.sent.pur===pur?v.sent:null;
+  return `<div class="ly-v${ok?' ok':''}"><div class="row" style="gap:6px"><span class="ly-vh">${ic('wa','sm')} ${pur==='kayit'?'Üyelik doğrulaması':'Puan / ödül kullanım doğrulaması'}</span>${ok?`<span class="pill ok">${ic('check','sm')} Doğrulandı · ${v.ok.kind==='kasa'?'kasa kodu':'WhatsApp kodu'}</span>`:''}</div>
+   ${ok?'':`<div class="row" style="gap:6px;margin-top:6px;flex-wrap:wrap"><button class="btn sm" data-a="ly-send" data-p="${pur}" ${v.busy?'disabled':''}>${ic('wa','sm')} ${sent?'Kodu yeniden gönder':"WhatsApp'a kod gönder"}</button>
+     <input class="in" id="ly-code" type="text" inputmode="numeric" autocomplete="one-time-code" maxlength="6" placeholder="6 haneli kod" value="${esc(v.code||'')}" style="max-width:130px;letter-spacing:3px;font-weight:700">
+     <button class="btn sm pri" data-a="ly-verify" data-p="${pur}" ${v.busy?'disabled':''}>Doğrula</button></div>
+    <div class="sub" style="margin-top:4px">${sent?`Kod <b>${esc(sent.to)}</b> numarasına WhatsApp ile gönderildi · ${sent.ttl} dk geçerli. `:''}${pur==='kullanim'?'Müşteri, sadakat portalındaki <b>kasa kodunu</b> da söyleyebilir.':'Müşteri WhatsApp\'a gelen kodu söyler.'}</div>
+    ${lyManOk()?`<label class="chk" style="margin-top:6px"><input type="checkbox" id="ly-man" ${v.man?'checked':''}> Doğrulamasız onayla (yetkili · Dikkat edilecek numaralar'a yazılır)</label>`:''}`}
+   ${v.err?`<div class="err">${esc(v.err)}</div>`:''}</div>`}
+function lyDraw(){const Q=S.lyq,i=Q.info,c=S.cart,R=lyR(),t=psTotals(c),linked=c.ly&&c.ly.mid&&i&&c.ly.mid===i.member_id,nu=lyNeedUse(),man=nu===null?can('loyalty_redeem_manual'):true;
   const dots=i&&i.member?Array.from({length:i.size||R.stamp_size},(_,k)=>{const n=k+1,rw=(R.stamp_rewards||[]).find(x=>Number(x.at)===n);return `<span class="ly-dot${n<=i.stamps?' on':''}${rw?' rw':''}" title="${n}. damga${rw?' · ödül: '+lyRwTxt(rw):''}">${rw?ic('gift','sm'):n}</span>`}).join(''):'';
   const body=!i?'':!i.on?'<div class="note">Sadakat programı şu an kapalı.</div>':i.blocked?`<div class="note bad">${ic('alert','sm')} Bu numara <b>puan kazanmayan numaralar</b> listesinde (personel / yetkili).</div>`
    :i.member?`<div class="ly-card"><div class="row"><div><b style="font-size:17px">${esc(i.name||'')}</b><div class="sub">${lyPhoneTxt(i.phone)}${i.status==='askida'?' · <span class="neg">Üyelik askıda</span>':''}${i.verified?' · doğrulandı':''}</div></div><div class="sp"></div>
       <div class="ly-bal"><small>Kullanılabilir</small><b>${num(i.avail||0)}</b><small>puan = ${money(Math.max(0,i.avail||0))}</small></div></div>
      ${i.pending?`<div class="sub">${num(i.pending)} puan bekleme süresinde (${R.wait_days} gün sonra kullanılabilir)</div>`:''}${i.debt?`<div class="sub neg">${num(i.debt)} puan iade borcu (sonraki kazanımdan düşülür)</div>`:''}
      ${R.stamp_on?`<div class="ly-stamps">${dots}</div><div class="sub">${i.stamps}/${i.size} damga${i.cards_done?' · '+i.cards_done+' kart tamamlandı':''}</div>`:''}</div>
-     ${(i.rewards||[]).length?`<h3 style="margin:10px 0 4px">Damga ödülleri</h3>${i.rewards.map(r=>{const v=linked||!c.ly?lyRewardVal(c,r):0,on=c.ly&&c.ly.rid===r.id;return `<div class="ly-rw${on?' on':''}"><span>${ic('gift','sm')} <b>${r.at}. damga</b> · ${lyRwTxt(r)}<small class="sub">${r.ready?(v>0?' · bu fişte '+money(v):' · fişte seçili ürün yok'):' · '+fmtDate(r.avail_at)+' tarihinden sonra'}</small></span>${r.ready&&v>0&&c.mode==='satis'?`<button class="btn sm${on?'':' pri'}" data-a="ly-rw" data-id="${r.id}" ${man?'':'disabled title="Doğrulama 2. aşamada; yetkili kullandırabilir"'}>${on?'Vazgeç':'Kullan'}</button>`:''}</div>`}).join('')}`:''}
-     ${c.mode==='satis'&&i.status==='aktif'?`<h3 style="margin:10px 0 4px">Puan kullan</h3><div class="row" style="gap:6px;align-items:center"><input class="in" id="ly-use" type="text" inputmode="numeric" style="max-width:140px" value="${linked&&c.ly.use?c.ly.use:''}" placeholder="0" ${man?'':'disabled'}><button class="btn sm" data-a="ly-max" ${man?'':'disabled'}>En fazla</button><span class="sub">En az ${R.min_use} · fişin en çok %${R.max_use_pct}'i</span></div>
-       ${man?'':'<div class="note" style="margin-top:6px">Puan ve ödül kullanımı için müşterinin telefonuna kod gönderilmesi 2. aşamada gelecek. Şimdilik yalnız yetkili (müdür, sahip) kullandırabilir.</div>'}`:''}`
+     ${(i.rewards||[]).length?`<h3 style="margin:10px 0 4px">Damga ödülleri</h3>${i.rewards.map(r=>{const v=linked||!c.ly?lyRewardVal(c,r):0,on=c.ly&&c.ly.rid===r.id;return `<div class="ly-rw${on?' on':''}"><span>${ic('gift','sm')} <b>${r.at}. damga</b> · ${lyRwTxt(r)}<small class="sub">${r.ready?(v>0?' · bu fişte '+money(v):' · fişte seçili ürün yok'):' · '+fmtDate(r.avail_at)+' tarihinden sonra'}</small></span>${r.ready&&v>0&&c.mode==='satis'?`<button class="btn sm${on?'':' pri'}" data-a="ly-rw" data-id="${r.id}" ${man?'':'disabled title="WhatsApp doğrulaması kapalı; yalnız yetkili kullandırabilir"'}>${on?'Vazgeç':'Kullan'}</button>`:''}</div>`}).join('')}`:''}
+     ${c.mode==='satis'&&i.status==='aktif'?`<h3 style="margin:10px 0 4px">Puan kullan</h3><div class="row" style="gap:6px;align-items:center"><input class="in" id="ly-use" type="text" inputmode="numeric" style="max-width:140px" value="${esc(Q.use!=null?Q.use:(linked&&c.ly.use?c.ly.use:''))}" placeholder="0" ${man?'':'disabled'}><button class="btn sm" data-a="ly-max" ${man?'':'disabled'}>En fazla</button><span class="sub">En az ${R.min_use} · fişin en çok %${R.max_use_pct}'i</span></div>
+       ${man?'':'<div class="note" style="margin-top:6px">WhatsApp doğrulaması kapalı: puan ve ödülü yalnız yetkili (müdür, sahip) kullandırabilir. Sahip, Kampanyalar › Sadakat Programı › Kurallar\'dan açar.</div>'}
+       ${nu===true?lyVBlock('kullanim'):''}`:''}`
    :`<div class="note">${i.contact_id?`<b>${esc(i.name)}</b> kayıtlı müşteri ama sadakat üyesi değil.`:'Bu numarayla kayıtlı müşteri yok; yeni müşteri ve üye olarak eklenir.'}</div>
      ${i.contact_id?'':`<div class="form"><label class="f">İsim soyisim<input class="in" id="s-cust-nn" value="${esc(S.cart.nn||'')}"></label><input type="hidden" id="s-cust" value="__new__"><input type="hidden" id="s-cust-nt" value="${esc(i.phone)}">${acqQuick('s-cust')}</div>`}
-     <div class="form"><label class="f">Doğum tarihi (isteğe bağlı)<input class="in" id="ly-bd" type="date" max="${today()}"></label></div>
-     <label class="chk" style="margin-top:8px"><input type="checkbox" id="ly-kvkk"> Müşteriye sadakat programı ve kişisel verilerinin işlenmesi hakkında bilgi verildi; üye olmayı kabul etti.</label>
-     <p class="sub">Kampanya mesajı izni ayrıdır ve üyelik için şart değildir. İlk alışverişte ${R.welcome} puan hoş geldin hediyesi.</p>`;
+     <div class="form"><label class="f">Doğum tarihi (isteğe bağlı)<input class="in" id="ly-bd" type="date" max="${today()}" value="${esc(Q.bd||'')}"></label></div>
+     <label class="chk" style="margin-top:8px"><input type="checkbox" id="ly-kvkk" ${Q.kvkk?'checked':''}> Müşteriye sadakat programı ve kişisel verilerinin işlenmesi hakkında bilgi verildi; üye olmayı kabul etti.</label>
+     <p class="sub">Kampanya mesajı izni ayrıdır ve üyelik için şart değildir. İlk alışverişte ${R.welcome} puan hoş geldin hediyesi.</p>
+     ${lyNeedJoin()?lyVBlock('kayit'):''}`;
   modal(`<div class="row" style="gap:10px"><span class="icb p">${ic('star','lg')}</span><div><h2 style="margin:0">Sadakat programı</h2><div class="sub">Cep numarasını yazın; müşteri seçiliyse kendiliğinden gelir.</div></div></div>
    <div class="row" style="gap:6px;margin-top:10px"><input class="in" id="ly-ph" type="tel" inputmode="tel" placeholder="05XX XXX XX XX" value="${esc(lyPhoneTxt(Q.phone)||Q.phone)}" data-c="lyph" style="flex:1;font-size:17px"><button class="btn pri" data-a="ly-find" ${Q.busy?'disabled':''}>${Q.busy?'Aranıyor…':'Ara'}</button></div>
    ${Q.err?`<div class="err">${esc(Q.err)}</div>`:''}<div id="ly-body" style="margin-top:10px">${body}</div><div class="err" id="f-err" hidden></div>
@@ -2273,12 +2294,14 @@ async function lyLoad(k){S.ly=S.ly||{};const L=S.ly;try{
   if(k==='sum')L.sum=await call('loyalty_summary',{});
   if(k==='members')L.members=await call('loyalty_members_list',{})||[];
   if(k==='flags')L.flags=await call('loyalty_flags',{p_days:L.fdays||30})||[];
+  if(k==='otplog')L.otplog=await call('loyalty_otp_log',{p_limit:50})||[];
+  if(k==='wa'){try{L.wa=await fnCall('sadakat',{action:'durum'})}catch(e){L.wa={configured:false,err:msg(e)}}}
   if(k==='blocked'){const r=await sb.from('loyalty_blocked').select('*').order('created_at',{ascending:false});if(r.error)throw r.error;L.blocked=r.data||[]}
   if(k==='ledger'){let q=sb.from('loyalty_ledger').select('*').gte('created_at',new Date(Date.now()-(L.ldays||30)*864e5).toISOString()).order('created_at',{ascending:false}).limit(1000);if(L.lmem)q=q.eq('member_id',L.lmem);const r=await q;if(r.error)throw r.error;L.ledger=r.data||[]}
   }catch(e){L.err=msg(e)}if(S.ui.tab==='kampanya'&&!rtBusyUi())render()}
 function vSadakat(){const u=S.ui,c=lyCamp(),L=S.ly=S.ly||{},t=u.lyt||'ozet',mg=can('manage_loyalty');
-  const need={ozet:['sum'],uyeler:['members'],islemler:['members','ledger'],dikkat:['flags'],kurallar:mg?['blocked']:[]}[t]||[];
-  need.forEach(k=>{const key={sum:'sum',members:'members',ledger:'ledger',flags:'flags',blocked:'blocked'}[k];if(L[key]===undefined&&!(L.ld||{})[k]){(L.ld=L.ld||{})[k]=1;lyLoad(k)}});
+  const need={ozet:['sum'],uyeler:['members'],islemler:['members','ledger'],dikkat:['flags'],kurallar:mg?['blocked','otplog','wa']:['otplog','wa']}[t]||[];
+  need.forEach(k=>{const key={sum:'sum',members:'members',ledger:'ledger',flags:'flags',blocked:'blocked',otplog:'otplog',wa:'wa'}[k];if(L[key]===undefined&&!(L.ld||{})[k]){(L.ld=L.ld||{})[k]=1;lyLoad(k)}});
   const body={ozet:lyOzet,uyeler:lyUyeler,islemler:lyIslemler,dikkat:lyDikkat,kurallar:lyKurallar}[t]();
   return `<div class="row"><button class="btn sm" data-a="kp-back">← Kampanyalar</button><h1 style="flex:1;margin:0 0 0 8px">${esc(c.name)}</h1><span class="pill ${c.active?'ok':''}">${c.active?'Aktif':'Kapalı'}</span>
    ${mg?`<button class="btn sm" data-a="ly-active">${c.active?'Programı durdur':'Programı başlat'}</button>`:''}</div>
@@ -2308,7 +2331,7 @@ function lyUyeler(){const M=S.ly.members,u=S.ui,mg=can('manage_loyalty'),R=lyR()
     <select class="in" data-c="lymk" style="width:auto">${opts([['avail','Bakiyeye göre'],['earned','Kazanılana göre'],['sales','Satış sayısına göre'],['last','Son alışverişe göre'],['name','Ada göre']],sk)}</select>
     <div class="sp"></div><span class="sub">${L.length} üye</span><button class="btn sm" data-a="ly-csv">CSV indir</button></div>
    <div class="tw"><table class="ly-t"><tr><th style="text-align:left">Üye</th><th style="text-align:left">Telefon</th><th>Kullanılabilir</th><th>Bekleyen</th><th>Damga</th><th>Ödül</th><th>Kazanılan</th><th>Kullanılan</th><th>Satış</th><th>Son alışveriş</th><th></th></tr>
-   ${L.slice(0,500).map(m=>`<tr class="${m.status==='askida'?'off':''}"><td style="text-align:left"><b>${esc(m.name)}</b>${m.status==='askida'?' <span class="pill bad">Askıda</span>':''}${m.birth_date?`<div class="sub">Doğum günü ${fmtDate(m.birth_date).slice(0,5)}</div>`:''}</td><td style="text-align:left" class="mono">${lyPhoneTxt(m.phone)}</td>
+   ${L.slice(0,500).map(m=>`<tr class="${m.status==='askida'?'off':''}"><td style="text-align:left"><b>${esc(m.name)}</b>${m.status==='askida'?' <span class="pill bad">Askıda</span>':''}${m.birth_date?`<div class="sub">Doğum günü ${fmtDate(m.birth_date).slice(0,5)}</div>`:''}</td><td style="text-align:left" class="mono">${lyPhoneTxt(m.phone)}${m.verified?` <span class="pill ok" title="Telefon WhatsApp koduyla doğrulandı">${ic('check','sm')}</span>`:''}</td>
      <td class="${m.avail<0?'neg':''}"><b>${num(m.avail)}</b></td><td>${m.pending?num(m.pending):'—'}</td><td>${m.stamps}/${R.stamp_size}${m.cards_done?` <small class="sub">+${m.cards_done} kart</small>`:''}</td><td>${m.rewards||'—'}</td><td>${num(m.earned)}</td><td>${num(m.spent)}</td><td>${m.sales}</td><td>${m.last_sale?fmtDate(m.last_sale):'—'}</td>
      <td class="acts"><button class="btn sm" data-a="ly-hist" data-id="${m.id}">Hareketler</button>${mg?`<button class="btn sm" data-a="ly-adj" data-id="${m.id}">Puan düzelt</button><button class="btn sm" data-a="ly-medit" data-id="${m.id}">Düzenle</button>`:''}</td></tr>`).join('')||'<tr><td colspan="11" class="empty">Üye yok. Üyeler satış ekranındaki Sadakat düğmesinden eklenir.</td></tr>'}</table></div></div>`}
 function lyIslemler(){const L=S.ly,u=S.ui,G=L.ledger,M=new Map((L.members||[]).map(m=>[m.id,m]));
@@ -2350,12 +2373,27 @@ function lyKurallar(){const R=S.lyrd||lyR(),mg=can('manage_loyalty'),dis=mg?'':'
     <p class="sub">Ödül, fişteki <b>damga ürünlerinden</b> en pahalı "adet" kadarına uygulanır. Ödül de bekleme süresinden sonra kullanılabilir.</p>
     <h3 style="margin:12px 0 4px">Damga ürünleri (seçili ürünler)</h3>${list('damga')}</div>
    <div class="card"><h2>Hariç ürünler</h2><p class="sub">Lisanslı ürünler gibi kâr payı düşük ürünler puan kazandırmaz (fişteki diğer ürünler kazandırır).</p>${list('haric')}</div>
+   ${lyWaCard(R,n,chk,mg)}
    <div class="card"><h2>Güvenlik</h2><div class="form">${n('daily_limit','Bir numara günde en çok (0 = sınırsız)','satış')}<div class="f full">${chk('return_deduct','Harcanmış puanlı iadede fark iade tutarından düşülsün')}</div></div>
     <h3 style="margin:10px 0 4px">Puan kazanmayan numaralar (personel, yetkililer)</h3>
     ${mg?(B?`<div class="ly-chips">${B.map(b=>`<span class="pill">${lyPhoneTxt(b.phone)}${b.reason?' · '+esc(b.reason):''} <button class="lnk" data-a="ly-bdel" data-p="${b.phone}" aria-label="Kaldır">×</button></span>`).join('')||'<span class="sub">Liste boş.</span>'}</div>
       <div class="row" style="gap:6px;margin-top:6px"><input class="in" id="ly-bph" type="tel" placeholder="05XX XXX XX XX" style="max-width:180px"><input class="in" id="ly-brs" placeholder="Açıklama (ör. Personel - Gizem)" style="max-width:260px"><button class="btn sm" data-a="ly-badd">Ekle</button></div>`:'<div class="sub">Yükleniyor…</div>'):'<div class="sub">Yalnız kural yöneticisi görür.</div>'}
-    <p class="sub">Puan kullanımı için SMS / kasa kodu doğrulaması 2. aşamada eklenecek; o zamana kadar puan ve ödül yalnız "Doğrulamasız puan / ödül kullandırabilir" yetkisiyle (sahip, müdür) kullanılır.</p></div>
+</div>
    ${mg?`<div class="ly-save"><button class="btn" data-a="ly-rreset">Değişiklikleri geri al</button><button class="btn pri" data-a="ly-rsave">Kuralları kaydet</button></div>`:''}`}
+function lyWaCard(R,n,chk,mg){const L=S.ly,W=L.wa,G=L.otplog,sn=x=>x?esc(x):'—';
+  return `<div class="card" id="ly-wa"><div class="row" style="gap:8px;flex-wrap:wrap"><h2 style="margin:0">${ic('wa')} WhatsApp doğrulaması ve müşteri portalı</h2><div class="sp"></div>
+    ${!W?'<span class="pill">Sunucu kontrol ediliyor…</span>':W.configured?`<span class="pill ok">${ic('check','sm')} Sunucu ayarları tamam · ${W.provider==='netgsm'?'Netgsm · ':''}şablon ${esc(W.template)}</span>`:`<span class="pill bad">Sunucu ayarları eksik</span>`}</div>
+   ${W&&!W.configured?`<div class="note bad" style="margin-top:8px">${W.err?esc(W.err):'Gizli anahtarlar Supabase\'e girilmemiş (Netgsm için WA_PROVIDER, NETGSM_USER, NETGSM_PASS).'} Kurulum: KURULUM.md › Sadakat 2. aşama (WhatsApp).</div>`:''}
+   <div class="form" style="margin-top:8px"><div class="f full">${chk('otp_on','<b>WhatsApp doğrulaması açık</b> (deneme kodu telefona geldikten sonra açın)')}</div>
+    <div class="f full">${chk('otp_join','Üye kaydında kod iste')}</div><div class="f full">${chk('otp_use','Puan / ödül kullanımında kod iste (WhatsApp kodu ya da portal kasa kodu)')}</div>
+    <div class="f full">${chk('otp_manual','WhatsApp\'a ulaşılamazsa yetkili (müdür, sahip) doğrulamasız onaylayabilsin; işlem Dikkat edilecek numaralar\'a yazılır')}</div>
+    ${n('otp_ttl','WhatsApp kodu geçerliliği','dk')}${n('kasa_ttl','Kasa kodu geçerliliği','dk')}<div class="f full">${chk('portal_on','Müşteri portalı açık')}</div></div>
+   <p class="sub">Portal: <a href="https://sadakat.ankailetisimtr.com" target="_blank" rel="noopener">sadakat.ankailetisimtr.com</a>. Üye, cep numarasıyla WhatsApp kodu alıp girer; bakiyesini, bekleyen puanlarını, damga kartını ve ödüllerini görür. Kasada puan kullanacaksa portaldan <b>kasa kodu</b> alıp kasiyere söyler; WhatsApp kodu yerine geçer. Üye olmayan numaraya kod gönderilmez.</p>
+   ${mg?`<h3 style="margin:12px 0 4px">Deneme gönderimi</h3><div class="row" style="gap:6px;flex-wrap:wrap"><input class="in" id="ly-tph" type="tel" inputmode="tel" placeholder="05XX XXX XX XX" style="max-width:180px"><button class="btn sm" data-a="ly-wtest">${ic('wa','sm')} Deneme kodu gönder</button><span class="sub">Kendi cep numaranızı yazın; WhatsApp mesajı gelirse kurulum tamamdır.</span></div>`:''}
+   <h3 style="margin:12px 0 4px">Son gönderimler <button class="btn sm" data-a="ly-otpr" style="margin-left:6px">Yenile</button></h3>
+   ${!G?'<div class="sub">Yükleniyor…</div>':`<div class="tw"><table class="ly-t"><tr><th style="text-align:left">Zaman</th><th style="text-align:left">Numara</th><th style="text-align:left">Amaç</th><th style="text-align:left">Durum</th><th style="text-align:left">Açıklama</th><th style="text-align:left">Personel</th><th>Satış</th></tr>
+    ${G.map(o=>{const st=LY_OTP_S[o.status]||[o.status,''];return `<tr><td style="text-align:left">${fmtTime(o.created_at)}</td><td style="text-align:left">${esc(o.name||'')} <span class="sub mono">${lyPhoneTxt(o.phone)}</span></td><td style="text-align:left">${esc(LY_OTP_P[o.purpose]||o.purpose)}</td>
+      <td style="text-align:left"><span class="pill ${st[1]}">${st[0]}</span>${o.attempts?` <small class="sub">${o.attempts} hatalı</small>`:''}</td><td style="text-align:left;white-space:normal;max-width:320px" class="sub">${sn(o.error)}</td><td style="text-align:left">${sn(o.verified_name||o.by_name)}</td><td>${o.sale_no?esc(o.sale_no):'—'}</td></tr>`}).join('')||'<tr><td colspan="7" class="empty">Henüz gönderim yok.</td></tr>'}</table></div>`}</div>`}
 function lyItemPicker(lst){const ty=S.lyit&&S.lyit[lst]||'aksesuar';
   if(ty==='aksesuar'||ty==='cihaz'){const q=S.lyiq&&S.lyiq[lst]||'';return `<span class="ly-ip"><input class="in" type="search" data-c="lyiq" data-l="${lst}" placeholder="${ty==='aksesuar'?'Ürün / hizmet adı veya barkod':'Cihaz modeli veya IMEI'}" value="${esc(q)}" autocomplete="off"><span class="ly-ipr" id="ly-ipr-${lst}">${lyIpRes(lst)}</span></span>`}
   const vals=ty==='acc_kategori'?[...new Set(S.d.accessories.map(a=>a.category).filter(Boolean))].sort((a,b)=>a.localeCompare(b,'tr')):ty==='cihaz_kategori'?CATS:SUBS;
@@ -6875,16 +6913,25 @@ Object.assign(A,{
   'ly-find'(){S.lyq.phone=g('ly-ph');lySearch()},
   'ly-max'(){const c=S.cart,t=psTotals(c),i=S.lyq.info,save=c.ly;c.ly={mid:i.member_id,info:i,use:0,rid:save&&save.mid===i.member_id?save.rid:''};const m=lyMax(c,psTotals(c));c.ly=save;
     const el=document.getElementById('ly-use');if(el)el.value=m>=lyR().min_use?m:'';if(m<lyR().min_use)toast(`Kullanılabilir puan en az ${lyR().min_use} olmalı (şu an en çok ${m})`,true)},
-  'ly-rw'(t){const c=S.cart,i=S.lyq.info;if(!c.ly||c.ly.mid!==i.member_id)c.ly={mid:i.member_id,phone:i.phone,name:i.name,info:i,use:0,rid:''};const el=document.getElementById('ly-use');if(el)c.ly.use=Math.floor(psNum(el.value))||0;c.ly.rid=c.ly.rid===t.dataset.id?'':t.dataset.id;psSnd('tick');lyDraw()},
-  'ly-link'(){const c=S.cart,i=S.lyq.info,R=lyR(),el=document.getElementById('ly-use'),use=el?Math.floor(psNum(el.value)):0,rid=c.ly&&c.ly.mid===i.member_id?c.ly.rid:'';
-    const prev=c.ly;c.ly={mid:i.member_id,phone:i.phone,name:i.name,info:i,use:0,rid};const t=psTotals(c),mx=lyMax(c,t);
-    if(use>0){if(!can('loyalty_redeem_manual')){c.ly=prev;return setErr('Puan kullanımı için yetki gerekir (müdür, sahip).')}
-      if(use<R.min_use){c.ly=prev;return setErr(`En az ${R.min_use} puan kullanılabilir.`)}if(use>mx){c.ly=prev;return setErr(`Bu fişte en çok ${mx} puan kullanılabilir.`)}}
-    c.ly.use=use;if(!c.customer&&i.contact_id)c.customer=i.contact_id;closeModal();psSnd('add');psFlash(`Sadakat: ${i.name}${use?' · '+use+' puan kullanılıyor':''}`);render()},
+  async 'ly-send'(t){const Q=S.lyq,i=Q.info,v=Q.v=Q.v||{},pur=t.dataset.p;lyKeep();v.err='';v.busy=true;lyDraw();
+    try{const r=await fnCall('sadakat',{action:'kod',phone:i.phone,purpose:pur});v.sent={id:r.id,to:r.to,ttl:r.ttl||lyR().otp_ttl,pur};v.code='';psSnd('tick')}catch(e){v.err=msg(e);psSnd('err')}
+    v.busy=false;lyDraw();const el=document.getElementById('ly-code');if(el)el.focus()},
+  async 'ly-verify'(t){const Q=S.lyq,i=Q.info,v=Q.v=Q.v||{},pur=t.dataset.p;lyKeep();const code=String(v.code||'').replace(/\D/g,'');
+    if(code.length!==6){v.err='Müşterinin söylediği 6 haneli kodu yazın.';return lyDraw()}v.err='';v.busy=true;lyDraw();
+    try{const r=await call('loyalty_otp_check',{p_phone:i.phone,p_code:code,p_purpose:pur});if(r&&r.ok){v.ok={id:r.id,kind:r.kind,pur};v.man=false;psSnd('done-havale')}else{v.err=(r&&r.error)||'Kod doğrulanamadı';psSnd('err')}}
+    catch(e){v.err=msg(e);psSnd('err')}v.busy=false;lyDraw()},
+  'ly-rw'(t){lyKeep();const c=S.cart,i=S.lyq.info;if(!c.ly||c.ly.mid!==i.member_id)c.ly={mid:i.member_id,phone:i.phone,name:i.name,info:i,use:0,rid:''};const el=document.getElementById('ly-use');if(el)c.ly.use=Math.floor(psNum(el.value))||0;c.ly.rid=c.ly.rid===t.dataset.id?'':t.dataset.id;psSnd('tick');lyDraw()},
+  'ly-link'(){lyKeep();const c=S.cart,Q=S.lyq,i=Q.info,v=Q.v||{},R=lyR(),el=document.getElementById('ly-use'),use=el?Math.floor(psNum(el.value)):0,rid=c.ly&&c.ly.mid===i.member_id?c.ly.rid:'';
+    const prev=c.ly;c.ly={mid:i.member_id,phone:i.phone,name:i.name,info:i,use:0,rid};const t=psTotals(c),mx=lyMax(c,t),nu=lyNeedUse(),vok=v.ok&&v.ok.pur==='kullanim'?v.ok:null,mn=!!v.man&&lyManOk();
+    if(use>0||rid){if(nu===null&&!can('loyalty_redeem_manual')){c.ly=prev;return setErr('Puan / ödül kullanımı için yetki gerekir (müdür, sahip).')}
+      if(nu===true&&!vok&&!mn){c.ly=prev;return setErr('Puan / ödül kullanımı için müşterinin WhatsApp kodunu ya da portaldaki kasa kodunu doğrulayın.')}}
+    if(use>0){if(use<R.min_use){c.ly=prev;return setErr(`En az ${R.min_use} puan kullanılabilir.`)}if(use>mx){c.ly=prev;return setErr(`Bu fişte en çok ${mx} puan kullanılabilir.`)}}
+    c.ly.use=use;if(vok){c.ly.otp=vok.id;c.ly.vk=vok.kind}else if(mn&&nu===true&&(use>0||rid))c.ly.man=true;if(!c.customer&&i.contact_id)c.customer=i.contact_id;closeModal();psSnd('add');psFlash(`Sadakat: ${i.name}${use?' · '+use+' puan kullanılıyor':''}`);render()},
   'ly-unlink'(){S.cart.ly=null;closeModal();psSnd('del');render()},
-  async 'ly-join'(t){const i=S.lyq.info;if(!document.getElementById('ly-kvkk').checked)return setErr('Müşteriye bilgi verildiğini işaretleyin.');t.disabled=true;
+  async 'ly-join'(t){lyKeep();const Q=S.lyq,i=Q.info,v=Q.v||{},vok=v.ok&&v.ok.pur==='kayit'?v.ok:null,mn=!!v.man&&lyManOk();if(!document.getElementById('ly-kvkk').checked)return setErr('Müşteriye bilgi verildiğini işaretleyin.');
+    if(lyNeedJoin()&&!vok&&!mn)return setErr('Üyelik için müşterinin WhatsApp\'a gelen kodunu doğrulayın.');t.disabled=true;
     try{let cid=i.contact_id;if(!cid){if(!g('s-cust-nn').trim()){t.disabled=false;return setErr('İsim soyisim yazın.')}cid=await resolveContact('musteri','s-cust')}
-      const mid=await call('loyalty_join',{p:{contact_id:cid,phone:i.phone,birth_date:g('ly-bd')||null,kvkk:true}});await syncData();
+      const mid=await call('loyalty_join',{p:{contact_id:cid,phone:i.phone,birth_date:g('ly-bd')||null,kvkk:true,otp:vok?vok.id:null,manual:!vok&&mn&&lyNeedJoin()}});await syncData();
       const ni=await lyFetch(i.phone);const c=S.cart;c.customer=cid;c.ly={mid,phone:ni.phone,name:ni.name,info:ni,use:0,rid:''};closeModal();psSnd('done-havale');toast(`${ni.name} sadakat programına katıldı`);render()}
     catch(e){t.disabled=false;setErr(msg(e))}},
   'kp-open'(t){S.ui.kp=t.dataset.k;S.ui.lyt='ozet';S.ly={};render()},
@@ -6912,9 +6959,13 @@ Object.assign(A,{
   'ly-rwdel'(t){const R=S.lyrd;R.stamp_rewards=R.stamp_rewards.filter((x,i)=>i!==+t.dataset.i);render()},
   'ly-rreset'(){S.lyrd=null;render()},
   async 'ly-rsave'(t){const R=S.lyrd,P={};Object.keys(LY_DEF).forEach(k=>{if(k in R)P[k]=R[k]});
-    ['pct_dev','pct_acc','pct_svc','fix_amount','fix_points','wait_days','min_use','max_use_pct','expiry_months','welcome','birthday','daily_limit','stamp_min','stamp_size','stamp_months'].forEach(k=>P[k]=psNum(P[k]));
+    ['pct_dev','pct_acc','pct_svc','fix_amount','fix_points','wait_days','min_use','max_use_pct','expiry_months','welcome','birthday','daily_limit','stamp_min','stamp_size','stamp_months','otp_ttl','kasa_ttl'].forEach(k=>P[k]=psNum(P[k]));
     P.stamp_rewards=(R.stamp_rewards||[]).map(x=>({at:Math.round(psNum(x.at)),type:x.type,value:x.type==='hediye'?0:psNum(x.value),units:Math.max(1,Math.round(psNum(x.units)||1))}));
     t.disabled=true;try{await call('set_loyalty_rules',{p:P});await syncData();S.lyrd=null;toast('Kurallar kaydedildi');render()}catch(e){t.disabled=false;toast(msg(e),true)}},
+  async 'ly-wtest'(t){const p=g('ly-tph');if(!lyPhone(p))return toast('Geçerli bir cep telefonu yazın',true);t.disabled=true;
+    try{const r=await fnCall('sadakat',{action:'kod',phone:p,purpose:'test'});toast(`Deneme kodu WhatsApp ile gönderildi: ${r.to}. Mesaj geldiyse kurulum tamam.`)}catch(e){toast(msg(e),true)}
+    t.disabled=false;S.ly.otplog=undefined;(S.ly.ld||{}).otplog=0;render()},
+  'ly-otpr'(){S.ly.otplog=undefined;S.ly.wa=undefined;(S.ly.ld||{}).otplog=0;(S.ly.ld||{}).wa=0;render()},
   async 'ly-iadd'(t){const l=t.dataset.l,ty=S.lyit&&S.lyit[l]||'aksesuar',ref=t.dataset.ref||g('ly-iv-'+l);if(!ref)return;
     try{const r=await sb.from('loyalty_items').insert({list:l,ref_type:ty,ref});if(r.error)throw r.error;if(S.lyiq)S.lyiq[l]='';await syncData();render()}catch(e){toast(/duplicate|unique/i.test(msg(e))?'Bu kayıt listede zaten var':msg(e),true)}},
   async 'ly-idel'(t){try{const r=await sb.from('loyalty_items').delete().eq('id',t.dataset.id);if(r.error)throw r.error;await syncData();render()}catch(e){toast(msg(e),true)}},
