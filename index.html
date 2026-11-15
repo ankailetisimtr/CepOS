@@ -2380,9 +2380,17 @@ function lyKurallar(){const R=S.lyrd||lyR(),mg=can('manage_loyalty'),dis=mg?'':'
       <div class="row" style="gap:6px;margin-top:6px"><input class="in" id="ly-bph" type="tel" placeholder="05XX XXX XX XX" style="max-width:180px"><input class="in" id="ly-brs" placeholder="Açıklama (ör. Personel - Gizem)" style="max-width:260px"><button class="btn sm" data-a="ly-badd">Ekle</button></div>`:'<div class="sub">Yükleniyor…</div>'):'<div class="sub">Yalnız kural yöneticisi görür.</div>'}
 </div>
    ${mg?`<div class="ly-save"><button class="btn" data-a="ly-rreset">Değişiklikleri geri al</button><button class="btn pri" data-a="ly-rsave">Kuralları kaydet</button></div>`:''}`}
+function lyTplNote(W){if(W.templates_error)return `<div class="note bad" style="margin-top:8px">${esc(W.templates_error)}</div>`;
+  const T=W.templates||[],hit=T.find(t=>t.name===W.template&&t.language===W.lang),same=T.filter(t=>t.name===W.template),ok=hit&&hit.status==='APPROVED';
+  const msg=ok?`Doğrulama şablonu hazır: <b>${esc(W.template)}</b> (${esc(W.lang)}) · onaylı.`
+    :hit?`Doğrulama şablonu <b>${esc(W.template)}</b> (${esc(W.lang)}) bulundu ama durumu <b>${esc(hit.status)}</b>; WhatsApp onayı bekleniyor.`
+    :same.length?`<b>${esc(W.template)}</b> şablonu var ama dili <b>${same.map(t=>esc(t.language)).join(', ')}</b>. Supabase Secrets'a <code>WA_LANG</code> = <b>${esc(same[0].language)}</b> ekleyip fonksiyonu yeniden yayınlayın.`
+    :`<b>${esc(W.template)}</b> şablonu bu numarada yok. Netgsm › WhatsApp OTP › Ayarlar (kurulum ekranı) › şablonu <b>Oluştur</b> ile açın; onaylanınca deneyin.`;
+  return `<div class="note ${ok?'':'bad'}" style="margin-top:8px">${msg}${T.length?`<div class="sub" style="margin-top:6px">Netgsm'deki şablonlar: ${T.map(t=>`${esc(t.name)} (${esc(t.language)}, ${esc(t.status)})`).join(' · ')}</div>`:''}</div>`}
 function lyWaCard(R,n,chk,mg){const L=S.ly,W=L.wa,G=L.otplog,sn=x=>x?esc(x):'—';
   return `<div class="card" id="ly-wa"><div class="row" style="gap:8px;flex-wrap:wrap"><h2 style="margin:0">${ic('wa')} WhatsApp doğrulaması ve müşteri portalı</h2><div class="sp"></div>
     ${!W?'<span class="pill">Sunucu kontrol ediliyor…</span>':W.configured?`<span class="pill ok">${ic('check','sm')} Sunucu ayarları tamam · ${W.provider==='netgsm'?'Netgsm · ':''}şablon ${esc(W.template)}</span>`:`<span class="pill bad">Sunucu ayarları eksik</span>`}</div>
+   ${W&&W.configured&&(W.templates||W.templates_error)?lyTplNote(W):''}
    ${W&&!W.configured?`<div class="note bad" style="margin-top:8px">${W.err?esc(W.err):'Gizli anahtarlar Supabase\'e girilmemiş (Netgsm için WA_PROVIDER, NETGSM_USER, NETGSM_PASS).'} Kurulum: KURULUM.md › Sadakat 2. aşama (WhatsApp).</div>`:''}
    <div class="form" style="margin-top:8px"><div class="f full">${chk('otp_on','<b>WhatsApp doğrulaması açık</b> (deneme kodu telefona geldikten sonra açın)')}</div>
     <div class="f full">${chk('otp_join','Üye kaydında kod iste')}</div><div class="f full">${chk('otp_use','Puan / ödül kullanımında kod iste (WhatsApp kodu ya da portal kasa kodu)')}</div>
