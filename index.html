@@ -2384,10 +2384,12 @@ function lyTplNote(W){if(W.templates_error)return `<div class="note bad" style="
   const T=W.templates||[],hit=T.find(t=>t.name===W.template&&t.language===W.lang),same=T.filter(t=>t.name===W.template),ok=hit&&hit.status==='APPROVED';
   const msg=ok?`Doğrulama şablonu hazır: <b>${esc(W.template)}</b> (${esc(W.lang)}) · onaylı.`
     :hit?(/PENDING|IN_APPEAL/i.test(hit.status)?`Doğrulama şablonu <b>${esc(W.template)}</b> (${esc(W.lang)}) bulundu ama durumu <b>${esc(hit.status)}</b>; WhatsApp onayı bekleniyor.`
-      :`Doğrulama şablonu <b>${esc(W.template)}</b> (${esc(W.lang)}) kullanılamıyor: durumu <b>${esc(hit.status)}</b>. Netgsm › WhatsApp OTP › Ayarlar (kurulum ekranı) üzerinden şablonu yeniden <b>Oluştur</b>un; yine olmazsa Netgsm desteğine bu durumu iletin.`)
+      :`Doğrulama şablonu <b>${esc(W.template)}</b> (${esc(W.lang)}) kullanılamıyor: durumu <b>${esc(hit.status)}</b>. ${W.provider==='netgsm'?'Aşağıdaki düğmeyle yeniden oluşturun':'Şablonu yeniden oluşturun'}; yine olmazsa Netgsm desteğine bu durumu iletin.`)
     :same.length?`<b>${esc(W.template)}</b> şablonu var ama dili <b>${same.map(t=>esc(t.language)).join(', ')}</b>. Supabase Secrets'a <code>WA_LANG</code> = <b>${esc(same[0].language)}</b> ekleyip fonksiyonu yeniden yayınlayın.`
-    :`<b>${esc(W.template)}</b> şablonu bu numarada yok. Netgsm › WhatsApp OTP › Ayarlar (kurulum ekranı) › şablonu <b>Oluştur</b> ile açın; onaylanınca deneyin.`;
-  return `<div class="note ${ok?'':'bad'}" style="margin-top:8px">${msg}${T.length?`<div class="sub" style="margin-top:6px">Netgsm'deki şablonlar: ${T.map(t=>`${esc(t.name)} (${esc(t.language)}, ${esc(t.status)})`).join(' · ')}</div>`:''}</div>`}
+    :`<b>${esc(W.template)}</b> şablonu bu numarada yok. ${W.provider==='netgsm'?'Aşağıdaki düğmeyle oluşturun':'Netgsm › WhatsApp OTP › Ayarlar (kurulum ekranı) › şablonu <b>Oluştur</b> ile açın'}; onaylanınca deneyin.`;
+  const pend=hit&&/PENDING|IN_APPEAL/i.test(hit.status),btn=W.provider==='netgsm'&&!ok&&!pend&&can('manage_loyalty')
+    ?`<div style="margin-top:8px"><button class="btn sm pri" data-a="ly-tplmk">${ic('wa','sm')} Doğrulama şablonunu Netgsm üzerinden oluştur</button> <span class="sub">Meta'ya Kimlik Doğrulama şablonu olarak (güvenlik önerisi, ${esc(String(lyR().otp_ttl||5))} dk, "Kodu kopyala" düğmesi) gönderilir${same.length?'; başarısız eski kayıt önce silinir':''}.</span></div>`:'';
+  return `<div class="note ${ok?'':'bad'}" style="margin-top:8px">${msg}${btn}${T.length?`<div class="sub" style="margin-top:6px">Netgsm'deki şablonlar: ${T.map(t=>`${esc(t.name)} (${esc(t.language)}, ${esc(t.status)})`).join(' · ')}</div>`:''}</div>`}
 function lyWaCard(R,n,chk,mg){const L=S.ly,W=L.wa,G=L.otplog,sn=x=>x?esc(x):'—';
   return `<div class="card" id="ly-wa"><div class="row" style="gap:8px;flex-wrap:wrap"><h2 style="margin:0">${ic('wa')} WhatsApp doğrulaması ve müşteri portalı</h2><div class="sp"></div>
     ${!W?'<span class="pill">Sunucu kontrol ediliyor…</span>':W.configured?`<span class="pill ok">${ic('check','sm')} Sunucu ayarları tamam · ${W.provider==='netgsm'?'Netgsm · ':''}şablon ${esc(W.template)}</span>`:`<span class="pill bad">Sunucu ayarları eksik</span>`}</div>
@@ -6974,6 +6976,10 @@ Object.assign(A,{
   async 'ly-wtest'(t){const p=g('ly-tph');if(!lyPhone(p))return toast('Geçerli bir cep telefonu yazın',true);t.disabled=true;
     try{const r=await fnCall('sadakat',{action:'kod',phone:p,purpose:'test'});toast(`Deneme kodu WhatsApp ile gönderildi: ${r.to}. Mesaj geldiyse kurulum tamam.`)}catch(e){toast(msg(e),true)}
     t.disabled=false;S.ly.otplog=undefined;(S.ly.ld||{}).otplog=0;render()},
+  'ly-tplmk'(t){modal(`<h2>Doğrulama şablonunu oluştur</h2><p>Netgsm üzerinden Meta'ya <b>netgsm_verify_code</b> adlı, Türkçe <b>Kimlik Doğrulama</b> şablonu gönderilecek: güvenlik önerisi, ${esc(String(lyR().otp_ttl||5))} dakika geçerlilik, "Kodu kopyala" düğmesi. Aynı adlı onaylanmamış ya da başarısız bir kayıt varsa önce silinir.</p><p class="sub">Onay genelde birkaç dakika sürer; durum bu ekranda görünür.</p><div class="err" id="f-err" hidden></div><div class="actions"><button class="btn" data-a="close">Vazgeç</button><button class="btn pri" data-a="ly-tplgo">Oluştur</button></div>`)},
+  async 'ly-tplgo'(t){t.disabled=true;try{const r=await fnCall('sadakat',{action:'sablon_olustur',ttl:lyR().otp_ttl||5});closeModal();
+      toast(r&&r.skipped?`Şablon zaten var (durum: ${r.status}).`:`Şablon onaya gönderildi (durum: ${(r&&r.status)||'PENDING'}). Birkaç dakika sonra Yenile'ye basın.`)}
+    catch(e){t.disabled=false;return setErr(msg(e))}S.ly.wa=undefined;(S.ly.ld||{}).wa=0;render()},
   'ly-otpr'(){S.ly.otplog=undefined;S.ly.wa=undefined;(S.ly.ld||{}).otplog=0;(S.ly.ld||{}).wa=0;render()},
   async 'ly-iadd'(t){const l=t.dataset.l,ty=S.lyit&&S.lyit[l]||'aksesuar',ref=t.dataset.ref||g('ly-iv-'+l);if(!ref)return;
     try{const r=await sb.from('loyalty_items').insert({list:l,ref_type:ty,ref});if(r.error)throw r.error;if(S.lyiq)S.lyiq[l]='';await syncData();render()}catch(e){toast(/duplicate|unique/i.test(msg(e))?'Bu kayıt listede zaten var':msg(e),true)}},
