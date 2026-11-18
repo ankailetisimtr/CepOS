@@ -2430,7 +2430,7 @@ function lyIpRes(lst){const ty=S.lyit&&S.lyit[lst]||'aksesuar',q=psLow(S.lyiq&&S
   return `<div class="ps-res">${R.map(([id,nm])=>`<button class="ps-ri" data-a="ly-iadd" data-l="${lst}" data-ref="${id}" ${have.has(id)?'disabled':''}><span class="nm"><b>${esc(nm)}</b></span>${have.has(id)?'<small class="sub">ekli</small>':''}</button>`).join('')||'<div class="empty">Eşleşen yok.</div>'}</div>`}
 /* ---------- Ömür Boyu Garanti Paketleri (062) ---------- */
 const W_DEF={claims_per_year:12,limit_scope:'paket',cancel_hours:24,terms:[]};
-const W_ACT={satis:'Satış',iade:'İade',iptal:'İptal',duzeltme:'Düzeltme',geri_al:'Geri alma'};
+const W_ACT={satis:'Satış',iade:'İade',iptal:'İptal',duzeltme:'Düzeltme',geri_al:'Geri alma',el_degisti:'El değiştirdi'};
 const wCamp=()=>(S.d.campaigns||[]).find(c=>c.kind==='garanti');
 const wOn=()=>{const c=wCamp();return !!(c&&c.active)};
 const wR=()=>Object.assign({},W_DEF,(wCamp()||{}).rules||{});
@@ -2452,7 +2452,7 @@ const wMatOpts=(type,dev,sel,none)=>{const L=wMats(type,dev);return (none?`<opti
 function wLineModal(aid){const l=S.cart.acc.find(x=>x.aid===aid),k=wPkg(aid);if(!l||!k)return;const w=l.w||{},d=S.d,devs=S.cart.items.map(i=>d.productMap.get(i.pid)).filter(p=>p&&p.imei);
   const src=w.src||(devs[0]?'p:'+devs[0].id:'own'),own=src==='own',P=own?null:d.productMap.get(src.slice(2)),dev=own?(w.device||''):(P&&P.model)||'';
   const slots=k.parts||[];S.wl={aid};
-  modal(`<h2>${ic('star')} Ömür Boyu Garanti · ${esc(wPkgName(k))}</h2><p class="sub">Paket, cihazın IMEI numarasına kaydedilir. Değişimler yalnız bu cihaza yapılır.</p>
+  modal(`<h2>${ic('star')} Ömür Boyu Garanti · ${esc(wPkgName(k))}</h2><p class="sub">Paket, cihazın IMEI numarasına ve seçili müşteriye kaydedilir. Değişimler yalnız bu cihaza ve bu müşteriye yapılır; garanti devredilemez.</p>
    <div class="form"><div class="f full"><label>Cihaz</label><select class="in" id="w-src" data-c="wsrc">${devs.map(p=>`<option value="p:${p.id}" ${src==='p:'+p.id?'selected':''}>Fişteki cihaz: ${esc(p.model)} · ${esc(p.imei)}</option>`).join('')}<option value="own" ${own?'selected':''}>Müşterinin kendi cihazı</option></select></div>
     ${own?`<div class="f"><label>IMEI *</label><input class="in mono" id="w-imei" inputmode="numeric" maxlength="20" placeholder="15 hane (*#06#)" value="${esc(w.imei||'')}"></div>
      <div class="f"><label>İkinci IMEI <small class="sub">(çift hat)</small></label><input class="in mono" id="w-imei2" inputmode="numeric" maxlength="20" value="${esc(w.imei2||'')}"></div>
@@ -2517,7 +2517,7 @@ function wDetail(w){const R=wR(),mg=can('manage_warranty'),act=w.status==='aktif
   return `<div class="row" style="margin:6px 0"><button class="btn sm" data-a="w-back">← Liste</button><div class="sp"></div><button class="btn sm" data-a="w-cert" data-id="${w.id}">Garanti belgesi</button>${mg?`<button class="btn sm" data-a="w-edit">Düzelt / iptal</button>`:''}</div>
    <div class="ly-card"><div class="row" style="align-items:flex-start;gap:16px;flex-wrap:wrap"><div style="flex:1;min-width:220px"><div class="sub">Belge</div><h2 style="margin:2px 0" class="mono">${esc(w.no)} ${w.status!=='aktif'?'<span class="pill bad">İptal</span>':''}</h2>
      <div><b>${esc(w.package)}</b> · ${(w.parts||[]).map(p=>esc(p.name)).join(' + ')}</div><div class="sub">${esc(w.customer||'—')} ${esc(w.phone||'')} · ${fmtDate(w.start_date)}${w.sale_no?' · '+esc(w.sale_no):''}</div>
-     <div style="margin-top:6px">${esc(w.device)} · <span class="mono">${esc(w.imei)}${w.imei2?' / '+esc(w.imei2):''}</span></div>${w.note?`<div class="sub">Not: ${esc(w.note)}</div>`:''}${w.cancel_reason?`<div class="note bad">İptal: ${esc(w.cancel_reason)}</div>`:''}</div>
+     <div style="margin-top:6px">${esc(w.device)} · <span class="mono">${esc(w.imei)}${w.imei2?' / '+esc(w.imei2):''}</span></div>${w.status==='aktif'?`<div class="sub" style="margin-top:4px">Devredilemez · yalnız ${esc(w.customer||'kayıtlı müşteri')} için geçerli; cihaz el değiştirirse sona erer.</div>`:''}${w.note?`<div class="sub">Not: ${esc(w.note)}</div>`:''}${w.cancel_reason?`<div class="note bad">İptal: ${esc(w.cancel_reason)}</div>`:''}</div>
     <div class="ly-bal"><small>${num(w.period)}. paket yılı · ${fmtDate(w.period_end)}'e kadar</small><b>${num(left)}</b><small>kalan değişim hakkı (${num(w.used)}/${num(w.limit)}${w.scope==='parca'?' parça başına':''})</small></div></div></div>
    <div class="card"><h3 style="margin-top:0">Parçalar</h3>${(w.parts||[]).map(p=>`<div class="row" style="gap:8px;padding:6px 0;border-bottom:1px solid var(--line)"><b style="flex:1">${esc(p.name)}</b>
      <span class="sub">${p.applied?'uygulandı':'ilk uygulama yapılmadı'}${w.scope==='parca'?' · bu yıl '+num(p.used)+'/'+num(w.limit):''}</span>
@@ -2533,7 +2533,9 @@ function wClaimModal(kind,type){const w=S.gw.sel,R=wR(),dev=w.device;S.gw.cl={ki
    ${kind==='degisim'?`<div class="note">Bu paket yılında ${num(w.used)}/${num(w.limit)} hak kullanıldı; bu işlemle ${num(w.used+1)} olacak.</div>`:'<div class="note">İlk uygulama hak saymaz.</div>'}
    <div class="form"><div class="f full"><label>Cihazın IMEI numarası * <small class="sub">(cihazda *#06# ile görün, okutun ya da yazın)</small></label><input class="in mono" id="w-cimei" inputmode="numeric" maxlength="20" autocomplete="off" placeholder="15 hane"></div>
     <div class="f full"><label>Takılan malzeme (stoktan düşer)</label><select class="in" id="w-cacc">${wMatOpts(type,dev,(wMats(type,dev).find(a=>a.stock_qty>0)||{}).id,'Seçin')}</select></div>
-    <div class="f full"><label>Not</label><input class="in" id="w-cnote" maxlength="200" placeholder="ör. ekran çatlamış"></div></div>
+    <div class="f full"><label>Not</label><input class="in" id="w-cnote" maxlength="200" placeholder="ör. ekran çatlamış"></div>
+    <div class="f full"><label class="chk w-hold" style="align-items:flex-start"><input type="checkbox" id="w-chold" style="margin-top:3px"><span>Cihazı getiren kişi garanti sahibi: <b>${esc(w.customer||'kayıtlı müşteri')}</b>${w.phone?' · '+esc(w.phone):''} (kimlik ya da telefonla kontrol edildi)</span></label>
+     <div class="sub">Garanti devredilemez. Cihaz başkasına satıldıysa ya da hediye edildiyse işlem yapmayın; yeni sahibine yeni paket satılabilir.</div></div></div>
    <div class="err" id="f-err" hidden></div><div class="actions"><button class="btn" data-a="close">Vazgeç</button><button class="btn pri" data-a="w-csave">Kaydet</button></div>`);
   setTimeout(()=>{const e=document.getElementById('w-cimei');if(e)e.focus()},30)}
 function wOzet(){const G=S.gw,s=G.sum;const pr=[['ay','Bu ay'],['30','Son 30 gün'],['yil','Bu yıl'],['hep','Tümü']];
@@ -7188,8 +7190,9 @@ Object.assign(A,{
   'w-claim'(t){wClaimModal(t.dataset.k,t.dataset.t)},
   async 'w-csave'(t){const G=S.gw,w=G.sel,c=G.cl,g=id=>(document.getElementById(id)||{}).value||'';const im=wImei(g('w-cimei'));
     if(!im)return setErr('Cihazın IMEI numarasını yazın ya da okutun.');if(im!==w.imei&&im!==w.imei2)return setErr('IMEI kayıtlı cihazla eşleşmiyor. Değişim yalnız kayıtlı cihaza yapılır.');
-    if(!g('w-cacc'))return setErr('Takılan malzemeyi seçin.');t.disabled=true;
-    try{const r=await call('warranty_claim',{p:{warranty_id:w.id,imei:im,type:c.type,kind:c.kind,accessory_id:g('w-cacc'),note:g('w-cnote')||null}});G.sel=r;closeModal();
+    if(!g('w-cacc'))return setErr('Takılan malzemeyi seçin.');
+    if(!(document.getElementById('w-chold')||{}).checked)return setErr('Garanti sahibini doğrulayın: işlem yalnız '+(w.customer||'kayıtlı müşteri')+' için yapılır (garanti devredilemez).');t.disabled=true;
+    try{const r=await call('warranty_claim',{p:{warranty_id:w.id,imei:im,type:c.type,kind:c.kind,accessory_id:g('w-cacc'),note:g('w-cnote')||null,holder:true}});G.sel=r;closeModal();
       toast(c.kind==='ilk'?`İlk uygulama kaydedildi · ${wTN(c.type)}`:`Değişim kaydedildi · ${wTN(c.type)} · bu yıl ${r.used}/${r.limit}`);G.list=undefined;G.ld=0;await syncData();render()}
     catch(e){t.disabled=false;setErr(msg(e))}},
   'w-undo'(t){S.gw.un=t.dataset.id;modal(`<h2>İşlemi geri al</h2><p>Malzeme stoğa geri döner, kullanılan hak geri verilir.</p><div class="form"><div class="f full"><label>Neden *</label><input class="in" id="w-ureason" maxlength="200" placeholder="ör. yanlış parça seçildi"></div></div>
