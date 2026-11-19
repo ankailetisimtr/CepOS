@@ -1373,7 +1373,7 @@ const primFrom=()=>{const v=((S.d.app_settings||[]).find(x=>x.key==='prim_v2_fro
 const primNew=m=>String(m).slice(0,10)>=primFrom();
 const PM_SC={magaza:'mağazanın tüm satışları',bireysel:'kendi satışları'};
 const PM_DEF=role=>({dev:{on:true,scope:role==='manager'?'magaza':'bireysel',pct:20},acc:{on:true,scope:'magaza',pct:role==='manager'?2:1,min:500000},
-  war:{on:true,single:250,full:1000,single_target:15,single_bonus:1500,full_target:15,full_bonus:5000},kor:{on:true,pkgs:{}},items:[]});
+  war:{on:true,single:250,full:1000,single_target:15,single_bonus:1500,full_target:15,full_bonus:5000},kor:{on:true,pkgs:{}},items:[],day:{on:true,target:30000,amount:250},mon:{on:true,target:600000,amount:1000}});
 async function pmLoad(m,force){S.pm=S.pm||{};m=monthStart(m);if(!force&&S.pm[m]!==undefined)return;S.pm[m]=null;
   try{S.pm[m]=await call('prim_month',{p_month:m})}catch(e){S.pm[m]={err:msg(e),staff:[]}}render()}
 const pmOf=(m,sid)=>{const x=S.pm&&S.pm[monthStart(m)];return x&&x.staff?x.staff.find(b=>b.staff_id===sid):null};
@@ -1388,10 +1388,18 @@ function pmCard(b,store,mg){if(!b)return '';const D=b.dev,A=b.acc,W=b.war,K=b.ko
    ${A.on?row(`Aksesuar ciro payı · %${num(A.pct)}`,`${PM_SC[A.scope]} · ciro ${money(A.base)} / alt sınır ${money(A.min)}${A.reached?' <span class="pill ok">hedef aşıldı</span>':` · <span class="neg">${money(A.left)} kaldı</span>`}${pmBar(A.base,A.min)}`,A.prim,A.reached?'':'off'):''}
    ${W.on?row('Ömür boyu garanti paketleri',[wl('single','Tekli'),wl('full','Full')].filter(Boolean).join('<br>')||'Bu ay satış yok',W.prim):''}
    ${K.on?row('Telefon koruma paketleri',(K.rows||[]).map(x=>`${esc(x.name)}: ${num(x.n)} × ${money(x.unit)}`).join(' · ')||'Bu ay satış yok',K.prim):''}
+   ${pmDayRow(b.day)}${pmMonRow(b.mon)}
    ${(I.rows||[]).length?row('Ürün / hizmet primi',I.rows.map(x=>`${esc(x.name||'?')}: ${num(x.n)} × ${money(x.unit)}`).join(' · '),I.prim):''}
    ${(J.rows||[]).length?row('Düzeltmeler',J.rows.map(x=>`${x.amount>0?'+':'−'}${money(Math.abs(x.amount))} · ${esc(x.reason)}${mg?` <button class="btn sm" data-a="pm-adj-del" data-id="${x.id}" title="Geri al">×</button>`:''}`).join('<br>'),J.total):''}
    <tr class="tot"><td style="text-align:left"><b>Toplam</b></td><td></td><td><b>${money(b.total)}</b></td></tr></table></div>
    ${mg?`<div class="row" style="gap:6px;margin-top:8px;flex-wrap:wrap"><label class="sub">Plan <select class="in" style="width:auto;display:inline-block" data-c="pm-plan" data-id="${b.staff_id}">${pmPlanOpts(b.staff_id)}</select></label><div class="sp"></div><button class="btn sm" data-a="pm-adj" data-id="${b.staff_id}">± Düzeltme ekle</button></div>`:''}</div>`}
+function pmDayRow(Y){if(!Y||!Y.on)return '';const T=Y.today;
+  const h=`Mağazanın günlük aksesuar cirosu ${money(Y.target)} hedefini geçtiği ve mesaide olduğunuz <b>${num(Y.n)} gün</b> × ${money(Y.amount)}`
+   +(Y.missed?`<br><span class="sub">${num(Y.missed)} gün hedef aşıldı ama mesai girişi yok</span>`:'')
+   +(T?`<br>Bugün: ${money(T.ciro)} / ${money(Y.target)} ${T.ciro>=Y.target?'<span class="pill ok">hedef aşıldı</span>':`· ${money(Y.target-T.ciro)} kaldı`} ${T.worked?'':'· <span class="neg">mesai girişi yok</span>'}${pmBar(T.ciro,Y.target)}`:'');
+  return `<tr><td style="text-align:left">Günlük mağaza aksesuar hedefi</td><td style="text-align:left" class="sub">${h}</td><td><b>${money(Y.prim)}</b></td></tr>`}
+function pmMonRow(M){if(!M||!M.on)return '';
+  return `<tr${M.reached?'':' class="off"'}><td style="text-align:left">Aylık mağaza aksesuar hedefi</td><td style="text-align:left" class="sub">Mağaza aksesuar cirosu ${money(M.base)} / hedef ${money(M.target)} ${M.reached?`<span class="pill ok">+${money(M.amount)}</span>`:`· <span class="neg">${money(M.left)} kaldı</span> (bonus ${money(M.amount)})`}${pmBar(M.base,M.target)}</td><td><b>${money(M.prim)}</b></td></tr>`}
 function pmPlanOpts(sid){const ss=(S.d.staff_settings||[]).find(x=>x.profile_id===sid),cur=ss&&ss.prim_plan_id||'';
   return `<option value="">Rolünün varsayılanı</option>`+(S.d.prim_plans||[]).filter(p=>p.active).map(p=>`<option value="${p.id}" ${p.id===cur?'selected':''}>${esc(p.name)}</option>`).join('')}
 /* Primler sayfası: yeni aylar */
@@ -1404,12 +1412,16 @@ function vPrimNew(m){const d0=parse(m),X=S.pm&&S.pm[m];if(X===undefined)pmLoad(m
    <div class="card"><h2 style="margin-top:0">Mağaza · ${MONN[d0.getMonth()]}</h2><div class="row" style="gap:16px;flex-wrap:wrap;align-items:flex-start">
     <div style="flex:1;min-width:260px"><div class="sub">Aksesuar cirosu (tüm aksesuar, hizmet ve paket satışları)</div><div class="kv" style="font-size:22px"><b>${money(st.acc_ciro||0)}</b></div>
      ${mins.map(mn=>`<div class="sub" style="margin-top:4px">Alt sınır ${money(mn)} · ${(st.acc_ciro||0)>=mn?'<span class="pill ok">aşıldı</span>':money(mn-(st.acc_ciro||0))+' kaldı'}</div>${pmBar(st.acc_ciro||0,mn)}`).join('')}</div>
+    ${(()=>{const s0=X.staff.find(b=>b.day&&b.day.today),mt=[...new Set(X.staff.filter(b=>b.mon&&b.mon.on).map(b=>Number(b.mon.target)))].sort((a,b)=>a-b),dt=[...new Set(X.staff.filter(b=>b.day&&b.day.on).map(b=>Number(b.day.target)))].sort((a,b)=>a-b);
+      return mt.length||dt.length?`<div style="flex:1;min-width:260px"><div class="sub">Mağaza hedef bonusları (tüm çalışanlar)</div>
+      ${s0?dt.map(t=>`<div class="sub" style="margin-top:4px">Bugün ${money(s0.day.today.ciro)} / günlük hedef ${money(t)} · ${s0.day.today.ciro>=t?'<span class="pill ok">aşıldı</span>':money(t-s0.day.today.ciro)+' kaldı'}</div>${pmBar(s0.day.today.ciro,t)}`).join(''):''}
+      ${mt.map(t=>`<div class="sub" style="margin-top:4px">Bu ay ${money(st.acc_ciro||0)} / aylık hedef ${money(t)} · ${(st.acc_ciro||0)>=t?'<span class="pill ok">aşıldı</span>':money(t-(st.acc_ciro||0))+' kaldı'}</div>${pmBar(st.acc_ciro||0,t)}`).join('')}</div>`:''})()}
     <div style="flex:1;min-width:220px"><div class="sub">Cihaz satış kârı (kârlı satışlar, maliyet ve konsinye payı düşülmüş)</div><div class="kv" style="font-size:22px"><b>${money(st.dev_profit||0)}</b></div></div></div></div>
    ${X.staff.map(b=>pmCard(b,st,mg)).join('')||'<div class="card empty">Bu ay prim planı olan personel yok.</div>'}
    ${mg?pmPlansCard():''}${mg?pmLogCard():''}`}
 function pmPlansCard(){const P=(S.d.prim_plans||[]).slice().sort((a,b)=>(a.role_default?0:1)-(b.role_default?0:1)||a.name.localeCompare(b.name,'tr')),sts=S.d.profiles.filter(isStaffP);
   const who=p=>sts.filter(s=>{const ss=(S.d.staff_settings||[]).find(x=>x.profile_id===s.id);return ss&&ss.prim_plan_id?ss.prim_plan_id===p.id:p.role_default===s.role}).map(s=>esc(s.full_name)).join(', ')||'—';
-  const sum1=r=>[r.dev&&r.dev.on?`Cihaz %${num(r.dev.pct)} (${r.dev.scope==='magaza'?'mağaza':'kendi'})`:'',r.acc&&r.acc.on?`Aksesuar %${num(r.acc.pct)} (alt sınır ${money(r.acc.min)})`:'',r.war&&r.war.on?`Garanti ${money(r.war.single)} / ${money(r.war.full)}`:'',r.kor&&r.kor.on?'Koruma paketi':'',(r.items||[]).length?(r.items.length+' ürün primi'):''].filter(Boolean).join(' · ');
+  const sum1=r=>[r.dev&&r.dev.on?`Cihaz %${num(r.dev.pct)} (${r.dev.scope==='magaza'?'mağaza':'kendi'})`:'',r.acc&&r.acc.on?`Aksesuar %${num(r.acc.pct)} (alt sınır ${money(r.acc.min)})`:'',r.war&&r.war.on?`Garanti ${money(r.war.single)} / ${money(r.war.full)}`:'',r.kor&&r.kor.on?'Koruma paketi':'',(r.items||[]).length?(r.items.length+' ürün primi'):'',r.day&&r.day.on?`Günlük mağaza hedefi ${money(r.day.target)} → ${money(r.day.amount)}`:'',r.mon&&r.mon.on?`Aylık mağaza hedefi ${money(r.mon.target)} → ${money(r.mon.amount)}`:''].filter(Boolean).join(' · ');
   return `<div class="card"><div class="row"><h2 style="margin:0;flex:1">Prim planları</h2><button class="btn pri" data-a="pm-plan-new">${ic('plus','sm')} Yeni plan</button></div>
    <p class="sub">Yeni eklenen müdür ve personel rolünün <b>varsayılan</b> planına kendiliğinden girer. Kişiye özel plan için kişinin kartından plan seçin. Yeni prim sistemi başlangıcı: <b>${fmtDate(primFrom())}</b> <button class="btn sm" data-a="pm-start">Değiştir</button></p>
    ${P.map(p=>`<div class="item"><div class="main"><b>${esc(p.name)}</b>${p.role_default?` <span class="pill ok">${p.role_default==='manager'?'Müdür':'Personel'} varsayılanı</span>`:''}${p.active?'':' <span class="pill">pasif</span>'}<div class="sub">${sum1(p.rules||{})}</div><div class="sub">Kişiler: ${who(p)}</div></div>
@@ -1420,7 +1432,7 @@ function pmLogCard(){const L=S.pml;if(L===undefined){S.pml=null;sb.from('prim_lo
    ${L.map(l=>`<tr><td style="text-align:left">${fmtTime(l.at)}</td><td style="text-align:left">${K[l.kind]||l.kind}</td><td style="text-align:left">${esc(nm(l.staff_id))}</td><td style="text-align:left">${esc(l.summary||'')}${l.reason?' · '+esc(l.reason):''}</td><td style="text-align:left">${esc(nm(l.actor))}</td></tr>`).join('')}</table></div>`:'<div class="empty">Henüz değişiklik yok</div>'}</div>`}
 /* plan düzenleyici */
 function pmPlanModal(id,copy){const p=id&&(S.d.prim_plans||[]).find(x=>x.id===id),R=JSON.parse(JSON.stringify(p?p.rules:PM_DEF('staff')));
-  ['dev','acc','war','kor'].forEach(k=>{R[k]=Object.assign({},PM_DEF('staff')[k],R[k]||{})});R.items=R.items||[];R.kor.pkgs=R.kor.pkgs||{};
+  ['dev','acc','war','kor','day','mon'].forEach(k=>{R[k]=Object.assign({},PM_DEF('staff')[k],R[k]||{})});R.items=R.items||[];R.kor.pkgs=R.kor.pkgs||{};
   S.pme={id:copy?null:(p?p.id:null),name:copy?(p.name+' (kopya)'):(p?p.name:''),role:copy?'':(p&&p.role_default||''),active:p?p.active:true,R,q:''};pmPlanDraw()}
 function pmPlanDraw(){const E=S.pme,R=E.R,N=(sec,k,l,h,st)=>`<label class="f">${l}<input class="in" type="number" min="0" step="${st||'1'}" data-c="pme" data-s="${sec}" data-k="${k}" value="${esc(R[sec][k])}">${h?`<span class="sub">${h}</span>`:''}</label>`,
   ON=(sec,l)=>`<label class="chk"><input type="checkbox" data-c="pme" data-s="${sec}" data-k="on" ${R[sec].on?'checked':''}> <b>${l}</b></label>`,
@@ -1435,6 +1447,8 @@ function pmPlanDraw(){const E=S.pme,R=E.R,N=(sec,k,l,h,st)=>`<label class="f">${
    <div class="card pm-sec">${ON('war','Ömür boyu garanti paketleri')}<p class="sub">Kişinin kendi satışları. Hedef bonusu ayda bir kez verilir; iade edilen paket sayılmaz.</p><div class="form">${N('war','single','Tekli paket başına (₺)')}${N('war','full','Full paket başına (₺)')}
     ${N('war','single_target','Tekli aylık hedef (adet)','0 = hedef yok')}${N('war','single_bonus','Tekli hedef bonusu (₺)')}${N('war','full_target','Full aylık hedef (adet)','0 = hedef yok')}${N('war','full_bonus','Full hedef bonusu (₺)')}</div></div>
    <div class="card pm-sec">${ON('kor','Telefon koruma paketleri')}<p class="sub">Kişinin kendi satışları; paket başına tutar.</p><div class="form">${pk.map(p=>`<label class="f">${esc(p.name)} (₺)<input class="in" type="number" min="0" data-c="pme" data-s="pkg" data-k="${p.id}" value="${esc(R.kor.pkgs[p.id]==null?0:R.kor.pkgs[p.id])}"></label>`).join('')||'<div class="sub">Tanımlı koruma paketi yok.</div>'}</div></div>
+   <div class="card pm-sec">${ON('day','Günlük mağaza aksesuar ciro hedefi')}<p class="sub">Mağazanın o günkü toplam aksesuar cirosu hedefi geçerse, o gün <b>mesai girişi olan</b> (Mesaiye başla) her çalışana bonus. Her gün ayrı sayılır; kişisel hedeflerden ve ciro payından bağımsızdır.</p><div class="form">${N('day','target','Günlük ciro hedefi (₺)')}${N('day','amount','Günlük bonus (₺)')}</div></div>
+   <div class="card pm-sec">${ON('mon','Aylık mağaza aksesuar ciro hedefi')}<p class="sub">Mağazanın aylık toplam aksesuar cirosu hedefi geçerse tüm çalışanlara ayda bir kez bonus. Ciro payının alt sınırından bağımsızdır.</p><div class="form">${N('mon','target','Aylık ciro hedefi (₺)')}${N('mon','amount','Aylık bonus (₺)')}</div></div>
    <div class="card pm-sec"><b>Ürün / hizmet primi</b><p class="sub">Seçilen ürün ya da hizmetin kişinin kendi satışında adet başına prim (ör. Temizlik hizmeti 25 ₺).</p>
     ${R.items.map((it,i)=>`<div class="row" style="gap:8px;margin:4px 0"><span style="flex:1">${esc((acc.get(it.id)||{}).name||'?')}</span><input class="in" style="width:110px" type="number" min="0" data-c="pme" data-s="item" data-k="${i}" value="${esc(it.amount)}"><span class="sub">₺ / adet</span><button class="btn sm" data-a="pm-item-del" data-i="${i}">Çıkar</button></div>`).join('')}
     <input class="in" style="margin-top:6px" data-c="pmeq" placeholder="Ürün ya da hizmet ara" value="${esc(E.q||'')}" autocomplete="off"><div id="pme-res">${res.map(a=>`<button class="btn sm" style="margin:4px 4px 0 0" data-a="pm-item-add" data-id="${a.id}">${esc(a.name)}${isSvc(a)?' · hizmet':''}</button>`).join('')}</div></div>
