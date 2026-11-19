@@ -253,6 +253,7 @@ tr.tot td{font-weight:600;border-bottom:0;background:var(--surface2)}
 .item:last-child{border-bottom:0}
 .item .main{min-width:0;flex:1 1 260px}.item .meta{color:var(--muted);font-size:12.5px;display:flex;gap:4px 12px;flex-wrap:wrap;margin-top:2px}
 .item .side{display:flex;flex-direction:column;align-items:flex-end;gap:6px;margin-left:auto}.acts{display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end}
+.pbar{background:var(--surface2);border-radius:5px;height:8px;margin-top:4px;overflow:hidden}.pbar span{display:block;height:100%;background:var(--accent)}.pm-t td{vertical-align:top}.pm-t tr.off td{opacity:.7}.pm-sec{margin:10px 0;padding:10px 12px}
 .bar{display:grid;grid-template-columns:86px 1fr 130px;gap:10px;align-items:center;padding:5px 0}
 .bar i{display:block;height:10px;border-radius:5px;background:var(--accent);min-width:2px}.bar .track{background:var(--surface2);border-radius:5px;height:10px}
 .banner{background:var(--warn-soft);color:var(--warn);border-radius:var(--r);padding:10px 14px}
@@ -768,9 +769,9 @@ async function all(table,order,asc){
     out=out.concat(data||[]);if(!data||data.length<1000)break;from+=1000}
   return out}
 /* uygulamanın yüklediği tablolar ve sıralamaları (canlı güncelleme de bunları kullanır) */
-const LOAD_NAMES=['gift_cards','gift_card_moves','gift_card_lots','m3_sales','protection_packages','protection_slots','protection_slot_items','protection_sales','warranty_packages','warranty_types','warranty_materials','campaigns','loyalty_items','pos_groups','pos_group_items','pos_banks','pos_bank_rates','trainings','training_progress','training_questions','training_paths','training_path_items','training_assignments','notification_reads','notification_state','price_refs','price_deductions','device_inspections','term_debts','term_debt_payments','work_schedules','shift_changes','owner_closings','entitlements','staff_pay_profiles','exchanges','service_costs','shortages','accessory_categories','accessory_families','expense_categories','expense_templates','expenses','cash_accounts','app_settings','day_closings','day_closing_lines','fx_rates','purchases','purchase_lines','profiles','staff_settings','role_permissions','contacts','products','product_costs','sales','sale_items','sale_payments','sale_trade_ins','sale_item_costs','commissions','sale_returns','cash_entries','party_entries','consignment_agreements','consignment_rates','notifications','service_orders','service_events','customer_orders','follow_ups','quotes','quote_items','attachments','shifts','time_clock','tasks','push_subscriptions','accessories','accessory_costs','accessory_moves','sale_accessory_items','sale_accessory_costs','sale_accessory_returns'];
+const LOAD_NAMES=['prim_plans','prim_adjustments','gift_cards','gift_card_moves','gift_card_lots','m3_sales','protection_packages','protection_slots','protection_slot_items','protection_sales','warranty_packages','warranty_types','warranty_materials','campaigns','loyalty_items','pos_groups','pos_group_items','pos_banks','pos_bank_rates','trainings','training_progress','training_questions','training_paths','training_path_items','training_assignments','notification_reads','notification_state','price_refs','price_deductions','device_inspections','term_debts','term_debt_payments','work_schedules','shift_changes','owner_closings','entitlements','staff_pay_profiles','exchanges','service_costs','shortages','accessory_categories','accessory_families','expense_categories','expense_templates','expenses','cash_accounts','app_settings','day_closings','day_closing_lines','fx_rates','purchases','purchase_lines','profiles','staff_settings','role_permissions','contacts','products','product_costs','sales','sale_items','sale_payments','sale_trade_ins','sale_item_costs','commissions','sale_returns','cash_entries','party_entries','consignment_agreements','consignment_rates','notifications','service_orders','service_events','customer_orders','follow_ups','quotes','quote_items','attachments','shifts','time_clock','tasks','push_subscriptions','accessories','accessory_costs','accessory_moves','sale_accessory_items','sale_accessory_costs','sale_accessory_returns'];
 const LOAD_ORDERS={device_inspections:'created_at',term_debts:'created_at',term_debt_payments:'created_at',work_schedules:'valid_from',shift_changes:'created_at',owner_closings:'created_at',entitlements:'created_at',staff_pay_profiles:'updated_at',exchanges:'created_at',service_costs:'created_at',shortages:'created_at',accessory_categories:'sort',accessory_families:'created_at',expenses:'created_at',expense_templates:'created_at',expense_categories:'sort',day_closings:'closed_at',cash_accounts:'sort',sales:'sold_at',cash_entries:'created_at',notifications:'created_at',party_entries:'created_at',service_orders:'received_at',service_events:'at',quotes:'created_at',attachments:'created_at',time_clock:'clock_in',tasks:'created_at',accessory_moves:'created_at',purchases:'created_at',fx_rates:'fetched_at'};
-const dropCaches=()=>{S.wd=null;S.prm=undefined;S.hp=undefined;S.ops=undefined;S.svp=undefined;S.work=undefined;S.team=null;S.tp=null};
+const dropCaches=()=>{S.pm=undefined;S.pml=undefined;S.wd=null;S.prm=undefined;S.hp=undefined;S.ops=undefined;S.svp=undefined;S.work=undefined;S.team=null;S.tp=null};
 async function loadAll(){
   dropCaches();
   const res=await Promise.all(LOAD_NAMES.map(n=>all(n,LOAD_ORDERS[n],false).catch(e=>{console.warn(n,e);return []})));
@@ -1359,11 +1360,91 @@ function render(){
   if(tab==='hedef')loadTargets();
   if(tab==='egitim'&&S.ui.egOpen){const el=document.getElementById('eg-'+S.ui.egOpen);if(el)el.scrollIntoView({block:'center'});setTimeout(()=>{S.ui.egOpen=''},50)}
   if(tab==='notlar')ntAfter();
-  if(tab==='primler')primLoad();
+  if(tab==='primler'&&!primNew(S.ui.prm||monthStart(today())))primLoad();
   if(tab==='konsinye')konsinyeLoad();
   if(tab==='satis')psAfter(aeId,aeSel);
   if(S.fis)psSave();
 }
+
+/* ================= YENİ PRİM SİSTEMİ (069) =================
+   Aylık hesap, prim planına göre: cihaz kâr payı · aksesuar ciro payı (alt sınır) · garanti paketi adet + hedef · koruma paketi · ürün/hizmet primi · düzeltme.
+   Hesap sunucuda (prim_month); başlangıç ayı app_settings.prim_v2_from (varsayılan Aralık 2026). Önceki aylar eski sistemle (satış başı kâr payı) görünür. */
+const primFrom=()=>{const v=((S.d.app_settings||[]).find(x=>x.key==='prim_v2_from')||{}).value;return v?String(v).slice(0,10):'2026-12-01'};
+const primNew=m=>String(m).slice(0,10)>=primFrom();
+const PM_SC={magaza:'mağazanın tüm satışları',bireysel:'kendi satışları'};
+const PM_DEF=role=>({dev:{on:true,scope:role==='manager'?'magaza':'bireysel',pct:20},acc:{on:true,scope:'magaza',pct:role==='manager'?2:1,min:500000},
+  war:{on:true,single:250,full:1000,single_target:15,single_bonus:1500,full_target:15,full_bonus:5000},kor:{on:true,pkgs:{}},items:[]});
+async function pmLoad(m,force){S.pm=S.pm||{};m=monthStart(m);if(!force&&S.pm[m]!==undefined)return;S.pm[m]=null;
+  try{S.pm[m]=await call('prim_month',{p_month:m})}catch(e){S.pm[m]={err:msg(e),staff:[]}}render()}
+const pmOf=(m,sid)=>{const x=S.pm&&S.pm[monthStart(m)];return x&&x.staff?x.staff.find(b=>b.staff_id===sid):null};
+const pmBar=(v,max)=>`<div class="pbar"><span style="width:${Math.max(0,Math.min(100,max>0?v*100/max:0)).toFixed(1)}%"></span></div>`;
+/* kişi kartı: bileşenler, ilerleme */
+function pmCard(b,store,mg){if(!b)return '';const D=b.dev,A=b.acc,W=b.war,K=b.kor,I=b.items,J=b.adj;
+  const row=(l,s,v,cls)=>`<tr${cls?` class="${cls}"`:''}><td style="text-align:left">${l}</td><td style="text-align:left" class="sub">${s}</td><td><b>${money(v)}</b></td></tr>`;
+  const wl=(k,lbl)=>{const x=W[k];return x.n||x.target?`${lbl}: ${num(x.n)} × ${money(x.unit)}${x.target?` · hedef ${num(Math.min(x.n,x.target))}/${num(x.target)}${x.reached?' <span class="pill ok">+'+money(x.bonus)+'</span>':' (bonus '+money(x.bonus)+')'}`:''}`:''};
+  return `<div class="card pm-card"><div class="row"><div style="flex:1"><h2 style="margin:0">${esc(b.name)}</h2><div class="sub">Plan: <b>${esc(b.plan.name)}</b> · ${num(b.sales)} satış</div></div><div style="text-align:right"><div class="sub">Bu ayki prim</div><div class="kv" style="font-size:26px"><b>${money(b.total)}</b></div></div></div>
+   <div class="tw"><table class="ly-t pm-t"><tr><th style="text-align:left">Kalem</th><th style="text-align:left">Hesap</th><th>Prim</th></tr>
+   ${D.on?row(`Cihaz kâr payı · %${num(D.pct)}`,`${PM_SC[D.scope]} · ${num(D.n)} cihaz · kâr ${money(D.base)}${D.neg?` · ${num(D.neg)} zararlı satış sayılmadı`:''}`,D.prim):''}
+   ${A.on?row(`Aksesuar ciro payı · %${num(A.pct)}`,`${PM_SC[A.scope]} · ciro ${money(A.base)} / alt sınır ${money(A.min)}${A.reached?' <span class="pill ok">hedef aşıldı</span>':` · <span class="neg">${money(A.left)} kaldı</span>`}${pmBar(A.base,A.min)}`,A.prim,A.reached?'':'off'):''}
+   ${W.on?row('Ömür boyu garanti paketleri',[wl('single','Tekli'),wl('full','Full')].filter(Boolean).join('<br>')||'Bu ay satış yok',W.prim):''}
+   ${K.on?row('Telefon koruma paketleri',(K.rows||[]).map(x=>`${esc(x.name)}: ${num(x.n)} × ${money(x.unit)}`).join(' · ')||'Bu ay satış yok',K.prim):''}
+   ${(I.rows||[]).length?row('Ürün / hizmet primi',I.rows.map(x=>`${esc(x.name||'?')}: ${num(x.n)} × ${money(x.unit)}`).join(' · '),I.prim):''}
+   ${(J.rows||[]).length?row('Düzeltmeler',J.rows.map(x=>`${x.amount>0?'+':'−'}${money(Math.abs(x.amount))} · ${esc(x.reason)}${mg?` <button class="btn sm" data-a="pm-adj-del" data-id="${x.id}" title="Geri al">×</button>`:''}`).join('<br>'),J.total):''}
+   <tr class="tot"><td style="text-align:left"><b>Toplam</b></td><td></td><td><b>${money(b.total)}</b></td></tr></table></div>
+   ${mg?`<div class="row" style="gap:6px;margin-top:8px;flex-wrap:wrap"><label class="sub">Plan <select class="in" style="width:auto;display:inline-block" data-c="pm-plan" data-id="${b.staff_id}">${pmPlanOpts(b.staff_id)}</select></label><div class="sp"></div><button class="btn sm" data-a="pm-adj" data-id="${b.staff_id}">± Düzeltme ekle</button></div>`:''}</div>`}
+function pmPlanOpts(sid){const ss=(S.d.staff_settings||[]).find(x=>x.profile_id===sid),cur=ss&&ss.prim_plan_id||'';
+  return `<option value="">Rolünün varsayılanı</option>`+(S.d.prim_plans||[]).filter(p=>p.active).map(p=>`<option value="${p.id}" ${p.id===cur?'selected':''}>${esc(p.name)}</option>`).join('')}
+/* Primler sayfası: yeni aylar */
+function vPrimNew(m){const d0=parse(m),X=S.pm&&S.pm[m];if(X===undefined)pmLoad(m);const mg=can('manage_commissions');
+  const head=`<div class="row"><h1>Primler</h1><div class="sp"></div><button class="btn" data-a="prm-month" data-n="-1" aria-label="Önceki ay">‹</button><b style="min-width:110px;text-align:center">${MONN[d0.getMonth()]} ${d0.getFullYear()}</b><button class="btn" data-a="prm-month" data-n="1" aria-label="Sonraki ay">›</button><button class="btn" data-a="pm-refresh">Yenile</button></div>
+   <p class="sub" style="margin:0 0 8px">Prim her ay, kişinin <b>prim planına</b> göre satışlardan otomatik hesaplanır; iadeler ve iptaller anında düşer. Ay sonunda Hakedişler › <b>Primleri hakedişe işle</b> ile kayda alınır.</p>`;
+  if(!X)return head+'<div class="card empty">Hesaplanıyor…</div>';if(X.err)return head+`<div class="note bad">${esc(X.err)}</div>`;
+  const st=X.store||{},tot=sum(X.staff,b=>b.total),mins=[...new Set((S.d.prim_plans||[]).filter(p=>p.active&&p.rules&&p.rules.acc&&p.rules.acc.on&&p.rules.acc.scope==='magaza').map(p=>Number(p.rules.acc.min)))].sort((a,b)=>a-b);
+  return head+`<div class="grid g4">${tile('Aylık toplam prim',money(tot),num(X.staff.length)+' kişi')}${X.staff.map(b=>tile(esc(b.name),money(b.total),esc(b.plan.name))).join('')}</div>
+   <div class="card"><h2 style="margin-top:0">Mağaza · ${MONN[d0.getMonth()]}</h2><div class="row" style="gap:16px;flex-wrap:wrap;align-items:flex-start">
+    <div style="flex:1;min-width:260px"><div class="sub">Aksesuar cirosu (tüm aksesuar, hizmet ve paket satışları)</div><div class="kv" style="font-size:22px"><b>${money(st.acc_ciro||0)}</b></div>
+     ${mins.map(mn=>`<div class="sub" style="margin-top:4px">Alt sınır ${money(mn)} · ${(st.acc_ciro||0)>=mn?'<span class="pill ok">aşıldı</span>':money(mn-(st.acc_ciro||0))+' kaldı'}</div>${pmBar(st.acc_ciro||0,mn)}`).join('')}</div>
+    <div style="flex:1;min-width:220px"><div class="sub">Cihaz satış kârı (kârlı satışlar, maliyet ve konsinye payı düşülmüş)</div><div class="kv" style="font-size:22px"><b>${money(st.dev_profit||0)}</b></div></div></div></div>
+   ${X.staff.map(b=>pmCard(b,st,mg)).join('')||'<div class="card empty">Bu ay prim planı olan personel yok.</div>'}
+   ${mg?pmPlansCard():''}${mg?pmLogCard():''}`}
+function pmPlansCard(){const P=(S.d.prim_plans||[]).slice().sort((a,b)=>(a.role_default?0:1)-(b.role_default?0:1)||a.name.localeCompare(b.name,'tr')),sts=S.d.profiles.filter(isStaffP);
+  const who=p=>sts.filter(s=>{const ss=(S.d.staff_settings||[]).find(x=>x.profile_id===s.id);return ss&&ss.prim_plan_id?ss.prim_plan_id===p.id:p.role_default===s.role}).map(s=>esc(s.full_name)).join(', ')||'—';
+  const sum1=r=>[r.dev&&r.dev.on?`Cihaz %${num(r.dev.pct)} (${r.dev.scope==='magaza'?'mağaza':'kendi'})`:'',r.acc&&r.acc.on?`Aksesuar %${num(r.acc.pct)} (alt sınır ${money(r.acc.min)})`:'',r.war&&r.war.on?`Garanti ${money(r.war.single)} / ${money(r.war.full)}`:'',r.kor&&r.kor.on?'Koruma paketi':'',(r.items||[]).length?(r.items.length+' ürün primi'):''].filter(Boolean).join(' · ');
+  return `<div class="card"><div class="row"><h2 style="margin:0;flex:1">Prim planları</h2><button class="btn pri" data-a="pm-plan-new">${ic('plus','sm')} Yeni plan</button></div>
+   <p class="sub">Yeni eklenen müdür ve personel rolünün <b>varsayılan</b> planına kendiliğinden girer. Kişiye özel plan için kişinin kartından plan seçin. Yeni prim sistemi başlangıcı: <b>${fmtDate(primFrom())}</b> <button class="btn sm" data-a="pm-start">Değiştir</button></p>
+   ${P.map(p=>`<div class="item"><div class="main"><b>${esc(p.name)}</b>${p.role_default?` <span class="pill ok">${p.role_default==='manager'?'Müdür':'Personel'} varsayılanı</span>`:''}${p.active?'':' <span class="pill">pasif</span>'}<div class="sub">${sum1(p.rules||{})}</div><div class="sub">Kişiler: ${who(p)}</div></div>
+     <div class="side"><button class="btn sm" data-a="pm-plan-edit" data-id="${p.id}">Düzenle</button> <button class="btn sm" data-a="pm-plan-copy" data-id="${p.id}">Kopyala</button></div></div>`).join('')}</div>`}
+function pmLogCard(){const L=S.pml;if(L===undefined){S.pml=null;sb.from('prim_log').select('*').order('at',{ascending:false}).limit(40).then(r=>{S.pml=r.data||[];render()})}
+  const nm=id=>id?(S.d.profileMap.get(id)||{}).full_name||'?':'';const K={plan:'Plan',atama:'Plan atama',duzeltme:'Düzeltme',baslangic:'Başlangıç'};
+  return `<div class="card"><h2>Değişiklik kaydı</h2>${L&&L.length?`<div class="tw"><table><tr><th style="text-align:left">Zaman</th><th style="text-align:left">İşlem</th><th style="text-align:left">Kişi</th><th style="text-align:left">Ayrıntı</th><th style="text-align:left">Yapan</th></tr>
+   ${L.map(l=>`<tr><td style="text-align:left">${fmtTime(l.at)}</td><td style="text-align:left">${K[l.kind]||l.kind}</td><td style="text-align:left">${esc(nm(l.staff_id))}</td><td style="text-align:left">${esc(l.summary||'')}${l.reason?' · '+esc(l.reason):''}</td><td style="text-align:left">${esc(nm(l.actor))}</td></tr>`).join('')}</table></div>`:'<div class="empty">Henüz değişiklik yok</div>'}</div>`}
+/* plan düzenleyici */
+function pmPlanModal(id,copy){const p=id&&(S.d.prim_plans||[]).find(x=>x.id===id),R=JSON.parse(JSON.stringify(p?p.rules:PM_DEF('staff')));
+  ['dev','acc','war','kor'].forEach(k=>{R[k]=Object.assign({},PM_DEF('staff')[k],R[k]||{})});R.items=R.items||[];R.kor.pkgs=R.kor.pkgs||{};
+  S.pme={id:copy?null:(p?p.id:null),name:copy?(p.name+' (kopya)'):(p?p.name:''),role:copy?'':(p&&p.role_default||''),active:p?p.active:true,R,q:''};pmPlanDraw()}
+function pmPlanDraw(){const E=S.pme,R=E.R,N=(sec,k,l,h,st)=>`<label class="f">${l}<input class="in" type="number" min="0" step="${st||'1'}" data-c="pme" data-s="${sec}" data-k="${k}" value="${esc(R[sec][k])}">${h?`<span class="sub">${h}</span>`:''}</label>`,
+  ON=(sec,l)=>`<label class="chk"><input type="checkbox" data-c="pme" data-s="${sec}" data-k="on" ${R[sec].on?'checked':''}> <b>${l}</b></label>`,
+  SC=sec=>`<label class="f">Kapsam<select class="in" data-c="pme" data-s="${sec}" data-k="scope">${opts([['magaza','Mağazanın tüm satışları'],['bireysel','Kişinin kendi satışları']],R[sec].scope)}</select></label>`;
+  const pk=(S.d.protection_packages||[]).slice().sort((a,b)=>(a.sort||0)-(b.sort||0)),acc=S.d.accMap,q=(E.q||'').toLocaleLowerCase('tr');
+  const res=q.length>=2?(S.d.accessories||[]).filter(a=>a.active!==false&&!R.items.some(i=>i.id===a.id)&&(a.name.toLocaleLowerCase('tr').includes(q)||String(a.barcode||'').includes(q))).slice(0,8):[];
+  modal(`<h2>${E.id?'Prim planı · '+esc(E.name):'Yeni prim planı'}</h2><div class="form">
+   <label class="f">Plan adı<input class="in" maxlength="60" data-c="pme" data-s="" data-k="name" value="${esc(E.name)}"></label>
+   <label class="f">Varsayılan<select class="in" data-c="pme" data-s="" data-k="role">${opts([['','Varsayılan değil'],['manager','Mağaza müdürlerinin varsayılanı'],['staff','Personelin varsayılanı']],E.role)}</select><span class="sub">Yeni eklenen kişi rolüne göre bu plana girer.</span></label></div>
+   <div class="card pm-sec">${ON('dev','Cihaz kâr payı')}<p class="sub">Cihaz satış kârı (fiyat − indirim − maliyet − konsinye payı) × %. Yalnız kârlı satışlar sayılır.</p><div class="form">${SC('dev')}${N('dev','pct','Kâr payı (%)','','0.5')}</div></div>
+   <div class="card pm-sec">${ON('acc','Aksesuar ciro payı')}<p class="sub">Aylık aksesuar cirosu (tüm aksesuar, hizmet, garanti ve koruma paketi satışları; indirim ve iade düşülür) × %. Ciro alt sınırın altında kalırsa prim 0.</p><div class="form">${SC('acc')}${N('acc','pct','Ciro payı (%)','','0.1')}${N('acc','min','Aylık ciro alt sınırı (₺)')}</div></div>
+   <div class="card pm-sec">${ON('war','Ömür boyu garanti paketleri')}<p class="sub">Kişinin kendi satışları. Hedef bonusu ayda bir kez verilir; iade edilen paket sayılmaz.</p><div class="form">${N('war','single','Tekli paket başına (₺)')}${N('war','full','Full paket başına (₺)')}
+    ${N('war','single_target','Tekli aylık hedef (adet)','0 = hedef yok')}${N('war','single_bonus','Tekli hedef bonusu (₺)')}${N('war','full_target','Full aylık hedef (adet)','0 = hedef yok')}${N('war','full_bonus','Full hedef bonusu (₺)')}</div></div>
+   <div class="card pm-sec">${ON('kor','Telefon koruma paketleri')}<p class="sub">Kişinin kendi satışları; paket başına tutar.</p><div class="form">${pk.map(p=>`<label class="f">${esc(p.name)} (₺)<input class="in" type="number" min="0" data-c="pme" data-s="pkg" data-k="${p.id}" value="${esc(R.kor.pkgs[p.id]==null?0:R.kor.pkgs[p.id])}"></label>`).join('')||'<div class="sub">Tanımlı koruma paketi yok.</div>'}</div></div>
+   <div class="card pm-sec"><b>Ürün / hizmet primi</b><p class="sub">Seçilen ürün ya da hizmetin kişinin kendi satışında adet başına prim (ör. Temizlik hizmeti 25 ₺).</p>
+    ${R.items.map((it,i)=>`<div class="row" style="gap:8px;margin:4px 0"><span style="flex:1">${esc((acc.get(it.id)||{}).name||'?')}</span><input class="in" style="width:110px" type="number" min="0" data-c="pme" data-s="item" data-k="${i}" value="${esc(it.amount)}"><span class="sub">₺ / adet</span><button class="btn sm" data-a="pm-item-del" data-i="${i}">Çıkar</button></div>`).join('')}
+    <input class="in" style="margin-top:6px" data-c="pmeq" placeholder="Ürün ya da hizmet ara" value="${esc(E.q||'')}" autocomplete="off"><div id="pme-res">${res.map(a=>`<button class="btn sm" style="margin:4px 4px 0 0" data-a="pm-item-add" data-id="${a.id}">${esc(a.name)}${isSvc(a)?' · hizmet':''}</button>`).join('')}</div></div>
+   <label class="f full">Değişiklik notu (isteğe bağlı)<input class="in" data-c="pme" data-s="" data-k="reason" value="${esc(E.reason||'')}"></label>
+   <p class="sub">Plan değişikliği <b>içinde bulunulan ayın</b> ve sonraki ayların hesabını etkiler; hakedişe işlenmiş aylarda fark "Primleri hakedişe işle" ile düzeltilir.</p>
+   <div class="err" id="f-err" hidden></div><div class="actions">${E.id&&!E.role?`<button class="btn bad" data-a="pm-plan-del" style="margin-right:auto">Planı sil</button>`:''}<button class="btn" data-a="close">Vazgeç</button><button class="btn pri" data-a="pm-plan-save">Kaydet</button></div>`)}
+function pmAdjModal(sid){const m=S.ui.prm||monthStart(today()),p=S.d.profileMap.get(sid);S.pma={sid,m};
+  modal(`<h2>Prim düzeltmesi · ${esc(p?p.full_name:'')}</h2><p class="sub">${MONN[parse(m).getMonth()]} ${parse(m).getFullYear()} primine eklenir (eksi tutar düşer).</p><div class="form">
+   <label class="f">Tutar (₺, eksi için −)<input class="in" id="pma-a" type="text" inputmode="decimal" placeholder="Ör. 500 ya da -250"></label><label class="f full">Gerekçe<input class="in" id="pma-r" maxlength="300" placeholder="Ör. kampanya desteği, hatalı satış girişi"></label></div>
+   <div class="err" id="f-err" hidden></div><div class="actions"><button class="btn" data-a="close">Vazgeç</button><button class="btn pri" data-a="pm-adj-save">Kaydet</button></div>`)}
 
 /* ================= PRİMLER (yalnız işletme sahibi) ================= */
 function primKey(){return (S.ui.prm||monthStart(today()))+'|'+(S.ui.prs||'')}
@@ -1377,13 +1458,14 @@ async function primLoad(force){const m=S.ui.prm||monthStart(today()),k=primKey()
     S.prm={key:k,rows:a.data||[],log:b.data||[]}}
   catch(e){S.prm={key:k,rows:[],log:[],err:msg(e)}}
   if(S.ui.tab==='primler')render()}
-function vPrimler(){const m=S.ui.prm||monthStart(today()),d0=parse(m),pr=S.prm&&S.prm.key===primKey()?S.prm:null,sts=S.d.profiles.filter(isStaffP);
+function vPrimler(){if(primNew(S.ui.prm||monthStart(today())))return vPrimNew(S.ui.prm||monthStart(today()));const m=S.ui.prm||monthStart(today()),d0=parse(m),pr=S.prm&&S.prm.key===primKey()?S.prm:null,sts=S.d.profiles.filter(isStaffP);
   const nm=id=>(S.d.profileMap.get(id)||{}).full_name||'?';
   const rate=id=>{const st=(S.d.staff_settings||[]).find(x=>x.profile_id===id);return st?st.commission_rate:0};
   const live=pr?pr.rows.filter(r=>!r.reversed):[],tot=sum(live,r=>r.amount),manual=live.filter(r=>r.manual).length;
   const by=sts.map(p=>({p,v:sum(live.filter(r=>r.staff_id===p.id),r=>r.amount),n:live.filter(r=>r.staff_id===p.id).length}));
   return `<div class="row"><h1>Primler</h1><div class="sp"></div><button class="btn" data-a="prm-month" data-n="-1" aria-label="Önceki ay">‹</button><b style="min-width:110px;text-align:center">${MONN[d0.getMonth()]} ${d0.getFullYear()}</b><button class="btn" data-a="prm-month" data-n="1" aria-label="Sonraki ay">›</button></div>
   <p class="sub" style="margin:0">Primler satışlardan otomatik hesaplanır. Burada personel prim oranını değiştirebilir, tek tek prim kayıtlarını gerekçe yazarak düzeltebilirsiniz. Bu bölümü yalnızca işletme sahibi görür.</p>
+  <div class="note">Bu ay <b>eski prim sistemiyle</b> (satış başına kâr payı) hesaplanır. <b>${fmtDate(primFrom())}</b> ayından itibaren yeni prim planları geçerlidir; ileri ayları açarak görebilirsiniz.</div>
   <div class="grid g4">${tile('Aylık toplam prim',money(tot),pr?live.length+' kayıt':'')}${tile('Elle düzeltilen',String(manual),'kayıt')}${by.map(x=>tile(esc(x.p.full_name),money(x.v),x.n+' kayıt · %'+num(rate(x.p.id)))).join('')}</div>
   <div class="card"><h2>Prim oranları <span class="sub">(kâr payı %)</span></h2><p class="sub" style="margin-top:0">Yeni oran yalnızca bundan sonraki satışlara uygulanır; geçmiş prim kayıtları değişmez. Geçmişi düzeltmek için aşağıdaki kayıtları kullanın.</p>
    <div class="tw"><table><tr><th style="text-align:left">Personel</th><th>Oran %</th><th></th></tr>
@@ -1499,13 +1581,14 @@ function pnTeam(L){if(!can('view_all_sales'))return '';const [a,b]=pnTeamRange()
   const prof=can('view_profit'),shifts=can('manage_shifts'),span=diffDays(a,b)+1,K=['dev','acc'];
   const agg=id=>{const o={dev:{q:0,r:0,p:0},acc:{q:0,r:0,p:0},days:null};
     K.forEach(k=>L[k].forEach(x=>{if(x.staff===id&&x.date>=a&&x.date<=b){o[k].q+=x.qty;o[k].r+=x.rev}}));
-    if(prof)(d.commissions||[]).forEach(c=>{if(c.reversed||c.staff_id!==id)return;const sl=d.saleMap.get(c.sale_id);if(!sl||sl.status==='iptal')return;const dt=dayOf(sl.sold_at);if(dt<a||dt>b)return;o[c.accessory_item_id?'acc':'dev'].p+=Number(c.amount||0)});
+    if(prof&&a>=primFrom()){if(per!=='month'){o.dev.p=o.acc.p=null}else{pmLoad(a);const b2=pmOf(a,id);if(b2){o.dev.p=b2.dev.prim;o.acc.p=b2.total-b2.dev.prim}else o.dev.p=o.acc.p=null}}
+    else if(prof)(d.commissions||[]).forEach(c=>{if(c.reversed||c.staff_id!==id)return;const sl=d.saleMap.get(c.sale_id);if(!sl||sl.status==='iptal')return;const dt=dayOf(sl.sold_at);if(dt<a||dt>b)return;o[c.accessory_item_id?'acc':'dev'].p+=Number(c.amount||0)});
     if(shifts)o.days=new Set((d.time_clock||[]).filter(c=>c.staff_id===id&&dayOf(c.clock_in)>=a&&dayOf(c.clock_in)<=b).map(c=>dayOf(c.clock_in))).size;
     return o};
   const rows=(t||[]).map(r=>({r,o:agg(r.staff_id)})),tot={dev:{q:0,r:0,p:0},acc:{q:0,r:0,p:0},days:0};
-  rows.forEach(({o})=>{K.forEach(k=>{tot[k].q+=o[k].q;tot[k].r+=o[k].r;tot[k].p+=o[k].p});tot.days+=o.days||0});
+  rows.forEach(({o})=>{K.forEach(k=>{tot[k].q+=o[k].q;tot[k].r+=o[k].r;tot[k].p=tot[k].p==null||o[k].p==null?null:tot[k].p+o[k].p});tot.days+=o.days||0});
   const avg=(v,days)=>{const n=days||span;return pnMoney(v/n)+(days?'':'<span class="tg" title="Mesai kaydı yok: dönemin takvim günü esas alındı">takvim</span>')};
-  const cells=(x,days,gs)=>K.map(k=>`<td class="gs">${num(x[k].q)}</td><td class="nw"><b>${pnMoney(x[k].r)}</b></td><td class="nw">${avg(x[k].r,days)}</td>${prof?`<td class="nw">${pnMoney(x[k].p)}</td>`:''}`).join('');
+  const cells=(x,days,gs)=>K.map(k=>`<td class="gs">${num(x[k].q)}</td><td class="nw"><b>${pnMoney(x[k].r)}</b></td><td class="nw">${avg(x[k].r,days)}</td>${prof?`<td class="nw"${x[k].p==null?' title="Yeni prim sistemi aylık hesaplanır; Bu ay seçiliyken görünür"':''}>${x[k].p==null?'—':pnMoney(x[k].p)}</td>`:''}`).join('');
   const nC=prof?4:3,sub=['Adet','Ciro','Ort./gün',...(prof?['Prim']:[])];
   return `<section class="pcard" id="pn-team"><div class="ph"><span class="icb v">${ic('users','lg')}</span><div><h2>Ekip performansı</h2><div class="sub">${fmtDate(a)}${a!==b?' – '+fmtDate(b):''} · cihaz ve aksesuar ayrı · ortalama = ciro ÷ çalıştığı gün</div></div><div class="sp"></div>
     <div class="seg sm">${PN_TP.map(([v,l])=>`<button data-a="pn-tp" data-v="${v}" aria-pressed="${per===v}">${l}</button>`).join('')}</div></div>
@@ -1513,7 +1596,7 @@ function pnTeam(L){if(!can('view_all_sales'))return '';const [a,b]=pnTeamRange()
       <tr>${K.map(()=>sub.map((x,i)=>`<th class="${i?'':'gs'}">${x}</th>`).join('')).join('')}</tr></thead><tbody>
       ${rows.map(({r,o})=>`<tr class="nr"><td><div class="who2"><span class="av ${pnAv(r.name)}">${esc(initials(r.name))}</span><div><b class="nw">${esc(r.name)}</b>${r.on_shift?'<div><span class="pill sold">mesaide</span></div>':''}</div></div></td>${cells(o,o.days)}
         <td class="gs nw">${o.days==null?'—':`<b>${num(o.days)}</b> gün`}</td><td class="nw">${num(r.tasks_open)}${r.tasks_overdue?` <span class="neg">(${r.tasks_overdue} geçti)</span>`:''}</td></tr>`).join('')}</tbody>
-      ${rows.length>1?`<tfoot><tr class="nr tot"><td><b>Ekip toplamı</b></td>${K.map(k=>`<td class="gs"><b>${num(tot[k].q)}</b></td><td class="nw"><b>${pnMoney(tot[k].r)}</b></td><td class="nw">${shifts&&tot.days?pnMoney(tot[k].r/tot.days):pnMoney(tot[k].r/span)}</td>${prof?`<td class="nw"><b>${pnMoney(tot[k].p)}</b></td>`:''}`).join('')}<td class="gs nw">${shifts?`<b>${num(tot.days)}</b> gün`:'—'}</td><td>${num(sum(rows,x=>x.r.tasks_open||0))}</td></tr></tfoot>`:''}</table></div>
+      ${rows.length>1?`<tfoot><tr class="nr tot"><td><b>Ekip toplamı</b></td>${K.map(k=>`<td class="gs"><b>${num(tot[k].q)}</b></td><td class="nw"><b>${pnMoney(tot[k].r)}</b></td><td class="nw">${shifts&&tot.days?pnMoney(tot[k].r/tot.days):pnMoney(tot[k].r/span)}</td>${prof?`<td class="nw"><b>${tot[k].p==null?'—':pnMoney(tot[k].p)}</b></td>`:''}`).join('')}<td class="gs nw">${shifts?`<b>${num(tot.days)}</b> gün`:'—'}</td><td>${num(sum(rows,x=>x.r.tasks_open||0))}</td></tr></tfoot>`:''}</table></div>
       ${shifts?'':'<div class="pb sub">Mesai günlerini görmek için “Vardiya yönetimi” yetkisi gerekir.</div>'}`
       :`<div class="pb"><div class="empty2">${t===null?'Yükleniyor…':'Bu dönemde kayıt yok.'}</div></div>`}</section>`}
 /* Mağaza hedefi (panelin üstünde geniş kopya; Ekip hedefleri içindeki kartla aynı veri) */
@@ -5498,6 +5581,7 @@ async function loadPrim(){if(S.hp!==undefined)return;S.hp=null;
   try{const r=await sb.rpc('prim_by_month',{p_staff:can('manage_entitlements')?null:S.user.id});if(r.error)throw r.error;S.hp=r.data||[]}catch(e){S.hp=[]}
   if(S.ui.tab==='hakedis')render()}
 const hkPrim=(sid,m)=>sum((S.hp||[]).filter(r=>r.staff_id===sid&&String(r.period).slice(0,10)===m),r=>r.amount);
+const hkPm=(sid,m,mg)=>{if(!primNew(m))return '';pmLoad(m);const X=S.pm&&S.pm[monthStart(m)];if(!X)return '<div class="card empty" style="margin-top:12px">Prim hesaplanıyor…</div>';const b=pmOf(m,sid);return b?`<div style="margin-top:12px">${pmCard(b,X.store,mg)}</div>`:''};
 const hkEnt=(sid,m)=>(S.d.entitlements||[]).filter(e=>e.staff_id===sid&&(!m||e.period===m)&&e.status!=='iptal');
 function hkSum(l){const k={};HK_KINDS.forEach(([c])=>k[c]=0);l.forEach(e=>k[e.kind]+=Number(e.amount));
   const pl=l.filter(e=>!HK_MINUS.includes(e.kind)),plus=sum(pl,e=>e.amount),pend=sum(pl.filter(e=>e.status==='bekliyor'),e=>e.amount),
@@ -5531,7 +5615,7 @@ function hkOwn(m){const sid=S.user.id,l=hkEnt(sid,m),sm=hkSum(l),live=hkPrim(sid
   const all2=(S.d.entitlements||[]).filter(e=>e.staff_id===sid&&e.status!=='iptal'&&e.period===m).sort((a,b)=>String(b.created_at).localeCompare(String(a.created_at)));
   return `<div class="row"><h1>Hakedişlerim</h1><div class="sp"></div>${hkMonthBar(m)}</div>
   <p class="sub" style="margin-top:0">${esc(hkName(sid))}${ten?' · kıdem '+esc(ten)+(pf.hire_date?' (işe giriş '+fmtDate(pf.hire_date)+')':''):''}</p>
-  ${hkTiles(sm,live,rec)}${hkKindTiles(sm)}
+  ${hkTiles(sm,live,rec)}${hkKindTiles(sm)}${hkPm(sid,m,false)}
   <div class="card" style="margin-top:12px"><h2>${MONN[parse(m).getMonth()]} kayıtları</h2>${all2.map(e=>hkRowHtml(e,false)).join('')||'<div class="empty">Bu ay için kayıtlı hakediş yok.</div>'}</div>
   ${months.length?`<div class="card"><h2>Önceki aylar</h2>${months.map(pm=>{const x=hkSum(hkEnt(sid,pm)),d=parse(pm);return `<div class="item" style="padding:6px 0"><div class="main"><b>${MONN[d.getMonth()]} ${d.getFullYear()}</b></div><div class="side"><b>${money(x.net)}</b><div class="sub">ödenen ${money(x.paid)}${x.remain>0?' · bekleyen '+money(x.remain):''}</div></div></div>`}).join('')}</div>`:''}
   <p class="sub">Bu sayfada yalnızca size ait hakedişler görünür. Prim, satışlarınızdan otomatik hesaplanır.</p>`}
@@ -5541,7 +5625,7 @@ function hkPerson(sid,m){const p=S.d.profileMap.get(sid),l=(S.d.entitlements||[]
   return `<div class="row"><button class="btn" data-a="hk-back">‹ Tüm personel</button><h1 style="margin-left:8px">${esc(p.full_name)}</h1><div class="sp"></div>${hkMonthBar(m)}</div>
   <p class="sub" style="margin-top:0">${ten?'Kıdem '+esc(ten)+' · ':''}${pf&&pf.base_salary>0?'Maaş tanımı '+money(pf.base_salary):'Maaş tanımı yok'}</p>
   <div class="row" style="gap:6px;flex-wrap:wrap;margin:8px 0"><button class="btn pri" data-a="hk-pay" data-id="${sid}" ${sm.pend>0?'':'disabled'}>Öde (net ${money(sm.remain)})</button><button class="btn" data-a="hk-add" data-id="${sid}">+ Hakediş ekle</button><button class="btn" data-a="hk-adv" data-id="${sid}">Avans ver</button><button class="btn" data-a="hk-kes" data-id="${sid}">Kesinti ekle</button>${live-rec>0.004||(rec-live>0.004)?`<button class="btn" data-a="hk-prim" data-id="${sid}">Primi işle (${money(live-rec)})</button>`:''}</div>
-  ${hkTiles(sm,live,rec)}${hkKindTiles(sm)}
+  ${hkTiles(sm,live,rec)}${hkKindTiles(sm)}${hkPm(sid,m,can('manage_commissions'))}
   ${otherSum>0?`<div class="sub" style="margin:8px 0"><b>Diğer aylardan bekleyen:</b> ${money(otherSum)} (ilgili aya geçerek ödeyebilirsiniz)</div>`:''}
   <div class="card" style="margin-top:12px"><h2>${MONN[parse(m).getMonth()]} kayıtları</h2>${l.map(e=>hkRowHtml(e,true)).join('')||'<div class="empty">Bu ay için kayıt yok.</div>'}</div>`}
 
@@ -6305,6 +6389,24 @@ const A={
   async logout(){if(qsShared())return qsLogout();await pushLeave();await sb.auth.signOut();S.d=null;S.me=null;renderLogin()},
   close(){closeModal()},ov(t,e){if(e.target===t&&!S.ins&&!S.pf)closeModal()},
   'prm-month'(t){const m=S.ui.prm||monthStart(today()),d=parse(m);S.ui.prm=iso(new Date(d.getFullYear(),d.getMonth()+Number(t.dataset.n),1));render()},
+  'pm-refresh'(){const m=monthStart(S.ui.prm||today());S.pml=undefined;pmLoad(m,true)},
+  'pm-adj'(t){pmAdjModal(t.dataset.id)},
+  async 'pm-adj-save'(){const A=S.pma,a=trNum((document.getElementById('pma-a')||{}).value),r=((document.getElementById('pma-r')||{}).value||'').trim();
+    if(!a)return setErr('Tutar yazın');if(r.length<3)return setErr('Gerekçe yazın');
+    if(await mcall('prim_adjust',{p:{staff:A.sid,month:A.m,amount:a,reason:r}},'Düzeltme eklendi')){closeModal();S.pml=undefined;pmLoad(A.m,true)}},
+  async 'pm-adj-del'(t){if(!armed(t,'Geri alınsın mı?'))return;try{await call('prim_adjust_cancel',{p_id:t.dataset.id},'Düzeltme geri alındı');S.pm=undefined;S.pml=undefined;render()}catch(e){}},
+  'pm-plan-new'(){pmPlanModal(null)},
+  'pm-plan-edit'(t){pmPlanModal(t.dataset.id)},
+  'pm-plan-copy'(t){pmPlanModal(t.dataset.id,true)},
+  'pm-item-add'(t){const E=S.pme;if(!E||E.R.items.some(i=>i.id===t.dataset.id))return;E.R.items.push({id:t.dataset.id,amount:0});E.q='';pmPlanDraw();const n=document.querySelector('[data-c="pme"][data-s="item"][data-k="'+(E.R.items.length-1)+'"]');if(n){n.focus();n.select()}},
+  'pm-item-del'(t){const E=S.pme;if(!E)return;E.R.items.splice(+t.dataset.i,1);pmPlanDraw()},
+  async 'pm-plan-save'(){const E=S.pme;if(!E)return;if(!String(E.name||'').trim())return setErr('Plan adını yazın');
+    if(await mcall('prim_plan_save',{p:{id:E.id,name:E.name,role_default:E.role||null,active:E.active,rules:E.R,reason:E.reason||null}},'Prim planı kaydedildi')){closeModal();S.pme=null;await reload();S.pm=undefined;S.pml=undefined;render()}},
+  async 'pm-plan-del'(t){if(!armed(t,'Silinsin mi? Tekrar tıklayın'))return;if(await mcall('prim_plan_delete',{p_id:S.pme.id},'Plan silindi')){closeModal();S.pme=null;await reload()}},
+  'pm-start'(){modal(`<h2>Yeni prim sistemi başlangıcı</h2><p class="sub">Seçilen aydan itibaren primler prim planlarına göre hesaplanır; önceki aylar eski sistemle (satış başına kâr payı) kalır. Başlangıcı ileri almak, aradaki ayların eski satış primlerini geri getirmez.</p>
+    <div class="form"><label class="f">Başlangıç ayı<input class="in" id="pms-m" type="month" value="${primFrom().slice(0,7)}"></label></div><div class="err" id="f-err" hidden></div>
+    <div class="actions"><button class="btn" data-a="close">Vazgeç</button><button class="btn pri" data-a="pm-start-save">Kaydet</button></div>`)},
+  async 'pm-start-save'(){const v=(document.getElementById('pms-m')||{}).value;if(!v)return setErr('Ay seçin');if(await mcall('set_prim_start',{p_month:v+'-01'},'Başlangıç ayı kaydedildi')){closeModal();await reload();S.pm=undefined;S.pml=undefined;S.prm=undefined;render()}},
   async 'prm-rate'(t){const v=Number((document.getElementById('prr-'+t.dataset.id)||{}).value);
     try{await call('set_commission_rate',{p_staff:t.dataset.id,p_rate:v,p_reason:null},'Prim oranı güncellendi');await reload();primLoad(true)}catch(e){}},
   'prm-edit'(t){primEditModal(t.dataset.id)},
@@ -7403,6 +7505,9 @@ Object.assign(A,{
   async 'nt-fdel'(t){if(!armed(t,'Silinsin mi?'))return;const N=NT(),f=N.files.find(x=>x.id===t.dataset.id);if(!f)return;const r=await sb.from('note_files').delete().eq('id',f.id);if(r.error)return toast(msg(r.error),true);
     try{await sb.storage.from('anka-notes').remove([f.path])}catch(e){}N.files=N.files.filter(x=>x.id!==f.id);toast('Ek silindi');ntRender()},
 });
+document.addEventListener('input',e=>{const t=e.target;if(!t||!t.dataset||t.dataset.c!=='pmeq'||!S.pme)return;S.pme.q=t.value;
+  const R=S.pme.R,q=t.value.trim().toLocaleLowerCase('tr'),w=document.getElementById('pme-res');if(!w)return;
+  w.innerHTML=q.length<2?'':(S.d.accessories||[]).filter(a=>a.active!==false&&!R.items.some(i=>i.id===a.id)&&(a.name.toLocaleLowerCase('tr').includes(q)||String(a.barcode||'').includes(q))).slice(0,8).map(a=>`<button class="btn sm" style="margin:4px 4px 0 0" data-a="pm-item-add" data-id="${a.id}">${esc(a.name)}${isSvc(a)?' · hizmet':''}</button>`).join('')||'<span class="sub">Bulunamadı</span>'});
 document.addEventListener('mousedown',e=>{if(e.target.closest&&e.target.closest('[data-a="nt-cmd"],[data-a="nt-slash"],[data-a="nt-line2task"]'))e.preventDefault()});
 document.addEventListener('input',e=>{const t=e.target;if(!t||!t.closest)return;
   const b=t.closest('[data-nt-body]');if(b){if(e.inputType==='insertParagraph'){const li=ntLi(b);if(li)li.removeAttribute('data-on')}ntInput(b);if(e.inputType==='insertText'&&e.data===' ')ntMd(b);
@@ -7891,6 +7996,9 @@ document.addEventListener('change',async e=>{
     case 'prole':{const r=await sb.from('profiles').update({role:t.value}).eq('id',t.dataset.id);r.error?toast(r.error.message,true):(toast('Rol güncellendi'),reload());break}
     case 'pactive':{const r=await sb.from('profiles').update({active:t.checked}).eq('id',t.dataset.id);r.error?toast(r.error.message,true):(toast('Kaydedildi'),reload());break}
     case 'prm-staff':S.ui.prs=t.value;render();break;
+    case 'pm-plan':{try{await call('set_staff_plan',{p_staff:t.dataset.id,p_plan:t.value||null,p_reason:null},'Prim planı güncellendi');await reload();S.pm=undefined;S.pml=undefined;render()}catch(x){render()}break}
+    case 'pme':{const E=S.pme;if(!E)break;const sc=t.dataset.s,k=t.dataset.k,v=t.type==='checkbox'?t.checked:t.value;
+      if(!sc)E[k]=v;else if(sc==='pkg')E.R.kor.pkgs[k]=Number(v)||0;else if(sc==='item'){if(E.R.items[+k])E.R.items[+k].amount=Number(v)||0}else E.R[sc][k]=(k==='on'||k==='scope')?v:(Number(v)||0);break}
     case 'pset':{const r=await sb.from('staff_settings').update({[t.dataset.f]:Number(t.value)||0}).eq('profile_id',t.dataset.id);r.error?toast(r.error.message,true):(toast('Kaydedildi'),reload());break}
     case 'svrb':svRbToggle();break;
     case 'skper':skOpen(t.value);break;
