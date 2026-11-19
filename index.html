@@ -1899,7 +1899,7 @@ function accAdd(aid){psInit();const a=S.d.accMap.get(aid);if(!a||a.active===fals
   if(a.price_open&&!l)setTimeout(()=>{const ins=document.querySelectorAll('[data-c="psprice"][data-k="a"]'),i=S.cart.acc.findIndex(x=>x.aid===aid),el=ins[i];if(el){el.focus();el.select()}},30)}
 
 /* tutarlar: muhtelif (+/-) ve iskonto (₺ / %) satış satırlarına ödeme sırasında dağıtılır; raporlar tutarlı kalır */
-function psTotals(c){c=c||S.cart;if(c.kb&&c.kb.length||c.acc.some(a=>a.kb))kApply(c);if(mOn()||c.m3||c.acc.some(a=>a.m3!=null))mApply(c);
+function psTotals(c){c=c||S.cart;if(c.kb&&c.kb.length||c.acc.some(a=>a.kb))kApply(c);if(mOnAny()||c.m3||c.acc.some(a=>a.m3!=null))mApply(c);
   const gross=r2(sum(c.items,i=>psNum(i.price))+sum(c.acc,a=>a.qty*psNum(a.price))),ldisc=r2(sum(c.items,i=>psNum(i.discount))+sum(c.acc,a=>psNum(a.discount)));
   const base=r2(gross-ldisc),misc=r2(psNum(c.misc)),iv=Math.max(0,psNum(c.isk)),isk=c.iskT==='pct'?r2(Math.max(0,base+misc)*Math.min(iv,100)/100):r2(iv);
   const trade=r2(sum(c.trades,t=>psNum(t.value))),ret=r2(sum(c.rets,r=>psNum(r.amount))),ly=c.mode==='satis'&&c.ly&&c.ly.mid?Math.max(0,Math.floor(psNum(c.ly.use))):0,lyr=c.mode==='satis'&&c.ly&&c.ly.mid?lyRewardVal(c,lyRw(c)):0,sale=r2(base+misc-isk-ly-lyr);
@@ -1923,13 +1923,13 @@ function psAlloc(c,t){if(c.acc.some(a=>a.kb||a.m3!=null))return kAlloc(c,t);
 
 /* paket satırları varken: paket indirimi (bn) sabit; fiş iskontosu / muhtelif paketsiz satırlara (kurala göre), puan tüm satırlara dağıtılır */
 function kAlloc(c,t){const it=c.items.map(i=>({product_id:i.pid,price:r2(psNum(i.price)),discount:r2(psNum(i.discount))}));
-  const ac=c.acc.map(a=>Object.assign({accessory_id:a.aid,qty:a.qty,price:r2(psNum(a.price)),discount:r2(psNum(a.discount))},a.kb?{kb:{k:a.kb.k,slot:a.kb.sid},bn:r2(psNum(a.discount))}:{},a.m3!=null?{m3:r2(psNum(a.m3))}:{}));
+  const ac=c.acc.map(a=>Object.assign({accessory_id:a.aid,qty:a.qty,price:r2(psNum(a.price)),discount:r2(psNum(a.discount))},a.kb?{kb:{k:a.kb.k,slot:a.kb.sid},bn:r2(psNum(a.discount))}:{},a.m3!=null?{m3:r2(psNum(a.m3)),mk:a.mk}:{}));
   const L=[...it.map(o=>({o,q:1})),...ac.map(o=>({o,q:o.qty}))],val=l=>r2(l.o.price*l.q-l.o.discount);
   const pos=(A,set)=>{const tot=sum(set,val);if(A>tot+0.005)throw new Error('İskonto ve muhtelif indirim sepet tutarını aşamaz');let left=A;const srt=[...set].sort((a,b)=>val(b)-val(a));
     srt.forEach(l=>{const s=Math.min(r2(A*val(l)/tot),val(l),left);l.o.discount=r2(l.o.discount+s);left=r2(left-s)});
     for(const l of srt){if(left<=0.004)break;const s=Math.min(val(l),left);l.o.discount=r2(l.o.discount+s);left=r2(left-s)}};
   const free=L.filter(l=>!l.o.kb&&l.o.m3==null),P2=r2(t.isk-t.misc),P1=r2((t.ly||0)+(t.lyr||0));
-  if(P2>0){const set=L.filter(l=>!(l.o.kb&&!kR().stack_manual)&&!(l.o.m3!=null&&!mR().stack_manual));if(!set.length)throw new Error(L.some(l=>l.o.kb)?'Paket ürünlerine ayrıca iskonto uygulanamaz; iskontoyu kaldırın.':mName()+' kampanyalı ürünlere ayrıca iskonto uygulanamaz; iskontoyu kaldırın.');pos(P2,set)}
+  if(P2>0){const set=L.filter(l=>!(l.o.kb&&!kR().stack_manual)&&!(l.o.m3!=null&&!mR(l.o.mk).stack_manual));if(!set.length)throw new Error(L.some(l=>l.o.kb)?'Paket ürünlerine ayrıca iskonto uygulanamaz; iskontoyu kaldırın.':mNameK((L.find(l=>l.o.m3!=null)||{o:{}}).o.mk)+' kampanyalı ürünlere ayrıca iskonto uygulanamaz; iskontoyu kaldırın.');pos(P2,set)}
   else if(P2<0){if(!free.length)throw new Error('Paket / kampanya ürünlerinde muhtelif (yuvarlama) fiyat artışı uygulanamaz; muhtelif tutarı kaldırın.');const up=-P2,one=free.filter(l=>l.q===1).sort((a,b)=>val(b)-val(a))[0];
     if(one)one.o.price=r2(one.o.price+up);else{const l=[...free].sort((a,b)=>val(b)-val(a))[0],per=Math.ceil(up*100/l.q)/100;l.o.price=r2(l.o.price+per);l.o.discount=r2(l.o.discount+r2(per*l.q-up))}}
   if(P1>0)pos(P1,L);
@@ -2019,7 +2019,7 @@ function psLineHtml(){const c=S.cart,d=S.d,ro=c.mode==='iade';
   const T=c.trades.map((x,ix)=>`<div class="ps-line trade"><div class="nm"><b>${esc(x.model)} <span class="pill">Takas</span></b><small>${esc(x.sub||'')}${x.imei?' · '+esc(x.imei):''}${x.inspection_id?' · kontrol yapıldı':''}</small></div><div class="qt"><b>1</b></div><span></span><b class="tt neg">−${money(x.value)}</b><button class="ps-x" data-a="trade-del" data-i="${ix}" aria-label="Çıkar">${ic('x','sm')}</button></div>`).join('');
   return R+D+Ac+T}
 function psSumHtml(c,t){const rows=[];
-  const kbd=c.mode==='satis'?r2(sum(c.kb||[],b=>b.disc||0)):0,md=c.mode==='satis'&&c.m3&&c.m3.d>0?c.m3.d:0;if(kbd||md)rows.push(['Liste fiyatı',money(t.gross)]);if(kbd){(c.kb||[]).forEach(b=>{const p=kPkg(b.pid);rows.push([(p?p.name:'Paket')+' indirimi','−'+money(b.disc||0),'neg'])})}if(md)rows.push([mName()+' · hediye','−'+money(md),'neg']);
+  const kbd=c.mode==='satis'?r2(sum(c.kb||[],b=>b.disc||0)):0,md=c.mode==='satis'&&c.m3&&c.m3.d>0?c.m3.d:0;if(kbd||md)rows.push(['Liste fiyatı',money(t.gross)]);if(kbd){(c.kb||[]).forEach(b=>{const p=kPkg(b.pid);rows.push([(p?p.name:'Paket')+' indirimi','−'+money(b.disc||0),'neg'])})}if(md)(c.m3.by||[]).filter(b=>b.d>0).forEach(b=>rows.push([mNameK(b.k)+(b.k==='al1b1'?' · bedava':' · hediye'),'−'+money(b.d),'neg']));
   if(c.mode!=='iade'){if(t.ldisc||t.isk||t.misc||t.trade||c.rets.length)rows.push(['Ara toplam',money(t.base)]);
     if(t.misc)rows.push(['Muhtelif / yuvarlama',(t.misc>0?'+':'−')+money(Math.abs(t.misc)),t.misc<0?'neg':'']);
     if(t.isk)rows.push(['İskonto'+(c.iskT==='pct'?' %'+num(psNum(c.isk)):''),'−'+money(t.isk),'neg']);
@@ -2159,7 +2159,7 @@ async function psDo(m,btn){const c=S.cart,t=psTotals(c),er=psCheckOut(m);if(er)r
       else if(kbs.length)res=await fin('protection_sale',{bundles:kbs,via:'complete',payload:sp});
       else if(m3)res=await fin('complete',sp);
       else res=await call('complete_sale',{p_customer:c.customer||null,p_items:al.items,p_accessories:al.acc,p_trade_ins:c.trades,p_payments:pays,p_note:c.note||null,p_staff:c.staff&&c.staff!==S.user.id?c.staff:null,...(sold?{p_sold_at:sold}:{})});
-      saleId=res.id;txt='Satış tamamlandı · '+res.sale_no+((res.protection||[]).length?' · '+res.protection.map(x=>x.name+' −'+money(x.discount)).join(', '):'')+(res.multibuy?' · '+mName()+': hediye '+(res.multibuy.free||[]).map(x=>x.name).join(', ')+' (−'+money(res.multibuy.discount)+')':'')+(res.ly_note?' · sadakat: '+res.ly_note:res.ly_earned!=null?` · +${num(res.ly_earned)} puan${res.ly_welcome?' (+hoş geldin)':''}${res.ly_stamp?' · +1 damga':''} · bakiye ${num(res.ly_balance)}`:'')}
+      saleId=res.id;txt='Satış tamamlandı · '+res.sale_no+((res.protection||[]).length?' · '+res.protection.map(x=>x.name+' −'+money(x.discount)).join(', '):'')+(res.multibuy?' · '+(res.multibuy.by||[{name:mNameK('al3ode2'),free:res.multibuy.free,discount:res.multibuy.discount}]).map(b=>b.name+': hediye '+(b.free||[]).map(x=>x.name).join(', ')+' (−'+money(b.discount)+')').join(' · '):'')+(res.ly_note?' · sadakat: '+res.ly_note:res.ly_earned!=null?` · +${num(res.ly_earned)} puan${res.ly_welcome?' (+hoş geldin)':''}${res.ly_stamp?' · +1 damga':''} · bakiye ${num(res.ly_balance)}`:'')}
     else if(c.mode==='iade'){res=await call('return_batch',{p_lines:c.rets.map(r=>({kind:r.kind,id:r.id,qty:r.qty,amount:r2(psNum(r.amount)),method:m,reason_code:r.rc,reason:r.why||null,disposition:r.disp,waste_reason:r.disp==='zayiat'&&r.kind==='aksesuar'?r.wr:null}))});
       {const dd=Array.isArray(res)?res.reduce((x,y)=>x+(y&&y.ly_deduct||0),0):0;txt='İade tamamlandı · '+c.rets.length+' kalem · '+money(r2(t.ret-dd))+' '+PS_M[m]+' ile ödendi'+(dd?' · harcanmış '+num(dd)+' puan iade tutarından düşüldü':'')}}
     else{const r=c.rets[0],al=psAlloc(c,t);
@@ -2321,8 +2321,8 @@ function vKampanya(){const u=S.ui;if(!S.d.campaigns)return '<h1>Kampanyalar</h1>
   if(u.kp==='sadakat'&&can('view_loyalty'))return vSadakat();
   if(u.kp==='garanti')return vGaranti();
   if(u.kp==='koruma'&&(can('view_protection')||can('manage_protection')))return vKoruma();
-  if(u.kp==='al3ode2'&&(can('view_multibuy')||can('manage_multibuy')))return vM3();
-  const c=can('view_loyalty')?lyCamp():null,sm=S.ly&&S.ly.sum,wc=wCamp(),kc=kCamp(),mc=mCamp(),mr=mR();if(c&&!S.ly){S.ly={};lyLoad('sum')}
+  if(M3K.includes(u.kp)&&(can('view_multibuy')||can('manage_multibuy')))return vM3();
+  const c=can('view_loyalty')?lyCamp():null,sm=S.ly&&S.ly.sum,wc=wCamp(),kc=kCamp();if(c&&!S.ly){S.ly={};lyLoad('sum')}
   return `<div class="row"><h1 style="flex:1;margin:0">Kampanyalar</h1></div><p class="sub">Kampanya başlıklarınız. Her kampanya kendi kurallarıyla satış ekranına bağlanır.</p>
    <div class="kp-grid">${c?`<button class="card kp-card" data-a="kp-open" data-k="sadakat"><span class="icb p">${ic('star','lg')}</span><div class="kp-b"><div class="row"><b style="font-size:17px">${esc(c.name)}</b><span class="pill ${c.active?'ok':''}">${c.active?'Aktif':'Kapalı'}</span></div>
      <div class="sub">Para puan, damga kartı, hediye puanlar · ${num(lyR().pct_dev)}% cihaz · ${num(lyR().pct_acc)}% aksesuar · ${num(lyR().pct_svc)}% hizmet</div>
@@ -2331,8 +2331,8 @@ function vKampanya(){const u=S.ui;if(!S.d.campaigns)return '<h1>Kampanyalar</h1>
      <div class="sub">${(S.d.warranty_packages||[]).filter(k=>k.active).map(k=>esc(wPkgName(k))).join(' · ')}</div><div class="sub">Paket yılı başına ${num(wR().claims_per_year)} değişim · IMEI ile birebir</div></div>${ic('chev')}</button>`:''}
     ${kc&&(can('view_protection')||can('manage_protection'))?`<button class="card kp-card" data-a="kp-open" data-k="koruma"><span class="icb p">${ic('shield','lg')}</span><div class="kp-b"><div class="row"><b style="font-size:17px">${esc(kc.name)}</b><span class="pill ${kc.active?'ok':''}">${kc.active?'Aktif':'Kapalı'}</span></div>
      <div class="sub">${kPkgs().map(p=>esc(p.name)+(kLive(p)?' · '+esc(kDiscTxt(p)):' (kapalı)')).join(' · ')}</div><div class="sub">Seçili ürün ve hizmetlerin toplamına paket indirimi</div></div>${ic('chev')}</button>`:''}
-    ${mc&&(can('view_multibuy')||can('manage_multibuy'))?`<button class="card kp-card" data-a="kp-open" data-k="al3ode2"><span class="icb p">${ic('gift','lg')}</span><div class="kp-b"><div class="row"><b style="font-size:17px">${esc(mc.name)}</b>${mStatusPill()}</div>
-     <div class="sub">${(mr.cats||[]).length||(mr.items||[]).length?esc((mr.cats||[]).join(' · ')+((mr.items||[]).length?((mr.cats||[]).length?' · ':'')+(mr.items||[]).length+' seçili ürün':'')):'Kategori seçilmedi'}</div><div class="sub">${num(mr.buy)} ürün alana en ucuz ${num(mr.free)} ürün hediye</div></div>${ic('chev')}</button>`:''}
+    ${(can('view_multibuy')||can('manage_multibuy'))?M3K.map(k=>{const mc=mCamp(k),mr=mR(k);if(!mc)return '';return `<button class="card kp-card" data-a="kp-open" data-k="${k}"><span class="icb p">${ic('gift','lg')}</span><div class="kp-b"><div class="row"><b style="font-size:17px">${esc(mc.name)}</b>${mStatusPill(k)}</div>
+     <div class="sub">${(mr.cats||[]).length||(mr.items||[]).length?esc((mr.cats||[]).join(' · ')+((mr.items||[]).length?((mr.cats||[]).length?' · ':'')+(mr.items||[]).length+' seçili ürün':'')):'Kategori seçilmedi'}</div><div class="sub">${num(mr.buy)} ürün alana en ucuz ${num(mr.free)} ürün ${k==='al1b1'?'bedava':'hediye'}</div></div>${ic('chev')}</button>`}).join(''):''}
     <div class="card kp-card off"><span class="icb">${ic('plus','lg')}</span><div class="kp-b"><b>Yeni kampanya türleri</b><div class="sub">Kupon, dönemsel indirim gibi türler sonraki aşamalarda eklenecek.</div></div></div></div>`}
 const LYT=[['ozet','Özet'],['uyeler','Üyeler'],['islemler','İşlemler'],['dikkat','Dikkat edilecek numaralar'],['kurallar','Kurallar']];
 async function lyLoad(k){S.ly=S.ly||{};const L=S.ly;try{
@@ -2788,12 +2788,19 @@ function kOzet(){const K=S.kg,s=K.sum;const pr=[['ay','Bu ay'],['30','Son 30 gü
    Seçili aksesuar kategorilerinden (ve/veya tek tek seçilen ürünlerden) fişe "buy" adet eklenince en ucuz "free" adet hediye.
    Hediye bedeli kampanyalı satırlara tutarlarıyla orantılı dağıtılır (l.m3 = satıra düşen pay, discount içinde); sunucu m3_sale ile doğrular. */
 const M3_DEF={buy:3,free:1,max_sets:0,mix:true,cats:[],items:[],excl:[],valid_from:null,valid_to:null,stack_points:true,stack_manual:false,return_recalc:true};
-const mCamp=()=>(S.d.campaigns||[]).find(c=>c.kind==='al3ode2');
-const mR=()=>Object.assign({},M3_DEF,(mCamp()||{}).rules||{});
+/* çoklu alım kampanyaları (066: 3 AL 2 ÖDE, 067: 1 ALANA 1 BEDAVA): aynı altyapı, kurallar ayrı; bir ürün yalnız birine girer */
+const M3K=['al3ode2','al1b1'];
+const mK=()=>M3K.includes(S.ui&&S.ui.kp)?S.ui.kp:'al3ode2';
+const mCamp=(k)=>(S.d.campaigns||[]).find(c=>c.kind===(k||mK()));
+const mR=(k)=>{k=k||mK();return Object.assign({},M3_DEF,k==='al1b1'?{buy:2}:{},(mCamp(k)||{}).rules||{},{kind:k})};
 function mInDate(R){const t=today();return (!R.valid_from||R.valid_from<=t)&&(!R.valid_to||R.valid_to>=t)}
-function mOn(){const c=mCamp();return !!(c&&c.active&&mInDate(mR()))}
-const mName=R=>{R=R||mR();return `${R.buy} AL ${R.buy-R.free} ÖDE`};
+function mOn(k){const c=mCamp(k);return !!(c&&c.active&&mInDate(mR(k)))}
+const mOnAny=()=>M3K.some(k=>mOn(k));
+const mName=R=>{R=R||mR();return (R.kind||'al3ode2')==='al1b1'?`${R.buy-R.free} ALANA ${R.free} BEDAVA`:`${R.buy} AL ${R.buy-R.free} ÖDE`};
+const mNameK=k=>mName(mR(k));
 function mElig(a,R){R=R||mR();if(!a||a.active===false||wPkg(a.id))return false;if((R.excl||[]).includes(a.id))return false;return (R.items||[]).includes(a.id)||(!!a.category&&(R.cats||[]).includes(a.category))}
+/* ürünün girdiği açık kampanya (sunucudaki _m3_kind_of ile aynı sıra) */
+function mKindOf(a){return M3K.find(k=>mOn(k)&&mElig(a,mR(k)))||null}
 /* hediye seçimi (sunucudaki _m3_pick ile aynı): havuz başına floor(n/buy)×free en ucuz birim; fiş sınırı varsa en ucuzlar */
 function mPick(units,R){R=R||{};const buy=Math.max(2,Math.min(10,Math.round(+R.buy||3))),fr=Math.min(Math.max(1,Math.round(+R.free||1)),buy-1),mx=Math.max(0,Math.round(+R.max_sets||0));
   const pools=new Map();units.filter(u=>u.p>0).forEach(u=>{const k=R.mix===false?(u.c||''):'';if(!pools.has(k))pools.set(k,[]);pools.get(k).push(u)});
@@ -2804,28 +2811,33 @@ function mPick(units,R){R=R||{};const buy=Math.max(2,Math.min(10,Math.round(+R.b
   return {d:r2(sum(cand,u=>u.p)),free:cand,near}}
 /* fişteki kampanya: her çizimde fiyatlardan yeniden hesaplanır */
 function mApply(c){if(!c||!c.acc)return 0;
-  for(const l of c.acc)if(l.m3!=null){l.discount=r2(Math.max(0,psNum(l.discount)-psNum(l.m3)));delete l.m3}
-  c.m3=null;if(c.mode!=='satis'||!mOn())return 0;const R=mR(),d=S.d;
-  const L=c.acc.filter(l=>!l.kb&&psNum(l.price)>0&&mElig(d.accMap.get(l.aid),R));if(!L.length)return 0;
-  const units=[];let i=0;L.forEach(l=>{const a=d.accMap.get(l.aid);for(let q=0;q<l.qty;q++)units.push({i:i++,p:r2(psNum(l.price)),c:a.category||'',l})});
-  const P=mPick(units,R);c.m3={d:P.d,n:units.length,near:P.near,free:P.free.map(u=>({li:c.acc.indexOf(u.l),aid:u.l.aid,p:u.p}))};
-  if(!(P.d>0))return 0;
-  const val=l=>r2(l.qty*psNum(l.price)),tot=r2(sum(L,val));let left=P.d;const srt=[...L].sort((x,y)=>val(y)-val(x));
-  srt.forEach((l,k)=>{const s=k===srt.length-1?left:Math.min(left,r2(P.d*val(l)/tot));l.m3=r2(Math.max(0,Math.min(s,val(l)-psNum(l.discount))));l.discount=r2(psNum(l.discount)+l.m3);left=r2(left-l.m3)});
-  return P.d}
+  for(const l of c.acc)if(l.m3!=null||l.mk){if(l.m3!=null)l.discount=r2(Math.max(0,psNum(l.discount)-psNum(l.m3)));delete l.m3;delete l.mk}
+  c.m3=null;if(c.mode!=='satis'||!mOnAny())return 0;const d=S.d,by=[];let all=0,n=0;
+  for(const k of M3K){if(!mOn(k))continue;const R=mR(k);
+    const L=c.acc.filter(l=>!l.kb&&psNum(l.price)>0&&mKindOf(d.accMap.get(l.aid))===k);if(!L.length)continue;
+    const units=[];let i=0;L.forEach(l=>{const a=d.accMap.get(l.aid);for(let q=0;q<l.qty;q++)units.push({i:i++,p:r2(psNum(l.price)),c:a.category||'',l})});
+    const P=mPick(units,R);n+=units.length;by.push({k,d:P.d,n:units.length,near:P.near,free:P.free.map(u=>({li:c.acc.indexOf(u.l),aid:u.l.aid,p:u.p,k}))});
+    if(!(P.d>0))continue;all=r2(all+P.d);
+    const val=l=>r2(l.qty*psNum(l.price)),tot=r2(sum(L,val));let left=P.d;const srt=[...L].sort((x,y)=>val(y)-val(x));
+    srt.forEach((l,j)=>{const s=j===srt.length-1?left:Math.min(left,r2(P.d*val(l)/tot));l.m3=r2(Math.max(0,Math.min(s,val(l)-psNum(l.discount))));l.mk=k;l.discount=r2(psNum(l.discount)+l.m3);left=r2(left-l.m3)})}
+  if(!by.length)return 0;
+  c.m3={d:all,n,by,near:(by.find(b=>b.near)||{}).near||null,free:[].concat(...by.map(b=>b.free))};
+  return all}
 function mFreeTxt(free){const m=new Map();(free||[]).forEach(f=>{const k=f.aid+'|'+f.p;m.set(k,{aid:f.aid,p:f.p,n:(m.get(k)?m.get(k).n:0)+1})});
   return [...m.values()].map(x=>`${esc((S.d.accMap.get(x.aid)||{}).name||'Ürün')}${x.n>1?' ×'+x.n:''} (${money(x.p)})`).join(', ')}
-function mBanner(c){if(c.mode!=='satis'||!c.m3)return '';const M=c.m3,R=mR();let h='';
-  if(M.d>0)h+=`<div class="ps-kb m3">${ic('gift','sm')}<span><b>${esc(mName(R))}</b> · hediye: ${mFreeTxt(M.free)} · <b class="neg">−${money(M.d)}</b></span><span class="sp"></span><span class="sub">indirim kampanyalı ürünlere dağıtıldı</span></div>`;
-  if(M.near)h+=`<div class="ps-kb sug m3">${ic('gift','sm')}<span><b>${esc(mName(R))}</b> · ${M.near.c?esc(M.near.c)+' kategorisinden ':'kampanyalı ürünlerden '}<b>1 ürün daha</b> eklenirse en ucuz ürün hediye.</span></div>`;
+function mBanner(c){if(c.mode!=='satis'||!c.m3)return '';let h='';
+  (c.m3.by||[]).forEach(b=>{const nm=esc(mNameK(b.k));
+    if(b.d>0)h+=`<div class="ps-kb m3">${ic('gift','sm')}<span><b>${nm}</b> · ${b.k==='al1b1'?'bedava':'hediye'}: ${mFreeTxt(b.free)} · <b class="neg">−${money(b.d)}</b></span><span class="sp"></span><span class="sub">indirim kampanyalı ürünlere dağıtıldı</span></div>`;
+    if(b.near)h+=`<div class="ps-kb sug m3">${ic('gift','sm')}<span><b>${nm}</b> · ${b.near.c?esc(b.near.c)+' kategorisinden ':'kampanyalı ürünlerden '}<b>1 ürün daha</b> eklenirse en ucuz ürün ${b.k==='al1b1'?'bedava':'hediye'}.</span></div>`});
   return h}
 function mLineTag(l){if(l.m3==null)return '';const c=S.cart,ix=c.acc.indexOf(l),n=c.m3?(c.m3.free||[]).filter(f=>f.li===ix).length:0;
-  return `<span class="pill m3">${esc(mName())}${n?' · '+n+' hediye':''}</span> `}
-function mCheck(c,t){if(c.mode!=='satis'||!c.acc.some(l=>l.m3!=null))return '';const R=mR();
-  if(!R.stack_points&&(t.ly||t.lyr))return mName(R)+' indirimi sadakat puanı / ödülüyle birlikte kullanılamaz; puan kullanımını kaldırın.';return ''}
+  return `<span class="pill m3">${esc(mNameK(l.mk))}${n?' · '+n+(l.mk==='al1b1'?' bedava':' hediye'):''}</span> `}
+function mCheck(c,t){if(c.mode!=='satis'||!c.acc.some(l=>l.m3!=null))return '';
+  for(const k of M3K){const R=mR(k);if(c.acc.some(l=>l.m3!=null&&l.mk===k)&&!R.stack_points&&(t.ly||t.lyr))return mName(R)+' indirimi sadakat puanı / ödülüyle birlikte kullanılamaz; puan kullanımını kaldırın.'}return ''}
 /* iade tavanı (sunucudaki _m3_ret_cap ile aynı): kalan ürünler şartı sağlamıyorsa hediye indirimi geri alınır; şart tamamen kalkınca önceki kesinti iade edilir */
+function mLineRec(l){return l&&(S.d.m3_sales||[]).filter(x=>x.sale_id===l.sale_id&&(x.lines||[]).some(y=>y.line_id===l.id)).sort((a,b)=>String(b.created_at).localeCompare(String(a.created_at)))[0]}
 function mSaleRec(saleId){return (S.d.m3_sales||[]).filter(x=>x.sale_id===saleId).sort((a,b)=>String(b.created_at).localeCompare(String(a.created_at)))[0]}
-function mRetCapL(l,qty,pend){const d=S.d,m=l&&mSaleRec(l.sale_id);if(!m||(m.rules&&m.rules.return_recalc===false))return null;
+function mRetCapL(l,qty,pend){const d=S.d,m=mLineRec(l);if(!m||(m.rules&&m.rules.return_recalc===false))return null;
   const ids=(m.lines||[]).map(x=>x.line_id);if(!ids.includes(l.id))return null;pend=(pend||[]).filter(x=>ids.includes(x.id));
   const pq=id=>sum(pend.filter(x=>x.id===id),x=>x.qty)+(id===l.id?qty:0),SL=id=>d.sale_accessory_items.find(y=>y.id===id);
   let keep=0,i=0;const units=[];
@@ -2837,13 +2849,13 @@ function mRetCapL(l,qty,pend){const d=S.d,m=l&&mSaleRec(l.sale_id);if(!m||(m.rul
 function mRetCap(r,ix){if(r.kind!=='aksesuar')return null;const l=S.d.sale_accessory_items.find(x=>x.id===r.id);if(!l)return null;return mRetCapL(l,r.qty,S.cart.rets.slice(0,ix<0?S.cart.rets.length:ix).filter(x=>x.kind==='aksesuar'))}
 function mRetSync(c){(c.rets||[]).forEach(r=>{if(r.auto&&r.kind==='aksesuar')r.amount=psRetMax(r)})}
 function mRetNote(r,ix){const cp=mRetCap(r,ix);if(cp==null)return '';const l=S.d.sale_accessory_items.find(x=>x.id===r.id),v=l?r2(accRefundValue(l,r.qty)):0;
-  if(Math.abs(cp-v)<0.005)return ' · '+esc(mName());return ` · <span class="${cp<v?'neg':'pos'}">${esc(mName())}: ${cp<v?'kalan ürünler şartı sağlamıyor, hediye indirimi düşüldü':'önceki iadede düşülen fark geri verildi'} (satır değeri ${money(v)})</span>`}
+  const nm=esc(mName((mLineRec(l)||{}).rules||{}));if(Math.abs(cp-v)<0.005)return ' · '+nm;return ` · <span class="${cp<v?'neg':'pos'}">${nm}: ${cp<v?'kalan ürünler şartı sağlamıyor, hediye indirimi düşüldü':'önceki iadede düşülen fark geri verildi'} (satır değeri ${money(v)})</span>`}
 
 /* yönetim sayfası */
 const M3T=[['kurallar','Kurallar ve ürünler'],['ozet','Özet','view_multibuy']];
-function mStatusPill(){const c=mCamp();if(!c)return '';return c.active?(mInDate(mR())?'<span class="pill ok">Aktif</span>':'<span class="pill warn">Tarih dışında</span>'):'<span class="pill">Kapalı</span>'}
+function mStatusPill(k){const c=mCamp(k);if(!c)return '';return c.active?(mInDate(mR(k))?'<span class="pill ok">Aktif</span>':'<span class="pill warn">Tarih dışında</span>'):'<span class="pill">Kapalı</span>'}
 function vM3(){const u=S.ui,c=mCamp(),M=S.m3=S.m3||{},mg=can('manage_multibuy'),tabs=M3T.filter(t=>!t[2]||can(t[2])),t=tabs.some(x=>x[0]===u.mt)?u.mt:'kurallar';
-  if(!c)return '<h1>3 AL 2 ÖDE</h1><div class="card empty">Önce 066_uc_al_iki_ode.sql dosyasını çalıştırın.</div>';
+  if(!c)return mK()==='al1b1'?'<h1>1 ALANA 1 BEDAVA</h1><div class="card empty">Önce 067_bir_alana_bir_bedava.sql dosyasını çalıştırın.</div>':'<h1>3 AL 2 ÖDE</h1><div class="card empty">Önce 066_uc_al_iki_ode.sql dosyasını çalıştırın.</div>';
   if(t==='ozet'&&M.sum===undefined&&!M.lds){M.lds=1;mLoadSum()}
   return `<div class="row"><button class="btn sm" data-a="kp-back">← Kampanyalar</button><h1 style="flex:1;margin:0 0 0 8px">${esc(c.name)}</h1>${mStatusPill()}
    ${mg?`<button class="btn sm" data-a="m3-active">${c.active?'Kampanyayı durdur':'Kampanyayı başlat'}</button>`:''}</div>
@@ -2856,14 +2868,16 @@ function mSearch(k){const M=S.m3,q=psLow((M.q||{})[k]||'').trim();if(q.length<2)
   const L=(S.d.accessories||[]).filter(a=>a.active!==false&&!wPkg(a.id)&&(psLow(a.name).includes(q)||String(a.barcode||'').includes(q))).slice(0,20);
   return `<div class="kpe-r">${L.map(a=>`<div class="row" style="gap:8px;padding:2px 0"><span style="flex:1">${esc(a.name)} <span class="sub">· ${esc(a.category||'')} · ${money(a.sale_price)}</span></span>${(R[k]||[]).includes(a.id)?'<span class="pill ok">Ekli</span>':`<button class="btn sm" data-a="m3-iadd" data-k="${k}" data-id="${a.id}">Ekle</button>`}</div>`).join('')||'<div class="sub">Ürün bulunamadı.</div>'}</div>`}
 function mKurallar(){const mg=can('manage_multibuy'),M=S.m3,R=M.rd=M.rd||JSON.parse(JSON.stringify(mR())),dis=mg?'':'disabled';
-  const cnt=(S.d.accessories||[]).filter(a=>mElig(a,R)).length,cats=mCats(),pay=R.buy-R.free;
+  const cnt=(S.d.accessories||[]).filter(a=>mElig(a,R)).length,cats=mCats(),pay=R.buy-R.free,K=mK(),b1=K==='al1b1',hw=b1?'bedava':'hediye';
+  const oth=M3K.filter(k=>k!==K).map(k=>({k,R:mR(k),c:mCamp(k)})).filter(o=>o.c),othCat=c=>oth.find(o=>(o.R.cats||[]).includes(c));
   const catN=c=>(S.d.accessories||[]).filter(a=>a.category===c&&a.active!==false&&!wPkg(a.id)).length;
   const chips=k=>(R[k]||[]).map(id=>`<span class="chip">${esc(mAccTxt(id))}${mg?` <button class="ib sm" data-a="m3-idel" data-k="${k}" data-id="${id}" aria-label="Kaldır">×</button>`:''}</span>`).join('')||'<span class="sub">Yok.</span>';
-  return `<div class="card"><p style="margin-top:0">Seçili kategorilerden fişe <b>${num(R.buy)} ürün</b> eklenince <b>en ucuz ${num(R.free)} ürün hediye</b>; müşteri ${num(pay)} ürünün bedelini öder. ${num(R.buy*2)} üründe ${num(R.free*2)}, ${num(R.buy*3)} üründe ${num(R.free*3)} hediye${Number(R.max_sets)?` (fiş başına en çok ${num(R.max_sets)} set)`:''}.</p>
-    <div class="note">Örnek: Kılıf 900 ₺ + Kılıf 700 ₺ + Kılıf 500 ₺ → en uygun olan <b>500 ₺</b> kılıf hediye, müşteri <b>1.600 ₺</b> öder. Satış ekranında kendiliğinden uygulanır; 2 ürün varken "1 ürün daha eklenirse hediye" önerisi çıkar.</div>
+  return `<div class="card"><p style="margin-top:0">Seçili kategorilerden fişe <b>${num(R.buy)} ürün</b> eklenince <b>en ucuz ${num(R.free)} ürün ${hw}</b>; müşteri ${num(pay)} ürünün bedelini öder. ${num(R.buy*2)} üründe ${num(R.free*2)}, ${num(R.buy*3)} üründe ${num(R.free*3)} ${hw}${Number(R.max_sets)?` (fiş başına en çok ${num(R.max_sets)} set)`:''}.</p>
+    <div class="note">${b1?'Örnek: Kılıf 900 ₺ + Kılıf 500 ₺ → en uygun olan <b>500 ₺</b> kılıf bedava, müşteri <b>900 ₺</b> öder. Satış ekranında kendiliğinden uygulanır; 1 ürün varken "1 ürün daha eklenirse bedava" önerisi çıkar.':'Örnek: Kılıf 900 ₺ + Kılıf 700 ₺ + Kılıf 500 ₺ → en uygun olan <b>500 ₺</b> kılıf hediye, müşteri <b>1.600 ₺</b> öder. Satış ekranında kendiliğinden uygulanır; 2 ürün varken "1 ürün daha eklenirse hediye" önerisi çıkar.'}</div>
+    ${oth.some(o=>o.c.active)?`<p class="sub">${oth.filter(o=>o.c.active).map(o=>esc(o.c.name)).join(', ')} kampanyası da açık: iki kampanya aynı fişte birlikte uygulanır. Bir kategori ya da ürün iki kampanyaya birden giremez.</p>`:''}
     <p class="sub">Hediye bedeli fişte kampanyalı ürünlere tutarlarıyla orantılı dağıtılır. Böylece kâr, personel primi, sadakat puanı ve iade tutarları müşterinin gerçekten ödediği tutara göre hesaplanır; fişte hediye ürün ayrıca yazar. İndirim sunucuda yeniden hesaplanıp doğrulanır, personelin "indirim yapabilir" yetkisi gerekmez.</p></div>
    <div class="card"><div class="row"><h3 style="margin:0;flex:1">Kampanyaya giren kategoriler</h3><span class="pill ${cnt?'ok':'bad'}">${num(cnt)} ürün kampanyada</span></div>
-    <div class="ly-chips" style="margin-top:8px">${cats.map(c=>`<label class="chk" style="margin-right:12px"><input type="checkbox" data-c="m3cat" data-k="${esc(c)}" ${(R.cats||[]).includes(c)?'checked':''} ${dis}> ${esc(c)} <span class="sub">(${num(catN(c))})</span></label>`).join('')||'<span class="sub">Aksesuar kategorisi yok.</span>'}</div>
+    <div class="ly-chips" style="margin-top:8px">${cats.map(c=>{const o=othCat(c);return `<label class="chk" style="margin-right:12px"${o?` title="${esc(o.c.name)} kampanyasında seçili"`:''}><input type="checkbox" data-c="m3cat" data-k="${esc(c)}" ${(R.cats||[]).includes(c)?'checked':''} ${o?'disabled':dis}> ${esc(c)} <span class="sub">(${o?esc(o.c.name):num(catN(c))})</span></label>`}).join('')||'<span class="sub">Aksesuar kategorisi yok.</span>'}</div>
     <h3 style="margin:14px 0 4px">Ayrıca dahil edilen ürünler <small class="sub">kategorisi seçili olmasa da kampanyaya girer</small></h3><div class="ly-chips">${chips('items')}</div>
     ${mg?`<input class="in" style="margin-top:6px" data-c="m3q" data-k="items" placeholder="Ürün ara (ad ya da barkod)" value="${esc((M.q||{}).items||'')}" autocomplete="off"><div id="m3-r-items">${mSearch('items')}</div>`:''}
     <h3 style="margin:14px 0 4px">Hariç tutulan ürünler <small class="sub">seçili kategoride olsa da kampanyaya girmez (ör. pahalı ürünler)</small></h3><div class="ly-chips">${chips('excl')}</div>
@@ -2875,12 +2889,12 @@ function mKurallar(){const mg=can('manage_multibuy'),M=S.m3,R=M.rd=M.rd||JSON.pa
     <div class="f"><label>Fiş başına en çok set (0 = sınırsız)</label><input class="in" data-c="m3r" data-k="max_sets" inputmode="numeric" value="${esc(String(R.max_sets))}" ${dis}></div>
     <div class="f"><label>Başlangıç (isteğe bağlı)</label><input class="in" type="date" data-c="m3r" data-k="valid_from" value="${esc(R.valid_from||'')}" ${dis}></div>
     <div class="f"><label>Bitiş (isteğe bağlı)</label><input class="in" type="date" data-c="m3r" data-k="valid_to" value="${esc(R.valid_to||'')}" ${dis}></div>
-    <div class="f full"><label class="chk"><input type="checkbox" data-c="m3r" data-k="mix" ${R.mix!==false?'checked':''} ${dis}> Seçili kategoriler <b>karışık</b> sayılsın (ör. 2 kılıf + 1 ekran koruyucu). Kapalıysa 3 ürün aynı kategoriden olmalı.</label></div>
-    <div class="f full"><label class="chk"><input type="checkbox" data-c="m3r" data-k="return_recalc" ${R.return_recalc!==false?'checked':''} ${dis}> <b>İadede kampanya yeniden hesaplansın</b>: 3 üründen biri iade edilince kalan 2 ürün kampanya şartını sağlamaz; kalan ürünlerdeki hediye indirimi iade tutarından düşülür (önerilir).</label></div>
+    <div class="f full"><label class="chk"><input type="checkbox" data-c="m3r" data-k="mix" ${R.mix!==false?'checked':''} ${dis}> Seçili kategoriler <b>karışık</b> sayılsın (ör. 2 kılıf + 1 ekran koruyucu). Kapalıysa ${num(R.buy)} ürün aynı kategoriden olmalı.</label></div>
+    <div class="f full"><label class="chk"><input type="checkbox" data-c="m3r" data-k="return_recalc" ${R.return_recalc!==false?'checked':''} ${dis}> <b>İadede kampanya yeniden hesaplansın</b>: ${num(R.buy)} üründen biri iade edilince kalan ${num(R.buy-1)} ürün kampanya şartını sağlamaz; kalan ürünlerdeki hediye indirimi iade tutarından düşülür (önerilir).</label></div>
     <div class="f full"><label class="chk"><input type="checkbox" data-c="m3r" data-k="stack_points" ${R.stack_points!==false?'checked':''} ${dis}> Sadakat puanı ve damga ödülü kampanyayla birlikte kullanılabilsin</label></div>
     <div class="f full"><label class="chk"><input type="checkbox" data-c="m3r" data-k="stack_manual" ${R.stack_manual?'checked':''} ${dis}> Kampanyalı ürünlere ayrıca fiş iskontosu uygulanabilsin (yalnız indirim yetkisi olanlar)</label></div></div>
     ${mg?'<div class="row" style="justify-content:flex-end"><button class="btn pri" data-a="m3-save">Kaydet</button></div>':'<p class="sub">Kuralları yalnız işletme sahibi değiştirir.</p>'}</div>`}
-async function mLoadSum(){const M=S.m3;const to=today();M.from=M.from||to.slice(0,8)+'01';M.to=M.to||to;try{M.sum=await call('m3_summary',{p_from:M.from,p_to:M.to});M.err=''}catch(e){M.err=msg(e);M.sum=null}render()}
+async function mLoadSum(){const M=S.m3;const to=today();M.from=M.from||to.slice(0,8)+'01';M.to=M.to||to;try{M.sum=await call('m3_summary',{p_from:M.from,p_to:M.to,p_kind:mK()});M.err=''}catch(e){M.err=msg(e);M.sum=null}render()}
 function mOzet(){const M=S.m3,s=M.sum;const pr=[['ay','Bu ay'],['30','Son 30 gün'],['yil','Bu yıl'],['hep','Tümü']];
   const head=`<div class="row" style="gap:8px;flex-wrap:wrap;margin-bottom:8px"><div class="seg">${pr.map(([k,l])=>`<button data-a="m3-per" data-k="${k}" aria-pressed="${M.per===k||(!M.per&&k==='ay')}">${l}</button>`).join('')}</div><span class="sub">${fmtDate(M.from)} – ${fmtDate(M.to)}</span></div>`;
   if(s===undefined)return head+'<div class="card empty">Yükleniyor…</div>';if(!s)return head;
@@ -6068,7 +6082,7 @@ function accRefundModal(lineId){
    <label class="f">İade edilecek tutar (₺)<input class="in" id="rf-a" type="number" min="0" step="0.01" inputmode="decimal" value="${(()=>{const cp=mRetCapL(l,rem,[]);return cp==null?accRefundValue(l,rem):Math.max(0,cp)})()}"></label>
    <label class="f">Ödeme şekli<select class="in" id="rf-m">${opts(METHODS,'nakit')}</select></label><label class="f full">İade nedeni<select class="in" id="rf-rc">${opts([['','- seçin -'],...RC],'')}</select></label><label class="f full">Ayrıntı / not (isteğe bağlı)<input class="in" id="rf-w"></label>
   </div>${(S.rd={disp:'stok',rb:'anka'},dispBlock('rd','aksesuar',true,S.rd))}
-  <p class="sub">Daha az iade ederseniz aradaki fark Anka'da kalır. Prim kalan adet üzerinden yeniden hesaplanır.${mRetCapL(l,rem,[])!=null?` <b>${esc(mName())} kampanyalı satış:</b> kalan ürünler kampanya şartını sağlamıyorsa hediye indirimi iade tutarından düşülür; tutar buna göre hesaplandı.`:''}</p><div class="err" id="f-err" hidden></div>
+  <p class="sub">Daha az iade ederseniz aradaki fark Anka'da kalır. Prim kalan adet üzerinden yeniden hesaplanır.${mRetCapL(l,rem,[])!=null?` <b>${esc(mName((mLineRec(l)||{}).rules||{}))} kampanyalı satış:</b> kalan ürünler kampanya şartını sağlamıyorsa hediye indirimi iade tutarından düşülür; tutar buna göre hesaplandı.`:''}</p><div class="err" id="f-err" hidden></div>
   <div class="actions"><button class="btn" data-a="close">Vazgeç</button><button class="btn pri" data-a="acc-refund-do" data-id="${l.id}">İadeyi kaydet</button></div>`)}
 
 /* ================= YÖNETİM ================= */
@@ -7571,9 +7585,9 @@ Object.assign(A,{
 Object.assign(A,{
   'm3-tab'(t){S.ui.mt=t.dataset.k;render()},
   async 'm3-active'(t){const c=mCamp();if(!c)return;const R=mR();if(!c.active&&!(R.cats||[]).length&&!(R.items||[]).length)return toast('Önce kampanyaya girecek kategorileri seçip kaydedin',true);
-    t.disabled=true;try{await call('set_campaign_active',{p_kind:'al3ode2',p_on:!c.active},c.active?mName()+' kampanyası durduruldu':mName()+' kampanyası başlatıldı');await syncData()}catch(e){}render()},
+    t.disabled=true;try{await call('set_campaign_active',{p_kind:mK(),p_on:!c.active},c.active?mName()+' kampanyası durduruldu':mName()+' kampanyası başlatıldı');await syncData()}catch(e){}render()},
   async 'm3-save'(t){const R=S.m3.rd;if(!R)return;const iv=k=>Math.round(psNum(R[k]));t.disabled=true;
-    try{await call('set_m3_rules',{p:{buy:iv('buy'),free:iv('free'),max_sets:iv('max_sets'),mix:R.mix!==false,cats:R.cats||[],items:R.items||[],excl:R.excl||[],valid_from:R.valid_from||null,valid_to:R.valid_to||null,
+    try{await call('set_m3_rules',{p:{kind:mK(),buy:iv('buy'),free:iv('free'),max_sets:iv('max_sets'),mix:R.mix!==false,cats:R.cats||[],items:R.items||[],excl:R.excl||[],valid_from:R.valid_from||null,valid_to:R.valid_to||null,
       stack_points:R.stack_points!==false,stack_manual:!!R.stack_manual,return_recalc:R.return_recalc!==false}},'Kampanya kuralları kaydedildi');S.m3.rd=null;S.m3.q={};await syncData();render()}catch(e){t.disabled=false}},
   'm3-iadd'(t){const R=S.m3.rd,k=t.dataset.k,o=k==='items'?'excl':'items';R[k]=(R[k]||[]).filter(x=>x!==t.dataset.id).concat([t.dataset.id]);R[o]=(R[o]||[]).filter(x=>x!==t.dataset.id);render()},
   'm3-idel'(t){const R=S.m3.rd,k=t.dataset.k;R[k]=(R[k]||[]).filter(x=>x!==t.dataset.id);render()},
@@ -7583,7 +7597,7 @@ Object.assign(A,{
   if(c==='m3r'){R[t.dataset.k]=t.type==='checkbox'?t.checked:t.value}
   else if(c==='m3cat'&&ev==='change'){const k=t.dataset.k;R.cats=(R.cats||[]).filter(x=>x!==k);if(t.checked)R.cats.push(k);render()}
   else if(c==='m3q'&&ev==='input'){S.m3.q=S.m3.q||{};S.m3.q[t.dataset.k]=t.value;const r=document.getElementById('m3-r-'+t.dataset.k);if(r)r.innerHTML=mSearch(t.dataset.k)}}));
-document.addEventListener('change',e=>{const t=e.target;if(t.dataset&&(t.dataset.c==='psprice'&&t.dataset.k==='a'||t.dataset.c==='psqty')&&S.cart){const l=S.cart.acc[+t.dataset.i];if(l&&(l.kb||l.m3!=null||(mOn()&&mElig(S.d.accMap.get(l.aid)))))render()}});
+document.addEventListener('change',e=>{const t=e.target;if(t.dataset&&(t.dataset.c==='psprice'&&t.dataset.k==='a'||t.dataset.c==='psqty')&&S.cart){const l=S.cart.acc[+t.dataset.i];if(l&&(l.kb||l.m3!=null||mKindOf(S.d.accMap.get(l.aid))))render()}});
 ['input','change'].forEach(ev=>document.addEventListener(ev,e=>{const t=e.target,c=t.dataset&&t.dataset.c;if(!c||!/^(kr|kpe|kpes|kpeq|kbsel)$/.test(c))return;
   const v=t.type==='checkbox'?t.checked:t.value;
   if(c==='kr'&&S.kg&&S.kg.rd)S.kg.rd[t.dataset.k]=v;
