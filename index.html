@@ -405,6 +405,9 @@ button.fx{font-variant-numeric:tabular-nums;font-weight:600;white-space:nowrap}b
 .nt-edh{display:flex;align-items:center;gap:10px}
 .nt-title{flex:1;min-width:0;border:0;background:none;font:inherit;font-size:22px;font-weight:600;color:inherit;padding:4px 0;outline:0}
 .nt-title::placeholder{color:var(--muted);font-weight:500}
+.ps-nl{color:var(--accent)}.ps-nl.late{background:color-mix(in srgb,var(--bad) 14%,transparent)!important;color:var(--bad)!important}
+.nl-cr{display:flex;gap:6px;align-items:flex-start;padding:2px 0;border-bottom:1px solid var(--line)}.nl-cr:last-child{border-bottom:0}.nl-cr .nt-chk{margin-top:8px}.nl-cr .nl-ni{padding:9px 4px 0;opacity:.7}.nl-cr.late b{color:var(--bad)}
+.nl-svbox{border:1px solid var(--warn);background:color-mix(in srgb,var(--warn) 10%,transparent);border-radius:12px;padding:10px 12px;margin:10px 0}.nl-svk,.nl-svn{display:flex;gap:6px;align-items:flex-start;padding:3px 0}.nl-svk small,.nl-svn small{opacity:.75}.nl-svk.late b{color:var(--bad)}
 .nl-box{display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin:8px 0 2px}.nl-chip{display:inline-flex;align-items:stretch;border:1px solid var(--line);border-radius:999px;background:var(--surface);overflow:hidden;max-width:100%}
 .nl-chip .nl-go{display:inline-flex;align-items:center;gap:5px;border:0;background:none;color:inherit;padding:4px 4px 4px 10px;cursor:pointer;font:inherit;font-size:13px;min-width:0}.nl-chip .nl-go span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:220px;font-weight:600}.nl-chip .nl-go small{opacity:.65}
 .nl-chip .nl-x{border:0;background:none;color:inherit;opacity:.6;padding:0 8px;cursor:pointer}.nl-chip .nl-x:hover{opacity:1}.nl-chip.gone{opacity:.55;border-style:dashed}.nl-chip .nl-go:hover span{text-decoration:underline}
@@ -2184,7 +2187,7 @@ function vSatis(){psInit();psCheck();
    <div class="ps-rel">${psResHtml()}</div>
    <div class="ps-row ps-cust"><span class="avatar">${cust?esc(initials(cust.name)):'?'}</span>
     <div class="cq">${cust?`<b>${esc(cust.name)}</b><small>${esc([cust.phone,acqShort(cust)].filter(Boolean).join(' · '))||'Müşteri'} <button class="lnk" data-a="ps-cclr">Kaldır</button></small>`:`<input id="ps-cq" type="search" autocomplete="off" placeholder="Müşteri seçin (ad veya telefon)" value="${esc(u.cq||'')}" data-c="pscq" aria-label="Müşteri ara"><small>Satış, iade ve değişim için isteğe bağlı</small>`}</div>
-    ${lyBtn(c)}<button class="btn soft" data-a="ps-cust">${ic('userplus','sm')} Müşteri seç</button>
+    ${lyBtn(c)}${cust?nlPsBtn(cust.id):''}<button class="btn soft" data-a="ps-cust">${ic('userplus','sm')} Müşteri seç</button>
     <button class="ps-tool sq" data-a="ps-more" aria-expanded="${!!u.more}" title="Satış bilgileri: satışı yapan, tarih, not">${ic('down')}${c.note||c.trades.length||(c.date&&c.date!==today())||(c.staff&&c.staff!==S.user.id)?'<i class="dot"></i>':''}</button></div>
    <div class="ps-rel" id="ps-cres">${!cust&&u.cq?psCustDd(u.cq):''}</div>
    ${u.more?psMoreHtml(c):''}
@@ -4670,7 +4673,7 @@ function svDeliverModal(id){
    <label class="f">Onarım garantisi (gün)<input class="in" id="d-wd" type="number" min="0" max="730" step="1" inputmode="numeric" value="${x.warranty_days==null?shopSet().wdays:x.warranty_days}"></label>
    <label class="f">Not<input class="in" id="d-note"></label></div>
   ${isOwner()?`<p class="sub">Şu ana kadarki gider <b>${money(svCostOf(x))}</b>. Giderleri "Gider" düğmesiyle girin; kazanç = ücret − gider.</p>`:''}
-  <p class="sub">Servis ücreti kasaya "Diğer gelir · Servis" olarak yazılır. Giderler "Servis giderleri" masrafı olarak kasadan düşer (ya da Masraflar'da ödeme bekler); kasada kalan fark kazançtır.</p>
+  ${nlSvBox(id)}<p class="sub">Servis ücreti kasaya "Diğer gelir · Servis" olarak yazılır. Giderler "Servis giderleri" masrafı olarak kasadan düşer (ya da Masraflar'da ödeme bekler); kasada kalan fark kazançtır.</p>
   <div class="err" id="f-err" hidden></div><div class="actions"><button class="btn" data-a="close">Vazgeç</button><button class="btn pri" data-a="sv-do" data-id="${id}">Teslim et</button></div>`)}
 
 /* ---- Teknik servis: gider/kazanç, teklif-onay, müşteri formları ---- */
@@ -6930,7 +6933,8 @@ const A={
     if(isOwner()&&price<svCostOf(x)&&!armed(t,'Ücret giderin altında ('+money(svCostOf(x))+'); yine de teslim?'))return;
     const pays=[];if(price-a2>0)pays.push({method:g('d-m1'),amount:price-a2});if(a2>0)pays.push({method:g('d-m2'),amount:a2});
     try{const u=await sb.from('service_orders').update({work_done:g('d-work')||null,warranty_days:Math.max(0,Math.min(730,Math.round(nv('d-wd')||0)))}).eq('id',t.dataset.id);if(u.error)throw u.error;
-      await call('deliver_service',{p_service:t.dataset.id,p_price:price,p_payments:pays,p_note:g('d-note')||null},'Cihaz teslim edildi');closeModal();await reload()}catch(e){setErr(msg(e))}},
+      const nlck=[...document.querySelectorAll('#modal [data-nlsv]:checked')].map(i=>i.dataset.nlsv);
+      await call('deliver_service',{p_service:t.dataset.id,p_price:price,p_payments:pays,p_note:g('d-note')||null},'Cihaz teslim edildi');closeModal();await reload();nlSvAfter(t.dataset.id,nlck)}catch(e){setErr(msg(e))}},
   svview(t){S.ui.svv=t.dataset.v;if(t.getAttribute('href')==='#servis')location.hash='servis';render()},
   'pr-open'(){S.ui.pur_rep=true;render()},
   'pr-close'(){S.ui.pur_rep=false;render()},
@@ -7155,7 +7159,7 @@ async function ntLoad(force){const N=NT();if(N.loading||(N.loaded&&!force))retur
   catch(e){N.err=msg(e)}
   finally{N.loading=false;N.loaded=true}
   if(!N.purged&&!N.missing&&!N.err){N.purged=true;ntPurge()}
-  if(S.d&&(S.ui.tab==='notlar'||S.ui.tab==='panel'||document.querySelector('[data-a="nt-rec"]')))rtRender()}
+  if(S.d&&(S.ui.tab==='notlar'||S.ui.tab==='panel'||(S.ui.tab==='satis'&&S.cart&&S.cart.customer)||document.querySelector('[data-a="nt-rec"]')))rtRender()}
 function ntMerge(row){const N=NT();if(!row||!row.id)return;const d=N.dirty.get(row.id)||(row.period?N.dirty.get('p:'+row.period+':'+row.period_date):null);
   const i=N.notes.findIndex(n=>n.id===row.id),v={...(i>=0?N.notes[i]:{}),...row,...(d||{})};if(i>=0)N.notes[i]=v;else N.notes.push(v)}
 async function ntPurge(){try{const r=await sb.rpc('notes_trash_paths');const P=(r.data||[]).filter(Boolean);
@@ -7643,10 +7647,10 @@ function nlHiRun(k){k=k||0;setTimeout(()=>{const h=S.ui.ntHi;if(!h)return;const 
   try{it.scrollIntoView({block:'center',behavior:'smooth'})}catch(e){it.scrollIntoView()}it.classList.add('nl-hi');setTimeout(()=>it.classList.remove('nl-hi'),2600)},k?150:60)}
 /* kayıt kartlarındaki düğme */
 function ntBtn(rt,id){const N=NT();if(!N.loaded&&!N.loading)ntLoad();if(N.missing||N.noLinks)return '';const c=nlNotes(rt,id),open=c.filter(n=>n.kind==='is'&&!n.done).length;
-  return `<button class="btn sm nl-btn${c.length?' has':''}" data-a="nt-rec" data-rt="${rt}" data-id="${id}" data-nl="${rt}:${id}" title="Bu kayda bağlı notlar ve yapılacaklar">${ic('note','sm')}${c.length?'Notlar ('+c.length+')':'Not'}${open?`<span class="nl-dot" aria-label="${open} açık yapılacak">${open}</span>`:''}</button>`}
+  return `<button class="btn sm nl-btn${c.length?' has':''}" data-a="nt-rec" data-rt="${rt}" data-id="${id}" data-nl="${rt}:${id}" title="Bu kayda bağlı notlar ve yapılacaklar">${ic('notebook','sm')}${c.length?'Notlar ('+c.length+')':'Not'}${open?`<span class="nl-dot" aria-label="${open} açık yapılacak">${open}</span>`:''}</button>`}
 /* notun içindeki bağlantı kutusu */
 function nlChips(n,ro){const L=nlLinksOf(n.id),S2=ro?[]:nlSuggest(n);
-  return L.map(l=>{const T=NL[l.ref_table]||{t:'Kayıt',ic:'note'},ok=!!nlRec(l.ref_table,l.ref_id);
+  return L.map(l=>{const T=NL[l.ref_table]||{t:'Kayıt',ic:'notebook'},ok=!!nlRec(l.ref_table,l.ref_id);
     return `<span class="nl-chip${ok?'':' gone'}"><button type="button" class="nl-go" data-a="nt-lgo" data-rt="${l.ref_table}" data-id="${l.ref_id}" title="${esc(T.t+(l.sub?' · '+l.sub:'')+(ok?' · açmak için dokunun':' · kayıt bulunamadı ya da yetkiniz yok'))}">${ic(T.ic,'sm')}${String(l.label||'').startsWith(T.t)?'':`<small>${esc(T.t)}</small>`}<span>${esc(l.label||T.t)}</span></button>${ro?'':`<button type="button" class="nl-x" data-a="nt-ldel" data-id="${l.id}" aria-label="${esc((l.label||T.t)+' bağlantısını kaldır')}" title="Bağlantıyı kaldır">${ic('x','sm')}</button>`}</span>`}).join('')
     +(ro?'':`<button type="button" class="btn sm nl-add" data-a="nt-lpick" data-id="${n.id}" title="Müşteri, servis, satış… bağla (metinde @ yazarak da bağlayabilirsiniz)">${ic('plus','sm')}Kayıt bağla</button>`)
     +(S2.length?`<span class="nl-sug"><small>Öneri:</small>${S2.map(([rt,r])=>`<button type="button" class="nl-s" data-a="nt-lsug" data-nid="${n.id}" data-rt="${rt}" data-id="${r.id}" title="Metinde geçiyor · bağlamak için dokunun">${ic('plus','sm')}${esc(NL[rt].lab(r))}</button>`).join('')}</span>`:'')}
@@ -7711,7 +7715,7 @@ function ntRecModal(rt,id){const T=NL[rt],r=nlRec(rt,id),N=NT();if(!T)return;S.n
   if(N.missing||N.noLinks){modal(`<h2>Notlar</h2><p class="sub">Not bağlantıları için 074 SQL dosyasını Supabase'de çalıştırın.</p><div class="actions"><button class="btn" data-a="close">Kapat</button></div>`);return}
   const L=nlNotes(rt,id),lab=r?T.lab(r):((N.links.find(l=>l.ref_table===rt&&l.ref_id===id)||{}).label||T.t);
   const row=n=>{const sn=ntPlain(n.body).slice(0,120),od=n.kind==='is'&&!n.done&&n.due_date&&n.due_date<today();
-    return `<button type="button" class="nl-nr${n.kind==='is'&&n.done?' done':''}" data-a="nt-open" data-id="${n.id}">${n.kind==='is'?`<span class="nt-chk mini${n.done?' on':''}">${ic('check','sm')}</span>`:ic('note','sm')}<span><b>${esc(ntTitle(n))}</b>${sn&&sn!==ntTitle(n)?`<small>${esc(sn)}</small>`:''}<small>${esc(nlJ(n.kind==='is'?(n.done?'Tamamlandı':'Yapılacak'):'Not',n.due_date?ntDayTxt(n.due_date)+(n.due_time?' '+n.due_time.slice(0,5):''):'',ntMine(n)?'':'Paylaşan: '+pname(n.owner_id),'Düzenleme '+ntRel(n.updated_at)))}</small>${od?'<small class="neg">Gecikmiş</small>':''}</span></button>`};
+    return `<button type="button" class="nl-nr${n.kind==='is'&&n.done?' done':''}" data-a="nt-open" data-id="${n.id}">${n.kind==='is'?`<span class="nt-chk mini${n.done?' on':''}">${ic('check','sm')}</span>`:ic('notebook','sm')}<span><b>${esc(ntTitle(n))}</b>${sn&&sn!==ntTitle(n)?`<small>${esc(sn)}</small>`:''}<small>${esc(nlJ(n.kind==='is'?(n.done?'Tamamlandı':'Yapılacak'):'Not',n.due_date?ntDayTxt(n.due_date)+(n.due_time?' '+n.due_time.slice(0,5):''):'',ntMine(n)?'':'Paylaşan: '+pname(n.owner_id),'Düzenleme '+ntRel(n.updated_at)))}</small>${od?'<small class="neg">Gecikmiş</small>':''}</span></button>`};
   modal(`<div class="nt-mh"><h2 style="margin:0">${ic(T.ic)} ${esc(lab)}</h2><div class="sp"></div><button class="ib" data-a="close" aria-label="Kapat">${ic('x')}</button></div>
     <p class="sub" style="margin-top:2px">${esc(nlJ(T.t,r?T.sub(r):''))} · bağlı notlar yalnız size ve notu paylaştığınız kişilere görünür.</p>
     <div class="row" style="gap:6px;flex-wrap:wrap"><button class="btn pri" data-a="nt-recnew" data-k="not">${ic('plus','sm')} Yeni not</button><button class="btn" data-a="nt-recnew" data-k="is">${ic('check','sm')} Yeni yapılacak</button></div>
@@ -7720,7 +7724,7 @@ function ntRecModal(rt,id){const T=NL[rt],r=nlRec(rt,id),N=NT();if(!T)return;S.n
 function ntRecSearch(q){const w=document.getElementById('nt-rlres'),R=S.ntrec;if(!w||!R)return;const ql=q.trim().toLocaleLowerCase('tr');if(ql.length<2){w.innerHTML='';return}
   const have=new Set(nlNotes(R.rt,R.id).map(n=>n.id));
   const L=NT().notes.filter(n=>ntLive(n)&&ntCanEd(n)&&!have.has(n.id)&&(ntTitle(n)+' '+ntPlain(n.body)).toLocaleLowerCase('tr').includes(ql)).sort((a,b)=>String(b.updated_at).localeCompare(String(a.updated_at))).slice(0,8);
-  w.innerHTML=L.map(n=>`<button type="button" class="nl-nr" data-a="nt-reclink" data-id="${n.id}">${ic(n.kind==='is'?'check':'note','sm')}<span><b>${esc(ntTitle(n))}</b><small>${esc(n.period?'Günlük / dönem sayfası':n.kind==='is'?'Yapılacak':'Not')} · bağlamak için dokunun</small></span></button>`).join('')||'<div class="sub">Not bulunamadı</div>'}
+  w.innerHTML=L.map(n=>`<button type="button" class="nl-nr" data-a="nt-reclink" data-id="${n.id}">${ic(n.kind==='is'?'check':'notebook','sm')}<span><b>${esc(ntTitle(n))}</b><small>${esc(n.period?'Günlük / dönem sayfası':n.kind==='is'?'Yapılacak':'Not')} · bağlamak için dokunun</small></span></button>`).join('')||'<div class="sub">Not bulunamadı</div>'}
 Object.assign(A,{
   'nt-rec'(t){ntRecModal(t.dataset.rt,t.dataset.id)},
   async 'nt-recnew'(t){const R=S.ntrec;if(!R)return;const k=t.dataset.k,f={kind:k};if(k==='is')f.due_date=today();
@@ -7750,7 +7754,44 @@ document.addEventListener('click',e=>{const a=e.target&&e.target.closest&&e.targ
 /* yazmayı bitirince öneriler tazelensin */
 document.addEventListener('focusout',e=>{const b=e.target&&e.target.closest&&e.target.closest('[data-nt-body],[data-nt-title]');if(!b)return;const nid=nlKeyNid(b.dataset.key);if(nid)setTimeout(()=>nlRefresh(nid),300)});
 
-function nlMeta(n,compact){const L=NT().links.filter(l=>l.note_id===n.id);if(!L.length)return '';const T=NL[L[0].ref_table]||{ic:'note'};
+/* 074 ek: satış ekranında müşterinin açık notları · servis tesliminde bağlı açık yapılacaklar */
+const nlOpen=n=>n&&ntLive(n)&&!n.period&&!(n.kind==='is'&&n.done);
+const nlNoteSort=(a,b)=>(a.kind==='is'?0:1)-(b.kind==='is'?0:1)||String(a.due_date||'9999').localeCompare(String(b.due_date||'9999'))||String(b.updated_at).localeCompare(String(a.updated_at));
+/* müşteriye doğrudan ya da müşterinin servis / sipariş / satış / takip kaydı üzerinden bağlı açık notlar */
+function nlCustNotes(cid){const N=S.nt;if(!cid||!N||!N.loaded||N.missing||N.noLinks)return [];const m=new Map();
+  N.links.forEach(l=>{let via=null;if(l.ref_table==='contacts'){if(l.ref_id!==cid)return}
+    else if(['service_orders','customer_orders','follow_ups','sales','quotes'].includes(l.ref_table)){const r=nlRec(l.ref_table,l.ref_id);if(!r||(r.contact_id||r.customer_id)!==cid)return;via=l}else return;
+    const n=ntGet(l.note_id);if(!nlOpen(n))return;const x=m.get(n.id)||{n,via:[]};if(via)x.via.push(via);m.set(n.id,x)});
+  return [...m.values()].sort((a,b)=>nlNoteSort(a.n,b.n))}
+const nlLate=n=>n.kind==='is'&&!n.done&&n.due_date&&n.due_date<today();
+function nlPsBtn(cid){if(!cid)return '';const N=NT();if(!N.loaded&&!N.loading){ntLoad();return ''}const L=nlCustNotes(cid);if(!L.length)return '';
+  const t=L.filter(x=>x.n.kind==='is').length,late=L.some(x=>nlLate(x.n));
+  if(S.nlPsLast!==cid){S.nlPsLast=cid;setTimeout(()=>toast(`${(S.d.contactMap.get(cid)||{}).name||'Müşteri'}: ${L.length} açık not / yapılacak var${late?' (gecikmiş var)':''} · ${ntTitle(L[0].n)}`),60)}
+  return `<button class="btn soft ps-nl${late?' late':''}" data-a="ps-nl" data-id="${cid}" title="${esc(L.slice(0,5).map(x=>ntTitle(x.n)).join(' · '))}">${ic('notebook','sm')} ${t?t+' yapılacak':''}${t&&L.length>t?' · ':''}${L.length>t?(L.length-t)+' not':''}</button>`}
+function nlNoteRow(n,via,o={}){const sn=ntPlain(n.body).slice(0,110),late=nlLate(n);
+  return `<div class="nl-cr${late?' late':''}">${n.kind==='is'?`<button class="nt-chk${n.done?' on':''}" data-a="${o.act||'nl-cdone'}" data-id="${n.id}" aria-label="Tamamlandı"${ntCanEd(n)?'':' disabled'}>${ic('check','sm')}</button>`:`<span class="nl-ni">${ic('notebook','sm')}</span>`}
+    <button type="button" class="nl-nr" data-a="nt-open" data-id="${n.id}"><span><b>${esc(ntTitle(n))}</b>${sn&&sn!==ntTitle(n)?`<small>${esc(sn)}</small>`:''}<small>${esc(nlJ(n.kind==='is'?'Yapılacak':'Not',n.due_date?ntDayTxt(n.due_date)+(n.due_time?' '+n.due_time.slice(0,5):''):'',(via||[]).map(l=>l.label).join(', '),ntMine(n)?'':'Paylaşan: '+pname(n.owner_id)))}</small>${late?'<small class="neg">Gecikmiş</small>':''}</span></button></div>`}
+function nlCustModal(cid){const c=S.d.contactMap.get(cid),L=nlCustNotes(cid);S.nlc=cid;
+  modal(`<div class="nt-mh"><h2 style="margin:0">${ic('notebook')} ${esc(c?c.name:'Müşteri')} · açık notlar</h2><div class="sp"></div><button class="ib" data-a="close" aria-label="Kapat">${ic('x')}</button></div>
+    <p class="sub" style="margin-top:2px">Müşteriye ve müşterinin servis, sipariş, satış kayıtlarına bağlı, tamamlanmamış notlar ve yapılacaklar.</p>
+    <div class="nl-nl">${L.map(x=>nlNoteRow(x.n,x.via)).join('')||'<div class="empty" style="padding:14px">Açık not kalmadı.</div>'}</div>
+    <div class="actions"><button class="btn" data-a="nt-rec" data-rt="contacts" data-id="${cid}">${ic('plus','sm')} Not ekle</button><button class="btn pri" data-a="close">Satışa dön</button></div>`)}
+/* servis teslim penceresi: bağlı açık yapılacaklar */
+function nlSvOpen(sid){const N=S.nt;if(!N||!N.loaded||N.noLinks)return [];return nlNotes('service_orders',sid).filter(nlOpen).sort(nlNoteSort)}
+function nlSvBox(sid){const L=nlSvOpen(sid);if(!L.length)return '';const T=L.filter(n=>n.kind==='is');
+  return `<div class="nl-svbox" id="nl-svbox"><b>${ic('notebook','sm')} Bu servise bağlı ${T.length?T.length+' açık yapılacak':''}${T.length&&L.length>T.length?' ve ':''}${L.length>T.length?(L.length-T.length)+' not':''} var</b>
+    <p class="sub" style="margin:2px 0 6px">Teslimden önce kontrol edin. İşaretlediğiniz yapılacaklar teslimle birlikte tamamlanır.</p>
+    ${L.map(n=>n.kind==='is'&&ntCanEd(n)?`<label class="ck nl-svk${nlLate(n)?' late':''}"><input type="checkbox" data-nlsv="${n.id}"> <span><b>${esc(ntTitle(n))}</b>${n.due_date?` <small>${esc(ntDayTxt(n.due_date))}</small>`:''}${ntPlain(n.body)?`<small> · ${esc(ntPlain(n.body).slice(0,90))}</small>`:''}</span></label>`
+      :`<div class="nl-svn">${ic(n.kind==='is'?'check':'notebook','sm')} <span><b>${esc(ntTitle(n))}</b>${ntPlain(n.body)?`<small> · ${esc(ntPlain(n.body).slice(0,110))}</small>`:''}</span></div>`).join('')}</div>`}
+async function nlSvAfter(sid,checked){const done=[];for(const id of checked){const n=ntGet(id);if(n&&!n.done&&ntCanEd(n)&&await ntUpd(id,{done:true},{quiet:true}))done.push(n)}
+  const left=nlSvOpen(sid).filter(n=>n.kind==='is');
+  if(left.length)setTimeout(()=>toast(`Hatırlatma: bu servise bağlı ${left.length} açık yapılacak kaldı (${left.slice(0,2).map(n=>ntTitle(n)).join(', ')}${left.length>2?'…':''})`),400);
+  else if(done.length)setTimeout(()=>toast(done.length+' bağlı yapılacak tamamlandı'),400)}
+Object.assign(A,{
+  'ps-nl'(t){nlCustModal(t.dataset.id)},
+  async 'nl-cdone'(t){const n=ntGet(t.dataset.id);if(!n||!ntCanEd(n))return;if(await ntUpd(n.id,{done:!n.done},{quiet:true})){toast('Tamamlandı');if(S.nlc&&document.querySelector('#modal .modal'))nlCustModal(S.nlc)}},
+});
+function nlMeta(n,compact){const L=NT().links.filter(l=>l.note_id===n.id);if(!L.length)return '';const T=NL[L[0].ref_table]||{ic:'notebook'};
   return `<span class="nl-m" title="${esc(L.map(l=>l.label).join(', '))}">${ic(T.ic,'sm')}${compact?(L.length>1?L.length:''):esc(String(L[0].label).slice(0,28))+(L.length>1?' +'+(L.length-1):'')}</span>`}
 document.addEventListener('mousedown',e=>{if(e.target.closest&&e.target.closest('[data-a="nt-cmd"],[data-a="nt-slash"],[data-a="nt-line2task"]'))e.preventDefault()});
 document.addEventListener('input',e=>{const t=e.target;if(!t||!t.closest)return;
@@ -7824,7 +7865,7 @@ Object.assign(A,{
   'ps-rdel'(t){psSnd('del');S.cart.rets.splice(+t.dataset.i,1);mRetSync(S.cart);render()},
   'ps-cust'(){psCustModal()},
   'ps-cpick'(t){S.cart.customer=t.dataset.id;S.ps.cq='';closeModal();render();lyAuto(t.dataset.id)},
-  'ps-cclr'(){S.cart.customer='';S.cart.ly=null;render()},
+  'ps-cclr'(){S.cart.customer='';S.nlPsLast='';S.cart.ly=null;render()},
   'ps-cnew'(){psCustNew()},
   async 'ps-csave'(t){t.disabled=true;try{const id=await resolveContact('musteri','s-cust');S.cart.nn='';S.cart.nt='';S.cart.nch='';S.cart.nsrc='';closeModal();await syncData();S.cart.customer=id;S.ps.cq='';toast('Müşteri eklendi ve seçildi');render();lyAuto(id)}catch(e){t.disabled=false;setErr(msg(e))}},
   'ps-more'(){S.ps.more=!S.ps.more;render()},
