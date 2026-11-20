@@ -312,6 +312,8 @@ button.fx{font-variant-numeric:tabular-nums;font-weight:600;white-space:nowrap}b
 .lv-cal{font-size:12px}.lv-cal th,.lv-cal td{padding:3px 2px;text-align:center;min-width:20px}.lv-cal th.we{color:var(--muted)}
 .lvd{display:inline-block;width:12px;height:12px;border-radius:3px;background:var(--accent);vertical-align:middle}.lvd.u{background:var(--pink)}.lvd.p{background:transparent;border:2px dashed var(--accent)}
 .pr-t td,.pr-t th{white-space:nowrap}
+.cr-bar{display:flex;flex-wrap:wrap;gap:8px;align-items:flex-end;margin-bottom:6px}.cr-d{display:flex;flex-direction:column;font-size:12px;color:var(--muted);gap:2px}.cr-d .in{width:auto;padding:6px 8px}
+.cr-sel{display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin:0 0 10px;padding:7px 10px;border-radius:8px;background:color-mix(in srgb,var(--accent) 8%,transparent);font-size:13px}
 .pline{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:8px;align-items:end;padding:10px 0;border-bottom:1px solid var(--line)}
 .pline .pm{grid-column:span 2}.pline .pv{align-self:center}
 @media (max-width:560px){.pline .pm{grid-column:1/-1}}
@@ -2465,15 +2467,25 @@ function vKampanya(){const u=S.ui;if(!S.d.campaigns)return '<h1>Kampanyalar</h1>
     ${hcCamp()&&(can('gift_card_sell')||can('view_gift_cards')||can('manage_gift_cards'))?(()=>{const hc=hcCamp(),R=hcR(),vw=can('view_gift_cards'),tb=vw?r2(sum((S.d.gift_cards||[]).filter(g=>g.status==='aktif'),g=>hcBal(g.id).bal)):0;return `<button class="card kp-card" data-a="kp-open" data-k="hediye_ceki"><span class="icb p">${ic('gcard','lg')}</span><div class="kp-b"><div class="row"><b style="font-size:17px">${esc(hc.name)}</b><span class="pill ${hc.active?'ok':''}">${hc.active?'Aktif':'Kapalı'}</span></div>
      <div class="sub">${vw?num((S.d.gift_cards||[]).filter(g=>g.status==='aktif').length)+' aktif çek · müşterideki bakiye '+money(tb):'Çek sat, yükle, bakiye sorgula'}</div><div class="sub">Ücretli ${R.expiry_months?R.expiry_months+' ay':'süresiz'} · ücretsiz ${R.free_expiry_months?R.free_expiry_months+' ay':'süresiz'} geçerli</div></div>${ic('chev')}</button>`})():''}
     <div class="card kp-card off"><span class="icb">${ic('plus','lg')}</span><div class="kp-b"><b>Yeni kampanya türleri</b><div class="sub">Kupon, dönemsel indirim gibi türler sonraki aşamalarda eklenecek.</div></div></div></div>`}
+/* ---------- kampanya raporları: ortak tarih aralığı seçici (hazır aralık + özel aralık) ---------- */
+const CR_PER=[['ay','Bu ay'],['gecen','Geçen ay'],['30','Son 30 gün'],['90','Son 90 gün'],['yil','Bu yıl'],['hep','Tümü']];
+function crObj(g){S.ly=S.ly||{};return g==='lys'?(S.ly.sr=S.ly.sr||{}):g==='lyl'?(S.ly.lr=S.ly.lr||{}):(S[g]=S[g]||{})}
+function crInit(G){const to=today();if(!G.from||!G.to){G.per='ay';G.from=to.slice(0,8)+'01';G.to=to}return G}
+function crPreset(k){const to=today(),m=to.slice(0,8)+'01';return {ay:[m,to],gecen:[addMonths(m,-1),addDays(m,-1)],'30':[addDays(to,-29),to],'90':[addDays(to,-89),to],yil:[to.slice(0,5)+'01-01',to],hep:['2020-01-01',to]}[k]}
+function crReload(g){const G=crObj(g);if(g==='lys'){S.ly.sum=undefined;lyLoad('sum')}else if(g==='lyl'){S.ly.ledger=undefined;lyLoad('ledger')}else{G.sum=undefined;({gw:wLoadSum,kg:kLoadSum,m3:mLoadSum,hc:hcLoadSum})[g]()}render()}
+function crRange(g){const G=crInit(crObj(g)),n=Math.round((parse(G.to)-parse(G.from))/864e5)+1,lbl=G.per&&G.per!=='ozel'?(CR_PER.find(x=>x[0]===G.per)||[])[1]:'Özel aralık';
+  return `<div class="cr-bar"><div class="seg">${CR_PER.map(([k,l])=>`<button data-a="cr-per" data-g="${g}" data-k="${k}" aria-pressed="${G.per===k}">${l}</button>`).join('')}</div>
+   <label class="cr-d">Başlangıç<input class="in" type="date" data-c="cr-d" data-g="${g}" data-f="from" value="${G.from}" max="${G.to}"></label><label class="cr-d">Bitiş<input class="in" type="date" data-c="cr-d" data-g="${g}" data-f="to" value="${G.to}" min="${G.from}" max="${today()}"></label></div>
+   <div class="cr-sel">${ic('cal','sm')}<span>Seçili aralık: <b>${fmtDate(G.from)} – ${fmtDate(G.to)}</b> · ${num(n)} gün</span>${lbl?` <span class="pill">${esc(lbl)}</span>`:''}</div>`}
 const LYT=[['ozet','Özet'],['uyeler','Üyeler'],['islemler','İşlemler'],['dikkat','Dikkat edilecek numaralar'],['kurallar','Kurallar']];
 async function lyLoad(k){S.ly=S.ly||{};const L=S.ly;try{
-  if(k==='sum')L.sum=await call('loyalty_summary',{});
+  if(k==='sum'){const G=crInit(crObj('lys'));try{L.sum=await call('loyalty_summary',{p_from:G.from,p_to:G.to});L.sumOld=false}catch(e){L.sum=await call('loyalty_summary',{});L.sumOld=true}}
   if(k==='members')L.members=await call('loyalty_members_list',{})||[];
   if(k==='flags')L.flags=await call('loyalty_flags',{p_days:L.fdays||30})||[];
   if(k==='otplog')L.otplog=await call('loyalty_otp_log',{p_limit:50})||[];
   if(k==='wa'){try{L.wa=await fnCall('sadakat',{action:'durum'})}catch(e){L.wa={configured:false,err:msg(e)}}}
   if(k==='blocked'){const r=await sb.from('loyalty_blocked').select('*').order('created_at',{ascending:false});if(r.error)throw r.error;L.blocked=r.data||[]}
-  if(k==='ledger'){let q=sb.from('loyalty_ledger').select('*').gte('created_at',new Date(Date.now()-(L.ldays||30)*864e5).toISOString()).order('created_at',{ascending:false}).limit(1000);if(L.lmem)q=q.eq('member_id',L.lmem);const r=await q;if(r.error)throw r.error;L.ledger=r.data||[]}
+  if(k==='ledger'){const G=crInit(crObj('lyl'));let q=sb.from('loyalty_ledger').select('*').gte('created_at',new Date(G.from+'T00:00:00').toISOString()).lte('created_at',new Date(G.to+'T23:59:59.999').toISOString()).order('created_at',{ascending:false}).limit(1000);if(L.lmem)q=q.eq('member_id',L.lmem);const r=await q;if(r.error)throw r.error;L.ledger=r.data||[]}
   }catch(e){L.err=msg(e)}if(S.ui.tab==='kampanya'&&!rtBusyUi())render()}
 function vSadakat(){const u=S.ui,c=lyCamp(),L=S.ly=S.ly||{},t=u.lyt||'ozet',mg=can('manage_loyalty');
   const need={ozet:['sum'],uyeler:['members'],islemler:['members','ledger'],dikkat:['flags'],kurallar:mg?['blocked','otplog','wa']:['otplog','wa']}[t]||[];
@@ -2483,15 +2495,22 @@ function vSadakat(){const u=S.ui,c=lyCamp(),L=S.ly=S.ly||{},t=u.lyt||'ozet',mg=c
    ${mg?`<button class="btn sm" data-a="ly-active">${c.active?'Programı durdur':'Programı başlat'}</button>`:''}</div>
    <div class="seg ly-tabs" role="tablist">${LYT.map(([k,l])=>`<button role="tab" class="${t===k?'on':''}" data-a="ly-tab" data-k="${k}">${l}${k==='dikkat'&&L.sum&&L.sum.flags?` <span class="pill warn">${L.sum.flags}</span>`:''}</button>`).join('')}</div>
    ${L.err?`<div class="note bad">${esc(L.err)}</div>`:''}${body}`}
+function lyOzetOld(s){const share=s.all_sales_month?Math.round(s.sales_month/s.all_sales_month*100):0;
+  return `<div class="ly-kpis">${lyTile('Üye',num(s.members),`${num(s.active)} aktif · bu ay ${num(s.new_month)} yeni`)}${lyTile('Puan borcu',money(s.liability),'','p')}${lyTile('Bu ay kazanılan',num(s.earned_month)+' puan',`kullanılan ${num(s.spent_month)}`)}${lyTile('Üyeli satış (bu ay)',share+'%',`${num(s.sales_month)} / ${num(s.all_sales_month)} satış · ${money(s.revenue_month)}`)}</div>`}
 const lyTile=(l,v,s,cls)=>`<div class="card kpi"><div class="sub">${l}</div><div class="kv ${cls||''}">${v}</div>${s?`<div class="sub">${s}</div>`:''}</div>`;
-function lyOzet(){const s=S.ly.sum,R=lyR();if(!s)return '<div class="card empty">Yükleniyor…</div>';
-  const share=s.all_sales_month?Math.round(s.sales_month/s.all_sales_month*100):0;
-  return `<div class="ly-kpis">${lyTile('Üye',num(s.members),`${num(s.active)} aktif · bu ay ${num(s.new_month)} yeni`)}
+function lyOzet(){const s=S.ly.sum,R=lyR(),head=crRange('lys');if(!s)return head+'<div class="card empty">Yükleniyor…</div>';
+  if(S.ly.sumOld)return head+'<div class="note bad">Seçili aralığa göre özet için 073_kampanya_tarih_araligi.sql dosyasını çalıştırın. Şimdilik yalnız bu ayın değerleri gösteriliyor.</div>'+lyOzetOld(s);
+  const share=s.all_sales?Math.round(s.sales/s.all_sales*100):0;
+  return head+`<div class="card"><h3 style="margin-top:0">Şu an</h3><div class="ly-kpis">${lyTile('Üye',num(s.members),num(s.active)+' aktif')}
    ${lyTile('Puan borcu',money(s.liability),`${money(s.liability-s.pending)} kullanılabilir · ${money(s.pending)} bekleyen${s.debt?' · '+num(s.debt)+' puan iade borcu':''}`,'p')}
-   ${lyTile('Bu ay kazanılan',num(s.earned_month)+' puan',`kullanılan ${num(s.spent_month)} · süresi dolan ${num(s.expired_month)}`)}
-   ${lyTile('Damga ve ödül',num(s.stamps_month)+' damga',`${num(s.rewards_open)} açık ödül · bu ay ${num(s.rewards_used_month)} kullanıldı (${money(s.reward_value_month)})`)}
-   ${lyTile('Üyeli satış (bu ay)',share+'%',`${num(s.sales_month)} / ${num(s.all_sales_month)} satış · ${money(s.revenue_month)}`)}
-   ${lyTile('Dikkat edilecek',num(s.flags),s.flags?'<button class="lnk" data-a="ly-tab" data-k="dikkat">Listeyi aç</button>':'Şüpheli hareket yok',s.flags?'warn':'')}</div>
+   ${lyTile('30 gün içinde süresi dolacak',num(s.expiring_30)+' puan')}${lyTile('Açık ödül',num(s.rewards_open))}
+   ${lyTile('Dikkat edilecek',num(s.flags),s.flags?'<button class="lnk" data-a="ly-tab" data-k="dikkat">Listeyi aç</button>':'Şüpheli hareket yok',s.flags?'warn':'')}</div></div>
+   <div class="card"><h3 style="margin-top:0">Seçili dönem · ${fmtDate(s.from)} – ${fmtDate(s.to)}</h3><div class="ly-kpis">${lyTile('Yeni üye',num(s.new_members))}
+   ${lyTile('Kazanılan puan',num(s.earned),`satıştan ${num(s.earned_sales)} · hoş geldin / doğum günü ${num(s.earned_gift)}`)}
+   ${lyTile('Kullanılan puan',num(s.spent),`indirim ${money(s.points_value)} · süresi dolan ${num(s.expired)}${s.clawback?' · iadede geri alınan '+num(s.clawback):''}`)}
+   ${lyTile('Damga ve ödül',num(s.stamps)+' damga',`${num(s.rewards_used)} ödül kullanıldı (${money(s.reward_value)})`)}
+   ${lyTile('Üyeli satış',share+'%',`${num(s.sales)} / ${num(s.all_sales)} satış`,'p')}${lyTile('Üyeli ciro',money(s.revenue),`toplam ciro ${money(s.all_revenue)} · ${num(s.buyers)} üye alışveriş yaptı`)}</div></div>
+   ${(s.top||[]).length?`<div class="card"><h2>Dönemin en çok alışveriş yapan üyeleri</h2><div class="tw"><table class="ly-t"><tr><th style="text-align:left">Üye</th><th>Satış</th><th>Ciro</th></tr>${s.top.map(x=>`<tr><td style="text-align:left"><button class="lnk" data-a="ly-hist" data-id="${x.member_id}">${esc(x.name)}</button></td><td>${num(x.sales)}</td><td>${money(x.revenue)}</td></tr>`).join('')}</table></div></div>`:''}
    <div class="card"><h2>Program kuralları (özet)</h2><div class="ly-rules">
     <div><b>Para puan:</b> ${R.mode==='yuzde'?`cihaz %${num(R.pct_dev)}, aksesuar %${num(R.pct_acc)}, hizmet %${num(R.pct_svc)}`:`her ${money(R.fix_amount)} için ${R.fix_points} puan`} · 1 puan = 1 ₺${R.kons?'':' · konsinye hariç'}</div>
     <div><b>Kullanım:</b> ${R.wait_days} gün bekleme · en az ${R.min_use} puan · fişin en çok %${R.max_use_pct}'i · geçerlilik ${(LY_EXP.find(x=>x[0]===Number(R.expiry_months))||[0,'Süresiz'])[1].toLowerCase()}</div>
@@ -2512,8 +2531,7 @@ function lyUyeler(){const M=S.ly.members,u=S.ui,mg=can('manage_loyalty'),R=lyR()
      <td class="acts"><button class="btn sm" data-a="ly-hist" data-id="${m.id}">Hareketler</button>${mg?`<button class="btn sm" data-a="ly-adj" data-id="${m.id}">Puan düzelt</button><button class="btn sm" data-a="ly-medit" data-id="${m.id}">Düzenle</button>`:''}</td></tr>`).join('')||'<tr><td colspan="11" class="empty">Üye yok. Üyeler satış ekranındaki Sadakat düğmesinden eklenir.</td></tr>'}</table></div></div>`}
 function lyIslemler(){const L=S.ly,u=S.ui,G=L.ledger,M=new Map((L.members||[]).map(m=>[m.id,m]));
   const rows=(G||[]).filter(x=>!u.lyk||x.kind===u.lyk),sn=new Map(S.d.sales.map(s=>[s.id,s.sale_no]));
-  return `<div class="card"><div class="row" style="flex-wrap:wrap;gap:8px">${L.lmem?`<span class="pill p">${esc((M.get(L.lmem)||{}).name||'Üye')} <button class="lnk" data-a="ly-hclr">× tüm üyeler</button></span>`:''}
-    <select class="in" data-c="lyld" style="width:auto">${opts([[7,'Son 7 gün'],[30,'Son 30 gün'],[90,'Son 90 gün'],[365,'Son 1 yıl'],[3650,'Tümü']],L.ldays||30)}</select>
+  return `${crRange('lyl')}<div class="card"><div class="row" style="flex-wrap:wrap;gap:8px">${L.lmem?`<span class="pill p">${esc((M.get(L.lmem)||{}).name||'Üye')} <button class="lnk" data-a="ly-hclr">× tüm üyeler</button></span>`:''}
     <select class="in" data-c="lyk" style="width:auto">${opts([['','Tüm işlemler'],...Object.entries(LY_KIND).map(([k,v])=>[k,v[0]])],u.lyk||'')}</select><div class="sp"></div><span class="sub">${rows.length} işlem</span></div>
    ${G?`<div class="tw"><table class="ly-t"><tr><th style="text-align:left">Tarih</th><th style="text-align:left">Üye</th><th style="text-align:left">İşlem</th><th>Puan</th><th>Damga</th><th>Kalan</th><th style="text-align:left">Satış</th><th style="text-align:left">Açıklama</th><th style="text-align:left">Personel</th></tr>
    ${rows.slice(0,1000).map(x=>{const k=LY_KIND[x.kind]||[x.kind,''],m=M.get(x.member_id);return `<tr><td style="text-align:left;white-space:nowrap">${new Date(x.created_at).toLocaleString('tr-TR',{day:'2-digit',month:'2-digit',year:'2-digit',hour:'2-digit',minute:'2-digit'})}</td>
@@ -2655,7 +2673,7 @@ function vGaranti(){const u=S.ui,c=wCamp(),G=S.gw=S.gw||{},tabs=WT.filter(t=>!t[
    <div class="seg ly-tabs" role="tablist">${tabs.map(([k,l])=>`<button role="tab" class="${t===k?'on':''}" data-a="w-tab" data-k="${k}">${l}</button>`).join('')}</div>
    ${G.err?`<div class="note bad">${esc(G.err)}</div>`:''}${{hak:wHak,ozet:wOzet,paketler:wPaketler}[t]()}`}
 async function wSearch(q){const G=S.gw=S.gw||{};G.q=q;G.busy=true;try{G.list=await call('warranty_search',{p_q:q})||[];G.err='';if(G.sel)G.sel=G.list.find(x=>x.id===G.sel.id)||G.sel}catch(e){G.err=msg(e);G.list=G.list||[]}G.busy=false;render()}
-async function wLoadSum(){const G=S.gw;const to=today(),fr=G.from||to.slice(0,8)+'01';G.from=fr;G.to=G.to||to;try{G.sum=await call('warranty_summary',{p_from:G.from,p_to:G.to});G.err=''}catch(e){G.err=msg(e);G.sum=null}render()}
+async function wLoadSum(){const G=crInit(S.gw);try{G.sum=await call('warranty_summary',{p_from:G.from,p_to:G.to});G.err=''}catch(e){G.err=msg(e);G.sum=null}render()}
 function wHak(){const G=S.gw,L=G.list;if(G.sel)return wDetail(G.sel);
   return `<div class="card"><div class="row" style="gap:8px;flex-wrap:wrap"><input class="in" id="w-q" style="flex:1;min-width:220px" placeholder="IMEI okutun ya da yazın · telefon · ad · G-numarası" value="${esc(G.q||'')}" autocomplete="off">
     <button class="btn pri" data-a="w-find">Ara</button></div><p class="sub" style="margin:6px 0 0">Değişim için kaydı açın; cihazın IMEI numarası işlem sırasında yeniden okutulur ve kayıtla birebir eşleşmelidir.</p></div>
@@ -2705,7 +2723,7 @@ function wClaimModal(kind,type){const w=S.gw.sel,R=wR(),dev=w.device;S.gw.cl={ki
    <div class="err" id="f-err" hidden></div><div class="actions"><button class="btn" data-a="close">Vazgeç</button><button class="btn pri" data-a="w-csave">Kaydet</button></div>`);
   setTimeout(()=>{const e=document.getElementById('w-cimei');if(e)e.focus()},30)}
 function wOzet(){const G=S.gw,s=G.sum;const pr=[['ay','Bu ay'],['30','Son 30 gün'],['yil','Bu yıl'],['hep','Tümü']];
-  const head=`<div class="row" style="gap:8px;flex-wrap:wrap;margin-bottom:8px"><div class="seg">${pr.map(([k,l])=>`<button data-a="w-per" data-k="${k}" aria-pressed="${G.per===k||(!G.per&&k==='ay')}">${l}</button>`).join('')}</div><span class="sub">${fmtDate(G.from)} – ${fmtDate(G.to)}</span></div>`;
+  const head=crRange('gw');
   if(s===undefined)return head+'<div class="card empty">Yükleniyor…</div>';if(!s)return head;
   const net=s.revenue-s.first_cost-s.claim_cost;
   return head+`<div class="ly-kpis">${lyTile('Aktif paket',num(s.active))}${lyTile('Satılan paket',num(s.sold),s.cancelled?num(s.cancelled)+' iptal':'')}${lyTile('Paket cirosu',money(s.revenue),'',' p')}
@@ -2904,9 +2922,9 @@ function kPkgDraw(){const E=S.kpe,cats=[...new Set((S.d.accessories||[]).filter(
 function kSearch(i){const E=S.kpe,q=String(E.q[i]||'').trim().toLocaleLowerCase('tr');if(q.length<2)return '';const s=E.slots[i];
   const L=(S.d.accessories||[]).filter(a=>a.active!==false&&!wPkg(a.id)&&(String(a.name).toLocaleLowerCase('tr').includes(q)||String(a.barcode||'').includes(q))).slice(0,20);
   return `<div class="kpe-r">${L.map(a=>`<div class="row" style="gap:8px;padding:2px 0"><span style="flex:1">${esc(a.name)} <span class="sub">· ${esc(a.category||'')}${isSvc(a)?' · hizmet':' · stok '+num(a.stock_qty)} · ${money(a.sale_price)}</span></span>${s.items.some(x=>x.ref_type==='aksesuar'&&x.ref===a.id)?'<span class="pill ok">Ekli</span>':`<button class="btn sm" data-a="k-iadd" data-i="${i}" data-id="${a.id}">Ekle</button>`}</div>`).join('')||'<div class="sub">Ürün bulunamadı.</div>'}</div>`}
-async function kLoadSum(){const K=S.kg;const to=today();K.from=K.from||to.slice(0,8)+'01';K.to=K.to||to;try{K.sum=await call('protection_summary',{p_from:K.from,p_to:K.to});K.err=''}catch(e){K.err=msg(e);K.sum=null}render()}
+async function kLoadSum(){const K=crInit(S.kg);try{K.sum=await call('protection_summary',{p_from:K.from,p_to:K.to});K.err=''}catch(e){K.err=msg(e);K.sum=null}render()}
 function kOzet(){const K=S.kg,s=K.sum;const pr=[['ay','Bu ay'],['30','Son 30 gün'],['yil','Bu yıl'],['hep','Tümü']];
-  const head=`<div class="row" style="gap:8px;flex-wrap:wrap;margin-bottom:8px"><div class="seg">${pr.map(([k,l])=>`<button data-a="k-per" data-k="${k}" aria-pressed="${K.per===k||(!K.per&&k==='ay')}">${l}</button>`).join('')}</div><span class="sub">${fmtDate(K.from)} – ${fmtDate(K.to)}</span></div>`;
+  const head=crRange('kg');
   if(s===undefined)return head+'<div class="card empty">Yükleniyor…</div>';if(!s)return head;
   const rate=s.device_sales?Math.round(s.with_device*100/s.device_sales):0;
   return head+`<div class="ly-kpis">${lyTile('Satılan paket',num(s.count))}${lyTile('Paket cirosu',money(s.net),'indirim sonrası',' p')}${lyTile('Verilen indirim',money(s.discount),'liste fiyatı '+money(s.total))}
@@ -3025,9 +3043,9 @@ function mKurallar(){const mg=can('manage_multibuy'),M=S.m3,R=M.rd=M.rd||JSON.pa
     <div class="f full"><label class="chk"><input type="checkbox" data-c="m3r" data-k="stack_points" ${R.stack_points!==false?'checked':''} ${dis}> Sadakat puanı ve damga ödülü kampanyayla birlikte kullanılabilsin</label></div>
     <div class="f full"><label class="chk"><input type="checkbox" data-c="m3r" data-k="stack_manual" ${R.stack_manual?'checked':''} ${dis}> Kampanyalı ürünlere ayrıca fiş iskontosu uygulanabilsin (yalnız indirim yetkisi olanlar)</label></div></div>
     ${mg?'<div class="row" style="justify-content:flex-end"><button class="btn pri" data-a="m3-save">Kaydet</button></div>':'<p class="sub">Kuralları yalnız işletme sahibi değiştirir.</p>'}</div>`}
-async function mLoadSum(){const M=S.m3;const to=today();M.from=M.from||to.slice(0,8)+'01';M.to=M.to||to;try{M.sum=await call('m3_summary',{p_from:M.from,p_to:M.to,p_kind:mK()});M.err=''}catch(e){M.err=msg(e);M.sum=null}render()}
+async function mLoadSum(){const M=crInit(S.m3);try{M.sum=await call('m3_summary',{p_from:M.from,p_to:M.to,p_kind:mK()});M.err=''}catch(e){M.err=msg(e);M.sum=null}render()}
 function mOzet(){const M=S.m3,s=M.sum;const pr=[['ay','Bu ay'],['30','Son 30 gün'],['yil','Bu yıl'],['hep','Tümü']];
-  const head=`<div class="row" style="gap:8px;flex-wrap:wrap;margin-bottom:8px"><div class="seg">${pr.map(([k,l])=>`<button data-a="m3-per" data-k="${k}" aria-pressed="${M.per===k||(!M.per&&k==='ay')}">${l}</button>`).join('')}</div><span class="sub">${fmtDate(M.from)} – ${fmtDate(M.to)}</span></div>`;
+  const head=crRange('m3');
   if(s===undefined)return head+'<div class="card empty">Yükleniyor…</div>';if(!s)return head;
   return head+`<div class="ly-kpis">${lyTile('Kampanyalı satış',num(s.count),num(s.units)+' ürün')}${lyTile('Hediye edilen',num(s.free_qty)+' ürün',money(s.discount))}${lyTile('Kampanyalı ciro',money(s.net),'liste fiyatı '+money(s.total),' p')}
    ${lyTile('İadede geri alınan',money(s.clawback),num(s.returned_qty)+' ürün iade')}</div>
@@ -3178,9 +3196,9 @@ function hcCancelModal(id){const g=(S.d.gift_cards||[]).find(x=>x.id===id),b=hcB
    <div class="form"><label class="f full">İptal nedeni<input class="in" id="hc-cr" maxlength="300" placeholder="Ör. kayıp, müşteri talebi"></label>
    ${R.cancel_refund&&b.paid>0?`<label class="f full">Ücretli bakiye (${money(b.paid)})<select class="in" id="hc-crm"><option value="">İade edilmez</option>${METHODS.map(m=>`<option value="${m[0]}">${m[1]} ile müşteriye iade et</option>`).join('')}</select></label>`:''}</div>
    <div class="err" id="f-err" hidden></div><div class="actions"><button class="btn" data-a="close">Vazgeç</button><button class="btn bad" data-a="hc-cancel-go" data-id="${id}">İptal et</button></div>`)}
-async function hcLoadSum(){const H=S.hc;const to=today();H.from=H.from||to.slice(0,8)+'01';H.to=H.to||to;try{H.sum=await call('gift_card_summary',{p_from:H.from,p_to:H.to});H.err=''}catch(e){H.err=msg(e);H.sum=null}render()}
+async function hcLoadSum(){const H=crInit(S.hc);try{H.sum=await call('gift_card_summary',{p_from:H.from,p_to:H.to});H.err=''}catch(e){H.err=msg(e);H.sum=null}render()}
 function hcOzet(){const H=S.hc,s=H.sum;const pr=[['ay','Bu ay'],['30','Son 30 gün'],['yil','Bu yıl'],['hep','Tümü']];
-  const head=`<div class="row" style="gap:8px;flex-wrap:wrap;margin-bottom:8px"><div class="seg">${pr.map(([k,l])=>`<button data-a="hc-per" data-k="${k}" aria-pressed="${H.per===k||(!H.per&&k==='ay')}">${l}</button>`).join('')}</div><span class="sub">${fmtDate(H.from)} – ${fmtDate(H.to)}</span></div>`;
+  const head=crRange('hc');
   if(s===undefined)return head+'<div class="card empty">Yükleniyor…</div>';if(!s)return head;
   return head+`<div class="card"><h3 style="margin-top:0">Şu an</h3><div class="ly-kpis">${lyTile('Müşterideki toplam bakiye',money(s.outstanding),'ücretli '+money(s.outstanding_paid)+' · ücretsiz '+money(s.outstanding_free),' p')}${lyTile('Bakiyesi olan çek',num(s.cards_with_balance),num(s.cards)+' aktif çek')}
    ${lyTile('30 gün içinde süresi dolacak',money(s.expiring_30))}</div><p class="sub" style="margin:6px 0 0">Ücretli bakiye müşteriden tahsil edilmiş, henüz harcanmamış paradır (mağazanın müşteriye borcu).</p></div>
@@ -7841,6 +7859,7 @@ Object.assign(A,{
     try{S.gw.sel=await call('warranty_update',{p:{id:S.gw.sel.id,imei:g('w-eimei'),imei2:g('w-eimei2'),device:g('w-edev'),note:g('w-enote'),reason:g('w-ereason').trim()}},'Kayıt düzeltildi');closeModal();render()}catch(e){t.disabled=false;setErr(msg(e))}},
   async 'w-egocancel'(t){const r=((document.getElementById('w-ereason')||{}).value||'').trim();if(r.length<3)return setErr('İptal nedenini "Neden" alanına yazın.');if(!armed(t,'Emin misiniz? Garanti iptal edilir'))return;
     try{S.gw.sel=await call('warranty_update',{p:{id:S.gw.sel.id,cancel:true,reason:r}},'Garanti iptal edildi');closeModal();S.gw.list=undefined;S.gw.ld=0;render()}catch(e){setErr(msg(e))}},
+  'cr-per'(t){const G=crObj(t.dataset.g),r=crPreset(t.dataset.k);G.per=t.dataset.k;G.from=r[0];G.to=r[1];crReload(t.dataset.g)},
   'w-per'(t){const G=S.gw,to=today(),d=new Date();G.per=t.dataset.k;G.to=to;G.from={ay:to.slice(0,8)+'01',yil:to.slice(0,5)+'01-01',hep:'2020-01-01','30':new Date(d.getTime()-29*864e5).toISOString().slice(0,10)}[t.dataset.k];G.sum=undefined;wLoadSum()},
   'w-pkg'(t){wPkgModal(t.dataset.id||null)},
   'w-padd'(){wPkgKeep();S.gw.pk.parts.push([]);wPkgDraw((S.gw.pk.id&&S.d.accMap.get((S.d.warranty_packages.find(k=>k.id===S.gw.pk.id)||{}).service_id))||{},null)},
@@ -8404,6 +8423,7 @@ Object.assign(A,{
   'st-mail'(){const d=S.st&&S.st.data;if(!d)return;const em=pcSP(S.st.sid).email||'';location.href='mailto:'+encodeURIComponent(em)+'?subject='+encodeURIComponent(shopSet().name+' · Personel ekstresi')+'&body='+encodeURIComponent(stText(d)+'\n\nAyrıntılı ekstre PDF olarak ektedir.')}
 });
 document.addEventListener('change',e=>{const t=e.target;if(!t||!t.dataset)return;const c=t.dataset.c;
+  if(c==='cr-d'){const G=crObj(t.dataset.g);if(!t.value)return;G[t.dataset.f]=t.value;if(G.from>G.to){if(t.dataset.f==='from')G.to=G.from;else G.from=G.to}G.per='ozel';crReload(t.dataset.g);return}
   if(c==='pce-b'&&S.pce){const b=S.pce.ben[+t.dataset.i];if(b)b[t.dataset.k]=t.type==='checkbox'?t.checked:t.value}
   else if(c==='pre-x'&&S.pre){const x=S.pre.extra[+t.dataset.i];if(x)x[t.dataset.k]=t.value}
   else if(c==='lvt'||c==='lvd')lvHint();
