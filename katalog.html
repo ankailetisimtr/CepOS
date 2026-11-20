@@ -159,6 +159,16 @@ footer{border-top:1px solid var(--line);padding:26px 0 40px;color:var(--muted);f
 footer .wrap{display:flex;gap:18px;flex-wrap:wrap;justify-content:space-between}
 .toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:#121B23;color:#fff;padding:10px 16px;border-radius:12px;z-index:90;font-size:14px;box-shadow:var(--sh2)}
 body.lock{overflow:hidden}
+.gb{max-width:760px;margin:22px auto 40px;background:var(--card);border-radius:22px;box-shadow:var(--sh);overflow:hidden}
+.gb-st{display:flex;gap:14px;align-items:center;padding:18px 22px;background:var(--okbg);color:var(--ok)}.gb-st.bad{background:#FDEBEA;color:var(--bad)}.gb-st .ic{width:34px;height:34px;flex:none}
+.gb-st b{display:block;font-size:18px;color:inherit}.gb-st span{color:var(--fg);opacity:.8;font-size:14px}
+.gb-b{padding:20px 22px 24px}.gb-b h1{font-size:13px;letter-spacing:.08em;color:var(--blue);margin:0 0 4px}.gb-b h2{margin:0 0 12px;font-size:22px}
+.gb-p{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:12px 0 4px}.gb-p div{background:var(--soft);border-radius:14px;padding:10px 12px}.gb-p small{display:block;color:var(--muted);font-size:12px}.gb-p b{font-size:15px}
+.gb-l{list-style:none;margin:0;padding:0}.gb-l li{padding:3px 0 3px 22px;position:relative}.gb-l.ok li:before{content:'✓';position:absolute;left:2px;color:var(--ok);font-weight:800}.gb-l.no li:before{content:'✕';position:absolute;left:2px;color:var(--bad);font-weight:800}
+.gb ol{margin:0;padding-left:18px}.gb .acts{display:flex;gap:10px;flex-wrap:wrap;margin-top:18px}
+@media(max-width:560px){.gb{margin:12px 0 30px;border-radius:18px}.gb-p{grid-template-columns:repeat(3,minmax(0,1fr))}.gb-p b{font-size:13.5px}}
+@media print{header.top,footer,.gb .acts{display:none!important}body{background:#fff}.gb{box-shadow:none;margin:0}}
+
 </style>
 </head>
 <body>
@@ -304,6 +314,23 @@ function done(it,r){const s=S.d.shop||{},hu=r.hold_until?new Date(r.hold_until):
       ${s.address?`<a class="btn" target="_blank" rel="noopener" href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent((s.name||'')+' '+s.address)}">${ic('pin')} Mağaza konumu</a>`:''}
       <button class="btn pri full" data-a="home">Kataloğa dön</button></div></div>`;
   load(true)}
+/* ---- garanti belgesi (#g/<bağlantı>) ---- */
+const fd=d=>d?new Date(d+'T12:00:00').toLocaleDateString('tr-TR',{day:'numeric',month:'long',year:'numeric'}):'';
+async function showCert(tok){closeOv(true);const app=$('#app');app.innerHTML='<div class="gb"><div class="gb-b"><div class="skel" style="aspect-ratio:auto;height:120px"></div></div></div>';
+  let d=null;try{d=await rpc('device_warranty_public',{p_token:tok})}catch(e){app.innerHTML=`<div class="empty">${ic('shield')}<p>Belge yüklenemedi. İnternet bağlantınızı kontrol edip tekrar deneyin.</p></div>`;return}
+  if(!d){app.innerHTML=`<div class="empty">${ic('shield')}<h2>Belge bulunamadı</h2><p>Bağlantı hatalı ya da eksik olabilir. Mağazamızla iletişime geçin.</p></div>`;return}
+  const T=d.terms||{},s=d.shop||{},left=Math.round((new Date(d.end+'T23:59:59')-Date.now())/864e5),L=(a,c)=>(a||[]).length?`<ul class="gb-l ${c}">${a.map(x=>`<li>${esc(x)}</li>`).join('')}</ul>`:'';
+  const st=d.status==='iptal'?['bad','Bu belge iptal edilmiş','Cihaz iade edilmiş ya da belge geçersiz sayılmış.']:d.valid?['','Garanti geçerli',`${fd(d.end)} tarihine kadar · ${left} gün kaldı`]:['bad','Garanti süresi doldu',fd(d.end)+' tarihinde sona erdi.'];
+  document.title=(T.title||'Garanti belgesi')+' · '+d.cert_no;
+  app.innerHTML=`<article class="gb"><div class="gb-st ${st[0]}">${ic('shield')}<div><b>${st[1]}</b><span>${esc(st[2])}</span></div></div><div class="gb-b">
+    <h1>${esc(T.title||'İŞLETME GARANTİ BELGESİ')} · ${esc(d.cert_no)}</h1><h2>${esc(d.model)}</h2>
+    <div class="kv">${[['IMEI',d.imei],['Alıcı',d.customer],['Durum',[d.cat,d.sub].filter(Boolean).join(' · ')],['Satış',d.sale_no]].filter(x=>x[1]).map(([k,v])=>`<div><small>${esc(k)}</small><b>${esc(v)}</b></div>`).join('')}</div>
+    <div class="gb-p"><div><small>Garanti süresi</small><b>${d.months} ay</b></div><div><small>Başlangıç</small><b>${esc(fd(d.start))}</b></div><div><small>Bitiş</small><b>${esc(fd(d.end))}</b></div></div>
+    ${(T.cover||[]).length?`<div class="sec"><h3>Garanti kapsamında</h3>${L(T.cover,'ok')}</div>`:''}${(T.exclude||[]).length?`<div class="sec"><h3>Kapsam dışında</h3>${L(T.exclude,'no')}</div>`:''}
+    ${(T.terms||[]).length?`<div class="sec"><h3>Koşullar</h3><ol>${T.terms.map(x=>`<li>${esc(x)}</li>`).join('')}</ol>${T.note?`<p>${esc(T.note)}</p>`:''}</div>`:''}
+    <div class="sec"><div class="store">${ic('pin','l')}<div><b>${esc(s.name||'Anka İletişim')}</b><div style="color:var(--muted);font-size:14px">${esc(s.address||'')}</div>${s.phone?`<a href="tel:0${esc(phoneDigits(s.phone))}">${esc(s.phone)}</a>`:''}</div></div></div>
+    <div class="acts"><button class="btn pri" data-a="print">Yazdır / PDF olarak kaydet</button>${s.phone?`<a class="btn wa" target="_blank" rel="noopener" href="https://wa.me/90${esc(phoneDigits(s.phone))}?text=${encodeURIComponent('Merhaba, '+d.cert_no+' numaralı garanti belgem hakkında yazıyorum.')}">WhatsApp</a>`:''}<a class="btn" href="${esc(location.pathname)}">Cihaz kataloğu</a></div></div></article>`;
+  if(s.name||s.phone){S.d=S.d||{items:[],shop:s};if(!S.d.shop)S.d.shop=s;shopHtml()}}
 /* ---- olaylar ---- */
 document.addEventListener('click',e=>{const t=e.target.closest('[data-a]');if(!t)return;const a=t.dataset.a;
   if(a==='open'){e.preventDefault();detail(t.dataset.id,true)}
@@ -312,6 +339,7 @@ document.addEventListener('click',e=>{const t=e.target.closest('[data-a]');if(!t
   else if(a==='f'){const k=t.dataset.k,v=t.dataset.v;S[k]=S[k]===v?'':v;render()}
   else if(a==='clear'){e.preventDefault();S.q='';S.cat='';S.cond='';S.gb='';render()}
   else if(a==='retry'){S.err='';render();load()}
+  else if(a==='print')window.print();
   else if(a==='reserve')reserveForm(t.dataset.id);
   else if(a==='pref'){F.pref=t.dataset.v;document.querySelectorAll('[data-a="pref"]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.v===F.pref)))}
   else if(a==='kvkk'){e.preventDefault();const k=$('#kvkk-t');k.hidden=!k.hidden}
@@ -324,14 +352,16 @@ document.addEventListener('change',e=>{if(e.target.id==='sort'){S.sort=e.target.
 document.addEventListener('submit',e=>{if(e.target.id==='rf'){e.preventDefault();submit()}});
 document.addEventListener('keydown',e=>{if(e.key==='Escape'&&ovEl)back()});
 window.addEventListener('popstate',()=>route());
-function route(){const m=location.hash.match(/^#c\/([0-9a-f-]{36})(\/rezerve)?$/i);
+function route(){const g0=location.hash.match(/^#g\/([0-9a-f-]{36})$/i);if(g0){S.cert=g0[1];showCert(g0[1]);return}if(S.cert){S.cert=null;render()}
+  const m=location.hash.match(/^#c\/([0-9a-f-]{36})(\/rezerve)?$/i);
   if(!m){if(ovEl){closeOv();S.open=null;render()}return}
   if(!S.d)return;
   if(!ovEl||S.open!==m[1]||(!m[2]&&ovEl.querySelector('form'))){detail(m[1],false)}}
 async function load(silent){try{const d=await rpc('catalog_public');S.d=d;S.d.items=d.items||[];S.err='';
+    if(S.cert)return shopHtml();
     if(d.title)document.title=d.title+' · '+((d.shop&&d.shop.name)||'Anka İletişim');shopHtml();if(!silent||!ovEl)render();if(!silent)route()}
-  catch(e){if(!silent){S.err='Katalog yüklenemedi. İnternet bağlantınızı kontrol edip tekrar deneyin.';render()}}}
-render();load();
+  catch(e){if(!silent&&!S.cert){S.err='Katalog yüklenemedi. İnternet bağlantınızı kontrol edip tekrar deneyin.';render()}}}
+if(/^#g\//.test(location.hash))route();else render();load();
 </script>
 </body>
 </html>

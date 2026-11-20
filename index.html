@@ -421,6 +421,28 @@ button.fx{font-variant-numeric:tabular-nums;font-weight:600;white-space:nowrap}b
 .ctl-ph{display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:8px;margin:10px 0}.ctl-pi{position:relative;border-radius:12px;overflow:hidden;aspect-ratio:1;background:var(--surface2);border:1px solid var(--line)}
 .ctl-pi img{width:100%;height:100%;object-fit:cover}.ctl-pi>div{position:absolute;bottom:4px;right:4px;display:flex;gap:2px}.ctl-pi>div .ib{background:rgba(255,255,255,.92);color:#14212B}.ctl-pi .pill{position:absolute;top:6px;left:6px}
 .ctl-pi.add{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;cursor:pointer;border-style:dashed;color:var(--accent);font-size:13px}
+.dw-b{border-color:var(--ok);color:var(--ok)}
+.vl-wrap{display:grid;grid-template-columns:minmax(0,1fr) 320px;gap:16px}@media(max-width:860px){.vl-wrap{grid-template-columns:1fr}}
+.vl-list{max-height:46vh;overflow:auto;border:1px solid var(--line);border-radius:12px;padding:4px 8px}.vl-row{display:flex;align-items:center;gap:10px;padding:5px 0;border-bottom:1px solid var(--line);margin:0}.vl-row:last-child{border-bottom:0}
+.vl-row .ctl-th{width:40px;height:40px;border-radius:9px}.vl-row span{display:flex;flex-direction:column}.vl-row small{color:var(--muted)}
+.vl-prev{background:var(--surface2);border-radius:14px;padding:12px}
+#vlsheet-prev .vl{background:#fff;color:#111;border-radius:12px;box-shadow:0 6px 20px rgba(0,0,0,.12);display:flex;flex-direction:column;padding:16px;font-size:12px;min-height:400px}
+#vlsheet-prev .vl-h{display:flex;justify-content:space-between;align-items:center}#vlsheet-prev .vl-h img{height:18px}#vlsheet-prev .vl-h span{background:#C20C77;color:#fff;border-radius:99px;padding:2px 9px;font-weight:700;font-size:11px}
+#vlsheet-prev .vl-t{font-weight:700;font-size:21px;line-height:1.15;margin-top:14px}#vlsheet-prev .vl-s{color:#444;margin-top:4px}#vlsheet-prev .vl-p{font-weight:800;font-size:30px;color:#0A70B8;margin-top:12px}#vlsheet-prev .vl-i{color:#17834A;font-weight:600}
+#vlsheet-prev .vl-q{display:flex;align-items:center;gap:10px;margin-top:auto;border-top:1px solid #e2e2e2;padding-top:10px}#vlsheet-prev .vl-q svg{width:96px;height:96px;flex:none}#vlsheet-prev .vl-q b{display:block}#vlsheet-prev .vl-q span{color:#555;font-size:11px}
+#vlsheet-prev .vl.kucuk{min-height:0}
+.dwdoc{position:relative;font-size:12.5px;line-height:1.45;max-width:820px;margin:0 auto}.dw-void{position:absolute;top:40%;left:50%;transform:translate(-50%,-50%) rotate(-18deg);border:4px solid #BF3328;color:#BF3328;font-size:30px;font-weight:800;padding:6px 18px;opacity:.55;white-space:nowrap}
+.dw-hd{display:flex;justify-content:space-between;gap:18px;border-bottom:3px solid #0A70B8;padding-bottom:12px}.dw-logo{height:34px}.dw-shop{margin-top:6px;color:#333;font-size:11.5px}
+.dw-ttl{text-align:right}.dw-ttl h1{margin:0 0 6px;font-size:20px;letter-spacing:.04em;color:#0A70B8}.dw-ttl div{display:flex;gap:8px;justify-content:flex-end}.dw-ttl span{color:#666}
+.dw-period{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:14px 0;background:#EEF6FC;border-radius:10px;padding:10px 14px;-webkit-print-color-adjust:exact;print-color-adjust:exact}.dw-period span{display:block;color:#5E6B77;font-size:11px}.dw-period b{font-size:15px}
+.dw-g{display:grid;grid-template-columns:1fr 1fr;gap:12px}.dw-box{border:1px solid #DDE3E9;border-radius:10px;padding:10px 14px;margin-bottom:12px;break-inside:avoid}.dw-box h3{margin:0 0 6px;font-size:12px;text-transform:uppercase;letter-spacing:.06em;color:#0A70B8}
+.dw-kv{display:flex;justify-content:space-between;gap:10px;padding:3px 0;border-bottom:1px dashed #eee}.dw-kv:last-child{border-bottom:0}.dw-kv span{color:#5E6B77}
+.dw-l{margin:0;padding:0;list-style:none}.dw-l li{padding:2px 0 2px 20px;position:relative}.dw-l.ok li:before{content:'✓';position:absolute;left:2px;color:#17834A;font-weight:800}.dw-l.no li:before{content:'✕';position:absolute;left:2px;color:#BF3328;font-weight:800}
+.dw-ol{margin:0;padding-left:18px}.dw-ol li{padding:1px 0}
+.dw-ft{display:grid;grid-template-columns:1.6fr 1fr 1fr;gap:12px;align-items:end;margin-top:6px}.dw-qr{display:flex;gap:10px;align-items:center}.dw-qr svg{width:96px;height:96px;flex:none}.dw-qr b{display:block}.dw-qr span{color:#5E6B77;font-size:11px}
+.dw-sig{border-top:1px solid #999;padding-top:4px;text-align:center;color:#5E6B77;font-size:11px;height:70px;display:flex;align-items:flex-end;justify-content:center}
+.dw-fn{margin-top:12px;text-align:center;color:#5E6B77;font-size:11px}
+@media(max-width:640px){.dw-g,.dw-ft{grid-template-columns:1fr}.dw-period{grid-template-columns:1fr 1fr}.dw-hd{flex-direction:column}.dw-ttl{text-align:left}.dw-ttl div{justify-content:flex-start}}
 .nl-box{display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin:8px 0 2px}.nl-chip{display:inline-flex;align-items:stretch;border:1px solid var(--line);border-radius:999px;background:var(--surface);overflow:hidden;max-width:100%}
 .nl-chip .nl-go{display:inline-flex;align-items:center;gap:5px;border:0;background:none;color:inherit;padding:4px 4px 4px 10px;cursor:pointer;font:inherit;font-size:13px;min-width:0}.nl-chip .nl-go span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:220px;font-weight:600}.nl-chip .nl-go small{opacity:.65}
 .nl-chip .nl-x{border:0;background:none;color:inherit;opacity:.6;padding:0 8px;cursor:pointer}.nl-chip .nl-x:hover{opacity:1}.nl-chip.gone{opacity:.55;border-style:dashed}.nl-chip .nl-go:hover span{text-decoration:underline}
@@ -807,8 +829,8 @@ async function all(table,order,asc){
     out=out.concat(data||[]);if(!data||data.length<1000)break;from+=1000}
   return out}
 /* uygulamanın yüklediği tablolar ve sıralamaları (canlı güncelleme de bunları kullanır) */
-const LOAD_NAMES=['catalog_items','catalog_photos','catalog_reservations','staff_profiles','staff_identity','staff_docs','leave_types','leave_requests','advance_requests','payroll_runs','prim_periods','prim_corrections','prim_plans','prim_adjustments','gift_cards','gift_card_moves','gift_card_lots','m3_sales','protection_packages','protection_slots','protection_slot_items','protection_sales','warranty_packages','warranty_types','warranty_materials','campaigns','loyalty_items','pos_groups','pos_group_items','pos_banks','pos_bank_rates','trainings','training_progress','training_questions','training_paths','training_path_items','training_assignments','notification_reads','notification_state','price_refs','price_deductions','device_inspections','term_debts','term_debt_payments','work_schedules','shift_changes','owner_closings','entitlements','staff_pay_profiles','exchanges','service_costs','shortages','accessory_categories','accessory_families','expense_categories','expense_templates','expenses','cash_accounts','app_settings','day_closings','day_closing_lines','fx_rates','purchases','purchase_lines','profiles','staff_settings','role_permissions','contacts','products','product_costs','sales','sale_items','sale_payments','sale_trade_ins','sale_item_costs','commissions','sale_returns','cash_entries','party_entries','consignment_agreements','consignment_rates','notifications','service_orders','service_events','customer_orders','follow_ups','quotes','quote_items','attachments','shifts','time_clock','tasks','push_subscriptions','accessories','accessory_costs','accessory_moves','sale_accessory_items','sale_accessory_costs','sale_accessory_returns'];
-const LOAD_ORDERS={catalog_reservations:'created_at',catalog_photos:'sort',device_inspections:'created_at',term_debts:'created_at',term_debt_payments:'created_at',work_schedules:'valid_from',shift_changes:'created_at',owner_closings:'created_at',entitlements:'created_at',staff_pay_profiles:'updated_at',exchanges:'created_at',service_costs:'created_at',shortages:'created_at',accessory_categories:'sort',accessory_families:'created_at',expenses:'created_at',expense_templates:'created_at',expense_categories:'sort',day_closings:'closed_at',cash_accounts:'sort',sales:'sold_at',cash_entries:'created_at',notifications:'created_at',party_entries:'created_at',service_orders:'received_at',service_events:'at',quotes:'created_at',attachments:'created_at',time_clock:'clock_in',tasks:'created_at',accessory_moves:'created_at',purchases:'created_at',fx_rates:'fetched_at'};
+const LOAD_NAMES=['device_warranties','catalog_items','catalog_photos','catalog_reservations','staff_profiles','staff_identity','staff_docs','leave_types','leave_requests','advance_requests','payroll_runs','prim_periods','prim_corrections','prim_plans','prim_adjustments','gift_cards','gift_card_moves','gift_card_lots','m3_sales','protection_packages','protection_slots','protection_slot_items','protection_sales','warranty_packages','warranty_types','warranty_materials','campaigns','loyalty_items','pos_groups','pos_group_items','pos_banks','pos_bank_rates','trainings','training_progress','training_questions','training_paths','training_path_items','training_assignments','notification_reads','notification_state','price_refs','price_deductions','device_inspections','term_debts','term_debt_payments','work_schedules','shift_changes','owner_closings','entitlements','staff_pay_profiles','exchanges','service_costs','shortages','accessory_categories','accessory_families','expense_categories','expense_templates','expenses','cash_accounts','app_settings','day_closings','day_closing_lines','fx_rates','purchases','purchase_lines','profiles','staff_settings','role_permissions','contacts','products','product_costs','sales','sale_items','sale_payments','sale_trade_ins','sale_item_costs','commissions','sale_returns','cash_entries','party_entries','consignment_agreements','consignment_rates','notifications','service_orders','service_events','customer_orders','follow_ups','quotes','quote_items','attachments','shifts','time_clock','tasks','push_subscriptions','accessories','accessory_costs','accessory_moves','sale_accessory_items','sale_accessory_costs','sale_accessory_returns'];
+const LOAD_ORDERS={device_warranties:'created_at',catalog_reservations:'created_at',catalog_photos:'sort',device_inspections:'created_at',term_debts:'created_at',term_debt_payments:'created_at',work_schedules:'valid_from',shift_changes:'created_at',owner_closings:'created_at',entitlements:'created_at',staff_pay_profiles:'updated_at',exchanges:'created_at',service_costs:'created_at',shortages:'created_at',accessory_categories:'sort',accessory_families:'created_at',expenses:'created_at',expense_templates:'created_at',expense_categories:'sort',day_closings:'closed_at',cash_accounts:'sort',sales:'sold_at',cash_entries:'created_at',notifications:'created_at',party_entries:'created_at',service_orders:'received_at',service_events:'at',quotes:'created_at',attachments:'created_at',time_clock:'clock_in',tasks:'created_at',accessory_moves:'created_at',purchases:'created_at',fx_rates:'fetched_at'};
 const dropCaches=()=>{S.ov=undefined;S.lbx={};S.ph={};S.pay={};S.pm=undefined;S.pml=undefined;S.wd=null;S.prm=undefined;S.hp=undefined;S.ops=undefined;S.svp=undefined;S.work=undefined;S.team=null;S.tp=null};
 async function loadAll(){
   dropCaches();
@@ -1309,7 +1331,7 @@ const fmtSeen=t=>{if(!t)return 'hiç giriş yapmadı';const d=new Date(t);return
 
 /* ================= YÖNLENDİRME / ÇERÇEVE ================= */
 /* menüden bir sekmeye tıklanınca rapor ekranları kapanır, sekmenin ana sayfası açılır; menü kapanır */
-function resetReps(){S.ui.pk=null;S.ui.ti_dev=false;S.ui.mrep=false;S.ui.pl_dev=false;S.ui.kz_dev=false;S.ui.kz_acc=false;S.ui.pur_rep=false;S.ui.sh_dev=false;S.ui.sh_acc=false}
+function resetReps(){S.ui.pk=null;S.ui.dwv=false;S.ui.ti_dev=false;S.ui.mrep=false;S.ui.pl_dev=false;S.ui.kz_dev=false;S.ui.kz_acc=false;S.ui.pur_rep=false;S.ui.sh_dev=false;S.ui.sh_acc=false}
 document.addEventListener('click',e=>{const a=e.target.closest&&e.target.closest('.dnav a[href^="#"]');if(!a)return;
   const same=a.getAttribute('href')==='#'+location.hash.slice(1)||(a.getAttribute('href')==='#panel'&&!location.hash.slice(1));drawer(false);
   if(same&&S.d&&(S.ui.ti_dev||S.ui.mrep||S.ui.pl_dev||S.ui.kz_dev||S.ui.kz_acc||S.ui.pur_rep||S.ui.sh_dev||S.ui.sh_acc)){resetReps();render()}});
@@ -3251,9 +3273,10 @@ function csvDl(name,rows){const q=v=>'"'+String(v??'').replace(/"/g,'""')+'"',a=
 
 /* ================= SATIŞLAR / İADE ================= */
 function vSatislar(){
+  if(S.ui.dwv)return vDw();
   const u=S.ui,d=S.d,lim=u.salesRange==='all'?'0000-00-00':addDays(today(),-Number(u.salesRange));
   const l=d.sales.filter(s=>dayOf(s.sold_at)>=lim);
-  return `<div class="row"><h1>Satışlar</h1>${can('make_sale')?'<button class="btn pri" data-a="go-satis">+ Satış yap</button>':''}<div class="sp"></div><div class="seg">${[['1','Bugün'],['7','7 gün'],['30','30 gün'],['all','Tümü']].map(([k,t])=>`<button data-a="salesrange" data-v="${k}" aria-pressed="${u.salesRange===k}">${t}</button>`).join('')}</div></div>
+  return `<div class="row"><h1>Satışlar</h1>${can('make_sale')?'<button class="btn pri" data-a="go-satis">+ Satış yap</button>':''}<div class="sp"></div>${dwInstalled()?`<button class="btn" data-a="dw-list">${ic('shield','sm')} Garanti belgeleri</button>`:''}<div class="seg">${[['1','Bugün'],['7','7 gün'],['30','30 gün'],['all','Tümü']].map(([k,t])=>`<button data-a="salesrange" data-v="${k}" aria-pressed="${u.salesRange===k}">${t}</button>`).join('')}</div></div>
   <div class="card"><div class="sub" style="margin-bottom:6px"><b>${l.length}</b> satış · toplam <b>${money(sum(l.filter(s=>s.status!=='iptal'),s=>s.total))}</b></div>
   ${l.slice(0,200).map(s=>saleRow(s)).join('')||'<div class="empty">Bu aralıkta satış yok.</div>'}</div>`}
 function saleRow(s){
@@ -3266,7 +3289,7 @@ function saleRow(s){
     det=`<div style="padding:10px 0;width:100%">${items.map(i=>{const p=d.productMap.get(i.product_id)||{},ic=d.itemCost.get(i.id),net=Number(i.price)-Number(i.discount);
       return `<div class="item" style="padding:8px 0"><div class="main"><b>${esc(p.model)}</b>${i.returned?' <span class="pill bad">İade</span>':''}<div class="meta">${p.imei?`<span class="mono">${esc(p.imei)}</span>`:''}${Number(i.discount)?`<span>İndirim ${money(i.discount)}</span>`:''}</div></div>
       <div class="side"><b>${money(net)}</b>${ic&&can('view_profit')?`<span class="sub ${sgn(net-ic.cost-ic.consignor_share)}">Anka kârı ${money(net-Number(ic.cost)-Number(ic.consignor_share))}</span>`:''}
-      ${!i.returned&&can('process_refund')?`<button class="btn sm" data-a="refund" data-id="${i.id}">İade al</button>`:''}</div></div>`}).join('')}
+      ${s.status!=='iptal'?dwItemBtn(i):''}${!i.returned&&can('process_refund')?`<button class="btn sm" data-a="refund" data-id="${i.id}">İade al</button>`:''}</div></div>`}).join('')}
       ${accL.map(l=>{const a=d.accMap.get(l.accessory_id)||{},net=accLineNet(l)-accRetPrev(l),uc=d.accLineCost.get(l.id),rem=l.qty-l.returned_qty;
         return `<div class="item" style="padding:8px 0"><div class="main"><b>${esc(a.name)}</b> <span class="pill">x${l.qty}</span>${items.length?' <span class="pill att">Cihaz yanı</span>':''}${l.returned_qty?` <span class="pill bad">${l.returned_qty} adet iade</span>`:''}<div class="meta"><span>Birim ${money(l.unit_price)}</span>${Number(l.discount)?`<span>İndirim ${money(l.discount)}</span>`:''}</div></div>
         <div class="side"><b>${money(net)}</b>${uc!=null&&can('view_profit')?`<span class="sub ${sgn(net-uc*rem)}">Anka kârı ${money(net-uc*rem)}</span>`:''}
@@ -3274,7 +3297,7 @@ function saleRow(s){
       <div class="sub">Ödemeler: ${d.sale_payments.filter(p=>p.sale_id===s.id).map(p=>`${payL(p.method)} ${money(p.amount)}`).join(' · ')||'-'}</div>
       ${d.sale_trade_ins.filter(t=>t.sale_id===s.id).map(t=>`<div class="sub">Takas: ${esc((d.productMap.get(t.product_id)||{}).model||'')} ${money(t.value)}</div>`).join('')}
       ${s.note?`<div class="sub">Not: ${esc(s.note)}</div>`:''}
-      <div style="margin-top:8px"><button class="btn sm pri" data-a="rc-open" data-id="${s.id}">Satış fişi</button> ${docBtn('sales',s.id,'Belgeler (fatura, fiş, garanti)')} ${ntBtn('sales',s.id)}</div>${s.status!=='iptal'&&can('process_refund')?`<div style="margin-top:8px"><button class="btn sm danger" data-a="cancel-sale" data-id="${s.id}">Satışın tamamını iptal et</button></div>`:''}</div>`}
+      <div style="margin-top:8px"><button class="btn sm pri" data-a="rc-open" data-id="${s.id}">Satış fişi</button> ${dwBtns(s.id)} ${docBtn('sales',s.id,'Belgeler (fatura, fiş, garanti)')} ${ntBtn('sales',s.id)}</div>${s.status!=='iptal'&&can('process_refund')?`<div style="margin-top:8px"><button class="btn sm danger" data-a="cancel-sale" data-id="${s.id}">Satışın tamamını iptal et</button></div>`:''}</div>`}
   const att=items.length&&accL.length;
   return `<div class="item" style="cursor:pointer" data-a="opensale" data-id="${s.id}"><div class="main"><b>${esc(s.sale_no)}</b> <span class="pill ${stp[0]}">${stp[1]}</span>${att?' <span class="pill att" title="Cihazın yanına aksesuar satıldı">Cihaz yanı aksesuar</span>':''}<div class="meta"><span>${fmtTime(s.sold_at)}</span>${cust?`<span>${esc(cust.name)}</span>`:''}<span>${esc(st?st.full_name:'')}</span></div><div class="meta"><span>${esc(names.join(', '))}</span></div></div><div class="side"><b>${money(s.total)}</b>${open?'':`<button class="btn sm" data-a="rc-open" data-id="${s.id}">Fiş</button>`}</div>${det}</div>`}
 /* ---- Satış fişi (otomatik; satışa tıklayınca görüntülenir) ---- */
@@ -3307,7 +3330,7 @@ function saleReceipt(id,w){w=w||S.ui.rcw||'80';S.ui.rcw=w;const D=rcData(id);if(
   const c=D.cust,ph=c&&c.phone?waPhone(c.phone):'',txt=rcText(id);
   modal(`<div class="no-print"><h2>Satış fişi · ${esc(D.s.sale_no)}</h2><div class="seg" style="margin-bottom:10px">${[['80','Fiş yazıcı (80 mm)'],['a4','A4']].map(([k,t])=>`<button data-a="rc-w" data-id="${id}" data-w="${k}" aria-pressed="${w===k}">${t}</button>`).join('')}</div></div>
   ${rcHtml(id,w)}
-  <div class="actions no-print"><span class="sub" style="margin-right:auto">PDF için "Yazdır" penceresinde hedef olarak "PDF olarak kaydet" seçin.</span><button class="btn" data-a="close">Kapat</button><button class="btn pri" data-a="rc-print" data-w="${w}">Yazdır / PDF</button>
+  <div class="actions no-print"><span class="sub" style="margin-right:auto">PDF için "Yazdır" penceresinde hedef olarak "PDF olarak kaydet" seçin.</span><button class="btn" data-a="close">Kapat</button>${typeof dwBtns==='function'?dwBtns(id):''}<button class="btn pri" data-a="rc-print" data-w="${w}">Yazdır / PDF</button>
    <a class="btn" target="_blank" rel="noopener" href="https://wa.me/${ph}?text=${encodeURIComponent(txt)}">WhatsApp</a>${c&&c.email?`<a class="btn" href="mailto:${encodeURIComponent(c.email)}?subject=${encodeURIComponent(shopSet().name+' · Satış fişi '+D.s.sale_no)}&body=${encodeURIComponent(txt)}">E-posta</a>`:''}</div>`)}
 function rcText(id){const D=rcData(id);if(!D)return '';const {s,items,acc,pays,cust}=D,sh=shopSet();
   return [`${sh.name} · Satış fişi ${s.sale_no}`,fmtDate(s.sold_at),cust?'Sayın '+cust.name:'',''].filter((x,i)=>x||i>2).join('\n')+'\n'
@@ -4619,7 +4642,7 @@ function vServis(){
   const row=x=>{const c=d.contactMap.get(x.contact_id),rc=d.contactMap.get(x.repair_contact_id),lt=svOpen(x)&&x.status!=='hazir'&&x.promised_date&&x.promised_date<today(),acc=x.kind==='aksesuar';
     const st=svStatuses(x);const stOpts=SV.filter(o=>st.includes(o[0])||o[0]===x.status).filter(o=>o[0]!=='teslim');
     return `<div class="item"><div class="main"><b>${esc(x.device)}${acc&&x.qty>1?' × '+x.qty:''}</b> <span class="pill ${svTone(x.status)}">${esc(SVL[x.status])}</span> ${acc?'<span class="pill">Aksesuar · '+esc((RT.find(r=>r[0]===x.request_type)||[])[1]||'')+'</span>':''}<span class="pill ${svExt(x)?'warn':''}">${esc(RBS[x.repair_by]||'')}</span>${x.warranty_service?' <span class="pill">Garanti kapsamı</span>':''}${x.quote_status&&x.quote_status!=='yok'?` <span class="pill ${x.quote_status==='kabul'?'sold':x.quote_status==='red'?'bad':'warn'}">${SQL[x.quote_status]}</span>`:''}${svOpen(x)&&svRepeat(x)?' <span class="pill bad">Onarım garantisi içinde tekrar arıza</span>':''}${x.status==='teslim'&&x.warranty_until?` <span class="pill ${x.warranty_until>=today()?'sold':''}">Onarım garantisi ${x.warranty_until>=today()?fmtDate(x.warranty_until)+'\'e kadar':'bitti'}</span>`:''}
-    <div class="meta"><span class="mono">${esc(x.ticket_no)}</span>${c?`<span>${esc(c.name)}${c.phone?' · '+esc(c.phone):''}</span>`:''}${x.imei?`<span class="mono">${esc(x.imei)}</span>`:''}<span>Kabul ${fmtDate(x.received_at)}</span>${x.promised_date?`<span class="${lt?'neg':''}">Söz verilen ${fmtDate(x.promised_date)}${lt?' (geçti)':''}</span>`:''}${x.assigned_to?`<span>${esc(pname(x.assigned_to))}</span>`:''}</div>
+    <div class="meta"><span class="mono">${esc(x.ticket_no)}</span>${c?`<span>${esc(c.name)}${c.phone?' · '+esc(c.phone):''}</span>`:''}${x.imei?`<span class="mono">${esc(x.imei)}</span>${dwPill(x.imei)}`:''}<span>Kabul ${fmtDate(x.received_at)}</span>${x.promised_date?`<span class="${lt?'neg':''}">Söz verilen ${fmtDate(x.promised_date)}${lt?' (geçti)':''}</span>`:''}${x.assigned_to?`<span>${esc(pname(x.assigned_to))}</span>`:''}</div>
     ${svExt(x)?`<div class="meta"><span>Onaran: <b>${esc(rc?rc.name:RBS[x.repair_by])}</b></span>${x.external_ref?`<span>Dosya no <span class="mono">${esc(x.external_ref)}</span></span>`:''}${x.sent_on?`<span>Gönderim ${fmtDate(x.sent_on)}</span>`:''}${x.external_due?`<span class="${svExtLate(x)?'neg':''}">Beklenen dönüş ${fmtDate(x.external_due)}${svExtLate(x)?' (geçti)':''}</span>`:''}${x.returned_on?`<span>Döndü ${fmtDate(x.returned_on)}${x.external_result?' · '+esc({onarildi:'onarıldı',degisti:'değiştirildi',onarilamadi:'onarılamadı',diger:'diğer'}[x.external_result]):''}</span>`:''}${x.external_cost!=null?`<span>Dış servis maliyeti ${money(x.external_cost)}</span>`:''}</div>`:''}
     ${svMoneyLine(x)}<div class="meta"><span>${acc?'Sorun':'Arıza'}: ${esc(x.issue)}</span>${x.accessories?`<span>Teslim alınan: ${esc(x.accessories)}</span>`:''}</div>${x.note?`<div class="meta"><span>${esc(x.note)}</span></div>`:''}
     ${u.openSv===x.id?`<div style="margin-top:8px">${d.service_events.filter(e=>e.service_id===x.id).sort((a,b)=>String(a.at).localeCompare(String(b.at))).map(e=>`<div class="sub">${fmtTime(e.at)} · ${esc(SVL[e.status]||'')}${e.note?' · '+esc(e.note):''}${e.by?' · '+esc(pname(e.by)):''}</div>`).join('')||'<div class="sub">Kayıt yok.</div>'}</div>`:''}</div>
@@ -7841,7 +7864,7 @@ function vKatalog(){const u=S.ui,R=ctlR();
   const sold=res.filter(r=>r.status==='satildi'&&String(r.updated_at).slice(0,7)===ms).length,views=sum(pub,p=>(ctlItem(p.id)||{}).views||0);
   return `<div class="row"><h1>Kataloglar</h1><span class="pill ${R.on?'sold':'gray'}">${R.on?'Yayında':'Kapalı'}</span><div class="sp"></div>
     <a class="btn" href="${esc(ctlLink())}" target="_blank" rel="noopener">${ic('share','sm')} Kataloğu aç</a><button class="btn" data-a="ctl-copy">Bağlantıyı kopyala</button><a class="btn" target="_blank" rel="noopener" href="https://wa.me/?text=${encodeURIComponent((R.title||'Cihaz Kataloğu')+': '+ctlLink())}">WhatsApp'ta paylaş</a>
-    <button class="btn pri" data-a="ctl-new">+ Rezervasyon</button></div>
+    <button class="btn" data-a="vl-open">${ic('printer','sm')} Vitrin etiketi</button><button class="btn pri" data-a="ctl-new">+ Rezervasyon</button></div>
   <div class="grid g4">${tile('Yayındaki cihaz',String(pub.length),ctlDevs().length+' stoktaki cihazdan')}${tile('Yeni talep',`<span class="${nNew?'neg':''}">${nNew}</span>`,'dönüş bekliyor')}${tile('Ayrılmış cihaz',String(nHold),'müşteri adına tutuluyor')}${tile('Bu ay satışa dönen',String(sold),'görüntülenme '+views)}</div>
   <div class="seg" style="margin:12px 0">${T.map(([k,l])=>`<button data-a="ctl-tab" data-v="${k}" aria-pressed="${t===k}">${l}${k==='rez'&&nNew?` <small class="ctl-n">${nNew}</small>`:''}</button>`).join('')}</div>
   ${t==='rez'?ctlResView():t==='cihaz'?ctlDevView():ctlSetView()}`}
@@ -7887,7 +7910,7 @@ function ctlDevCard(p){const ci=ctlItem(p.id)||{},n=ctlPhotos(p.id).length,pr=ct
       <div class="ctl-dp">${pr!=null?money(pr):'<span class="neg">Fiyat yok</span>'}${ci.featured?' <span class="pill pink">Öne çıkan</span>':''}</div>
       <div class="meta"><span class="${n?'':'neg'}">${ic('clip','sm')} ${n} foto</span>${ci.published?`<span>${ci.views||0} görüntülenme</span>`:''}${h?`<span class="pill warn">Ayrıldı · ${esc(h.name)}</span>`:''}</div></div>
     <div class="ctl-da"><label class="ctl-sw" title="Katalogda yayınla"><input type="checkbox" data-c="ctl-pub" data-id="${p.id}" ${ci.published?'checked':''}><span></span>${ci.published?'Yayında':'Kapalı'}</label>
-      <button class="btn sm" data-a="ctl-edit" data-id="${p.id}">${ic('pencil','sm')} Düzenle</button>${ci.published?`<button class="btn sm" data-a="ctl-plink" data-id="${p.id}">Bağlantı</button>`:''}</div></div>`}
+      <button class="btn sm" data-a="ctl-edit" data-id="${p.id}">${ic('pencil','sm')} Düzenle</button><button class="btn sm" data-a="vl-open" data-id="${p.id}">Etiket</button>${ci.published?`<button class="btn sm" data-a="ctl-plink" data-id="${p.id}">Bağlantı</button>`:''}</div></div>`}
 function ctlSetView(){const R=ctlR(),cats=[...new Set([...CATS,...S.d.products.map(p=>p.cat)])],ck=(k,l,s)=>`<label class="ck full"><input type="checkbox" id="cts-${k}" ${R[k]?'checked':''}> ${l}${s?` <span class="sub">${s}</span>`:''}</label>`;
   return `<div class="card"><h2>Katalog ayarları</h2><div class="form">
     ${ck('on','Katalog yayında','kapalıyken sayfa "şu anda kapalı" yazar')}
@@ -7997,6 +8020,194 @@ document.addEventListener('change',async e=>{const t=e.target;if(!t||!t.dataset)
   if(c==='ctdc'){S.ui.ctdc=t.value;render();return}});
 document.addEventListener('input',e=>{const t=e.target;if(!t||!t.dataset)return;const c=t.dataset.c;if(c!=='ctq'&&c!=='ctdq')return;
   S.ui[c]=t.value;const pos=t.selectionStart;render();const n=document.getElementById(c);if(n){n.focus();try{n.setSelectionRange(pos,pos)}catch(x){}}});
+/* QR kodu (bayt kipi, hata düzeltme M, sürüm 1–20; harici kitaplık yok) */
+const QR=(()=>{
+  const ECW=[0,10,16,26,18,24,16,18,22,22,26,30,22,22,24,24,28,28,26,26,26];   // M: blok başına EC kod sözcüğü
+  const NB=[0,1,1,1,2,2,4,4,4,5,5,5,8,9,9,10,10,11,13,14,16];                  // M: blok sayısı
+  const AL=[[],[],[6,18],[6,22],[6,26],[6,30],[6,34],[6,22,38],[6,24,42],[6,26,46],[6,28,50],[6,30,54],[6,32,58],[6,34,62],[6,26,46,66],[6,26,48,70],[6,26,50,74],[6,30,54,78],[6,30,56,82],[6,30,58,86],[6,34,62,90]];
+  const rawMods=v=>{let r=(16*v+128)*v+64;if(v>=2){const n=Math.floor(v/7)+2;r-=(25*n-10)*n-55;if(v>=7)r-=36}return r};
+  const dataCw=v=>Math.floor(rawMods(v)/8)-ECW[v]*NB[v];
+  const EXP=new Array(512),LOG=new Array(256);{let x=1;for(let i=0;i<255;i++){EXP[i]=x;LOG[x]=i;x<<=1;if(x&256)x^=0x11D}for(let i=255;i<512;i++)EXP[i]=EXP[i-255]}
+  const mul=(a,b)=>a&&b?EXP[LOG[a]+LOG[b]]:0;
+  function rsDiv(deg){let r=[1];for(let i=0;i<deg;i++){const n=new Array(r.length+1).fill(0);for(let j=0;j<r.length;j++){n[j]^=r[j];n[j+1]^=mul(r[j],EXP[i])}r=n}return r.slice(1)}
+  function rsRem(data,gen){const r=new Array(gen.length).fill(0);for(const b of data){const f=b^r.shift();r.push(0);for(let i=0;i<gen.length;i++)r[i]^=mul(gen[i],f)}return r}
+  function encode(text){
+    const bytes=[...new TextEncoder().encode(text)];let v=1;
+    for(;v<=20;v++){const cap=dataCw(v)*8,len=4+(v<10?8:16)+bytes.length*8;if(len<=cap)break}
+    if(v>20)throw new Error('QR için metin çok uzun');
+    const bits=[];const put=(val,n)=>{for(let i=n-1;i>=0;i--)bits.push((val>>>i)&1)};
+    put(4,4);put(bytes.length,v<10?8:16);bytes.forEach(b=>put(b,8));
+    const cap=dataCw(v)*8;put(0,Math.min(4,cap-bits.length));while(bits.length%8)bits.push(0);
+    for(let p=0xEC;bits.length<cap;p^=0xEC^0x11)put(p,8);
+    const dat=[];for(let i=0;i<bits.length;i+=8)dat.push(bits.slice(i,i+8).reduce((a,b)=>a*2+b,0));
+    const nb=NB[v],ec=ECW[v],raw=Math.floor(rawMods(v)/8),ns=nb-raw%nb,sl=Math.floor(raw/nb),gen=rsDiv(ec),blocks=[];
+    for(let i=0,k=0;i<nb;i++){const d=dat.slice(k,k+sl-ec+(i<ns?0:1));k+=d.length;const e=rsRem(d,gen);if(i<ns)d.push(0);blocks.push(d.concat(e))}
+    const cw=[];for(let i=0;i<blocks[0].length;i++)blocks.forEach((b,j)=>{if(i!==sl-ec||j>=ns)cw.push(b[i])});
+    const N=v*4+17,m=[...Array(N)].map(()=>new Array(N).fill(false)),fn=[...Array(N)].map(()=>new Array(N).fill(false));
+    const set=(x,y,d)=>{m[y][x]=d;fn[y][x]=true};
+    for(let i=0;i<N;i++){set(6,i,i%2===0);set(i,6,i%2===0)}
+    const finder=(cx,cy)=>{for(let dy=-4;dy<=4;dy++)for(let dx=-4;dx<=4;dx++){const d=Math.max(Math.abs(dx),Math.abs(dy)),x=cx+dx,y=cy+dy;if(x>=0&&x<N&&y>=0&&y<N)set(x,y,d!==2&&d!==4)}};
+    finder(3,3);finder(N-4,3);finder(3,N-4);
+    const al=AL[v];for(let i=0;i<al.length;i++)for(let j=0;j<al.length;j++){if((i===0&&j===0)||(i===0&&j===al.length-1)||(i===al.length-1&&j===0))continue;
+      for(let dy=-2;dy<=2;dy++)for(let dx=-2;dx<=2;dx++)set(al[i]+dx,al[j]+dy,Math.max(Math.abs(dx),Math.abs(dy))!==1)}
+    const fmt=mask=>{const d=(0<<3)|mask;let r=d;for(let i=0;i<10;i++)r=(r<<1)^((r>>>9)*0x537);const b=((d<<10)|r)^0x5412;  // M = 00
+      for(let i=0;i<=5;i++)set(8,i,(b>>>i)&1);set(8,7,(b>>>6)&1);set(8,8,(b>>>7)&1);set(7,8,(b>>>8)&1);for(let i=9;i<15;i++)set(14-i,8,(b>>>i)&1);
+      for(let i=0;i<8;i++)set(N-1-i,8,(b>>>i)&1);for(let i=8;i<15;i++)set(8,N-15+i,(b>>>i)&1);set(8,N-8,true)};
+    fmt(0);
+    if(v>=7){let r=v;for(let i=0;i<12;i++)r=(r<<1)^((r>>>11)*0x1F25);const b=(v<<12)|r;for(let i=0;i<18;i++){const bt=(b>>>i)&1,a=N-11+i%3,c=Math.floor(i/3);set(a,c,bt);set(c,a,bt)}}
+    let i=0;for(let right=N-1;right>=1;right-=2){if(right===6)right=5;for(let vert=0;vert<N;vert++)for(let j=0;j<2;j++){const x=right-j,up=((right+1)&2)===0,y=up?N-1-vert:vert;
+      if(!fn[y][x]&&i<cw.length*8){m[y][x]=((cw[i>>>3]>>>(7-(i&7)))&1)===1;i++}}}
+    const MASK=[(x,y)=>(x+y)%2===0,(x,y)=>y%2===0,(x,y)=>x%3===0,(x,y)=>(x+y)%3===0,(x,y)=>(Math.floor(x/3)+Math.floor(y/2))%2===0,(x,y)=>x*y%2+x*y%3===0,(x,y)=>(x*y%2+x*y%3)%2===0,(x,y)=>((x+y)%2+x*y%3)%2===0];
+    const apply=k=>{for(let y=0;y<N;y++)for(let x=0;x<N;x++)if(!fn[y][x]&&MASK[k](x,y))m[y][x]=!m[y][x]};
+    const pen=()=>{let p=0;const line=g=>{let run=1;for(let k=1;k<=N;k++){if(k<N&&g(k)===g(k-1))run++;else{if(run>=5)p+=run-2;run=1}}};
+      for(let y=0;y<N;y++)line(k=>m[y][k]);for(let x=0;x<N;x++)line(k=>m[k][x]);
+      for(let y=0;y<N-1;y++)for(let x=0;x<N-1;x++){const c=m[y][x];if(c===m[y][x+1]&&c===m[y+1][x]&&c===m[y+1][x+1])p+=3}
+      const pat=(g)=>{for(let k=0;k+10<N;k++){const s=[...Array(11)].map((_,q)=>g(k+q)?1:0).join('');if(s==='10111010000'||s==='00001011101')p+=40}};
+      for(let y=0;y<N;y++)pat(k=>m[y][k]);for(let x=0;x<N;x++)pat(k=>m[k][x]);
+      let dk=0;for(let y=0;y<N;y++)for(let x=0;x<N;x++)if(m[y][x])dk++;p+=Math.floor(Math.abs(dk*20-N*N*10)/(N*N))*10;return p};
+    let best=0,bp=1e9;for(let k=0;k<8;k++){apply(k);fmt(k);const p=pen();if(p<bp){bp=p;best=k}apply(k)}
+    apply(best);fmt(best);return m}
+  function svg(text,o={}){const m=encode(text),N=m.length,q=o.quiet==null?2:o.quiet;let d='';
+    for(let y=0;y<N;y++)for(let x=0;x<N;x++)if(m[y][x])d+=`M${x+q} ${y+q}h1v1h-1z`;
+    return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${N+2*q} ${N+2*q}" shape-rendering="crispEdges"${o.title?` aria-label="${o.title}"`:''}><rect width="100%" height="100%" fill="#fff"/><path d="${d}" fill="${o.color||'#000'}"/></svg>`}
+  return {encode,svg}})();
+/* ================= 076 · VİTRİN QR ETİKETİ + İŞLETME GARANTİ BELGESİ ================= */
+const qrSvg=(t,o)=>{try{return QR.svg(t,o)}catch(e){return ''}};
+/* ---- vitrin etiketi ---- */
+const VL_SIZES={kart:['A6 kart · 105×148 mm','A4\'e 4 adet; vitrin standına'],kucuk:['Küçük · 99×67 mm','A4\'e 8 adet; raf ve cihaz önüne']};
+function vlCond(p){const s=String(p.sub||'');return /^Sıfır/.test(s)?'Sıfır':/^Yenilenmiş/.test(s)?'Yenilenmiş':/2\.?\s?El/i.test(s)?'2. El':s}
+function vlSpecs(p){const ci=ctlItem(p.id)||{},ins=(S.d.device_inspections||[]).filter(i=>i.product_id===p.id&&i.completed_at).sort((a,b)=>String(b.completed_at).localeCompare(String(a.completed_at)))[0];
+  const gb=ins&&ins.storage_gb?ins.storage_gb:(String(p.model).match(/(\d{2,4})\s?GB/i)||[])[1];
+  return [gb?gb+' GB':'',ci.color,p.battery!=null?'Pil %'+p.battery:'',p.warranty&&p.warranty!=='Garantisiz'?(p.warranty==='Mağaza Garantili'?((p.warranty_period||((dwR().months||6)+' ay'))+' işletme garantisi'):p.warranty):''].filter(Boolean)}
+function vlInst(p){if(p.installment!=='yapilabilir')return '';const b=(S.d.pos_banks||[]).find(x=>x.is_default&&x.active),n=(b&&b.campaign_inst)||3,tot=p.inst_campaign_price!=null?Number(p.inst_campaign_price):ctlPrice(p);
+  return tot?`Peşin fiyatına ${n} taksit · ${money0(Math.ceil(tot/n))}/ay`:''}
+const money0=n=>Number(n).toLocaleString('tr-TR',{maximumFractionDigits:0})+' ₺';
+function vlCell(p,o){const ci=ctlItem(p.id)||{},pub=!!ci.published,url=ctlLink(pub?p.id:''),pr=ctlPrice(p),sp=vlSpecs(p),inst=o.inst?vlInst(p):'',k=o.size;
+  return `<div class="vl ${k}"><div class="vl-h"><img src="${LOGO.word_l}" alt=""><span>${esc(vlCond(p))}</span></div>
+    <div class="vl-m"><div class="vl-t">${esc(ci.title||p.model)}</div><div class="vl-s">${sp.map(esc).join(' · ')}</div>
+      ${o.price&&pr!=null?`<div class="vl-p">${money0(pr)}</div>`:''}${inst?`<div class="vl-i">${esc(inst)}</div>`:''}</div>
+    <div class="vl-q">${qrSvg(url,{quiet:1})}<div><b>${pub?'Okutun, inceleyin':'Kataloğu inceleyin'}</b><span>${pub?'Fotoğraflar · detaylar · rezervasyon':'Tüm cihazlar ve rezervasyon'}</span></div></div></div>`}
+function vlRun(list,o){const per=o.size==='kart'?4:8,cells=[];list.forEach(p=>{for(let i=0;i<(o.n||1);i++)cells.push(vlCell(p,o))});
+  const css=`@page{size:A4;margin:6mm}#vlsheet{display:none}@media print{body.vl-print>*:not(#vlsheet){display:none!important}body.vl-print{background:#fff}#vlsheet{display:grid!important;grid-template-columns:repeat(2,${o.size==='kart'?'99mm':'99mm'});gap:${o.size==='kart'?'3mm':'2mm'};justify-content:center}}
+  #vlsheet .vl{box-sizing:border-box;border:.3mm dashed #bbb;border-radius:3mm;color:#111;font-family:'IBM Plex Sans',Arial,sans-serif;overflow:hidden;break-inside:avoid;page-break-inside:avoid;display:flex;flex-direction:column;background:#fff}
+  #vlsheet .vl.kart{height:140mm;padding:7mm 7mm 6mm}#vlsheet .vl.kucuk{height:66mm;padding:4mm 5mm;display:grid;grid-template-columns:1fr 30mm;grid-template-rows:auto 1fr;column-gap:4mm}
+  #vlsheet .vl-h{display:flex;align-items:center;justify-content:space-between;gap:3mm}#vlsheet .vl-h img{height:${o.size==='kart'?'7mm':'5mm'}}
+  #vlsheet .vl-h span{background:#C20C77;color:#fff;border-radius:99px;padding:.6mm 2.6mm;font-size:${o.size==='kart'?'9pt':'7.5pt'};font-weight:700;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  #vlsheet .vl.kucuk .vl-h{grid-column:1/3}
+  #vlsheet .vl-t{font-weight:700;font-size:${o.size==='kart'?'20pt':'13pt'};line-height:1.12;margin-top:${o.size==='kart'?'7mm':'2.5mm'};letter-spacing:-.01em}
+  #vlsheet .vl-s{font-size:${o.size==='kart'?'10.5pt':'8pt'};color:#444;margin-top:1.5mm;line-height:1.35}
+  #vlsheet .vl-p{font-weight:800;font-size:${o.size==='kart'?'30pt':'19pt'};margin-top:${o.size==='kart'?'6mm':'2mm'};letter-spacing:-.02em;color:#0A70B8;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  #vlsheet .vl-i{font-size:${o.size==='kart'?'10pt':'7.5pt'};font-weight:600;color:#17834A;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  #vlsheet .vl-q{display:flex;align-items:center;gap:4mm;margin-top:auto;border-top:.3mm solid #e2e2e2;padding-top:4mm}
+  #vlsheet .vl-q svg{width:${o.size==='kart'?'32mm':'27mm'};height:${o.size==='kart'?'32mm':'27mm'};flex:none}
+  #vlsheet .vl-q b{display:block;font-size:${o.size==='kart'?'12pt':'8pt'}}#vlsheet .vl-q span{font-size:${o.size==='kart'?'9pt':'6.5pt'};color:#555}
+  #vlsheet .vl.kucuk .vl-q{grid-column:2;grid-row:2;flex-direction:column;border:0;padding:0;gap:1mm;text-align:center;margin:0;justify-content:center}#vlsheet .vl.kucuk .vl-q span{display:none}#vlsheet .vl.kucuk .vl-q b{font-size:6.5pt}
+  #vlsheet .vl.kucuk .vl-m{grid-column:1;grid-row:2}`;
+  document.getElementById('vlsheet')?.remove();document.getElementById('vlstyle')?.remove();
+  const st=document.createElement('style');st.id='vlstyle';st.textContent=css;document.head.appendChild(st);
+  const d=document.createElement('div');d.id='vlsheet';d.innerHTML=cells.join('');document.body.appendChild(d);document.body.classList.add('vl-print');
+  const done=()=>{document.body.classList.remove('vl-print');d.remove();st.remove();window.removeEventListener('afterprint',done)};
+  window.addEventListener('afterprint',done);setTimeout(()=>window.print(),80);return {d,per}}
+function vlModal(only){const L=ctlDevs().slice().sort((a,b)=>((ctlItem(b.id)||{}).published?1:0)-((ctlItem(a.id)||{}).published?1:0)||String(a.model).localeCompare(String(b.model),'tr'));
+  const V=S.vl={sel:new Set(only?[only]:L.filter(p=>(ctlItem(p.id)||{}).published).map(p=>p.id)),size:(S.vl&&S.vl.size)||'kart',price:true,inst:true,n:1};vlDraw(L)}
+function vlDraw(L){L=L||ctlDevs().slice().sort((a,b)=>((ctlItem(b.id)||{}).published?1:0)-((ctlItem(a.id)||{}).published?1:0)||String(a.model).localeCompare(String(b.model),'tr'));const V=S.vl,first=L.find(p=>V.sel.has(p.id));
+  const off=[...V.sel].filter(id=>!(ctlItem(id)||{}).published).length;
+  modal(`<div class="nt-mh"><h2 style="margin:0">${ic('store')} Vitrin etiketi</h2><div class="sp"></div><button class="ib" data-a="close" aria-label="Kapat">${ic('x')}</button></div>
+  <p class="sub">Müşteri QR'ı telefonuyla okutunca cihazın katalog sayfası açılır: fotoğraflar, ayrıntılar, rezervasyon.</p>
+  <div class="vl-wrap"><div><div class="seg" style="margin-bottom:8px">${Object.entries(VL_SIZES).map(([k,[t]])=>`<button data-a="vl-size" data-v="${k}" aria-pressed="${V.size===k}">${t}</button>`).join('')}</div>
+    <div class="sub" style="margin-bottom:8px">${esc(VL_SIZES[V.size][1])}</div>
+    <div class="row" style="gap:14px;flex-wrap:wrap;margin-bottom:8px"><label class="ck"><input type="checkbox" data-c="vl-o" data-k="price" ${V.price?'checked':''}> Fiyat</label><label class="ck"><input type="checkbox" data-c="vl-o" data-k="inst" ${V.inst?'checked':''}> Taksit bilgisi</label>
+      <label class="ck">Her cihazdan <input class="in" type="number" min="1" max="8" value="${V.n}" data-c="vl-n" style="width:64px;height:32px"> adet</label></div>
+    <div class="row" style="gap:6px;margin-bottom:6px"><b>${V.sel.size} cihaz seçili</b><div class="sp"></div><button class="btn sm" data-a="vl-all" data-v="pub">Yayındakiler</button><button class="btn sm" data-a="vl-all" data-v="none">Temizle</button></div>
+    <div class="vl-list">${L.map(p=>{const ci=ctlItem(p.id)||{};return `<label class="ck vl-row"><input type="checkbox" data-c="vl-s" value="${p.id}" ${V.sel.has(p.id)?'checked':''}>${ctlThumb(p.id)}<span><b>${esc(ci.title||p.model)}</b><small>${esc([p.sub,ctlPrice(p)!=null?money0(ctlPrice(p)):'fiyat yok'].join(' · '))}${ci.published?'':' · <span class="neg">katalogda değil</span>'}</small></span></label>`}).join('')||'<div class="empty">Stokta cihaz yok.</div>'}</div>
+    ${off?`<p class="sub neg" style="margin-top:6px">${off} cihaz katalogda yayında değil; QR'ı katalog ana sayfasını açar. Cihaza özel sayfa için önce yayınlayın.</p>`:''}</div>
+    <div class="vl-prev"><div class="sub" style="margin-bottom:6px">Önizleme</div>${first?`<div id="vlsheet-prev">${vlCell(first,V)}</div>`:'<div class="empty">Cihaz seçin.</div>'}</div></div>
+  <div class="err" id="f-err" hidden></div><div class="actions"><span class="sub" style="margin-right:auto">Yazdırırken kâğıt A4, ölçek %100, "Arka plan grafikleri" açık olsun.</span><button class="btn" data-a="close">Vazgeç</button><button class="btn pri" data-a="vl-print" ${V.sel.size?'':'disabled'}>${ic('printer','sm')} Yazdır</button></div>`);
+  const box=document.querySelector('#modal .modal');if(box)box.classList.add('wide')}
+/* ---- işletme garanti belgesi ---- */
+const DW_DEF={on:true,months:6,title:'İŞLETME GARANTİ BELGESİ',cover:[],exclude:[],terms:[],note:''};
+const dwInstalled=()=>!!(S.d&&(S.d.app_settings||[]).some(x=>x.key==='dev_warranty'));
+function dwR(){const x=S.d&&(S.d.app_settings||[]).find(s=>s.key==='dev_warranty');let v={};try{v=x?JSON.parse(x.value):{}}catch(e){}return {...DW_DEF,...v}}
+const dwAll=()=>(S.d.device_warranties||[]);
+const dwGet=id=>dwAll().find(x=>x.id===id);
+const dwBySale=sid=>dwAll().filter(x=>x.sale_id===sid);
+const dwLink=d=>(ctlR().url||CTL_DEF.url)+'#g/'+d.token;
+const dwLeft=d=>Math.round((new Date(d.end_date+'T23:59:59')-Date.now())/864e5);
+const dwActive=d=>d.status==='aktif'&&dwLeft(d)>=0;
+function dwStatus(d){if(d.status==='iptal')return ['İptal','gray'];const l=dwLeft(d);if(l<0)return ['Süresi doldu','gray'];if(l<=30)return [l+' gün kaldı','warn'];return ['Geçerli','sold']}
+function dwPill(imei){if(!imei)return '';const d=dwAll().find(x=>x.imei===imei&&dwActive(x));if(!d)return '';
+  return `<span class="pill sold" title="${esc(d.cert_no)} · ${fmtDate(d.start_date)} – ${fmtDate(d.end_date)}">İşletme garantisi · ${dwLeft(d)} gün</span>`}
+function dwHtml(d){const sh=shopSet(),T=d.terms||{},c=d.contact_id&&S.d.contactMap.get(d.contact_id),s=d.sale_id&&S.d.saleMap&&S.d.saleMap.get(d.sale_id),[stt]=dwStatus(d);
+  const L=(a,cls)=>(a||[]).length?`<ul class="dw-l ${cls}">${a.map(x=>`<li>${esc(x)}</li>`).join('')}</ul>`:'';
+  return `<div class="qdoc dwdoc">${d.status==='iptal'?`<div class="dw-void">İPTAL · ${esc(d.cancel_reason||'')}</div>`:''}
+  <div class="dw-hd"><div><img src="${LOGO.word_l}" alt="" class="dw-logo"><div class="dw-shop"><b>${esc(sh.name)}</b><div>${esc(sh.address||'')}</div><div>${esc([sh.phone,sh.email].filter(Boolean).join(' · '))}</div>${sh.taxNo?`<div>${esc([sh.taxOffice?sh.taxOffice+' V.D.':'',sh.taxNo].filter(Boolean).join(' · '))}</div>`:''}</div></div>
+    <div class="dw-ttl"><h1>${esc(T.title||'İŞLETME GARANTİ BELGESİ')}</h1><div><span>Belge no</span><b class="mono">${esc(d.cert_no)}</b></div><div><span>Düzenleme</span><b>${fmtDate(String(d.created_at).slice(0,10))}</b></div></div></div>
+  <div class="dw-period"><div><span>Garanti süresi</span><b>${d.months} ay</b></div><div><span>Başlangıç</span><b>${fmtDate(d.start_date)}</b></div><div><span>Bitiş</span><b>${fmtDate(d.end_date)}</b></div><div><span>Durum</span><b>${esc(stt)}</b></div></div>
+  <div class="dw-g"><div class="dw-box"><h3>Alıcı</h3><div class="dw-kv"><span>Ad soyad</span><b>${esc(d.customer_name||(c&&c.name)||'—')}</b></div><div class="dw-kv"><span>Telefon</span><b>${esc(d.customer_phone||(c&&c.phone)||'—')}</b></div></div>
+    <div class="dw-box"><h3>Cihaz</h3><div class="dw-kv"><span>Marka / model</span><b>${esc(d.model)}</b></div><div class="dw-kv"><span>IMEI / seri no</span><b class="mono">${esc(d.imei||'—')}</b></div><div class="dw-kv"><span>Durum</span><b>${esc([d.cat,d.sub].filter(Boolean).join(' · '))}</b></div><div class="dw-kv"><span>Satış</span><b>${esc(s?s.sale_no+' · '+fmtDate(String(s.sold_at).slice(0,10)):fmtDate(d.start_date))}</b></div></div></div>
+  <div class="dw-g"><div class="dw-box"><h3>Garanti kapsamında</h3>${L(T.cover,'ok')}</div><div class="dw-box"><h3>Garanti kapsamı dışında</h3>${L(T.exclude,'no')}</div></div>
+  <div class="dw-box"><h3>Garanti koşulları</h3><ol class="dw-ol">${(T.terms||[]).map(x=>`<li>${esc(x)}</li>`).join('')}</ol>${T.note?`<p>${esc(T.note)}</p>`:''}</div>
+  <div class="dw-ft"><div class="dw-qr">${qrSvg(dwLink(d),{quiet:1})}<div><b>Belgeyi çevrimiçi görün ve doğrulayın</b><span>Telefonunuzun kamerasıyla okutun. Belge kaybolsa bile bu bağlantıdan ulaşabilirsiniz.</span></div></div>
+    <div class="dw-sig"><div>Satıcı kaşe / imza</div></div><div class="dw-sig"><div>Alıcı imza</div></div></div>
+  <div class="dw-fn">Servis ve garanti başvurusu: ${esc([sh.name,sh.phone,sh.address].filter(Boolean).join(' · '))}</div></div>`}
+function dwText(d){const sh=shopSet();return `Merhaba${d.customer_name?' '+d.customer_name.split(' ')[0]:''}, ${sh.name} olarak ${d.model} cihazınızın ${d.months} aylık işletme garanti belgesi (${d.cert_no}) hazır. Garanti ${fmtDate(d.end_date)} tarihine kadar geçerlidir. Belgeyi görmek ve kaydetmek için: ${dwLink(d)}`}
+function dwModal(id){const d=dwGet(id);if(!d)return toast('Belge bulunamadı',true);const ph=waPhone(d.customer_phone||''),c=d.contact_id&&S.d.contactMap.get(d.contact_id),mail=c&&c.email,sent=(d.sent||[]).slice(-1)[0];
+  modal(`<div class="no-print row" style="margin-bottom:8px"><h2 style="margin:0">Garanti belgesi · ${esc(d.cert_no)}</h2><div class="sp"></div><button class="ib" data-a="close" aria-label="Kapat">${ic('x')}</button></div>${dwHtml(d)}
+  <div class="actions no-print"><span class="sub" style="margin-right:auto">${sent?'Son gönderim: '+esc(new Date(sent.at).toLocaleString('tr-TR',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'}))+' · '+esc({whatsapp:'WhatsApp',eposta:'E-posta',kopya:'bağlantı'}[sent.ch]||sent.ch):'PDF için "Yazdır" penceresinde "PDF olarak kaydet" seçin.'}</span>
+    ${d.status==='aktif'&&can('manage_dev_warranty')?`<button class="btn danger" data-a="dw-cancel" data-id="${d.id}">İptal et</button>`:''}<button class="btn" data-a="dw-copy" data-id="${d.id}">Bağlantıyı kopyala</button>
+    ${mail?`<a class="btn" data-a="dw-sent" data-ch="eposta" data-id="${d.id}" href="mailto:${encodeURI(mail)}?subject=${encodeURIComponent(shopSet().name+' · Garanti belgesi '+d.cert_no)}&body=${encodeURIComponent(dwText(d))}">E-posta</a>`:''}
+    <a class="btn" data-a="dw-sent" data-ch="whatsapp" data-id="${d.id}" target="_blank" rel="noopener" href="https://wa.me/${ph}?text=${encodeURIComponent(dwText(d))}">WhatsApp</a><button class="btn pri" data-a="rc-print" data-w="a4">Yazdır / PDF</button></div>`);
+  const box=document.querySelector('#modal .modal');if(box)box.classList.add('wide')}
+function dwBtns(sid){if(!dwInstalled())return '';const L=dwBySale(sid);return L.map(d=>`<button class="btn sm${d.status==='aktif'?' dw-b':''}" data-a="dw-open" data-id="${d.id}">${ic('shield','sm')} Garanti belgesi${L.length>1?' · '+esc(d.model):''}</button>`).join(' ')}
+function dwItemBtn(it){if(!dwInstalled()||it.returned)return '';const d=dwAll().find(x=>x.sale_item_id===it.id);
+  return d?`<button class="btn sm" data-a="dw-open" data-id="${d.id}">${esc(d.cert_no)}</button>`:(can('make_sale')||can('manage_dev_warranty')?`<button class="btn sm" data-a="dw-new" data-id="${it.id}">Garanti belgesi oluştur</button>`:'')}
+/* liste ve ayarlar (Satışlar › Garanti belgeleri) */
+function vDw(){const u=S.ui,f=u.dwf||'aktif',q=(u.dwq||'').toLocaleLowerCase('tr'),A=dwAll(),R=dwR();
+  let L=A.slice().sort((a,b)=>String(b.created_at).localeCompare(String(a.created_at)));
+  L=L.filter(d=>f==='aktif'?dwActive(d):f==='yakin'?dwActive(d)&&dwLeft(d)<=30:f==='bitti'?d.status==='aktif'&&dwLeft(d)<0:f==='iptal'?d.status==='iptal':true);
+  if(q)L=L.filter(d=>[d.cert_no,d.model,d.imei,d.customer_name,d.customer_phone].join(' ').toLocaleLowerCase('tr').includes(q));
+  const act=A.filter(dwActive),soon=act.filter(d=>dwLeft(d)<=30),ms=today().slice(0,7);
+  return `<div class="row"><button class="btn" data-a="dw-back">← Satışlar</button><h1>Garanti belgeleri</h1><div class="sp"></div></div>
+  ${dwInstalled()?'':`<div class="card"><div class="empty">Garanti belgeleri için <b>076_garanti_belgesi.sql</b> dosyasını Supabase'de çalıştırın.</div></div>`}
+  <div class="grid g4">${tile('Geçerli belge',String(act.length),'garantisi süren cihaz')}${tile('30 gün içinde bitecek',String(soon.length),'hatırlatma için uygun')}${tile('Bu ay düzenlenen',String(A.filter(d=>String(d.created_at).slice(0,7)===ms).length),'')}${tile('Varsayılan süre',R.months+' ay',R.on?'satışta otomatik':'otomatik kapalı')}</div>
+  <div class="card"><div class="row" style="gap:8px;flex-wrap:wrap"><div class="seg">${[['aktif','Geçerli'],['yakin','Bitmek üzere'],['bitti','Süresi dolan'],['iptal','İptal'],['tum','Tümü']].map(([k,l])=>`<button data-a="dw-f" data-v="${k}" aria-pressed="${f===k}">${l}</button>`).join('')}</div><div class="sp"></div>
+    <input class="in" id="dwq" data-c="dwq" type="search" placeholder="Belge no, IMEI, müşteri, model" value="${esc(u.dwq||'')}" style="max-width:300px"></div></div>
+  <div class="card">${L.map(d=>{const [t,c]=dwStatus(d);return `<div class="item"><div class="main"><b>${esc(d.model)}</b> <span class="pill ${c}">${esc(t)}</span>${d.manual?' <span class="pill">Elle</span>':''}
+    <div class="meta"><span class="mono">${esc(d.cert_no)}</span>${d.imei?`<span class="mono">${esc(d.imei)}</span>`:''}<span>${esc(d.customer_name||'Müşteri yok')}</span><span>${fmtDate(d.start_date)} – ${fmtDate(d.end_date)} · ${d.months} ay</span>${(d.sent||[]).length?`<span>${(d.sent||[]).length} kez gönderildi</span>`:''}</div></div>
+    <div class="side"><button class="btn sm pri" data-a="dw-open" data-id="${d.id}">Belge</button></div></div>`}).join('')||'<div class="empty">Bu süzgeçte belge yok.</div>'}</div>
+  ${can('manage_dev_warranty')&&dwInstalled()?`<div class="card"><h2>Belge ayarları</h2><p class="sub">Değişiklikler yalnız bundan sonra düzenlenen belgelere uygulanır. Metinler örnektir; avukatınıza kontrol ettirin.</p><div class="form">
+    <label class="ck full"><input type="checkbox" id="dws-on" ${R.on?'checked':''}> "Mağaza Garantili" cihaz satılınca belge kendiliğinden oluşsun</label>
+    <label class="f">Varsayılan süre (ay) <span class="sub">— cihazda "Garanti süresi" yazılıysa o kullanılır</span><input class="in" id="dws-months" type="number" min="1" max="60" value="${esc(R.months)}"></label>
+    <label class="f">Belge başlığı<input class="in" id="dws-title" maxlength="80" value="${esc(R.title)}"></label>
+    <label class="f full">Garanti kapsamında <span class="sub">(her satıra bir madde)</span><textarea class="in" id="dws-cover" rows="4">${esc((R.cover||[]).join('\n'))}</textarea></label>
+    <label class="f full">Garanti kapsamı dışında<textarea class="in" id="dws-exclude" rows="6">${esc((R.exclude||[]).join('\n'))}</textarea></label>
+    <label class="f full">Garanti koşulları<textarea class="in" id="dws-terms" rows="6">${esc((R.terms||[]).join('\n'))}</textarea></label>
+    <label class="f full">Ek not <span class="sub">(isteğe bağlı)</span><input class="in" id="dws-note" maxlength="500" value="${esc(R.note||'')}"></label></div>
+    <div class="err" id="f-err" hidden></div><div class="actions"><button class="btn pri" data-a="dw-save">Kaydet</button></div></div>`:''}`}
+Object.assign(A,{
+  'vl-open'(t){vlModal(t.dataset.id||'')},
+  'vl-size'(t){S.vl.size=t.dataset.v;vlDraw()},
+  'vl-all'(t){S.vl.sel=new Set(t.dataset.v==='pub'?ctlDevs().filter(p=>(ctlItem(p.id)||{}).published).map(p=>p.id):[]);vlDraw()},
+  'vl-print'(){const V=S.vl,L=ctlDevs().filter(p=>V.sel.has(p.id));if(!L.length)return setErr('Cihaz seçin.');vlRun(L,V)},
+  'dw-open'(t){dwModal(t.dataset.id)},'dw-f'(t){S.ui.dwf=t.dataset.v;render()},'dw-back'(){S.ui.dwv=false;render()},'dw-list'(){S.ui.dwv=true;render()},
+  async 'dw-copy'(t){const d=dwGet(t.dataset.id);if(d&&await copyText(dwLink(d))){toast('Belge bağlantısı kopyalandı');sb.rpc('device_warranty_sent',{p_id:d.id,p_channel:'kopya'}).then(()=>{},()=>{})}},
+  'dw-sent'(t){sb.rpc('device_warranty_sent',{p_id:t.dataset.id,p_channel:t.dataset.ch}).then(()=>{},()=>{});},
+  'dw-new'(t){const it=S.d.sale_items.find(x=>x.id===t.dataset.id),p=it&&S.d.productMap.get(it.product_id);
+    modal(`<h2>Garanti belgesi oluştur</h2><p class="sub">${esc(p?p.model:'')}${p&&p.warranty?' · '+esc(p.warranty):''}</p><div class="form"><label class="f">Garanti süresi (ay)<input class="in" id="dwn-m" type="number" min="1" max="60" value="${esc(dwR().months||6)}"></label></div>
+      <p class="sub">Garanti satış tarihinde başlar. Kapsam ve koşullar ayarlardaki metinlerdir.</p><div class="err" id="f-err" hidden></div>
+      <div class="actions"><button class="btn" data-a="close">Vazgeç</button><button class="btn pri" data-a="dw-new-do" data-id="${it.id}">Oluştur</button></div>`)},
+  async 'dw-new-do'(t){try{const d=await call('device_warranty_issue',{p:{sale_item:t.dataset.id,months:nv('dwn-m')}},null);await syncData();render();if(d&&d.id)dwModal(d.id);toast((d&&d.cert_no||'')+' garanti belgesi oluşturuldu')}catch(e){setErr(msg(e))}},
+  'dw-cancel'(t){modal(`<h2>Garanti belgesini iptal et</h2><div class="form"><label class="f full">Neden<input class="in" id="dwc-r" maxlength="200" placeholder="ör. Yanlış cihaza düzenlendi"></label></div><div class="err" id="f-err" hidden></div>
+      <div class="actions"><button class="btn" data-a="close">Vazgeç</button><button class="btn danger" data-a="dw-cancel-do" data-id="${t.dataset.id}">İptal et</button></div>`)},
+  async 'dw-cancel-do'(t){if(!g('dwc-r'))return setErr('Nedeni yazın.');if(await mcall('device_warranty_cancel',{p:{id:t.dataset.id,reason:g('dwc-r')}},'Belge iptal edildi')){closeModal();await reload()}},
+  async 'dw-save'(){const ls=k=>document.getElementById('dws-'+k).value.split('\n').map(x=>x.trim()).filter(Boolean);
+    if(await mcall('set_dev_warranty_settings',{p:{on:document.getElementById('dws-on').checked,months:g('dws-months'),title:g('dws-title'),note:g('dws-note'),cover:ls('cover'),exclude:ls('exclude'),terms:ls('terms')}},'Belge ayarları kaydedildi'))await reload()},
+});
+document.addEventListener('change',e=>{const t=e.target;if(!t||!t.dataset||!S.vl)return;const c=t.dataset.c;
+  if(c==='vl-s'){t.checked?S.vl.sel.add(t.value):S.vl.sel.delete(t.value);vlDraw()}
+  else if(c==='vl-o'){S.vl[t.dataset.k]=t.checked;vlDraw()}
+  else if(c==='vl-n'){S.vl.n=Math.max(1,Math.min(8,Number(t.value)||1))}});
+document.addEventListener('input',e=>{const t=e.target;if(!t||t.dataset.c!=='dwq')return;S.ui.dwq=t.value;const pos=t.selectionStart;render();const n=document.getElementById('dwq');if(n){n.focus();try{n.setSelectionRange(pos,pos)}catch(x){}}});
 function nlMeta(n,compact){const L=NT().links.filter(l=>l.note_id===n.id);if(!L.length)return '';const T=NL[L[0].ref_table]||{ic:'notebook'};
   return `<span class="nl-m" title="${esc(L.map(l=>l.label).join(', '))}">${ic(T.ic,'sm')}${compact?(L.length>1?L.length:''):esc(String(L[0].label).slice(0,28))+(L.length>1?' +'+(L.length-1):'')}</span>`}
 document.addEventListener('mousedown',e=>{if(e.target.closest&&e.target.closest('[data-a="nt-cmd"],[data-a="nt-slash"],[data-a="nt-line2task"]'))e.preventDefault()});
