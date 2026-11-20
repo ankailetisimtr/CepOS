@@ -201,7 +201,8 @@ const inv=it=>/\(AF\)$/.test(it.sub||'');
 const gb=it=>{if(it.storage_gb)return Number(it.storage_gb);const m=String(it.model||'').match(/(\d{2,4})\s?(GB|TB)/i);return m?(/TB/i.test(m[2])?Number(m[1])*1024:Number(m[1])):null};
 const gbTxt=n=>n?(n>=1024?n/1024+' TB':n+' GB'):'';
 const catTxt=c=>({'Akıllı Telefon':'Telefon','Tabletler':'Tablet','Akıllı Saatler':'Akıllı Saat'})[c]||c;
-const GRP={kamera:'Kamera ve ses',ekran:'Ekran ve gövde',diger:'Face ID, Wi‑Fi, şarj',depo:'Pil ve depolama'};
+const GRP={kamera:'Kamera ve ses',ekran:'Ekran ve gövde',diger:'Face ID, Wi‑Fi, şarj',depo:'Pil ve depolama',battery:'Pil',camera:'Kamera',charge:'Şarj',cosmetic:'Kozmetik',faceid:'Face ID / kimlik doğrulama',imei:'IMEI',screen:'Ekran',sound:'Ses',storage:'Depolama',wifi:'Wi‑Fi',buttons:'Tuşlar',body:'Gövde',touch:'Dokunmatik',bluetooth:'Bluetooth',sim:'SIM / şebeke',network:'Şebeke',gps:'Konum',sensor:'Sensörler',sensors:'Sensörler',vibration:'Titreşim',nfc:'NFC'};
+const grpTxt=a=>[...new Set((a||[]).map(g=>GRP[g]).filter(Boolean))].join(', ');
 const specLine=it=>[gbTxt(gb(it)),it.color,it.battery!=null?'Pil %'+it.battery:'',it.warranty&&!/Garantisiz/i.test(it.warranty)?'Garantili':''].filter(Boolean).join(' · ');
 const instTxt=it=>it.installment&&it.inst_total?`Peşin fiyatına ${it.installment} taksit · ${tl(Math.ceil(it.inst_total/it.installment))}/ay`:'';
 const phoneDigits=p=>{let d=String(p||'').replace(/\D/g,'');if(d.startsWith('90'))d=d.slice(2);if(d.startsWith('0'))d=d.slice(1);return d};
@@ -263,7 +264,7 @@ function detail(id,push){const it=S.d&&S.d.items.find(x=>String(x.id)===String(i
       <div class="cta">${resBtn}${wa?`<a class="btn wa" target="_blank" rel="noopener" href="${esc(wa)}">${ic('wa')} Sor</a>`:''}<button class="btn" data-a="share" data-id="${esc(it.id)}" aria-label="Paylaş">${ic('share')}</button></div>
       ${S.d.reserve_on&&!it.reserved?`<div style="color:var(--muted);font-size:13px">${S.d.auto_hold?`Rezervasyon ücretsizdir; cihaz ${S.d.hold_hours} saat sizin için ayrılır.`:'Rezervasyon ücretsizdir; talebiniz alınınca sizi arayacağız.'}</div>`:''}
       ${kv.length?`<div class="sec"><h3>Özellikler</h3><div class="kv">${kv.map(([k,v])=>`<div><small>${esc(k)}</small><b>${esc(v)}</b></div>`).join('')}</div></div>`:''}
-      ${insp&&insp.total?`<div class="sec"><div class="check">${ic('shield','l')}<div><b>Cihaz kontrolünden geçti</b><small>${insp.total} maddeden ${insp.ok} madde sorunsuz${insp.issue?` · ${insp.issue} maddede not var, mağazada gösterilir`:''}${(insp.groups||[]).length?' · '+esc(insp.groups.map(g=>GRP[g]||g).join(', ')):''}</small></div></div></div>`:''}
+      ${insp&&insp.total?`<div class="sec"><div class="check">${ic('shield','l')}<div><b>Cihaz kontrolünden geçti</b> <small>${insp.total} maddeden ${insp.ok} madde sorunsuz${insp.issue?` · ${insp.issue} maddede not var, mağazada gösterilir`:''}${grpTxt(insp.groups)?' · Sorunsuz: '+esc(grpTxt(insp.groups)):''}</small></div></div></div>`:''}
       ${(it.highlights||[]).length?`<div class="sec"><h3>Öne çıkanlar</h3><ul class="hl">${it.highlights.map(h=>`<li>${ic('check','s')}<span>${esc(h)}</span></li>`).join('')}</ul></div>`:''}
       ${it.description?`<div class="sec"><h3>Açıklama</h3><div class="desc">${esc(it.description)}</div></div>`:''}
       ${sim.length?`<div class="sec"><h3>Benzer cihazlar</h3><div class="sim">${sim.map(x=>cardHtml(x,true)).join('')}</div></div>`:''}
