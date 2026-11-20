@@ -318,11 +318,11 @@ button.fx{font-variant-numeric:tabular-nums;font-weight:600;white-space:nowrap}b
 .pline .pm{grid-column:span 2}.pline .pv{align-self:center}
 @media (max-width:560px){.pline .pm{grid-column:1/-1}}
 @media screen{#lblsheet{display:none!important}}
-@media print{body.lbl-print>*:not(#lblsheet){display:none!important}}
+@media print{body.lbl-print>*:not(#lblsheet){display:none!important}body.lbl-print #lblsheet,body.lbl-print #lblsheet *{visibility:visible!important}}
 @media print{.qdoc.rcpt.w80{width:76mm!important;font-size:11px}.qdoc.rcpt{border:0!important;padding:0!important}}
 .rcpt{background:#fff;color:#000;font-family:Arial,Helvetica,sans-serif;border:1px dashed #bbb;padding:12px;line-height:1.35}.rcpt.w80{width:302px;max-width:100%;margin:0 auto;font-size:12px}.rcpt.wa4{max-width:720px;margin:0 auto;font-size:14px}
 .rcpt .r{display:flex;justify-content:space-between;gap:8px}.rcpt hr{border:0;border-top:1px dashed #000;margin:6px 0}
-@media print{body *{visibility:hidden}.qdoc,.qdoc *{visibility:visible}.qdoc{position:absolute;left:0;top:0;width:100%;border:0}.no-print{display:none!important}}
+@media print{body:not(.lbl-print):not(.vl-print):not(.pr-on) *{visibility:hidden}.qdoc,.qdoc *{visibility:visible}.qdoc{position:absolute;left:0;top:0;width:100%;border:0}.no-print{display:none!important}}
 .inl{display:flex;gap:6px;align-items:stretch}.inl .in{flex:1;min-width:0}
 .thumb{max-width:100%;max-height:220px;border-radius:6px;margin-top:6px;border:1px solid var(--line)}
 @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
@@ -442,6 +442,7 @@ button.fx{font-variant-numeric:tabular-nums;font-weight:600;white-space:nowrap}b
 .dw-ft{display:grid;grid-template-columns:1.6fr 1fr 1fr;gap:12px;align-items:end;margin-top:6px}.dw-qr{display:flex;gap:10px;align-items:center}.dw-qr svg{width:96px;height:96px;flex:none}.dw-qr b{display:block}.dw-qr span{color:#5E6B77;font-size:11px}
 .dw-sig{border-top:1px solid #999;padding-top:4px;text-align:center;color:#5E6B77;font-size:11px;height:70px;display:flex;align-items:flex-end;justify-content:center}
 .dw-fn{margin-top:12px;text-align:center;color:#5E6B77;font-size:11px}
+@media print{.dwdoc{font-size:10.5px;line-height:1.32;max-width:none}.dw-hd{padding-bottom:8px}.dw-logo{height:28px}.dw-ttl h1{font-size:17px;margin-bottom:3px}.dw-period{margin:9px 0;padding:6px 12px}.dw-period b{font-size:13px}.dw-g{gap:9px}.dw-box{padding:6px 11px;margin-bottom:8px}.dw-box h3{margin-bottom:3px;font-size:10.5px}.dw-kv{padding:1px 0}.dw-l li{padding:1px 0 1px 18px}.dw-ol li{padding:0}.dw-qr svg{width:78px;height:78px}.dw-sig{height:44px}.dw-ft{break-inside:avoid;margin-top:2px}.dw-fn{margin-top:6px}}
 @media(max-width:640px){.dw-g,.dw-ft{grid-template-columns:1fr}.dw-period{grid-template-columns:1fr 1fr}.dw-hd{flex-direction:column}.dw-ttl{text-align:left}.dw-ttl div{justify-content:flex-start}}
 .nl-box{display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin:8px 0 2px}.nl-chip{display:inline-flex;align-items:stretch;border:1px solid var(--line);border-radius:999px;background:var(--surface);overflow:hidden;max-width:100%}
 .nl-chip .nl-go{display:inline-flex;align-items:center;gap:5px;border:0;background:none;color:inherit;padding:4px 4px 4px 10px;cursor:pointer;font:inherit;font-size:13px;min-width:0}.nl-chip .nl-go span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:220px;font-weight:600}.nl-chip .nl-go small{opacity:.65}
@@ -1906,7 +1907,7 @@ function lblList(){const L=S.lbl,el=document.getElementById('lb-list');if(!el)re
 function lblCount(){const e=document.getElementById('lb-cnt');if(!e)return;let n=0,c=0;for(const v of S.lbl.sel.values()){n++;c+=v}e.textContent=n?`${n} ürün · ${c} etiket`:'Seçim yok'}
 function lblSheet(items,size,price){const [,w,h]=LBL_SIZES[size],a4=size==='70x37';
   const cell=x=>`<div class="lbl"><div class="ln">${esc(x.name)}</div><div class="lb">${barSvg(x.code,40)}</div><div class="lc">${esc(x.code)}</div>${price&&x.price!=null?`<div class="lp">${money(x.price)}</div>`:''}${S.lbl&&S.lbl.shop?`<div class="ls">${esc(shopSet().name)}</div>`:''}</div>`;
-  const css=`@page{size:${a4?'A4':w+'mm '+h+'mm'};margin:${a4?'10mm 0':'0'}}
+  const css=`@media screen{#lblsheet{display:none!important}}@page{size:${a4?'A4':w+'mm '+h+'mm'};margin:${a4?'10mm 0':'0'}}
    #lblsheet{${a4?'display:grid;grid-template-columns:repeat(3,70mm);justify-content:center;':''}}
    #lblsheet .lbl{box-sizing:border-box;width:${w}mm;height:${h}mm;padding:1.6mm 2mm;overflow:hidden;background:#fff;color:#000;font-family:Arial,Helvetica,sans-serif;display:flex;flex-direction:column;justify-content:space-between;${a4?'':'page-break-after:always;'}break-inside:avoid}
    #lblsheet .ln{font-size:${h<28?6.5:8}pt;font-weight:700;line-height:1.1;max-height:2.3em;overflow:hidden}
@@ -1916,11 +1917,10 @@ function lblSheet(items,size,price){const [,w,h]=LBL_SIZES[size],a4=size==='70x3
    #lblsheet .lp{font-size:${h<28?9:11}pt;font-weight:800;text-align:center;line-height:1}`;
   return {css,html:items.map(cell).join('')}}
 function lblRun(items,size,price){const {css,html}=lblSheet(items,size,price);
-  document.getElementById('lblsheet')?.remove();document.getElementById('lblstyle')?.remove();
+  prReset();
   const st=document.createElement('style');st.id='lblstyle';st.textContent=css;document.head.appendChild(st);
   const d=document.createElement('div');d.id='lblsheet';d.innerHTML=html;document.body.appendChild(d);document.body.classList.add('lbl-print');
-  const done=()=>{document.body.classList.remove('lbl-print');d.remove();st.remove();window.removeEventListener('afterprint',done)};
-  window.addEventListener('afterprint',done);setTimeout(()=>window.print(),50);return d}
+  prAfter();setTimeout(()=>window.print(),50);return d}
 async function lblPrint(){const L=S.lbl;if(!L.sel.size)return setErr('Önce ürün seçin.');
   try{const kind=L.k==='c'?'cihaz':'aksesuar';let made=0;
     for(const key of L.sel.keys()){const id=key.slice(1),it=lblItems(L.k).find(x=>x.id===id);if(it&&!it.code){await call('generate_barcode',{p_kind:kind,p_id:id});made++}}
@@ -3336,15 +3336,19 @@ function rcText(id){const D=rcData(id);if(!D)return '';const {s,items,acc,pays,c
   return [`${sh.name} · Satış fişi ${s.sale_no}`,fmtDate(s.sold_at),cust?'Sayın '+cust.name:'',''].filter((x,i)=>x||i>2).join('\n')+'\n'
    +[...items.map(({p,i})=>`• ${p.model||'Cihaz'}${p.imei?' (IMEI '+p.imei+')':''} — ${money(Number(i.price)-Number(i.discount))}`),...acc.map(({a,l})=>`• ${a.name||'Aksesuar'} x${l.qty} — ${money(accLineNet(l))}`)].join('\n')
    +`\nToplam: ${money(s.total)}\n`+pays.map(p=>`${payL(p.method)}: ${money(p.amount)}`).join(' · ')+`\n\n${sh.note}\n${sh.phone}`}
+/* Yazdırma sayfalarının ortak temizliği. Safari ve Chrome "afterprint" olayını önizleme hazırlanmadan da gönderebiliyor;
+   bu yüzden temizlik print sonrası ilk tıklama/tuşa (ya da bir sonraki yazdırmaya) bırakılır. */
+function prReset(){['prsheet','lblsheet','vlsheet','rcstyle','lblstyle','vlstyle'].forEach(i=>document.getElementById(i)?.remove());document.body.classList.remove('pr-on','lbl-print','vl-print')}
+function prAfter(){const arm=()=>{window.removeEventListener('afterprint',arm);setTimeout(()=>{const h=()=>{window.removeEventListener('pointerdown',h,true);window.removeEventListener('keydown',h,true);prReset()};
+  window.addEventListener('pointerdown',h,true);window.addEventListener('keydown',h,true)},400)};window.addEventListener('afterprint',arm)}
 /* Belge yazdırma: pencere içindeki .qdoc sayfa köküne kopyalanır, geri kalan her şey gizlenir.
    (Kaydırılan sabit pencere içinden yazdırmak Safari ve bazı tarayıcılarda boş sayfa veriyordu.) */
 function docPrint(pageCss){const src=[...document.querySelectorAll('#modal .qdoc, .qdoc')].find(e=>e.offsetParent!==null||e.getClientRects().length)||document.querySelector('.qdoc');
   if(!src){window.print();return}
-  let sh=document.getElementById('prsheet');if(sh)sh.remove();sh=document.createElement('div');sh.id='prsheet';sh.appendChild(src.cloneNode(true));document.body.appendChild(sh);
+  prReset();const sh=document.createElement('div');sh.id='prsheet';sh.appendChild(src.cloneNode(true));document.body.appendChild(sh);
   const st=document.createElement('style');st.id='rcstyle';st.textContent=(pageCss||'')+'#prsheet{display:none}@media print{body.pr-on>*:not(#prsheet){display:none!important}body.pr-on{background:#fff!important;padding:0!important;margin:0!important}body.pr-on #prsheet{display:block!important}body.pr-on #prsheet .qdoc{position:static!important;visibility:visible!important;border:0!important;box-shadow:none!important;margin:0 auto!important}body.pr-on #prsheet *{visibility:visible!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}body.pr-on #prsheet .no-print{display:none!important}}';
   document.head.appendChild(st);document.body.classList.add('pr-on');
-  let ended=false;const done=()=>{if(ended)return;ended=true;st.remove();sh.remove();document.body.classList.remove('pr-on');window.removeEventListener('afterprint',done)};
-  window.addEventListener('afterprint',done);setTimeout(()=>window.print(),60)}
+  prAfter();setTimeout(()=>window.print(),60)}
 function rcPrint(w){docPrint(w==='a4'?'@page{size:A4;margin:12mm}':'@page{size:80mm auto;margin:2mm}')}
 function refundModal(itemId){
   const i=S.d.sale_items.find(x=>x.id===itemId),p=S.d.productMap.get(i.product_id)||{},net=Number(i.price)-Number(i.discount);
@@ -8096,7 +8100,7 @@ function vlCell(p,o){const ci=ctlItem(p.id)||{},pub=!!ci.published,url=ctlLink(p
       ${o.price&&pr!=null?`<div class="vl-p">${money0(pr)}</div>`:''}${inst?`<div class="vl-i">${esc(inst)}</div>`:''}</div>
     <div class="vl-q">${qrSvg(url,{quiet:1})}<div><b>${pub?'Okutun, inceleyin':'Kataloğu inceleyin'}</b><span>${pub?'Fotoğraflar · detaylar · rezervasyon':'Tüm cihazlar ve rezervasyon'}</span></div></div></div>`}
 function vlRun(list,o){const per=o.size==='kart'?4:8,cells=[];list.forEach(p=>{for(let i=0;i<(o.n||1);i++)cells.push(vlCell(p,o))});
-  const css=`@page{size:A4;margin:6mm}#vlsheet{display:none}@media print{body.vl-print>*:not(#vlsheet){display:none!important}body.vl-print{background:#fff}#vlsheet{display:grid!important;grid-template-columns:repeat(2,${o.size==='kart'?'99mm':'99mm'});gap:${o.size==='kart'?'3mm':'2mm'};justify-content:center}}
+  const css=`@page{size:A4;margin:6mm}#vlsheet{display:none}@media print{body.vl-print>*:not(#vlsheet){display:none!important}body.vl-print{background:#fff}body.vl-print #vlsheet,body.vl-print #vlsheet *{visibility:visible!important}#vlsheet{display:grid!important;grid-template-columns:repeat(2,${o.size==='kart'?'99mm':'99mm'});gap:${o.size==='kart'?'3mm':'2mm'};justify-content:center}}
   #vlsheet .vl{box-sizing:border-box;border:.3mm dashed #bbb;border-radius:3mm;color:#111;font-family:'IBM Plex Sans',Arial,sans-serif;overflow:hidden;break-inside:avoid;page-break-inside:avoid;display:flex;flex-direction:column;background:#fff}
   #vlsheet .vl.kart{height:140mm;padding:7mm 7mm 6mm}#vlsheet .vl.kucuk{height:66mm;padding:4mm 5mm;display:grid;grid-template-columns:1fr 30mm;grid-template-rows:auto 1fr;column-gap:4mm}
   #vlsheet .vl-h{display:flex;align-items:center;justify-content:space-between;gap:3mm}#vlsheet .vl-h img{height:${o.size==='kart'?'7mm':'5mm'}}
@@ -8111,11 +8115,10 @@ function vlRun(list,o){const per=o.size==='kart'?4:8,cells=[];list.forEach(p=>{f
   #vlsheet .vl-q b{display:block;font-size:${o.size==='kart'?'12pt':'8pt'}}#vlsheet .vl-q span{font-size:${o.size==='kart'?'9pt':'6.5pt'};color:#555}
   #vlsheet .vl.kucuk .vl-q{grid-column:2;grid-row:2;flex-direction:column;border:0;padding:0;gap:1mm;text-align:center;margin:0;justify-content:center}#vlsheet .vl.kucuk .vl-q span{display:none}#vlsheet .vl.kucuk .vl-q b{font-size:6.5pt}
   #vlsheet .vl.kucuk .vl-m{grid-column:1;grid-row:2}`;
-  document.getElementById('vlsheet')?.remove();document.getElementById('vlstyle')?.remove();
+  prReset();
   const st=document.createElement('style');st.id='vlstyle';st.textContent=css;document.head.appendChild(st);
   const d=document.createElement('div');d.id='vlsheet';d.innerHTML=cells.join('');document.body.appendChild(d);document.body.classList.add('vl-print');
-  const done=()=>{document.body.classList.remove('vl-print');d.remove();st.remove();window.removeEventListener('afterprint',done)};
-  window.addEventListener('afterprint',done);setTimeout(()=>window.print(),80);return {d,per}}
+  prAfter();setTimeout(()=>window.print(),80);return {d,per}}
 function vlModal(only){const L=ctlDevs().slice().sort((a,b)=>((ctlItem(b.id)||{}).published?1:0)-((ctlItem(a.id)||{}).published?1:0)||String(a.model).localeCompare(String(b.model),'tr'));
   const V=S.vl={sel:new Set(only?[only]:L.filter(p=>(ctlItem(p.id)||{}).published).map(p=>p.id)),size:(S.vl&&S.vl.size)||'kart',price:true,inst:true,n:1};vlDraw(L)}
 function vlDraw(L){L=L||ctlDevs().slice().sort((a,b)=>((ctlItem(b.id)||{}).published?1:0)-((ctlItem(a.id)||{}).published?1:0)||String(a.model).localeCompare(String(b.model),'tr'));const V=S.vl,first=L.find(p=>V.sel.has(p.id));
