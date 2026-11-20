@@ -405,6 +405,17 @@ button.fx{font-variant-numeric:tabular-nums;font-weight:600;white-space:nowrap}b
 .nt-edh{display:flex;align-items:center;gap:10px}
 .nt-title{flex:1;min-width:0;border:0;background:none;font:inherit;font-size:22px;font-weight:600;color:inherit;padding:4px 0;outline:0}
 .nt-title::placeholder{color:var(--muted);font-weight:500}
+.nl-box{display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin:8px 0 2px}.nl-chip{display:inline-flex;align-items:stretch;border:1px solid var(--line);border-radius:999px;background:var(--surface);overflow:hidden;max-width:100%}
+.nl-chip .nl-go{display:inline-flex;align-items:center;gap:5px;border:0;background:none;color:inherit;padding:4px 4px 4px 10px;cursor:pointer;font:inherit;font-size:13px;min-width:0}.nl-chip .nl-go span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:220px;font-weight:600}.nl-chip .nl-go small{opacity:.65}
+.nl-chip .nl-x{border:0;background:none;color:inherit;opacity:.6;padding:0 8px;cursor:pointer}.nl-chip .nl-x:hover{opacity:1}.nl-chip.gone{opacity:.55;border-style:dashed}.nl-chip .nl-go:hover span{text-decoration:underline}
+.nl-add{border-style:dashed!important}.nl-sug{display:inline-flex;flex-wrap:wrap;gap:4px;align-items:center}.nl-sug small{opacity:.7}.nl-s{border:1px dashed var(--line);background:none;color:inherit;border-radius:999px;padding:3px 9px;font:inherit;font-size:12px;cursor:pointer;display:inline-flex;align-items:center;gap:3px}
+.nl-pick{position:fixed;z-index:10050;background:var(--surface);color:var(--fg);border:1px solid var(--line);border-radius:12px;box-shadow:0 12px 32px rgba(0,0,0,.22);padding:8px;max-height:340px;display:flex;flex-direction:column;gap:6px}
+.nl-ph{display:flex;gap:6px;align-items:center}.nl-ph .in{flex:1}.nl-ty{display:flex;gap:4px;overflow-x:auto;padding-bottom:2px}.nl-ty button{border:1px solid var(--line);background:none;color:inherit;border-radius:999px;padding:2px 9px;font:inherit;font-size:12px;white-space:nowrap;cursor:pointer}.nl-ty button[aria-pressed="true"]{background:var(--brand);border-color:transparent;color:#fff}
+.nl-res{overflow:auto;display:flex;flex-direction:column}.nl-r,.nl-nr{display:flex;gap:8px;align-items:flex-start;text-align:left;border:0;background:none;color:inherit;padding:7px 8px;border-radius:8px;font:inherit;cursor:pointer;width:100%}.nl-r span,.nl-nr span{display:flex;flex-direction:column;min-width:0}.nl-r small,.nl-nr small{opacity:.7;font-size:12px;overflow:hidden;text-overflow:ellipsis}
+.nl-r[aria-selected="true"],.nl-r:hover,.nl-nr:hover{background:var(--surface2)}.nl-none{padding:10px}.nl-nl{display:flex;flex-direction:column;margin-top:8px}.nl-nr.done b{text-decoration:line-through;opacity:.6}
+.nl-btn{display:inline-flex;align-items:center;gap:5px}.nl-btn.has{border-color:var(--brand)}.nl-dot{background:var(--bad);color:#fff;border-radius:999px;font-size:11px;padding:0 6px;line-height:16px}.nl-m{display:inline-flex;align-items:center;gap:3px}
+.nl-hi{outline:3px solid var(--brand);outline-offset:2px;border-radius:10px;transition:outline-color 2s}
+.nt-body a[href^="#ref/"]{background:var(--surface2);color:var(--brand);border-radius:6px;padding:0 4px;text-decoration:none;font-weight:600;cursor:pointer}
 .nt-bar{display:flex;align-items:center;gap:6px;flex-wrap:wrap}.nt-bar .btn,.nt-foot .btn,.nt-head .btn{display:inline-flex;align-items:center;gap:5px}.nt-bar .ib[aria-pressed="true"]{color:var(--pink);background:var(--pink-soft)}
 .nt-tagin{width:150px}
 .nt-sw{display:inline-flex;gap:3px}.nt-sw .sw{width:18px;height:18px;border-radius:50%;border:1px solid var(--line);background:var(--nc,var(--surface));cursor:pointer;padding:0}
@@ -1286,6 +1297,7 @@ document.addEventListener('click',e=>{const a=e.target.closest&&e.target.closest
   if(same&&S.d&&(S.ui.ti_dev||S.ui.mrep||S.ui.pl_dev||S.ui.kz_dev||S.ui.kz_acc||S.ui.pur_rep||S.ui.sh_dev||S.ui.sh_acc)){resetReps();render()}});
 function route(){
   const h=location.hash.slice(1);
+  if(/^ref\/[a-z_]+\/[0-9a-f-]{36}$/.test(h)){const p=h.split('/');setTimeout(()=>ntGo(p[1],p[2]),0)}   // 074: not içi bağlantı yeni sekmede açılırsa
   S.ui.tab=TABS.some(t=>t[0]===h)?h:'panel';S.uOpen=false;
   resetReps();
   if(S.navAfter){const f=S.navAfter;S.navAfter=null;try{f()}catch(e){}}
@@ -1905,7 +1917,7 @@ function stokList(){
       <div class="meta"><span>Alış ${fmtDate(p.buy_date)}${src?' · '+esc(src.name):''} · ${esc(p.buy_source)}</span></div>${p.notes?`<div class="meta"><span>${esc(p.notes)}</span></div>`:''}</div>
       <div class="side"><div><span class="pill ${st[0]}">${st[1]}</span> <span class="pill ${cls}">${age} gün</span></div>
       <div class="sub">${showCost?`Maliyet <b>${money(d.cost.get(p.id))}</b>`:''}${p.target_price!=null?` ${showCost?'· ':''}Hedef <b>${money(p.target_price)}</b>`:''}</div>
-      <div class="acts">${p.status==='stokta'&&can('make_sale')?`<button class="btn sm pri" data-a="to-cart" data-id="${p.id}">Sat</button>`:''}${can('manage_products')?`<button class="btn sm" data-a="edit-product" data-id="${p.id}">Düzenle</button>${!sold?`<button class="btn sm" data-a="lbl-open" data-k="c" data-id="${p.id}">Etiket</button>`:''}`:''}${p.status==='stokta'?pqBtn('cihaz',p.id):''}${docBtn('products',p.id,'Foto')}${(()=>{const ir=(S.d.device_inspections||[]).find(x=>x.product_id===p.id);return ir?`<button class="btn sm" data-a="ins-report" data-id="${ir.id}">Kontrol raporu</button>`:''})()}</div></div></div>`}).join('')
+      <div class="acts">${p.status==='stokta'&&can('make_sale')?`<button class="btn sm pri" data-a="to-cart" data-id="${p.id}">Sat</button>`:''}${ntBtn('products',p.id)}${can('manage_products')?`<button class="btn sm" data-a="edit-product" data-id="${p.id}">Düzenle</button>${!sold?`<button class="btn sm" data-a="lbl-open" data-k="c" data-id="${p.id}">Etiket</button>`:''}`:''}${p.status==='stokta'?pqBtn('cihaz',p.id):''}${docBtn('products',p.id,'Foto')}${(()=>{const ir=(S.d.device_inspections||[]).find(x=>x.product_id===p.id);return ir?`<button class="btn sm" data-a="ins-report" data-id="${ir.id}">Kontrol raporu</button>`:''})()}</div></div></div>`}).join('')
     :'<div class="empty">Bu filtreyle eşleşen ürün yok.</div>'}
 function productModal(p,pre){
   const fm=!!S.pfd,e=!!p&&!pre&&!fm;p=pre||p||{cat:CATS[0],sub:SUBS[0],buy_date:today(),buy_source:'toptan',owner:'anka'};S.pinsp=e?'':(p.inspection_id||'');
@@ -3241,7 +3253,7 @@ function saleRow(s){
       <div class="sub">Ödemeler: ${d.sale_payments.filter(p=>p.sale_id===s.id).map(p=>`${payL(p.method)} ${money(p.amount)}`).join(' · ')||'-'}</div>
       ${d.sale_trade_ins.filter(t=>t.sale_id===s.id).map(t=>`<div class="sub">Takas: ${esc((d.productMap.get(t.product_id)||{}).model||'')} ${money(t.value)}</div>`).join('')}
       ${s.note?`<div class="sub">Not: ${esc(s.note)}</div>`:''}
-      <div style="margin-top:8px"><button class="btn sm pri" data-a="rc-open" data-id="${s.id}">Satış fişi</button> ${docBtn('sales',s.id,'Belgeler (fatura, fiş, garanti)')}</div>${s.status!=='iptal'&&can('process_refund')?`<div style="margin-top:8px"><button class="btn sm danger" data-a="cancel-sale" data-id="${s.id}">Satışın tamamını iptal et</button></div>`:''}</div>`}
+      <div style="margin-top:8px"><button class="btn sm pri" data-a="rc-open" data-id="${s.id}">Satış fişi</button> ${docBtn('sales',s.id,'Belgeler (fatura, fiş, garanti)')} ${ntBtn('sales',s.id)}</div>${s.status!=='iptal'&&can('process_refund')?`<div style="margin-top:8px"><button class="btn sm danger" data-a="cancel-sale" data-id="${s.id}">Satışın tamamını iptal et</button></div>`:''}</div>`}
   const att=items.length&&accL.length;
   return `<div class="item" style="cursor:pointer" data-a="opensale" data-id="${s.id}"><div class="main"><b>${esc(s.sale_no)}</b> <span class="pill ${stp[0]}">${stp[1]}</span>${att?' <span class="pill att" title="Cihazın yanına aksesuar satıldı">Cihaz yanı aksesuar</span>':''}<div class="meta"><span>${fmtTime(s.sold_at)}</span>${cust?`<span>${esc(cust.name)}</span>`:''}<span>${esc(st?st.full_name:'')}</span></div><div class="meta"><span>${esc(names.join(', '))}</span></div></div><div class="side"><b>${money(s.total)}</b>${open?'':`<button class="btn sm" data-a="rc-open" data-id="${s.id}">Fiş</button>`}</div>${det}</div>`}
 /* ---- Satış fişi (otomatik; satışa tıklayınca görüntülenir) ---- */
@@ -3391,7 +3403,7 @@ function vMasraf(){
   const stP=e=>e.status==='odendi'?`<span class="pill stock">Ödendi · ${esc(accName(e.account))}</span>`:e.status==='iptal'?'<span class="pill bad">İptal</span>':exOver(e)?'<span class="pill bad">Gecikmiş</span>':'<span class="pill warn">Ödenecek</span>';
   const row=e=>{const c=exCat(e.category_id),v=S.d.contactMap.get(e.vendor_id);
     return `<div class="item" style="${e.status==='iptal'?'opacity:.55':''}"><div class="main"><b>${esc(c.name)}</b> ${stP(e)}${e.template_id?' <span class="pill">Tekrarlayan</span>':''}<div class="meta"><span class="mono">${esc(e.expense_no)}</span>${e.description?`<span>${esc(e.description)}</span>`:''}${v?`<span>${esc(v.name)}</span>`:''}${e.doc_no?`<span>Belge ${esc(e.doc_no)}</span>`:''}<span>${e.status==='odendi'?'Ödeme '+fmtDate(e.paid_date):'Vade '+fmtDate(e.due_date||e.expense_date)}</span></div>
-      <div class="acts" style="margin-top:6px">${e.status==='bekliyor'?`<button class="btn sm pri" data-a="ex-pay" data-id="${e.id}">Öde</button><button class="btn sm" data-a="ex-edit" data-id="${e.id}">Düzenle</button>`:''}${docBtn('expenses',e.id,'Belge')}${e.status!=='iptal'?`<button class="btn sm danger" data-a="ex-cancel" data-id="${e.id}">İptal</button>`:''}</div></div><div class="side"><b>${money(e.amount)}</b></div></div>`};
+      <div class="acts" style="margin-top:6px">${ntBtn('expenses',e.id)}${e.status==='bekliyor'?`<button class="btn sm pri" data-a="ex-pay" data-id="${e.id}">Öde</button><button class="btn sm" data-a="ex-edit" data-id="${e.id}">Düzenle</button>`:''}${docBtn('expenses',e.id,'Belge')}${e.status!=='iptal'?`<button class="btn sm danger" data-a="ex-cancel" data-id="${e.id}">İptal</button>`:''}</div></div><div class="side"><b>${money(e.amount)}</b></div></div>`};
   const lrow=e=>`<div class="item"><div class="main"><b>${esc(e.category||'Kategorisiz')}</b> <span class="pill">Kasa hareketi</span><div class="meta"><span>${esc(label(e.type))}</span>${e.note?`<span>${esc(e.note)}</span>`:''}<span>${fmtDate(e.entry_date)} · ${esc(accName(e.account))}</span></div></div><div class="side"><b>${money(-e.amount)}</b></div></div>`;
   return `<div class="row"><h1>Masraflar</h1><div class="sp"></div><button class="btn" data-a="ex-cats">Kategoriler</button><button class="btn" data-a="ex-tpl">Tekrarlayan</button><button class="btn pri" data-a="ex-new">+ Masraf ekle</button></div>
   <div class="row" style="margin-bottom:10px"><button class="btn sm" data-a="exmonth" data-n="-1" aria-label="Önceki ay">‹</button><b style="min-width:130px;text-align:center;text-transform:capitalize">${esc(exMonthLabel(m))}</b><button class="btn sm" data-a="exmonth" data-n="1" aria-label="Sonraki ay">›</button><button class="btn sm" data-a="exmonth" data-n="0">Bu ay</button></div>
@@ -3644,7 +3656,7 @@ function vAlislar(){
       <div class="meta"><span>${fmtDate(x.purchase_date)}</span><span>${esc(sup(x.supplier_id))}</span><span>${ph?ph+' cihaz':''}${ph&&ac?' + ':''}${ac?ac+' adet aksesuar':''}</span>${Number(x.total_usd)>0?`<span>$${fxN(x.total_usd)} @ ${fxN(x.fx_rate)}</span>`:''}</div>
       ${x.note?`<div class="meta"><span>${esc(x.note)}</span></div>`:''}</div>
      <div class="side"><b>${money(x.total_try)}</b>${x.term&&!iptal?tdSide(x):Number(x.total_try)>Number(x.paid_amount)&&!iptal?`<div class="sub neg">Kalan borç ${money(x.total_try-x.paid_amount)}</div>`:''}
-      <div class="acts">${docBtn('purchases',x.id,'Belge')}<button class="btn sm" data-a="pu-detail" data-id="${x.id}">Detay</button></div></div></div>`};
+      <div class="acts">${ntBtn('purchases',x.id)}${docBtn('purchases',x.id,'Belge')}<button class="btn sm" data-a="pu-detail" data-id="${x.id}">Detay</button></div></div></div>`};
   const tdOpen=(d.term_debts||[]).filter(t=>t.status==='acik'),debtLive=sum(live.filter(x=>!x.term),x=>x.total_try-x.paid_amount)+sum(tdOpen.filter(t=>live.some(x=>x.id===t.purchase_id)),t=>t.remaining_booked_try);
   return `<div class="row"><h1>Alışlar</h1><div class="sp"></div><button class="btn" data-a="pr-open">Alış Raporu</button>${canNew?'<button class="btn pri" data-a="pf-open">+ Toplu alım</button><button class="btn" data-a="pf-open-term">+ Vadeli alım</button>':''}</div>${tdCard(tdOpen)}
   <div class="row"><label class="f" style="flex-direction:row;align-items:center;gap:6px">Başlangıç<input class="in" type="date" data-c="purange" id="puf" value="${a0}"></label><label class="f" style="flex-direction:row;align-items:center;gap:6px">Bitiş<input class="in" type="date" data-c="purange" id="put" value="${b0}"></label>
@@ -3857,7 +3869,7 @@ function cariCard(c,k){
   return `<div class="item"><div class="main"><b>${esc(c.name)}</b>${k!=='firma'?` <span class="pill">${ind?'Bireysel':'Kurumsal'}</span> <span class="pill ch ch-${c.acq_channel||'yok'}" title="Müşteri kazanım kanalı">${esc(acqTxt(c))}</span>${c.marketing_ok?' <span class="pill" title="Kampanya mesajı izni var">İleti izni</span>':''}${c.referred_by&&S.d.contactMap.get(c.referred_by)?` <span class="sub">Tavsiye: ${esc(S.d.contactMap.get(c.referred_by).name)}</span>`:''}`:''}${can('view_cash')&&bal!==0?` <span class="pill ${bal>0&&k==='firma'?'warn':''}">${k==='firma'?(bal>0?'Borcumuz ':'Alacağımız ')+money(Math.abs(bal)):(bal>0?'Borcumuz ':'Alacağımız ')+money(Math.abs(bal))}</span>`:''}
     <div class="meta">${c.person?`<span>Yetkili: ${esc(c.person)}</span>`:''}${c.phone?`<span>${telLink(c.phone)}</span>`:''}${c.email?`<span>${esc(c.email)}</span>`:''}</div>
     ${extra.length?`<div class="meta">${extra.map(x=>`<span>${x}</span>`).join('')}</div>`:''}<div class="meta">${stats}</div>${detail}</div>
-    <div class="side"><div class="acts">${k==='firma'&&can('add_expense')?`<button class="btn sm pri" data-a="pay-party" data-id="${c.id}">Öde</button><button class="btn sm" data-a="ret-open" data-id="${c.id}">İade et</button>`:''}${k==='firma'&&can('view_cash')?`<button class="btn sm" data-a="fr-open" data-id="${c.id}">Rapor</button>`:''}${k==='firma'&&can('make_purchase')?`<button class="btn sm" data-a="pf-open" data-sup="${c.id}">Toplu alım</button>`:''}${can('view_cash')||k==='musteri'?`<button class="btn sm" data-a="ekstre" data-id="${c.id}">${k==='firma'?'Ekstre':'Geçmiş'}</button>`:''}${wa}${can('manage_documents')?docBtn('contacts',c.id):''}${can('manage_contacts')?`<button class="btn sm" data-a="edit-contact" data-id="${c.id}">Düzenle</button>`:''}</div></div></div>`}
+    <div class="side"><div class="acts">${k==='firma'&&can('add_expense')?`<button class="btn sm pri" data-a="pay-party" data-id="${c.id}">Öde</button><button class="btn sm" data-a="ret-open" data-id="${c.id}">İade et</button>`:''}${k==='firma'&&can('view_cash')?`<button class="btn sm" data-a="fr-open" data-id="${c.id}">Rapor</button>`:''}${k==='firma'&&can('make_purchase')?`<button class="btn sm" data-a="pf-open" data-sup="${c.id}">Toplu alım</button>`:''}${can('view_cash')||k==='musteri'?`<button class="btn sm" data-a="ekstre" data-id="${c.id}">${k==='firma'?'Ekstre':'Geçmiş'}</button>`:''}${wa}${ntBtn('contacts',c.id)}${can('manage_documents')?docBtn('contacts',c.id):''}${can('manage_contacts')?`<button class="btn sm" data-a="edit-contact" data-id="${c.id}">Düzenle</button>`:''}</div></div></div>`}
 function ledger(cid){
   const l=S.d.party_entries.filter(e=>e.contact_id===cid).sort((a,b)=>String(a.entry_date).localeCompare(String(b.entry_date))||String(a.created_at).localeCompare(String(b.created_at)));
   let run=0;const rows=l.map(e=>{run+=Number(e.amount);return `<div class="sub">${fmtDate(e.entry_date)} · ${esc(label(e.type))} · <b class="${e.amount>0?'neg':'pos'}">${e.amount>0?'+':''}${money(e.amount)}</b> · bakiye ${money(run)}${e.note?' · '+esc(e.note):''}</div>`});
@@ -4365,7 +4377,7 @@ function vEksik(){
     return `<div class="item"><div class="main"><b>${esc(x.name)}</b> ${x.priority==='acil'?'<span class="pill bad">Acil</span> ':''}<span class="pill ${x.status==='geldi'?'sold':x.status==='siparis'?'warn':x.status==='iptal'?'':'stock'}">${esc(SHL[x.status])}</span> <span class="pill">${x.source==='otomatik'?'Otomatik':'Elle'}</span>${ord.length&&shOpen(x)?` <a class="pill warn" href="#siparis">${ord.length} müşteri siparişi bekliyor</a>`:''}
       <div class="meta"><span class="mono">${esc(x.shortage_no)}</span>${x.category?`<span>${esc(x.category)}</span>`:''}<span>İstenen ${x.qty_needed} adet</span>${acc?`<span>Stokta ${acc.stock_qty}</span>`:'<span>Stoğa girmemiş ürün</span>'}${sup?`<span>Tedarikçi: ${esc(sup.name)}</span>`:''}<span>Açıldı ${fmtDate(x.created_at)}</span>${x.due_date?`<span class="${shLate(x)?'neg':''}">Beklenen ${fmtDate(x.due_date)}${shLate(x)?' (geçti)':''}</span>`:''}${x.assigned_to?`<span>${esc(pname(x.assigned_to))}</span>`:''}${x.closed_at?`<span>Kapandı ${fmtDate(x.closed_at)}${x.closed_reason==='stok_geldi'?' (stok girdi)':''}</span>`:''}</div>${x.note?`<div class="meta"><span>${esc(x.note)}</span></div>`:''}</div>
       <div class="side">${shOpen(x)?`<select class="in" data-c="shstatus" data-id="${x.id}" style="width:auto" aria-label="Durum">${opts(SHS.map(s=>s[0]==='geldi'?['geldi','Geldi (elle kapat)']:s),x.status)}</select>
-       <div class="acts">${acc&&can('manage_accessories')?`<button class="btn sm pri" data-a="acc-recv" data-id="${acc.id}">Alış gir</button>`:''}<button class="btn sm" data-a="sh-edit" data-id="${x.id}">Düzenle</button></div>`:''}</div></div>`};
+       <div class="acts">${acc&&can('manage_accessories')?`<button class="btn sm pri" data-a="acc-recv" data-id="${acc.id}">Alış gir</button>`:''}<button class="btn sm" data-a="sh-edit" data-id="${x.id}">Düzenle</button></div>`:''}<div class="acts">${ntBtn('shortages',x.id)}</div></div></div>`};
   return `<div class="row"><h1>Eksikler</h1><div class="sp"></div>${open.length?'<button class="btn" data-a="sh-share">Listeyi gönder</button>':''}<button class="btn pri" data-a="sh-new">+ Eksik</button></div>
   <p class="sub" style="margin:-6px 0 0">Stoğu 0’a düşen aksesuarlar otomatik buraya düşer. Stok girince kayıt kendiliğinden kapanır ve ürünü bekleyen müşteri siparişleri “Bulundu” olur.</p>
   <div class="grid g4">${tile('Açık eksik',String(open.length),'bekleyen ürün')}${tile('Sipariş verildi',String(open.filter(x=>x.status==='siparis').length),'gelmesi beklenen')}${tile('Acil',`<span class="${open.some(x=>x.priority==='acil')?'neg':''}">${open.filter(x=>x.priority==='acil').length}</span>`,'öncelikli')}${tile('Tarihi geçen',`<span class="${open.some(shLate)?'neg':''}">${open.filter(shLate).length}</span>`,'beklenen tarih geçti')}</div>
@@ -4592,7 +4604,7 @@ function vServis(){
     ${u.openSv===x.id?`<div style="margin-top:8px">${d.service_events.filter(e=>e.service_id===x.id).sort((a,b)=>String(a.at).localeCompare(String(b.at))).map(e=>`<div class="sub">${fmtTime(e.at)} · ${esc(SVL[e.status]||'')}${e.note?' · '+esc(e.note):''}${e.by?' · '+esc(pname(e.by)):''}</div>`).join('')||'<div class="sub">Kayıt yok.</div>'}</div>`:''}</div>
     <div class="side"><div class="sub num">${x.final_price!=null?'Ücret <b>'+money(x.final_price)+'</b>':(x.estimate!=null?'Tahmini '+money(x.estimate):'')}</div>
     ${svOpen(x)?`<select class="in" data-c="svstatus" data-id="${x.id}" style="width:auto" aria-label="Durum">${opts(stOpts,x.status)}</select>`:''}
-    <div class="acts">${svOpen(x)&&svExt(x)&&['kabul','inceleme','onay_bekliyor','parca_bekliyor'].includes(x.status)?`<button class="btn sm" data-a="sv-send" data-id="${x.id}">Dış servise gönder</button>`:''}${svOpen(x)&&svAtExt(x)?`<button class="btn sm" data-a="sv-back" data-id="${x.id}">Döndü</button>`:''}${svOpen(x)&&x.status==='dondu'?`<button class="btn sm" data-a="sv-ready" data-id="${x.id}">Hazır yap</button>`:''}${svOpen(x)?`<button class="btn sm pri" data-a="sv-deliver" data-id="${x.id}">Teslim et</button>`:''}${svOpen(x)?`<button class="btn sm" data-a="sv-quote" data-id="${x.id}">Teklif</button>`:''}<button class="btn sm" data-a="sv-cost" data-id="${x.id}">Gider</button><button class="btn sm" data-a="sv-forms" data-id="${x.id}">Formlar</button><button class="btn sm" data-a="sv-hist" data-id="${x.id}">Geçmiş</button>${docBtn('service_orders',x.id)}${svOpen(x)?`<button class="btn sm" data-a="sv-edit" data-id="${x.id}">Düzenle</button>`:''}</div></div></div>`};
+    <div class="acts">${ntBtn('service_orders',x.id)}${svOpen(x)&&svExt(x)&&['kabul','inceleme','onay_bekliyor','parca_bekliyor'].includes(x.status)?`<button class="btn sm" data-a="sv-send" data-id="${x.id}">Dış servise gönder</button>`:''}${svOpen(x)&&svAtExt(x)?`<button class="btn sm" data-a="sv-back" data-id="${x.id}">Döndü</button>`:''}${svOpen(x)&&x.status==='dondu'?`<button class="btn sm" data-a="sv-ready" data-id="${x.id}">Hazır yap</button>`:''}${svOpen(x)?`<button class="btn sm pri" data-a="sv-deliver" data-id="${x.id}">Teslim et</button>`:''}${svOpen(x)?`<button class="btn sm" data-a="sv-quote" data-id="${x.id}">Teklif</button>`:''}<button class="btn sm" data-a="sv-cost" data-id="${x.id}">Gider</button><button class="btn sm" data-a="sv-forms" data-id="${x.id}">Formlar</button><button class="btn sm" data-a="sv-hist" data-id="${x.id}">Geçmiş</button>${docBtn('service_orders',x.id)}${svOpen(x)?`<button class="btn sm" data-a="sv-edit" data-id="${x.id}">Düzenle</button>`:''}</div></div></div>`};
   return `${svHead()}
   ${cnt.length?`<div class="sub">Dış serviste ${cnt.length} kayıt var${late?` · <b class="neg">${late} tanesinin beklenen dönüş tarihi geçti</b>`:''}.</div>`:''}
   <div class="row"><div class="seg">${[['acik','Açık'],['hazir','Hazır'],['dis','Dış serviste'],['tum','Tümü']].map(([v,t])=>`<button data-a="svfilter" data-v="${v}" aria-pressed="${f===v}">${t}</button>`).join('')}</div>
@@ -5016,13 +5028,13 @@ function vSiparis(){
   const fu=d.follow_ups.filter(x=>!x.done).sort((a,b)=>String(a.due_date).localeCompare(String(b.due_date)));
   const fuRow=x=>{const c=d.contactMap.get(x.contact_id),late=x.due_date<today();
     return `<div class="item"><div class="main"><b>${esc(x.note)}</b><div class="meta">${c?`<span>${esc(c.name)}${c.phone?' · '+esc(c.phone):''}</span>`:''}<span class="${late?'neg':''}">${fmtDate(x.due_date)}${late?' (geçti)':x.due_date===today()?' (bugün)':''}</span>${x.assigned_to?`<span>${esc(pname(x.assigned_to))}</span>`:''}</div></div>
-    <div class="side"><button class="btn sm pri" data-a="fu-done" data-id="${x.id}">Yapıldı</button></div></div>`};
+    <div class="side"><div class="acts">${ntBtn('follow_ups',x.id)}<button class="btn sm pri" data-a="fu-done" data-id="${x.id}">Yapıldı</button></div></div></div>`};
   const ordRow=x=>{const c=d.contactMap.get(x.contact_id),late=['talep','araniyor','bulundu'].includes(x.status)&&x.due_date&&x.due_date<today();
     const acc=x.accessory_id&&d.accMap.get(x.accessory_id),isA=x.kind==='aksesuar',have=acc?(isSvc(acc)?x.qty:acc.stock_qty):null;
     return `<div class="item"><div class="main"><b>${isA&&x.qty>1?x.qty+' x ':''}${esc(x.requested)}</b> <span class="pill">${isA?'Aksesuar':'Telefon'}</span> <span class="pill ${osTone(x.status)}">${esc(OSL[x.status])}</span>${isA&&osOpen(x)?(acc?` <span class="pill ${have>=x.qty?'sold':have>0?'warn':'bad'}">${have>=x.qty?'Stokta var ('+have+')':have>0?'Stok yetersiz ('+have+')':'Stokta yok'}</span>`:' <span class="pill">Stoğa girmemiş ürün</span>'):''}
     <div class="meta"><span class="mono">${esc(x.order_no)}</span>${c?`<span>${esc(c.name)}${c.phone?' · '+esc(c.phone):''}</span>`:''}${x.cat?`<span>${esc(x.cat)}${x.sub?' · '+esc(x.sub):''}</span>`:''}${x.budget!=null?`<span>Bütçe ${money(x.budget)}</span>`:''}${x.due_date?`<span class="${late?'neg':''}">Hedef ${fmtDate(x.due_date)}${late?' (geçti)':''}</span>`:''}${x.assigned_to?`<span>${esc(pname(x.assigned_to))}</span>`:''}</div>${x.note?`<div class="meta"><span>${esc(x.note)}</span></div>`:''}</div>
     <div class="side">${osOpen(x)?`<select class="in" data-c="ordstatus" data-id="${x.id}" style="width:auto" aria-label="Durum">${opts(OS.filter(s=>s[0]!=='teslim'||x.status==='hazir'||x.status==='teslim'),x.status)}</select>`:''}
-    <div class="acts">${osOpen(x)&&acc&&have>0&&can('make_sale')?`<button class="btn sm pri" data-a="ord-tocart" data-id="${x.id}">Sepete ekle</button>`:''}${osOpen(x)?`<button class="btn sm" data-a="ord-find" data-id="${x.id}">Stokta ara</button><button class="btn sm" data-a="fu-new" data-contact="${x.contact_id||''}" data-rt="customer_orders" data-rid="${x.id}" data-note="${esc(x.requested)}">Takip ekle</button><button class="btn sm" data-a="ord-edit" data-id="${x.id}">Düzenle</button>`:''}</div></div></div>`};
+    <div class="acts">${ntBtn('customer_orders',x.id)}${osOpen(x)&&acc&&have>0&&can('make_sale')?`<button class="btn sm pri" data-a="ord-tocart" data-id="${x.id}">Sepete ekle</button>`:''}${osOpen(x)?`<button class="btn sm" data-a="ord-find" data-id="${x.id}">Stokta ara</button><button class="btn sm" data-a="fu-new" data-contact="${x.contact_id||''}" data-rt="customer_orders" data-rid="${x.id}" data-note="${esc(x.requested)}">Takip ekle</button><button class="btn sm" data-a="ord-edit" data-id="${x.id}">Düzenle</button>`:''}</div></div></div>`};
   return `<div class="row"><h1>Siparişler ve Takip</h1><div class="sp"></div><button class="btn" data-a="fu-new">+ Takip</button><button class="btn pri" data-a="ord-new">+ Sipariş</button></div>
   <div class="card"><h2>Bekleyen takipler (${fu.length})</h2>${fu.map(fuRow).join('')||'<div class="sub">Bekleyen takip yok.</div>'}</div>
   <div class="row"><div class="seg">${[['acik','Açık siparişler'],['tum','Tümü']].map(([v,t])=>`<button data-a="ordfilter" data-v="${v}" aria-pressed="${f===v}">${t}</button>`).join('')}</div><div class="seg">${[['','Tüm türler'],['telefon','Telefon'],['aksesuar','Aksesuar']].map(([v,t])=>`<button data-a="ordkind" data-v="${v}" aria-pressed="${(u.ok||'')===v}">${t}</button>`).join('')}</div></div>
@@ -5090,7 +5102,7 @@ function vTeklif(){
     <div class="meta"><span class="mono">${esc(q.quote_no)}</span><span>${fmtDate(q.created_at)}</span>${q.valid_until?`<span>Geçerli ${fmtDate(q.valid_until)}</span>`:''}<span>${esc(pname(q.staff_id))}</span>${q.sent_via?`<span>Gönderim: ${esc(q.sent_via)}</span>`:''}</div>
     <div class="meta"><span>${its.map(i=>esc(i.description)).slice(0,3).join(' · ')}${its.length>3?' +'+(its.length-3):''}</span></div></div>
     <div class="side"><b>${qKind(q)==="satis"?money(q.total):esc(qTotalLabel(q))+" "+money(Math.abs(q.total))}</b><select class="in" data-c="qstatus" data-id="${q.id}" style="width:auto" aria-label="Durum">${opts(QS,q.status)}</select>
-    <div class="acts"><button class="btn sm" data-a="q-preview" data-id="${q.id}">Önizle / Yazdır</button>${q.customer_email&&['taslak','gonderildi'].includes(q.status)?`<button class="btn sm pri" data-a="q-email" data-id="${q.id}">E-posta gönder</button>`:''}${mail?`<a class="btn sm" data-a="q-share" data-id="${q.id}" data-via="e-posta (mail uygulaması)" href="${mail}" target="_blank" rel="noopener">Mail uygulaması</a>`:''}${wa?`<a class="btn sm" data-a="q-share" data-id="${q.id}" data-via="WhatsApp" href="${wa}" target="_blank" rel="noopener">WhatsApp</a>`:''}</div>
+    <div class="acts">${ntBtn('quotes',q.id)}<button class="btn sm" data-a="q-preview" data-id="${q.id}">Önizle / Yazdır</button>${q.customer_email&&['taslak','gonderildi'].includes(q.status)?`<button class="btn sm pri" data-a="q-email" data-id="${q.id}">E-posta gönder</button>`:''}${mail?`<a class="btn sm" data-a="q-share" data-id="${q.id}" data-via="e-posta (mail uygulaması)" href="${mail}" target="_blank" rel="noopener">Mail uygulaması</a>`:''}${wa?`<a class="btn sm" data-a="q-share" data-id="${q.id}" data-via="WhatsApp" href="${wa}" target="_blank" rel="noopener">WhatsApp</a>`:''}</div>
     <div class="acts">${q.status==='taslak'&&!its.some(i=>i.converted_product_id)?`<button class="btn sm" data-a="q-edit" data-id="${q.id}">Düzenle</button>`:''}${can('make_sale')&&q.status!=='red'&&qKind(q)!=='alis'?`<button class="btn sm pri" data-a="q-tosale" data-id="${q.id}">Satışa çevir</button>`:''}${can('manage_products')&&q.status!=='red'&&its.some(i=>i.side==='alis'&&!i.converted_product_id)?`<button class="btn sm pri" data-a="q-toalis" data-id="${q.id}">Alışa çevir</button>`:''}<button class="btn sm" data-a="fu-new" data-contact="${q.contact_id||''}" data-rt="quotes" data-rid="${q.id}" data-note="${esc('Teklif '+q.quote_no)}">Takip</button>${q.status==='taslak'?`<button class="btn sm danger" data-a="q-del" data-id="${q.id}">Sil</button>`:''}</div></div></div>`};
   return `<div class="row"><h1>Teklifler</h1><div class="sp"></div><button class="btn pri" data-a="q-new">+ Teklif hazırla</button></div>
   <div class="row"><div class="seg">${[['acik','Açık'],['tum','Tümü']].map(([v,t])=>`<button data-a="qfilter" data-v="${v}" aria-pressed="${f===v}">${t}</button>`).join('')}</div><div class="seg">${[['','Tüm türler'],['satis','Satış'],['alis','Alış'],['takas','Takas']].map(([v,t])=>`<button data-a="qkfilter" data-v="${v}" aria-pressed="${(u.qk||'')===v}">${t}</button>`).join('')}</div></div>
@@ -5512,7 +5524,7 @@ function vGorev(){
     return `<div class="item"><div class="main"><b>${esc(x.title)}</b> <span class="pill ${x.status==='bitti'?'sold':x.status==='yapiliyor'?'warn':''}">${TSL[x.status]}</span>${x.priority==='yuksek'?' <span class="pill bad">Öncelikli</span>':''}
     ${x.detail?`<div class="sub">${esc(x.detail)}</div>`:''}<div class="meta"><span>${esc(pname(x.assigned_to))}</span>${x.due_date?`<span class="${late?'neg':''}">Son ${fmtDate(x.due_date)}${late?' (geçti)':''}</span>`:''}${x.created_by&&x.created_by!==x.assigned_to?`<span>Atayan: ${esc(pname(x.created_by))}</span>`:''}</div></div>
     <div class="side"><select class="in" data-c="taskstatus" data-id="${x.id}" style="width:auto" aria-label="Durum">${opts(TS.filter(s=>s[0]!=='iptal'||mg||x.status==='iptal'),x.status)}</select>
-    ${mg?`<div class="acts"><button class="btn sm" data-a="task-edit" data-id="${x.id}">Düzenle</button><button class="btn sm danger" data-a="task-del" data-id="${x.id}">Sil</button></div>`:''}</div></div>`};
+    <div class="acts">${ntBtn('tasks',x.id)}${mg?`<button class="btn sm" data-a="task-edit" data-id="${x.id}">Düzenle</button><button class="btn sm danger" data-a="task-del" data-id="${x.id}">Sil</button>`:''}</div></div></div>`};
   return `<div class="row"><h1>Görevler</h1><div class="sp"></div><button class="btn pri" data-a="task-new">+ Görev</button></div>
   <div class="row"><div class="seg">${[['acik','Açık'],['tum','Tümü']].map(([v,t])=>`<button data-a="taskfilter" data-v="${v}" aria-pressed="${f===v}">${t}</button>`).join('')}</div>
   ${mg?`<div class="seg">${[['ben','Benim'],['herkes','Herkes']].map(([v,t])=>`<button data-a="taskwho" data-v="${v}" aria-pressed="${who===v}">${t}</button>`).join('')}</div>`:''}</div>
@@ -6160,7 +6172,7 @@ function vAksesuar(){
       <div class="meta">${a.barcode?`<span class="mono">${esc(a.barcode)}</span>`:''}${a.sku?`<span>${esc(a.sku)}</span>`:''}${Number(a.min_stock)>0?`<span>Asgari ${a.min_stock}</span>`:''}</div>${a.notes?`<div class="meta"><span>${esc(a.notes)}</span></div>`:''}${pqPills('aksesuar',a.id)?`<div class="meta">${pqPills('aksesuar',a.id)}</div>`:''}</div>
       <div class="side">${a.is_service?'<div class="sub">Stok takibi yok</div>':`<div class="num"><b class="${a.stock_qty===0?'neg':''}" style="font-size:18px">${a.stock_qty}</b> <span class="sub">adet</span></div>`}
       <div class="sub num">${a.price_open&&!a.sale_price?'Fiyat satışta belirlenir':a.sale_price==null?'Fiyat yok':'Satış '+money(a.sale_price)+(a.price_open?' (değişebilir)':'')}${showCost&&avg!=null?` · Maliyet ${money(avg)}${accUsd(a.id)!=null?` <span class="pill" title="Dolar maliyetli: TL karşılığı canlı kurla güncellenir">$${fxN(accUsd(a.id))}</span>`:''}`:''}${showCost&&m!=null?` · <span class="${sgn(m)}">Kâr ${money(m)}</span>`:''}</div>
-      <div class="acts">${can('make_sale')&&a.active!==false&&aAvail(a)>0?`<button class="btn sm pri" data-a="acc-sell" data-id="${a.id}">Sat</button>`:''}
+      <div class="acts">${ntBtn('accessories',a.id)}${can('make_sale')&&a.active!==false&&aAvail(a)>0?`<button class="btn sm pri" data-a="acc-sell" data-id="${a.id}">Sat</button>`:''}
       ${a.is_service?(mg?`<button class="btn sm" data-a="lbl-open" data-k="a" data-id="${a.id}">Etiket</button><button class="btn sm" data-a="svc-edit" data-id="${a.id}">Düzenle</button>${pqBtn('aksesuar',a.id)}`:''):canFire()&&!mg?`<button class="btn sm" data-a="acc-write" data-id="${a.id}">Fire</button>`:''}${mg&&!a.is_service?`<button class="btn sm" data-a="acc-recv" data-id="${a.id}">Alış</button><button class="btn sm" data-a="acc-count" data-id="${a.id}">Sayım</button><button class="btn sm" data-a="acc-write" data-id="${a.id}">Fire</button><button class="btn sm" data-a="lbl-open" data-k="a" data-id="${a.id}">Etiket</button><button class="btn sm" data-a="acc-edit" data-id="${a.id}">Düzenle</button>${pqBtn('aksesuar',a.id)}${!a.family_id?`<button class="btn sm" data-a="fam-conv" data-id="${a.id}">Varyant ekle</button>`:''}`:''}
       ${(showCost||mg)?`<button class="btn sm" data-a="acc-moves" data-id="${a.id}">Hareketler</button>`:''}</div></div></div>`};
   const av=u.av==='fire'&&canSeeMoves()?'fire':'urun';
@@ -7097,7 +7109,7 @@ const NT_MON=['Ocak','Şubat','Mart','Nisan','Mayıs','Haziran','Temmuz','Ağust
 const NT_WD=['Pazartesi','Salı','Çarşamba','Perşembe','Cuma','Cumartesi','Pazar'],NT_WDS=['Pzt','Sal','Çar','Per','Cum','Cmt','Paz'];
 const NT_VIEWS=[['bugun','Bugün'],['hafta','Hafta'],['ay','Ay'],['tum','Tüm notlar']];
 const ntUid=()=>{try{if(crypto.randomUUID)return crypto.randomUUID()}catch(e){}const h=[...Array(32)].map(()=>Math.floor(Math.random()*16).toString(16));h[12]='4';h[16]=(8+Math.floor(Math.random()*4)).toString(16);const s=h.join('');return `${s.slice(0,8)}-${s.slice(8,12)}-${s.slice(12,16)}-${s.slice(16,20)}-${s.slice(20)}`};
-const NT=()=>S.nt||(S.nt={loaded:false,notes:[],folders:[],shares:[],files:[],prefs:null,view:'bugun',day:today(),wk:'',mon:'',side:'all',q:'',sort:'upd',grid:prefGet('nt_grid','0')==='1',mob:'list',sel:'',show:{},dirty:new Map(),timers:new Map()});
+const NT=()=>S.nt||(S.nt={loaded:false,notes:[],folders:[],shares:[],files:[],links:[],prefs:null,view:'bugun',day:today(),wk:'',mon:'',side:'all',q:'',sort:'upd',grid:prefGet('nt_grid','0')==='1',mob:'list',sel:'',show:{},dirty:new Map(),timers:new Map()});
 const ntWd=d=>(parse(d).getDay()+6)%7;
 const ntMonday=d=>addDays(d,-ntWd(d));
 const ntMonthEnd=m=>{const d=parse(m);return iso(new Date(d.getFullYear(),d.getMonth()+1,0))};
@@ -7121,8 +7133,8 @@ function ntSan(html){const t=document.createElement('template');t.innerHTML=Stri
   const walk=p=>{[...p.childNodes].forEach(c=>{if(c.nodeType===3)return;if(c.nodeType!==1){c.remove();return}
     const tg=c.tagName;if(NT_DROP.has(tg)){c.remove();return}walk(c);
     if(!NT_OK.has(tg)){c.replaceWith(...c.childNodes);return}
-    [...c.attributes].forEach(a=>{const k=a.name,keep=(tg==='A'&&k==='href'&&/^(https?:|mailto:|tel:)/i.test(a.value.trim()))||(tg==='UL'&&k==='data-chk')||(tg==='LI'&&k==='data-on');if(!keep)c.removeAttribute(k)});
-    if(tg==='A'){c.setAttribute('target','_blank');c.setAttribute('rel','noopener noreferrer')}})};
+    [...c.attributes].forEach(a=>{const k=a.name,keep=(tg==='A'&&k==='href'&&(/^(https?:|mailto:|tel:)/i.test(a.value.trim())||/^#ref\/[a-z_]+\/[0-9a-f-]{36}$/.test(a.value.trim())))||(tg==='UL'&&k==='data-chk')||(tg==='LI'&&k==='data-on');if(!keep)c.removeAttribute(k)});
+    if(tg==='A'&&!/^#ref\//.test(c.getAttribute('href')||'')){c.setAttribute('target','_blank');c.setAttribute('rel','noopener noreferrer')}})};
   walk(t.content);return t.innerHTML.length>200000?t.innerHTML.slice(0,200000):t.innerHTML}
 const ntPriR=p=>p==='yuksek'?0:p==='dusuk'?2:1;
 const ntCmp=(a,b)=>(a.done-b.done)||((a.sort||0)-(b.sort||0))||String(a.due_time||'99').localeCompare(String(b.due_time||'99'))||(ntPriR(a.priority)-ntPriR(b.priority))||String(a.created_at).localeCompare(String(b.created_at));
@@ -7137,12 +7149,13 @@ async function ntLoad(force){const N=NT();if(N.loading||(N.loaded&&!force))retur
     const R=await Promise.all([q('notes').order('updated_at',{ascending:false}).limit(5000),q('note_folders').order('sort'),q('note_shares'),q('note_files'),q('note_prefs')]);
     const er=R.find(r=>r.error);
     if(er){if(/relation|does not exist|schema cache|could not find/i.test(er.error.message||''))N.missing=true;else throw er.error}
-    else{N.missing=false;N.notes=[];(R[0].data||[]).forEach(ntMerge);N.folders=R[1].data||[];N.shares=R[2].data||[];N.files=R[3].data||[];N.prefs=(R[4].data||[])[0]||null}
+    else{N.missing=false;N.notes=[];(R[0].data||[]).forEach(ntMerge);N.folders=R[1].data||[];N.shares=R[2].data||[];N.files=R[3].data||[];N.prefs=(R[4].data||[])[0]||null;
+      try{const r=await sb.from('note_links').select('*').limit(20000);if(r.error)throw r.error;N.links=r.data||[];N.noLinks=false}catch(e){N.links=[];N.noLinks=true}}   // 074
     N.err=''}
   catch(e){N.err=msg(e)}
   finally{N.loading=false;N.loaded=true}
   if(!N.purged&&!N.missing&&!N.err){N.purged=true;ntPurge()}
-  if(S.d&&(S.ui.tab==='notlar'||S.ui.tab==='panel'))rtRender()}
+  if(S.d&&(S.ui.tab==='notlar'||S.ui.tab==='panel'||document.querySelector('[data-a="nt-rec"]')))rtRender()}
 function ntMerge(row){const N=NT();if(!row||!row.id)return;const d=N.dirty.get(row.id)||(row.period?N.dirty.get('p:'+row.period+':'+row.period_date):null);
   const i=N.notes.findIndex(n=>n.id===row.id),v={...(i>=0?N.notes[i]:{}),...row,...(d||{})};if(i>=0)N.notes[i]=v;else N.notes.push(v)}
 async function ntPurge(){try{const r=await sb.rpc('notes_trash_paths');const P=(r.data||[]).filter(Boolean);
@@ -7150,11 +7163,11 @@ async function ntPurge(){try{const r=await sb.rpc('notes_trash_paths');const P=(
 /* canlı güncelleme (051): diğer cihaz ve paylaşılan kişilerin değişiklikleri */
 function ntRt(p){const N=S.nt;if(!N||!N.loaded||N.missing)return;const t=p.table,nw=p.new||{},od=p.old||{};
   if(t==='note_shares'){clearTimeout(N.rtT);N.rtT=setTimeout(()=>ntLoad(true),600);return}
-  if(t==='notes'){if(p.eventType==='DELETE'){N.notes=N.notes.filter(n=>n.id!==od.id)}
+  if(t==='notes'){if(p.eventType==='DELETE'){N.notes=N.notes.filter(n=>n.id!==od.id);N.links=N.links.filter(l=>l.note_id!==od.id)}
     else{const cur=ntGet(nw.id);if(cur&&nw.version!=null&&cur.version!=null&&nw.version<=cur.version&&nw.updated_by===S.user.id)return;ntMerge(nw)}}
-  else{const L={note_folders:'folders',note_files:'files',note_prefs:'prefs'}[t];if(!L)return;
+  else{const L={note_folders:'folders',note_files:'files',note_prefs:'prefs',note_links:'links'}[t];if(!L)return;if(L==='links'&&N.noLinks)return;
     if(L==='prefs'){if(p.eventType!=='DELETE'&&nw.user_id===S.user.id)N.prefs=nw;return}
-    const id=nw.id||od.id;N[L]=N[L].filter(x=>x.id!==id);if(p.eventType!=='DELETE')N[L].push(nw);if(L==='folders')N.folders.sort((a,b)=>(a.sort||0)-(b.sort||0))}
+    const id=nw.id||od.id;N[L]=N[L].filter(x=>x.id!==id);if(p.eventType!=='DELETE')N[L].push(nw);if(L==='folders')N.folders.sort((a,b)=>(a.sort||0)-(b.sort||0));if(L==='links'){const nid=nw.note_id||od.note_id;if(nid)nlRefresh(nid)}}
   clearTimeout(N.rdT);N.rdT=setTimeout(()=>{if(S.ui.tab==='notlar'||S.ui.tab==='panel'){rtRender();ntModalRefresh(true)}},250)}
 
 /* ---------- kaydetme ---------- */
@@ -7191,7 +7204,7 @@ async function ntCreate(fields,opt={}){const row={...ntDefaults(),id:ntUid(),...
 /* boş bırakılan yeni not / yapılacak (başlıksız, içeriksiz) kapatılınca silinir */
 function ntCleanup(id){const N=S.nt;if(!N||!id)return;const n=ntGet(id);if(!n||!ntMine(n)||n.period||N.dirty.has(id)||N.timers.has(id))return;
   if((n.title||'').trim()||ntPlain(n.body)||(n.checklist||[]).length||N.files.some(f=>f.note_id===id)||N.shares.some(s=>s.note_id===id)||Date.now()-new Date(n.created_at)>36e5)return;
-  N.notes=N.notes.filter(x=>x.id!==id);if(N.sel===id)N.sel='';sb.from('notes').delete().eq('id',id).then(()=>{},()=>{})}
+  N.notes=N.notes.filter(x=>x.id!==id);N.links=N.links.filter(l=>l.note_id!==id);if(N.sel===id)N.sel='';sb.from('notes').delete().eq('id',id).then(()=>{},()=>{})}
 function ntModalClosed(){const N=S.nt;if(!N)return;ntFlushAll();const id=N.modal;N.modal=null;N.hist=null;if(id)setTimeout(()=>{ntCleanup(id);if(S.ui.tab==='notlar'||S.ui.tab==='panel')render()},0)}
 function ntRender(){if(S.ui.tab==='notlar'||S.ui.tab==='panel')render();ntModalRefresh()}
 function ntModalRefresh(live){const m=S.nt&&S.nt.modal;if(!m)return;const box=document.querySelector('#modal .modal[data-nt-modal]');if(!box){S.nt.modal=null;return}
@@ -7253,7 +7266,7 @@ async function nqAdd(el,base){const v=el.value.trim();if(!v)return;const r=nqPar
 function ntRow(n,o={}){const N=NT(),ck=n.checklist||[],cd=ck.filter(x=>x.d).length,fc=N.files.filter(f=>f.note_id===n.id).length,sh=N.shares.filter(s=>s.note_id===n.id).length,od=!n.done&&n.due_date&&n.due_date<today();
   const meta=[o.date!==false&&n.due_date?`<span class="${od?'bad':''}">${ic('cal','sm')}${esc(ntDayTxt(n.due_date))}</span>`:'',n.due_time?`<span>${ic('clock','sm')}${n.due_time.slice(0,5)}</span>`:'',
     n.remind_min!=null&&!n.done?`<span title="Hatırlatma">${ic('bell','sm')}</span>`:'',n.repeat?`<span title="${esc(ntRepTxt(n.repeat))}">${ic('undo','sm')}${o.compact?'':esc(ntRepTxt(n.repeat))}</span>`:'',
-    ck.length?`<span>${ic('check','sm')}${cd}/${ck.length}</span>`:'',fc?`<span>${ic('clip','sm')}${fc}</span>`:'',sh||!ntMine(n)?`<span title="Paylaşılan">${ic('users','sm')}${ntMine(n)?'':esc(initials(pname(n.owner_id)))}</span>`:'',
+    ck.length?`<span>${ic('check','sm')}${cd}/${ck.length}</span>`:'',fc?`<span>${ic('clip','sm')}${fc}</span>`:'',nlMeta(n,o.compact),sh||!ntMine(n)?`<span title="Paylaşılan">${ic('users','sm')}${ntMine(n)?'':esc(initials(pname(n.owner_id)))}</span>`:'',
     ...(o.compact?[]:(n.tags||[]).map(t=>`<span class="tg">#${esc(t)}</span>`))].filter(Boolean).join('');
   return `<div class="nt-task${n.done?' done':''} pr-${n.priority}${n.color?' nc-'+n.color:''}" data-id="${n.id}" draggable="${ntCanEd(n)}">
     <button class="nt-chk${n.done?' on':''}" data-a="nt-done" data-id="${n.id}" aria-label="${n.done?'Tamamlanmadı yap':'Tamamlandı'}" aria-pressed="${n.done}"${ntCanEd(n)?'':' disabled'}>${ic('check','sm')}</button>
@@ -7314,11 +7327,12 @@ function ntSideList(){const N=NT(),me=S.user.id,A=N.notes.filter(n=>!n.period),o
   return {items:[['all','Tümü','note',L.length],['pin','Sabitlenenler','pin',L.filter(n=>n.pinned).length],['not','Notlar','file',L.filter(n=>n.kind==='not').length],['is','Yapılacaklar','check',L.filter(n=>n.kind==='is'&&!n.done).length],
     ['shared','Benimle paylaşılanlar','users',L.filter(n=>n.owner_id!==me).length],['mine-sh','Paylaştıklarım','share',L.filter(n=>n.owner_id===me&&N.shares.some(s=>s.note_id===n.id)).length]],
     folders:N.folders.map(f=>[f,L.filter(n=>n.folder_id===f.id&&n.owner_id===me).length]),tags:Object.entries(tags).sort((a,b)=>b[1]-a[1]||a[0].localeCompare(b[0],'tr')),
+    links:N.noLinks?[]:NL_ORDER.map(k=>[k,L.filter(n=>N.links.some(l=>l.note_id===n.id&&l.ref_table===k)).length]).filter(x=>x[1]),
     arch:own.filter(n=>n.archived&&!n.deleted_at).length,trash:N.notes.filter(n=>n.owner_id===me&&n.deleted_at).length}}
 function ntFiltered(){const N=NT(),s=N.side,me=S.user.id;let L=N.notes.filter(n=>!n.period||s==='cop');
   if(s==='cop')L=L.filter(n=>n.deleted_at&&n.owner_id===me);else if(s==='arsiv')L=L.filter(n=>n.archived&&!n.deleted_at&&n.owner_id===me);else{L=L.filter(ntLive);
     if(s==='pin')L=L.filter(n=>n.pinned);else if(s==='not')L=L.filter(n=>n.kind==='not');else if(s==='is')L=L.filter(n=>n.kind==='is');else if(s==='shared')L=L.filter(n=>n.owner_id!==me);
-    else if(s==='mine-sh')L=L.filter(n=>n.owner_id===me&&N.shares.some(x=>x.note_id===n.id));else if(s.startsWith('f:'))L=L.filter(n=>n.folder_id===s.slice(2)&&n.owner_id===me);else if(s.startsWith('t:'))L=L.filter(n=>(n.tags||[]).includes(s.slice(2)))}
+    else if(s==='mine-sh')L=L.filter(n=>n.owner_id===me&&N.shares.some(x=>x.note_id===n.id));else if(s.startsWith('f:'))L=L.filter(n=>n.folder_id===s.slice(2)&&n.owner_id===me);else if(s.startsWith('t:'))L=L.filter(n=>(n.tags||[]).includes(s.slice(2)));else if(s.startsWith('l:'))L=L.filter(n=>N.links.some(l=>l.note_id===n.id&&l.ref_table===s.slice(2)))}
   const so=N.sort,cmp=so==='olus'?(a,b)=>String(b.created_at).localeCompare(String(a.created_at)):so==='baslik'?(a,b)=>ntTitle(a).localeCompare(ntTitle(b),'tr'):so==='tarih'?(a,b)=>String(a.due_date||'9999').localeCompare(String(b.due_date||'9999'))||ntCmp(a,b):(a,b)=>String(b.updated_at).localeCompare(String(a.updated_at));
   return L.sort((a,b)=>(s!=='cop'&&s!=='arsiv'?(b.pinned-a.pinned):0)||(a.kind==='is'&&b.kind==='is'&&so!=='baslik'?a.done-b.done:0)||cmp(a,b))}
 function ntCard(n,q){const N=NT(),txt=ntPlain(n.body),sel=N.sel===n.id;let sn=txt.slice(0,160);
@@ -7328,15 +7342,16 @@ function ntCard(n,q){const N=NT(),txt=ntPlain(n.body),sel=N.sel===n.id;let sn=tx
   return `<button class="nt-card${sel?' sel':''}${n.color?' nc-'+n.color:''}${n.kind==='is'&&n.done?' done':''}" data-a="nt-sel" data-id="${n.id}">
     <span class="h">${n.pinned?ic('pin','sm'):''}${n.kind==='is'?`<span class="nt-chk mini${n.done?' on':''}">${ic('check','sm')}</span>`:''}<b>${hl(ntTitle(n))}</b></span>
     ${sn&&sn!==ntTitle(n)?`<span class="sn">${hl(sn)}</span>`:''}
-    <span class="nt-meta">${n.period?`<span>${ic('cal','sm')}${n.period==='gun'?'Günlük':n.period==='hafta'?'Haftalık':'Aylık'}</span>`:''}${n.kind==='is'&&n.due_date?`<span class="${!n.done&&n.due_date<today()?'bad':''}">${ic('cal','sm')}${esc(ntDayTxt(n.due_date))}${n.due_time?' '+n.due_time.slice(0,5):''}</span>`:''}<span>${esc(ntRel(n.deleted_at||n.updated_at))}</span>${fc?`<span>${ic('clip','sm')}${fc}</span>`:''}${sh?`<span>${ic('users','sm')}</span>`:''}${!ntMine(n)?`<span>${ic('users','sm')}${esc(pname(n.owner_id))}</span>`:''}${(n.tags||[]).map(t=>`<span class="tg">#${hl(t)}</span>`).join('')}</span></button>`}
+    <span class="nt-meta">${n.period?`<span>${ic('cal','sm')}${n.period==='gun'?'Günlük':n.period==='hafta'?'Haftalık':'Aylık'}</span>`:''}${n.kind==='is'&&n.due_date?`<span class="${!n.done&&n.due_date<today()?'bad':''}">${ic('cal','sm')}${esc(ntDayTxt(n.due_date))}${n.due_time?' '+n.due_time.slice(0,5):''}</span>`:''}<span>${esc(ntRel(n.deleted_at||n.updated_at))}</span>${nlMeta(n)}${fc?`<span>${ic('clip','sm')}${fc}</span>`:''}${sh?`<span>${ic('users','sm')}</span>`:''}${!ntMine(n)?`<span>${ic('users','sm')}${esc(pname(n.owner_id))}</span>`:''}${(n.tags||[]).map(t=>`<span class="tg">#${hl(t)}</span>`).join('')}</span></button>`}
 function ntAll(){const N=NT(),SL=ntSideList(),s=N.side,L=ntFiltered(),sel=N.sel&&ntGet(N.sel);
   const it=(k,t,i,c)=>`<button class="nt-si" data-a="nt-side" data-v="${esc(k)}" aria-pressed="${s===k}">${ic(i,'sm')}<span>${esc(t)}</span>${c?`<span class="c">${c}</span>`:''}</button>`;
   const side=`<nav class="nt-side card" aria-label="Not klasörleri">${SL.items.map(x=>it(...x)).join('')}
     <div class="nt-sg"><span>Klasörler</span><button class="ib sm" data-a="nt-folder" aria-label="Yeni klasör" title="Yeni klasör">${ic('plus','sm')}</button></div>
     ${SL.folders.map(([f,c])=>`<div class="nt-fr">${it('f:'+f.id,f.name,'folder',c)}<button class="ib sm" data-a="nt-folder" data-id="${f.id}" aria-label="${esc(f.name)} klasörünü düzenle">${ic('sliders','sm')}</button></div>`).join('')||'<div class="sub nt-none">Klasör yok</div>'}
     ${SL.tags.length?`<div class="nt-sg"><span>Etiketler</span></div><div class="nt-tags">${SL.tags.map(([t,c])=>`<button class="tg${s==='t:'+t?' on':''}" data-a="nt-side" data-v="t:${esc(t)}">#${esc(t)} <small>${c}</small></button>`).join('')}</div>`:''}
+    ${SL.links.length?`<div class="nt-sg"><span>Bağlı kayıtlar</span></div>${SL.links.map(([k,c])=>it('l:'+k,NL[k].t,NL[k].ic,c)).join('')}`:''}
     <div class="nt-sg"></div>${it('arsiv','Arşiv','pkg',SL.arch)}${it('cop','Çöp kutusu','trash',SL.trash)}</nav>`;
-  const title=s==='cop'?'Çöp kutusu':s==='arsiv'?'Arşiv':s.startsWith('f:')?(N.folders.find(f=>f.id===s.slice(2))||{}).name||'Klasör':s.startsWith('t:')?'#'+s.slice(2):(SL.items.find(x=>x[0]===s)||[0,'Tümü'])[1];
+  const title=s==='cop'?'Çöp kutusu':s==='arsiv'?'Arşiv':s.startsWith('f:')?(N.folders.find(f=>f.id===s.slice(2))||{}).name||'Klasör':s.startsWith('t:')?'#'+s.slice(2):s.startsWith('l:')?(NL[s.slice(2)]||{t:''}).t+' notları':(SL.items.find(x=>x[0]===s)||[0,'Tümü'])[1];
   const list=`<section class="nt-lp card"><div class="row"><button class="ib sm nt-back" data-a="nt-mob" data-v="side" aria-label="Klasörler">${ic('menu','sm')}</button><h2>${esc(title)}</h2><span class="pill">${L.length}</span><div class="sp"></div>
       ${s==='cop'?(L.length?`<button class="btn sm danger" data-a="nt-empty">Çöpü boşalt</button>`:''):`<select class="in sm" data-c="nt-sort" aria-label="Sıralama">${opts([['upd','Son düzenlenen'],['olus','Oluşturma'],['baslik','Başlık'],['tarih','Son tarih']],N.sort)}</select><button class="ib sm" data-a="nt-grid" aria-pressed="${N.grid}" aria-label="${N.grid?'Liste görünümü':'Kart görünümü'}" title="${N.grid?'Liste':'Kart'} görünümü">${ic(N.grid?'menu':'grid','sm')}</button>`}</div>
     ${s==='cop'?'<p class="sub">Çöp kutusundaki notlar 30 gün sonra kendiliğinden silinir.</p>':''}
@@ -7344,7 +7359,7 @@ function ntAll(){const N=NT(),SL=ntSideList(),s=N.side,L=ntFiltered(),sel=N.sel&
   const ed=`<section class="nt-ep card">${sel?`<button class="lnk nt-back" data-a="nt-mob" data-v="list">${ic('down','sm rotl')}Listeye dön</button>`+(sel.deleted_at?ntTrashEd(sel):ntEd(sel,{})):'<div class="empty nt-ph">Soldan bir not seçin ya da <button class="lnk" data-a="nt-new" data-k="not">yeni not</button> oluşturun.</div>'}</section>`;
   return `<div class="nt-all mob-${N.mob||'list'}${sel?' has-sel':''}">${side}${list}${ed}</div>`}
 function ntSearch(q){const N=NT(),ql=q.toLocaleLowerCase('tr');
-  const L=N.notes.filter(n=>!n.deleted_at&&(ntTitle(n)+' '+ntPlain(n.body)+' '+(n.tags||[]).map(t=>'#'+t).join(' ')+' '+(n.checklist||[]).map(c=>c.t).join(' ')).toLocaleLowerCase('tr').includes(ql))
+  const L=N.notes.filter(n=>!n.deleted_at&&(ntTitle(n)+' '+ntPlain(n.body)+' '+(n.tags||[]).map(t=>'#'+t).join(' ')+' '+(n.checklist||[]).map(c=>c.t).join(' ')+' '+N.links.filter(l=>l.note_id===n.id).map(l=>l.label+' '+(l.sub||'')).join(' ')).toLocaleLowerCase('tr').includes(ql))
     .sort((a,b)=>String(b.updated_at).localeCompare(String(a.updated_at)));
   return `<div class="card"><div class="row"><h2>“${esc(q)}” için ${L.length} sonuç</h2><div class="sp"></div><button class="btn sm" data-a="nt-q-clear">Aramayı temizle</button></div>
     <div class="nt-cards">${L.map(n=>ntCard(n,q)).join('')||'<div class="empty">Sonuç yok.</div>'}</div></div>`}
@@ -7385,10 +7400,11 @@ function ntFilesHtml(n,ro){const F=NT().files.filter(f=>f.note_id===n.id).sort((
 function ntEd(n,o={}){const key=o.key||n.id,ro=n?!ntCanEd(n):false,isT=n&&n.kind==='is';
   let h=`<div class="nt-ed${n&&n.color?' nc-'+n.color:''}${o.period?' per':''}" data-key="${esc(key)}">`;
   if(!o.period){h+=`<div class="nt-edh">${isT?`<button class="nt-chk lg${n.done?' on':''}" data-a="nt-done" data-id="${n.id}" aria-label="${n.done?'Tamamlanmadı yap':'Tamamlandı'}" aria-pressed="${n.done}"${ro?' disabled':''}>${ic('check')}</button>`:''}
-    <input class="nt-title" data-nt-title data-key="${esc(key)}" value="${esc(n.title)}" placeholder="${isT?'Yapılacak':'Başlık'}"${ro?' readonly':''} maxlength="200" aria-label="Başlık"></div>`+ntEdBar(n,o)+(isT?ntTaskFields(n,ro):'')}
+    <input class="nt-title" data-nt-title data-key="${esc(key)}" value="${esc(n.title)}" placeholder="${isT?'Yapılacak':'Başlık'}"${ro?' readonly':''} maxlength="200" aria-label="Başlık"></div>`+ntEdBar(n,o)+(isT?ntTaskFields(n,ro):'')+nlBox(n,ro)}
   if(!ro)h+=ntTools(key);
-  h+=`<div class="nt-body${ro?' ro':''}"${ro?'':' contenteditable="true"'} data-nt-body data-key="${esc(key)}" data-ph="${esc(o.ph||'Yazmaya başlayın… “/” yazınca komut menüsü açılır.')}" spellcheck="true" role="textbox" aria-multiline="true" aria-label="Not içeriği">${n?ntSan(n.body):''}</div>`;
+  h+=`<div class="nt-body${ro?' ro':''}"${ro?'':' contenteditable="true"'} data-nt-body data-key="${esc(key)}" data-ph="${esc(o.ph||'Yazmaya başlayın… “/” komut menüsü, “@” müşteri / servis / satış bağlantısı.')}" spellcheck="true" role="textbox" aria-multiline="true" aria-label="Not içeriği">${n?ntSan(n.body):''}</div>`;
   if(n)h+=ntFilesHtml(n,ro);
+  if(n&&o.period)h+=nlBox(n,ro);
   h+=`<div class="nt-foot"><span data-nt-st="${esc(key)}">${n?'Son düzenleme '+esc(ntRel(n.updated_at))+(n.updated_by&&n.updated_by!==S.user.id?' · '+esc(pname(n.updated_by)):''):'Yazınca kendiliğinden kaydedilir.'}</span>${o.period&&n?`<div class="sp"></div>${ntFileBtns(n)}<button class="btn sm" data-a="nt-hist" data-id="${n.id}">${ic('clock','sm')}Geçmiş</button>`:''}</div></div>`;
   return h}
 function ntModalHtml(n){return `<div class="nt-mh"><span class="sub">${n.kind==='is'?'Yapılacak':'Not'}${n.due_date?' · '+esc(ntDayTxt(n.due_date)):''}</span><div class="sp"></div><button class="ib" data-a="close" aria-label="Kapat">${ic('x')}</button></div>${n.deleted_at?ntTrashEd(n):ntEd(n,{})}`}
@@ -7421,7 +7437,7 @@ function ntToList(b,type,chk){const sel=document.getSelection();let li=ntLi(b);
   const prev=blk.previousElementSibling;blk.replaceWith(L);if(prev&&prev.tagName===type&&!!prev.hasAttribute('data-chk')===!!chk){prev.appendChild(it);L.remove()}caret(it)}
 function ntBlock(b){let n=document.getSelection().anchorNode;while(n&&n!==b&&!(n.nodeType===1&&/^(P|DIV|H1|H2|H3|LI|BLOCKQUOTE|PRE)$/.test(n.tagName)))n=n.parentNode;return n&&n!==b?n:null}
 function ntLi(b){let n=document.getSelection().anchorNode;while(n&&n!==b){if(n.nodeType===1&&n.tagName==='LI')return n;n=n.parentNode}return null}
-const NT_SLASH=[['h2','Başlık'],['h3','Alt başlık'],['ul','Madde listesi'],['ol','Numaralı liste'],['chk','Yapılacak listesi'],['quote','Alıntı'],['hr','Ayırıcı çizgi'],['date','Bugünün tarihi'],['time','Şu anki saat']];
+const NT_SLASH=[['h2','Başlık'],['h3','Alt başlık'],['ul','Madde listesi'],['ol','Numaralı liste'],['chk','Yapılacak listesi'],['quote','Alıntı'],['hr','Ayırıcı çizgi'],['date','Bugünün tarihi'],['time','Şu anki saat'],['link','Kayıt bağla (@)']];
 function ntSlash(b){ntSlashClose();const sel=document.getSelection();if(!sel.rangeCount)return;const r=sel.getRangeAt(0).getBoundingClientRect(),br=b.getBoundingClientRect();
   const m=document.createElement('div');m.id='nt-slash';m.className='nt-slash';m.setAttribute('role','listbox');m.dataset.key=b.dataset.key;m.dataset.i='0';
   m.innerHTML=NT_SLASH.map(([k,t],i)=>`<button type="button" role="option" data-a="nt-slash" data-v="${k}" aria-selected="${i===0}">${esc(t)}</button>`).join('');
@@ -7429,6 +7445,7 @@ function ntSlash(b){ntSlashClose();const sel=document.getSelection();if(!sel.ran
 function ntSlashClose(){const m=document.getElementById('nt-slash');if(m)m.remove()}
 function ntSlashRun(k){const m=document.getElementById('nt-slash');if(!m)return;const key=m.dataset.key,b=ntBodyOf(key);ntSlashClose();if(!b)return;b.focus();
   document.execCommand('delete');   // "/" karakterini sil
+  if(k==='link'){if(NT().noLinks)return toast('Not bağlantıları için 074 SQL dosyasını çalıştırın',true);nlPick(nlKeyNid(key),'men',b,key,false);return}
   if(k==='date'){document.execCommand('insertText',false,ntLong(today()))}else if(k==='time'){document.execCommand('insertText',false,ntHM(Date.now()))}else ntExec(k,key);ntInput(b)}
 /* markdown kısayolları: "- " madde, "1. " numaralı, "[] " yapılacak, "# " başlık, "## " alt başlık, "> " alıntı */
 function ntMd(b){const sel=document.getSelection();if(!sel.isCollapsed)return;const nd=sel.anchorNode;if(!nd||nd.nodeType!==3)return;const blk=ntBlock(b)||b;
@@ -7560,6 +7577,181 @@ Object.assign(A,{
 document.addEventListener('input',e=>{const t=e.target;if(!t||!t.dataset||t.dataset.c!=='pmeq'||!S.pme)return;S.pme.q=t.value;
   const R=S.pme.R,q=t.value.trim().toLocaleLowerCase('tr'),w=document.getElementById('pme-res');if(!w)return;
   w.innerHTML=q.length<2?'':(S.d.accessories||[]).filter(a=>a.active!==false&&!R.items.some(i=>i.id===a.id)&&(a.name.toLocaleLowerCase('tr').includes(q)||String(a.barcode||'').includes(q))).slice(0,8).map(a=>`<button class="btn sm" style="margin:4px 4px 0 0" data-a="pm-item-add" data-id="${a.id}">${esc(a.name)}${isSvc(a)?' · hizmet':''}</button>`).join('')||'<span class="sub">Bulunamadı</span>'});
+/* ================= 074 · NOTLARIM ↔ CEPOS KAYIT BAĞLANTILARI =================
+   Not / yapılacak; müşteri, firma, satış, servis, sipariş, teklif, cihaz, aksesuar, personel, görev, alış, masraf, eksik, müşteri takibine bağlanır.
+   Notta: "Kayıt bağla" düğmesi, "@" ile metin içine bağlantı, metindeki servis no / satış no / telefon / IMEI için öneri.
+   Kayıtta: "Not" / "Notlar (n)" düğmesi → bağlı notlar, yeni not / yapılacak, var olan notu bağlama. */
+const NL_ORDER=['contacts','sales','service_orders','customer_orders','quotes','products','accessories','profiles','tasks','purchases','expenses','shortages','follow_ups'];
+const nlC=id=>(id&&S.d.contactMap&&S.d.contactMap.get(id))||null;
+const nlDay=ts=>ts?fmtDate(String(ts).slice(0,10)):'';
+const nlBy=(k,desc=true)=>(a,b)=>desc?String(b[k]||'').localeCompare(String(a[k]||'')):String(a[k]||'').localeCompare(String(b[k]||''));
+const nlJ=(...a)=>a.filter(x=>x!=null&&x!=='').join(' · ');
+const NL={
+  contacts:{t:'Müşteri / firma',ic:'users',tab:r=>r&&r.kind==='firma'?'firmalar':'musteriler',L:()=>(S.d.contacts||[]).filter(c=>c.active!==false).sort((a,b)=>String(a.name).localeCompare(String(b.name),'tr')),
+    lab:r=>r.name,sub:r=>nlJ(r.kind==='firma'?'Firma':'Müşteri',r.phone,r.person),q:r=>[r.name,r.phone,r.person,r.tax_no,r.email].join(' '),
+    go:r=>{S.ui.cq=r.name;S.ui.cch='';S.ui.cdebt=false;S.ui.ekstre=r.id}},
+  sales:{t:'Satış',ic:'bag',tab:()=>'satislar',L:()=>(S.d.sales||[]).slice().sort(nlBy('sold_at')),
+    lab:r=>'Satış '+r.sale_no,sub:r=>nlJ(nlDay(r.sold_at),(nlC(r.customer_id)||{}).name,money(r.total),r.status==='iptal'?'iptal':''),q:r=>[r.sale_no,(nlC(r.customer_id)||{}).name,(nlC(r.customer_id)||{}).phone].join(' '),
+    go:r=>{const a=(Date.now()-new Date(r.sold_at))/864e5;S.ui.salesRange=a<7?'7':a<30?'30':'all';S.ui.openSale=r.id}},
+  service_orders:{t:'Servis',ic:'wrench',tab:()=>'servis',L:()=>(S.d.service_orders||[]).slice().sort(nlBy('received_at')),
+    lab:r=>'Servis '+r.ticket_no,sub:r=>nlJ(r.device,(nlC(r.contact_id)||{}).name,typeof SVL!=='undefined'?SVL[r.status]:r.status),q:r=>[r.ticket_no,r.device,r.imei,(nlC(r.contact_id)||{}).name,(nlC(r.contact_id)||{}).phone].join(' '),
+    go:r=>{S.ui.svq=r.ticket_no;S.ui.svf='';S.ui.svk='';S.ui.svv='liste'}},
+  customer_orders:{t:'Sipariş',ic:'pkg',tab:()=>'siparis',L:()=>(S.d.customer_orders||[]).slice().sort(nlBy('created_at')),
+    lab:r=>(r.qty>1?r.qty+' x ':'')+(r.requested||'Sipariş'),sub:r=>nlJ(r.order_no,(nlC(r.contact_id)||{}).name,OSL[r.status]),q:r=>[r.order_no,r.requested,(nlC(r.contact_id)||{}).name,(nlC(r.contact_id)||{}).phone].join(' '),
+    go:()=>{S.ui.of='tum';S.ui.ok=''}},
+  quotes:{t:'Teklif',ic:'file',tab:()=>'teklif',L:()=>(S.d.quotes||[]).slice().sort(nlBy('created_at')),
+    lab:r=>'Teklif '+r.quote_no,sub:r=>nlJ(r.customer_name,money(Math.abs(r.total||0)),(QS.find(s=>s[0]===r.status)||[])[1]),q:r=>[r.quote_no,r.customer_name,r.customer_phone].join(' '),
+    go:()=>{S.ui.qf='tum';S.ui.qk=''}},
+  products:{t:'Cihaz',ic:'phone',tab:()=>'stok',L:()=>(S.d.products||[]).slice().sort(nlBy('buy_date')),
+    lab:r=>r.model,sub:r=>nlJ(r.imei,r.status==='stokta'?'Stokta':r.status==='satildi'?'Satıldı':r.status==='iade'?'Firmaya iade':r.status),q:r=>[r.model,r.imei,r.barcode].join(' '),
+    go:r=>{S.ui.q=r.imei||r.model;S.ui.fs='';S.ui.fo='';S.ui.fc='';S.ui.fx=''}},
+  accessories:{t:'Aksesuar',ic:'headphones',tab:()=>'aksesuar',L:()=>(S.d.accessories||[]).filter(a=>a.active!==false).sort((a,b)=>String(a.name).localeCompare(String(b.name),'tr')),
+    lab:r=>r.name,sub:r=>nlJ(r.barcode,r.is_service?'Hizmet':r.stock_qty!=null?r.stock_qty+' adet':''),q:r=>[r.name,r.barcode,r.sku,r.category].join(' '),
+    go:r=>{S.ui.aq=r.name;if(r.active===false)S.ui.ainact=true}},
+  profiles:{t:'Personel',ic:'users',tab:()=>'personel',L:()=>(S.d.profiles||[]).filter(p=>p.active!==false&&p.role!=='owner').sort((a,b)=>String(a.full_name).localeCompare(String(b.full_name),'tr')),
+    lab:r=>r.full_name,sub:r=>(typeof PC_ROLE!=='undefined'&&PC_ROLE[r.role])||'',q:r=>[r.full_name].join(' '),
+    can:r=>r.id===S.user.id||(typeof pcAll==='function'&&pcAll()),go:r=>{S.ui.pk=r.id;S.ui.pkt='genel';S.ui.pcm=monthStart(today())}},
+  tasks:{t:'Görev',ic:'check',tab:()=>'gorev',L:()=>(S.d.tasks||[]).slice().sort(nlBy('created_at')),
+    lab:r=>r.title,sub:r=>nlJ(TSL[r.status],r.assigned_to?pname(r.assigned_to):'',r.due_date?fmtDate(r.due_date):''),q:r=>[r.title,r.assigned_to?pname(r.assigned_to):''].join(' '),
+    go:()=>{S.ui.tf='tum';if(can('manage_tasks'))S.ui.tw='tum'}},
+  purchases:{t:'Alış',ic:'cart',tab:()=>'alislar',L:()=>(S.d.purchases||[]).slice().sort(nlBy('purchase_date')),
+    lab:r=>'Alış '+r.purchase_no,sub:r=>nlJ((nlC(r.supplier_id)||{}).name,fmtDate(r.purchase_date),money(r.total_try)),q:r=>[r.purchase_no,r.doc_no,(nlC(r.supplier_id)||{}).name].join(' '),
+    go:r=>{S.ui.puq=r.purchase_no;S.ui.pus='';S.ui.puc=r.status==='iptal';S.ui.put=today();if(r.purchase_date<addDays(today(),-30))S.ui.puf=r.purchase_date}},
+  expenses:{t:'Masraf',ic:'wallet',tab:()=>'masraf',L:()=>(S.d.expenses||[]).slice().sort(nlBy('created_at')),
+    lab:r=>exCat(r.category_id).name+' · '+r.expense_no,sub:r=>nlJ(r.description,money(r.amount),(nlC(r.vendor_id)||{}).name),q:r=>[r.expense_no,r.description,r.doc_no,exCat(r.category_id).name,(nlC(r.vendor_id)||{}).name].join(' '),
+    go:r=>{const d=exEff(r);if(d)S.ui.exm=monthStart(d);S.ui.exs='';S.ui.exc=''}},
+  shortages:{t:'Eksik',ic:'scan',tab:()=>'eksikler',L:()=>(S.d.shortages||[]).slice().sort(nlBy('created_at')),
+    lab:r=>r.name,sub:r=>nlJ(r.shortage_no,(SHS.find(s=>s[0]===r.status)||[])[1]),q:r=>[r.name,r.shortage_no,r.category].join(' '),
+    go:r=>{S.ui.shq=r.shortage_no||r.name;S.ui.shf='tum'}},
+  follow_ups:{t:'Müşteri takibi',ic:'phone',tab:()=>'siparis',L:()=>(S.d.follow_ups||[]).filter(x=>!x.done).sort(nlBy('due_date',false)),
+    lab:r=>r.note,sub:r=>nlJ((nlC(r.contact_id)||{}).name,fmtDate(r.due_date),r.done?'yapıldı':''),q:r=>[r.note,(nlC(r.contact_id)||{}).name,(nlC(r.contact_id)||{}).phone].join(' '),go:()=>{}}};
+const nlRec=(rt,id)=>{if(!S.d||!id)return null;if(rt==='profiles')return (S.d.profileMap&&S.d.profileMap.get(id))||(S.d.profiles||[]).find(x=>x.id===id)||null;return (S.d[rt]||[]).find(x=>x.id===id)||null};
+const nlTabOk=tab=>TABS.some(t=>t[0]===tab&&(!t[2]||can(t[2])));
+const nlLinksOf=nid=>NT().links.filter(l=>l.note_id===nid);
+/* kayda bağlı, görebildiğim (silinmemiş) notlar */
+function nlNotes(rt,id){const N=NT(),seen=new Set();return N.links.filter(l=>l.ref_table===rt&&l.ref_id===id).map(l=>ntGet(l.note_id)).filter(n=>n&&!n.deleted_at&&!seen.has(n.id)&&seen.add(n.id))
+  .sort((a,b)=>(a.kind==='is'&&!a.done?0:1)-(b.kind==='is'&&!b.done?0:1)||String(b.updated_at).localeCompare(String(a.updated_at)))}
+/* kayıt ekranına git: ilgili sekme açılır, kayıt aranır / açılır ve kısa süre vurgulanır */
+function ntGo(rt,id){const T=NL[rt];if(!T)return;const r=nlRec(rt,id);
+  if(!r){toast('Bu kayıt bulunamadı ya da görme yetkiniz yok',true);return}
+  const tab=T.tab(r);if(!nlTabOk(tab)||(T.can&&!T.can(r))){toast('Bu kaydın ekranını açma yetkiniz yok',true);return}
+  if(document.querySelector('#modal .modal'))closeModal();nlPickClose();
+  S.ui.ntHi=rt+':'+id;const after=()=>{try{T.go(r)}catch(e){}};
+  S.navAfter=after;if(location.hash.slice(1)===tab)route();else location.hash=tab;nlHiRun()}
+function nlHiRun(k){k=k||0;setTimeout(()=>{const h=S.ui.ntHi;if(!h)return;const b=document.querySelector(`[data-nl="${CSS.escape(h)}"]`);
+  if(!b){if(k<12)nlHiRun(k+1);else S.ui.ntHi='';return}S.ui.ntHi='';const it=b.closest('.item,.card')||b;
+  try{it.scrollIntoView({block:'center',behavior:'smooth'})}catch(e){it.scrollIntoView()}it.classList.add('nl-hi');setTimeout(()=>it.classList.remove('nl-hi'),2600)},k?150:60)}
+/* kayıt kartlarındaki düğme */
+function ntBtn(rt,id){const N=NT();if(!N.loaded&&!N.loading)ntLoad();if(N.missing||N.noLinks)return '';const c=nlNotes(rt,id),open=c.filter(n=>n.kind==='is'&&!n.done).length;
+  return `<button class="btn sm nl-btn${c.length?' has':''}" data-a="nt-rec" data-rt="${rt}" data-id="${id}" data-nl="${rt}:${id}" title="Bu kayda bağlı notlar ve yapılacaklar">${ic('note','sm')}${c.length?'Notlar ('+c.length+')':'Not'}${open?`<span class="nl-dot" aria-label="${open} açık yapılacak">${open}</span>`:''}</button>`}
+/* notun içindeki bağlantı kutusu */
+function nlChips(n,ro){const L=nlLinksOf(n.id),S2=ro?[]:nlSuggest(n);
+  return L.map(l=>{const T=NL[l.ref_table]||{t:'Kayıt',ic:'note'},ok=!!nlRec(l.ref_table,l.ref_id);
+    return `<span class="nl-chip${ok?'':' gone'}"><button type="button" class="nl-go" data-a="nt-lgo" data-rt="${l.ref_table}" data-id="${l.ref_id}" title="${esc(T.t+(l.sub?' · '+l.sub:'')+(ok?' · açmak için dokunun':' · kayıt bulunamadı ya da yetkiniz yok'))}">${ic(T.ic,'sm')}${String(l.label||'').startsWith(T.t)?'':`<small>${esc(T.t)}</small>`}<span>${esc(l.label||T.t)}</span></button>${ro?'':`<button type="button" class="nl-x" data-a="nt-ldel" data-id="${l.id}" aria-label="${esc((l.label||T.t)+' bağlantısını kaldır')}" title="Bağlantıyı kaldır">${ic('x','sm')}</button>`}</span>`}).join('')
+    +(ro?'':`<button type="button" class="btn sm nl-add" data-a="nt-lpick" data-id="${n.id}" title="Müşteri, servis, satış… bağla (metinde @ yazarak da bağlayabilirsiniz)">${ic('plus','sm')}Kayıt bağla</button>`)
+    +(S2.length?`<span class="nl-sug"><small>Öneri:</small>${S2.map(([rt,r])=>`<button type="button" class="nl-s" data-a="nt-lsug" data-nid="${n.id}" data-rt="${rt}" data-id="${r.id}" title="Metinde geçiyor · bağlamak için dokunun">${ic('plus','sm')}${esc(NL[rt].lab(r))}</button>`).join('')}</span>`:'')}
+function nlBox(n,ro){const N=NT();if(!n||N.noLinks)return '';if(ro&&!nlLinksOf(n.id).length)return '';
+  return `<div class="nl-box" data-nl-chips="${n.id}" data-ro="${ro?1:0}" aria-label="Bağlı kayıtlar">${nlChips(n,ro)}</div>`}
+function nlRefresh(nid){const n=ntGet(nid);document.querySelectorAll(`[data-nl-chips="${CSS.escape(nid)}"]`).forEach(b=>{if(n)b.innerHTML=nlChips(n,b.dataset.ro==='1')})}
+/* metinde geçen numaralar / telefon / IMEI → bağlantı önerisi */
+const NL_CODES=[['sales','sale_no'],['service_orders','ticket_no'],['quotes','quote_no'],['customer_orders','order_no'],['purchases','purchase_no'],['expenses','expense_no'],['shortages','shortage_no']];
+const nlCode=s=>{const m=String(s||'').toLocaleUpperCase('tr').match(/^([A-ZÇĞİÖŞÜ]{1,4})-0*(\d+)$/);return m?m[1]+'-'+m[2]:''};
+function nlSuggest(n){const txt=((n.title||'')+' '+ntPlain(n.body)).slice(0,20000);if(txt.length<4||!S.d)return [];
+  const have=new Set(nlLinksOf(n.id).map(l=>l.ref_table+':'+l.ref_id)),out=[],d=S.d,add=(rt,r)=>{if(r&&out.length<4&&!have.has(rt+':'+r.id)){have.add(rt+':'+r.id);out.push([rt,r])}};
+  const codes=new Set((txt.toLocaleUpperCase('tr').match(/\b[A-ZÇĞİÖŞÜ]{1,4}-\d{1,8}\b/g)||[]).map(nlCode));
+  if(codes.size)NL_CODES.forEach(([rt,k])=>(d[rt]||[]).forEach(r=>{if(r[k]&&codes.has(nlCode(r[k])))add(rt,r)}));
+  (txt.match(/\+?\d[\d\s().-]{8,18}\d/g)||[]).map(s=>s.replace(/\D/g,'')).forEach(s=>{
+    if(s.length===15){add('products',(d.products||[]).find(p=>p.imei===s));add('service_orders',(d.service_orders||[]).find(x=>x.imei===s&&x.status!=='teslim'&&x.status!=='iptal'))}
+    const ph=s.slice(-10);if(s.length>=10&&s.length<=12&&ph[0]==='5'){const c=(d.contacts||[]).find(c=>c.phone&&String(c.phone).replace(/\D/g,'').slice(-10)===ph);add('contacts',c)}});
+  return out}
+async function ntLinkAdd(nid,rt,id){const N=NT(),T=NL[rt],n=ntGet(nid);if(!T||!n)return false;if(N.links.some(l=>l.note_id===nid&&l.ref_table===rt&&l.ref_id===id))return true;
+  if(!ntCanEd(n)){toast('Bu notu düzenleme yetkiniz yok',true);return false}
+  const r=nlRec(rt,id),row={id:ntUid(),note_id:nid,ref_table:rt,ref_id:id,label:String(r?T.lab(r):'').slice(0,200),sub:String(r?T.sub(r):'').slice(0,200)||null};
+  N.links.push({...row,created_by:S.user.id,created_at:new Date().toISOString()});nlRefresh(nid);
+  const {error}=await sb.from('note_links').insert(row);
+  if(error){N.links=N.links.filter(l=>l.id!==row.id);nlRefresh(nid);toast(msg(error),true);return false}
+  nlAfterChange();return true}
+async function ntLinkDel(lid){const N=NT(),l=N.links.find(x=>x.id===lid);if(!l)return;N.links=N.links.filter(x=>x.id!==lid);nlRefresh(l.note_id);
+  const {error}=await sb.from('note_links').delete().eq('id',lid);if(error){N.links.push(l);nlRefresh(l.note_id);toast(msg(error),true);return}nlAfterChange()}
+/* kayıt kartları / not listesi sayıları: düzenleme sürerken sayfayı yeniden çizmeden, kapanınca güncellenir */
+function nlAfterChange(){clearTimeout(NT().nlT);NT().nlT=setTimeout(()=>{if(document.querySelector('#modal .modal')){S.rtDirty=true;return}if(document.activeElement&&document.activeElement.closest&&document.activeElement.closest('[data-nt-body],.nt-title'))return;rtRender()},400)}
+/* kayıt seçici (düğmeden ya da metinde @ ile) */
+function nlPickClose(){const m=document.getElementById('nl-pick');if(m)m.remove()}
+function nlPick(nid,mode,anchor,key,at){nlPickClose();const sel=document.getSelection();
+  S.nlp={nid,mode,key:key||nid,at:!!at,range:mode==='men'&&sel&&sel.rangeCount?sel.getRangeAt(0).cloneRange():null,ty:'',q:'',i:0};
+  const m=document.createElement('div');m.id='nl-pick';m.className='nl-pick';m.setAttribute('role','dialog');m.setAttribute('aria-label','Kayıt bağla');
+  const tys=NL_ORDER.filter(k=>nlTabOk(NL[k].tab(null))||k==='contacts'||k==='profiles').filter(k=>NL[k].L().length);
+  m.innerHTML=`<div class="nl-ph"><input class="in sm" data-c="nl-q" placeholder="Ara: ad, telefon, servis / satış no, IMEI…" aria-label="Bağlanacak kaydı arayın" autocomplete="off"><button type="button" class="ib sm" data-a="nl-close" aria-label="Kapat">${ic('x','sm')}</button></div>
+    <div class="nl-ty" role="group" aria-label="Kayıt türü">${[['','Tümü'],...tys.map(k=>[k,NL[k].t])].map(([k,t])=>`<button type="button" data-a="nl-ty" data-v="${k}" aria-pressed="${k===''}">${esc(t)}</button>`).join('')}</div><div class="nl-res" role="listbox" aria-label="Sonuçlar"></div>`;
+  document.body.appendChild(m);
+  let rc=null;try{rc=mode==='men'&&S.nlp.range?S.nlp.range.getBoundingClientRect():null}catch(e){}if(!rc||(!rc.left&&!rc.top))rc=anchor&&anchor.getBoundingClientRect?anchor.getBoundingClientRect():{left:20,bottom:80,top:60};
+  const w=Math.min(380,window.innerWidth-16),x=Math.max(8,Math.min(rc.left,window.innerWidth-w-8));let y=(rc.bottom||rc.top+24)+6;if(y+340>window.innerHeight)y=Math.max(8,(rc.top||y)-346);
+  m.style.width=w+'px';m.style.left=x+'px';m.style.top=y+'px';nlPickDraw();m.querySelector('input').focus()}
+function nlPickRes(){const P=S.nlp;if(!P)return [];const q=P.q.trim().toLocaleLowerCase('tr'),qd=q.replace(/[\s().-]/g,''),tok=q.split(/\s+/).filter(Boolean),N=NT();
+  const types=P.ty?[P.ty]:NL_ORDER,have=new Set(nlLinksOf(P.nid).map(l=>l.ref_table+':'+l.ref_id)),out=[];
+  if(!q){const seen=new Set();[...N.links].sort((a,b)=>String(b.created_at).localeCompare(String(a.created_at))).forEach(l=>{const k=l.ref_table+':'+l.ref_id;if(out.length>=8||seen.has(k)||have.has(k)||(P.ty&&l.ref_table!==P.ty))return;seen.add(k);const r=nlRec(l.ref_table,l.ref_id);if(r)out.push([l.ref_table,r,'son'])});
+    if(P.ty)NL[P.ty].L().slice(0,30).forEach(r=>{if(out.length<30&&!have.has(P.ty+':'+r.id)&&!out.some(o=>o[1].id===r.id))out.push([P.ty,r])});return out}
+  types.forEach(rt=>{const T=NL[rt];let n=0;for(const r of T.L()){if(n>=(P.ty?40:5))break;if(have.has(rt+':'+r.id))continue;const s=T.q(r).toLocaleLowerCase('tr');
+    if(tok.every(t=>s.includes(t))||(qd.length>=4&&/^\d+$/.test(qd)&&s.replace(/[\s().-]/g,'').includes(qd))){out.push([rt,r]);n++}}});return out}
+function nlPickDraw(){const P=S.nlp,m=document.getElementById('nl-pick');if(!P||!m)return;const R=nlPickRes();P.R=R;P.i=Math.min(P.i,Math.max(0,R.length-1));
+  m.querySelectorAll('[data-a="nl-ty"]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.v===P.ty)));
+  m.querySelector('.nl-res').innerHTML=R.map(([rt,r,s],i)=>{const T=NL[rt];return `<button type="button" role="option" class="nl-r" data-a="nl-pick" data-rt="${rt}" data-id="${r.id}" aria-selected="${i===P.i}">${ic(T.ic,'sm')}<span><b>${esc(T.lab(r))}</b><small>${esc(nlJ(T.t,T.sub(r),s?'son bağlanan':''))}</small></span></button>`}).join('')
+    ||`<div class="sub nl-none">${P.q.trim()?'Kayıt bulunamadı':'Aramak için yazın ya da bir tür seçin'}</div>`}
+async function nlPickDo(rt,id){const P=S.nlp;if(!P)return;nlPickClose();S.nlp=null;const r=nlRec(rt,id);if(!r)return;
+  let nid=P.nid;
+  if(P.mode==='men'){const b=ntBodyOf(P.key);if(b){b.focus();const s=document.getSelection();if(P.range){s.removeAllRanges();s.addRange(P.range)}
+      if(P.at){const nd=s.anchorNode,o=s.anchorOffset;if(nd&&nd.nodeType===3&&o>0&&nd.textContent[o-1]==='@')document.execCommand('delete')}
+      document.execCommand('insertHTML',false,`<a href="#ref/${rt}/${id}">@${esc(NL[rt].lab(r))}</a>&nbsp;`);ntInput(b)}
+    if(!nid&&/^p:/.test(P.key)){const [,per,date]=P.key.split(':');for(let k=0;k<12&&!nid;k++){await new Promise(z=>setTimeout(z,500));const n=ntPeriod(per,date);if(n&&!NT().dirty.has(P.key)&&!NT().timers.has(P.key))nid=n.id}}}
+  if(nid)await ntLinkAdd(nid,rt,id)}
+const nlKeyNid=key=>{if(!key)return '';if(/^p:/.test(key)){const [,per,date]=key.split(':'),n=ntPeriod(per,date);return n?n.id:''}return ntGet(key)?key:''};
+/* kayıttan: bağlı notlar penceresi */
+function ntRecModal(rt,id){const T=NL[rt],r=nlRec(rt,id),N=NT();if(!T)return;S.ntrec={rt,id};
+  if(!N.loaded){modal(`<h2>Notlar</h2><div class="empty">Notlar yükleniyor…</div>`);ntLoad().then(()=>{if(S.ntrec&&S.ntrec.rt===rt&&S.ntrec.id===id)ntRecModal(rt,id)});return}
+  if(N.missing||N.noLinks){modal(`<h2>Notlar</h2><p class="sub">Not bağlantıları için 074 SQL dosyasını Supabase'de çalıştırın.</p><div class="actions"><button class="btn" data-a="close">Kapat</button></div>`);return}
+  const L=nlNotes(rt,id),lab=r?T.lab(r):((N.links.find(l=>l.ref_table===rt&&l.ref_id===id)||{}).label||T.t);
+  const row=n=>{const sn=ntPlain(n.body).slice(0,120),od=n.kind==='is'&&!n.done&&n.due_date&&n.due_date<today();
+    return `<button type="button" class="nl-nr${n.kind==='is'&&n.done?' done':''}" data-a="nt-open" data-id="${n.id}">${n.kind==='is'?`<span class="nt-chk mini${n.done?' on':''}">${ic('check','sm')}</span>`:ic('note','sm')}<span><b>${esc(ntTitle(n))}</b>${sn&&sn!==ntTitle(n)?`<small>${esc(sn)}</small>`:''}<small>${esc(nlJ(n.kind==='is'?(n.done?'Tamamlandı':'Yapılacak'):'Not',n.due_date?ntDayTxt(n.due_date)+(n.due_time?' '+n.due_time.slice(0,5):''):'',ntMine(n)?'':'Paylaşan: '+pname(n.owner_id),'Düzenleme '+ntRel(n.updated_at)))}</small>${od?'<small class="neg">Gecikmiş</small>':''}</span></button>`};
+  modal(`<div class="nt-mh"><h2 style="margin:0">${ic(T.ic)} ${esc(lab)}</h2><div class="sp"></div><button class="ib" data-a="close" aria-label="Kapat">${ic('x')}</button></div>
+    <p class="sub" style="margin-top:2px">${esc(nlJ(T.t,r?T.sub(r):''))} · bağlı notlar yalnız size ve notu paylaştığınız kişilere görünür.</p>
+    <div class="row" style="gap:6px;flex-wrap:wrap"><button class="btn pri" data-a="nt-recnew" data-k="not">${ic('plus','sm')} Yeni not</button><button class="btn" data-a="nt-recnew" data-k="is">${ic('check','sm')} Yeni yapılacak</button></div>
+    <div class="nl-nl">${L.map(row).join('')||'<div class="empty" style="padding:14px">Bu kayda bağlı not yok.</div>'}</div>
+    <label class="f" style="margin-top:10px">Var olan notu bağla<input class="in" data-c="nt-rlq" placeholder="Not başlığı ya da içeriği…" autocomplete="off"></label><div class="nl-nl" id="nt-rlres"></div>`)}
+function ntRecSearch(q){const w=document.getElementById('nt-rlres'),R=S.ntrec;if(!w||!R)return;const ql=q.trim().toLocaleLowerCase('tr');if(ql.length<2){w.innerHTML='';return}
+  const have=new Set(nlNotes(R.rt,R.id).map(n=>n.id));
+  const L=NT().notes.filter(n=>ntLive(n)&&ntCanEd(n)&&!have.has(n.id)&&(ntTitle(n)+' '+ntPlain(n.body)).toLocaleLowerCase('tr').includes(ql)).sort((a,b)=>String(b.updated_at).localeCompare(String(a.updated_at))).slice(0,8);
+  w.innerHTML=L.map(n=>`<button type="button" class="nl-nr" data-a="nt-reclink" data-id="${n.id}">${ic(n.kind==='is'?'check':'note','sm')}<span><b>${esc(ntTitle(n))}</b><small>${esc(n.period?'Günlük / dönem sayfası':n.kind==='is'?'Yapılacak':'Not')} · bağlamak için dokunun</small></span></button>`).join('')||'<div class="sub">Not bulunamadı</div>'}
+Object.assign(A,{
+  'nt-rec'(t){ntRecModal(t.dataset.rt,t.dataset.id)},
+  async 'nt-recnew'(t){const R=S.ntrec;if(!R)return;const k=t.dataset.k,f={kind:k};if(k==='is')f.due_date=today();
+    const n=await ntCreate(f,{quiet:true});if(!n)return;await ntLinkAdd(n.id,R.rt,R.id);ntOpenModal(n.id,true)},
+  async 'nt-reclink'(t){const R=S.ntrec;if(!R)return;if(await ntLinkAdd(t.dataset.id,R.rt,R.id)){toast('Not bağlandı');ntRecModal(R.rt,R.id)}},
+  'nt-lgo'(t){ntGo(t.dataset.rt,t.dataset.id)},
+  'nt-ldel'(t){ntLinkDel(t.dataset.id)},
+  'nt-lsug'(t){ntLinkAdd(t.dataset.nid,t.dataset.rt,t.dataset.id)},
+  'nt-lpick'(t){nlPick(t.dataset.id,'chip',t)},
+  'nl-ty'(t){if(!S.nlp)return;S.nlp.ty=t.dataset.v;S.nlp.i=0;nlPickDraw();const i=document.querySelector('#nl-pick input');if(i)i.focus()},
+  'nl-pick'(t){nlPickDo(t.dataset.rt,t.dataset.id)},
+  'nl-close'(){const P=S.nlp;nlPickClose();S.nlp=null;const b=P&&ntBodyOf(P.key);if(b&&P.mode==='men')b.focus()},
+});
+document.addEventListener('input',e=>{const t=e.target;if(!t||!t.dataset)return;
+  if(t.dataset.c==='nl-q'&&S.nlp){S.nlp.q=t.value;S.nlp.i=0;nlPickDraw();return}
+  if(t.dataset.c==='nt-rlq'){ntRecSearch(t.value);return}
+  const b=t.closest&&t.closest('[data-nt-body]');if(b&&e.inputType==='insertText'&&e.data==='@'&&!NT().noLinks){const s=document.getSelection(),nd=s.anchorNode,o=s.anchorOffset;
+    const prev=nd&&nd.nodeType===3?nd.textContent.slice(0,o-1):'';if(!prev||/[\s\u00a0(]$/.test(prev))nlPick(nlKeyNid(b.dataset.key),'men',b,b.dataset.key,true)}});
+document.addEventListener('keydown',e=>{const t=e.target;if(!t||!t.dataset||t.dataset.c!=='nl-q'||!S.nlp)return;const P=S.nlp,R=P.R||[];
+  if(e.key==='ArrowDown'||e.key==='ArrowUp'){e.preventDefault();if(!R.length)return;P.i=(P.i+(e.key==='ArrowDown'?1:-1)+R.length)%R.length;
+    document.querySelectorAll('#nl-pick .nl-r').forEach((b,k)=>{b.setAttribute('aria-selected',String(k===P.i));if(k===P.i)b.scrollIntoView({block:'nearest'})});return}
+  if(e.key==='Enter'){e.preventDefault();const x=R[P.i];if(x)nlPickDo(x[0],x[1].id);return}
+  if(e.key==='Escape'){e.preventDefault();e.stopPropagation();A['nl-close']()}},true);
+document.addEventListener('mousedown',e=>{const m=document.getElementById('nl-pick');if(!m)return;if(m.contains(e.target)){if(e.target.closest('button'))e.preventDefault();return}if(e.target.closest&&e.target.closest('[data-a="nt-lpick"]'))return;nlPickClose();S.nlp=null});
+/* not metnindeki @bağlantı: tıklayınca kaydı açar */
+document.addEventListener('click',e=>{const a=e.target&&e.target.closest&&e.target.closest('a[href^="#ref/"]');if(!a)return;e.preventDefault();e.stopPropagation();const p=a.getAttribute('href').split('/');ntGo(p[1],p[2])},true);
+/* yazmayı bitirince öneriler tazelensin */
+document.addEventListener('focusout',e=>{const b=e.target&&e.target.closest&&e.target.closest('[data-nt-body],[data-nt-title]');if(!b)return;const nid=nlKeyNid(b.dataset.key);if(nid)setTimeout(()=>nlRefresh(nid),300)});
+
+function nlMeta(n,compact){const L=NT().links.filter(l=>l.note_id===n.id);if(!L.length)return '';const T=NL[L[0].ref_table]||{ic:'note'};
+  return `<span class="nl-m" title="${esc(L.map(l=>l.label).join(', '))}">${ic(T.ic,'sm')}${compact?(L.length>1?L.length:''):esc(String(L[0].label).slice(0,28))+(L.length>1?' +'+(L.length-1):'')}</span>`}
 document.addEventListener('mousedown',e=>{if(e.target.closest&&e.target.closest('[data-a="nt-cmd"],[data-a="nt-slash"],[data-a="nt-line2task"]'))e.preventDefault()});
 document.addEventListener('input',e=>{const t=e.target;if(!t||!t.closest)return;
   const b=t.closest('[data-nt-body]');if(b){if(e.inputType==='insertParagraph'){const li=ntLi(b);if(li)li.removeAttribute('data-on')}ntInput(b);if(e.inputType==='insertText'&&e.data===' ')ntMd(b);
@@ -8048,7 +8240,7 @@ function pcCard(sid){const p=S.d.profileMap.get(sid);if(!p)return '<div class="c
   const body={genel:pcGenel,kimlik:pcKimlik,istihdam:pcIstihdam,ucret:pcUcret,hakedis:pcHakedis,avans:pcAvans,izin:pcIzin,bordro:pcBordro,prim:pcPrim,takip:pcTakip,belge:pcBelge,hesap:pcHesap,gecmis:pcGecmis}[t](sid);
   return `<div class="row">${pcAll()?`<button class="btn" data-a="pc-back">‹ Tüm çalışanlar</button>`:''}<div class="pc-av">${esc((p.full_name||'?').split(' ').map(x=>x[0]).slice(0,2).join('').toLocaleUpperCase('tr'))}</div>
    <div style="flex:1;min-width:200px"><h1 style="margin:0">${esc(p.full_name)}${self?' <span class="sub">(siz)</span>':''}</h1><div class="sub">${esc(PC_ROLE[p.role]||'')}${sp.title?' · '+esc(sp.title):''}${ov&&ov.tenure_m!=null?' · kıdem '+pcTen(ov.tenure_m):''}${p.active?'':' · <span class="pill bad">Pasif</span>'}${sp.phone?` · <a href="tel:${esc(sp.phone)}">${esc(sp.phone)}</a>`:''}</div></div>
-   <div class="row" style="gap:6px;flex-wrap:wrap"><button class="btn" data-a="lv-new" data-id="${sid}">${ic('cal','sm')} İzin ${self?'talebi':'gir'}</button>${self||can('manage_entitlements')?`<button class="btn" data-a="av-new" data-id="${sid}">${ic('wallet','sm')} Avans ${self?'talebi':'ver'}</button><button class="btn" data-a="st-open" data-id="${sid}">${ic('receipt','sm')} Ekstre</button>`:''}</div></div>
+   <div class="row" style="gap:6px;flex-wrap:wrap">${ntBtn('profiles',sid)}<button class="btn" data-a="lv-new" data-id="${sid}">${ic('cal','sm')} İzin ${self?'talebi':'gir'}</button>${self||can('manage_entitlements')?`<button class="btn" data-a="av-new" data-id="${sid}">${ic('wallet','sm')} Avans ${self?'talebi':'ver'}</button><button class="btn" data-a="st-open" data-id="${sid}">${ic('receipt','sm')} Ekstre</button>`:''}</div></div>
    <div class="seg pc-tabs" role="tablist" style="margin:10px 0 12px">${T.map(([k,l])=>`<button role="tab" data-a="pc-tab" data-k="${k}" aria-pressed="${t===k}">${l}</button>`).join('')}</div>${body}`}
 const pcEditBtn=(sid,sec)=>`<button class="btn sm" data-a="pc-edit" data-id="${sid}" data-k="${sec}">${ic('pencil','sm')} Düzenle</button>`;
 function pcGenel(sid){const ov=pcOv(sid)||{},lb=ov.leave,m=monthStart(today()),mg=can('manage_entitlements')||pcSelf(sid),sm=hkSum(hkEnt(sid,m)),sp=pcSP(sid);
