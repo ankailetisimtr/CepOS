@@ -3336,8 +3336,16 @@ function rcText(id){const D=rcData(id);if(!D)return '';const {s,items,acc,pays,c
   return [`${sh.name} · Satış fişi ${s.sale_no}`,fmtDate(s.sold_at),cust?'Sayın '+cust.name:'',''].filter((x,i)=>x||i>2).join('\n')+'\n'
    +[...items.map(({p,i})=>`• ${p.model||'Cihaz'}${p.imei?' (IMEI '+p.imei+')':''} — ${money(Number(i.price)-Number(i.discount))}`),...acc.map(({a,l})=>`• ${a.name||'Aksesuar'} x${l.qty} — ${money(accLineNet(l))}`)].join('\n')
    +`\nToplam: ${money(s.total)}\n`+pays.map(p=>`${payL(p.method)}: ${money(p.amount)}`).join(' · ')+`\n\n${sh.note}\n${sh.phone}`}
-function rcPrint(w){const st=document.createElement('style');st.id='rcstyle';st.textContent=w==='a4'?'@page{size:A4;margin:12mm}':'@page{size:80mm auto;margin:2mm}';document.head.appendChild(st);
-  const done=()=>{st.remove();window.removeEventListener('afterprint',done)};window.addEventListener('afterprint',done);window.print()}
+/* Belge yazdırma: pencere içindeki .qdoc sayfa köküne kopyalanır, geri kalan her şey gizlenir.
+   (Kaydırılan sabit pencere içinden yazdırmak Safari ve bazı tarayıcılarda boş sayfa veriyordu.) */
+function docPrint(pageCss){const src=[...document.querySelectorAll('#modal .qdoc, .qdoc')].find(e=>e.offsetParent!==null||e.getClientRects().length)||document.querySelector('.qdoc');
+  if(!src){window.print();return}
+  let sh=document.getElementById('prsheet');if(sh)sh.remove();sh=document.createElement('div');sh.id='prsheet';sh.appendChild(src.cloneNode(true));document.body.appendChild(sh);
+  const st=document.createElement('style');st.id='rcstyle';st.textContent=(pageCss||'')+'#prsheet{display:none}@media print{body.pr-on>*:not(#prsheet){display:none!important}body.pr-on{background:#fff!important;padding:0!important;margin:0!important}body.pr-on #prsheet{display:block!important}body.pr-on #prsheet .qdoc{position:static!important;visibility:visible!important;border:0!important;box-shadow:none!important;margin:0 auto!important}body.pr-on #prsheet *{visibility:visible!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}body.pr-on #prsheet .no-print{display:none!important}}';
+  document.head.appendChild(st);document.body.classList.add('pr-on');
+  let ended=false;const done=()=>{if(ended)return;ended=true;st.remove();sh.remove();document.body.classList.remove('pr-on');window.removeEventListener('afterprint',done)};
+  window.addEventListener('afterprint',done);setTimeout(()=>window.print(),60)}
+function rcPrint(w){docPrint(w==='a4'?'@page{size:A4;margin:12mm}':'@page{size:80mm auto;margin:2mm}')}
 function refundModal(itemId){
   const i=S.d.sale_items.find(x=>x.id===itemId),p=S.d.productMap.get(i.product_id)||{},net=Number(i.price)-Number(i.discount);
   modal(`<h2>İade al · ${esc(p.model)}</h2><div class="form"><label class="f">İade edilecek tutar (₺)<input class="in" id="r-amt" type="number" min="0" max="${net}" step="0.01" inputmode="decimal" value="${net}"></label>
@@ -7131,7 +7139,7 @@ const A={
         toast(m,true);t.disabled=false;t.textContent='E-posta gönder';delete t.dataset.armed;return}
       toast('Teklif '+q.customer_email+' adresine gönderildi'+(r.data&&r.data.warn?' · '+r.data.warn:''));await reload()}
     catch(e){toast(msg(e),true);t.disabled=false;t.textContent='E-posta gönder';delete t.dataset.armed}},
-  'q-preview'(t){qPreview(t.dataset.id)},'q-print'(){window.print()},
+  'q-preview'(t){qPreview(t.dataset.id)},'q-print'(){docPrint('')},
   async 'q-share'(t){const q=S.d.quotes.find(x=>x.id===t.dataset.id);
     if(q&&q.status==='taslak'){const r=await sb.from('quotes').update({status:'gonderildi',sent_at:new Date().toISOString(),sent_via:t.dataset.via}).eq('id',q.id);if(!r.error)setTimeout(reload,600)}},
   'q-tosale'(t){const q=S.d.quotes.find(x=>x.id===t.dataset.id);let n=0,miss=0;
