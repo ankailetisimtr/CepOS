@@ -304,6 +304,14 @@ svg.chart text{fill:var(--muted);font-size:11px;font-family:var(--font)}svg.char
 .qdoc{background:#fff;color:#111;padding:18px;border-radius:6px;border:1px solid var(--line)}.qdoc th,.qdoc td{color:#111;border-color:#ddd}
 button.fx{font-variant-numeric:tabular-nums;font-weight:600;white-space:nowrap}button.fx.stale{color:var(--warn,#b45309);border-style:dashed}
 .modal.wide{max-width:1000px}
+.pc-av{width:46px;height:46px;border-radius:50%;background:var(--accent);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:17px;margin:0 10px;flex:none}
+.pc-tabs{flex-wrap:nowrap}.pc-tabs button{white-space:nowrap}
+.pc-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:8px 18px;margin-top:6px}.pc-kv{display:flex;flex-direction:column;gap:2px;min-width:0}.pc-kv>span{font-size:12px;color:var(--muted)}.pc-kv>b{font-weight:600;overflow-wrap:anywhere}
+.pc-inst{display:flex;flex-wrap:wrap;gap:4px;margin-top:6px}
+.pc-sh{display:flex;flex-wrap:wrap;gap:6px}.pc-shd{border:1px solid var(--line);border-radius:6px;padding:5px 8px;min-width:78px;display:flex;flex-direction:column;font-size:12px}.pc-shd b{font-size:13px}.pc-shd.now{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent)}.pc-shd.izinli{background:color-mix(in srgb,var(--warn,#d89614) 14%,transparent)}.pc-shd.iptal{opacity:.55}
+.lv-cal{font-size:12px}.lv-cal th,.lv-cal td{padding:3px 2px;text-align:center;min-width:20px}.lv-cal th.we{color:var(--muted)}
+.lvd{display:inline-block;width:12px;height:12px;border-radius:3px;background:var(--accent);vertical-align:middle}.lvd.u{background:var(--pink)}.lvd.p{background:transparent;border:2px dashed var(--accent)}
+.pr-t td,.pr-t th{white-space:nowrap}
 .pline{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:8px;align-items:end;padding:10px 0;border-bottom:1px solid var(--line)}
 .pline .pm{grid-column:span 2}.pline .pv{align-self:center}
 @media (max-width:560px){.pline .pm{grid-column:1/-1}}
@@ -665,7 +673,7 @@ const TYPE_LABEL={hediye_ceki:'Hediye çeki satışı / iadesi',satis:'Satış',
   alis_borc:'Veresiye alış',alis_odeme:'Alış ödemesi',kur_farki:'Kur farkı',odeme:'Ödeme',sermaye_girisi:'Sermaye girişi',sermaye_iadesi:'Sermaye iadesi',hakedis:'Hakediş',hakedis_iptal:'Hakediş iptali',hakedis_odeme:'Hakediş ödemesi',alis_iade:'Firma iadesi',iade_tahsilat:'İade bedeli geri alındı',cari_iade:'Firma iade tahsilatı',firma_iade:'Firmaya iade'};
 const ROLES=[['owner','İşletme sahibi'],['manager','Mağaza müdürü'],['staff','Personel']];
 const MON=['Oca','Şub','Mar','Nis','May','Haz','Tem','Ağu','Eyl','Eki','Kas','Ara'];
-const TABS=[['panel','Genel Bakış',null],['notlar','Notlarım',null],['satis','Satış','make_sale'],['stok','Cihazlar',null],['aksesuar','Aksesuarlar',null],['sayim','Stok Sayım','stock_count'],['sorgu','Sorgulamalar',null],['alislar','Alışlar','make_purchase'],['satislar','Satışlar',null],['iadeler','İade&Değişim','process_refund'],['kampanya','Kampanyalar','view_loyalty|warranty_use|view_warranty|view_protection|manage_protection|view_multibuy|manage_multibuy|gift_card_sell|view_gift_cards|manage_gift_cards'],['fireler','Fireler','record_waste'],['servis','Teknik Servis','manage_service'],['siparis','Siparişler','manage_orders'],['eksikler','Eksikler','manage_shortages'],['teklif','Teklifler','manage_quotes'],['gorev','Görevler',null],['vardiya','Vardiya',null],['hedef','Hedefler',null],['hakedis','Hakedişler',null],['primler','Primler','manage_commissions'],['egitim','Eğitimler',null],['kasa','Kasa','view_cash'],['odemeler','Ödemeler','view_payments'],['satisrapor','Satış Raporu','view_all_sales'],['sermaye','Sermaye Raporu','view_cost'],['kazancrapor','Kazanç Raporu','view_payments'],['masraf','Masraflar','manage_expenses'],['musteriler','Müşteriler',null],['firmalar','Firmalar',null],['konsinye','Konsinye','view_consignment'],['yonetim','Yönetim','manage_users']];
+const TABS=[['panel','Genel Bakış',null],['notlar','Notlarım',null],['satis','Satış','make_sale'],['stok','Cihazlar',null],['aksesuar','Aksesuarlar',null],['sayim','Stok Sayım','stock_count'],['sorgu','Sorgulamalar',null],['alislar','Alışlar','make_purchase'],['satislar','Satışlar',null],['iadeler','İade&Değişim','process_refund'],['kampanya','Kampanyalar','view_loyalty|warranty_use|view_warranty|view_protection|manage_protection|view_multibuy|manage_multibuy|gift_card_sell|view_gift_cards|manage_gift_cards'],['fireler','Fireler','record_waste'],['servis','Teknik Servis','manage_service'],['siparis','Siparişler','manage_orders'],['eksikler','Eksikler','manage_shortages'],['teklif','Teklifler','manage_quotes'],['personel','Personeller',null],['gorev','Görevler',null],['vardiya','Vardiya',null],['hedef','Hedefler',null],['hakedis','Hakedişler',null],['primler','Primler','manage_commissions'],['egitim','Eğitimler',null],['kasa','Kasa','view_cash'],['odemeler','Ödemeler','view_payments'],['satisrapor','Satış Raporu','view_all_sales'],['sermaye','Sermaye Raporu','view_cost'],['kazancrapor','Kazanç Raporu','view_payments'],['masraf','Masraflar','manage_expenses'],['musteriler','Müşteriler',null],['firmalar','Firmalar',null],['konsinye','Konsinye','view_consignment'],['yonetim','Yönetim','manage_users']];
 
 /* ================= İKONLAR (ince çizgili, 24x24) ================= */
 const IC={
@@ -723,9 +731,9 @@ mobile_bell:'<path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/>'};
 const ic=(n,c)=>`<svg class="ic${c?' '+c:''}" viewBox="0 0 24 24" aria-hidden="true">${IC[n]||''}</svg>`;
 /* ☰ menü: gruplar ve ikonlar (tüm sekmeler burada; "Satış" ekranı Satışlar'daki "Satış yap" ve paneldeki "Yeni satış" ile açılır) */
 const MENU=[[null,['panel','notlar']],['Mağaza',['satislar','stok','aksesuar','musteriler','firmalar','alislar']],['Operasyon',['servis','siparis','teklif','kampanya','eksikler','iadeler','fireler','sayim','sorgu']],
-  ['Personel',['gorev','vardiya','hedef','hakedis','primler','egitim']],['Finans',['kasa','odemeler','masraf','konsinye']],['Raporlar',['satisrapor','sermaye','kazancrapor']],['Yönetim',['yonetim']]];
+  ['Personel',['personel','gorev','vardiya','hedef','hakedis','primler','egitim']],['Finans',['kasa','odemeler','masraf','konsinye']],['Raporlar',['satisrapor','sermaye','kazancrapor']],['Yönetim',['yonetim']]];
 const TAB_IC={kampanya:'star',panel:'grid',notlar:'notebook',satislar:'bag',satis:'bag',stok:'phone',aksesuar:'headphones',musteriler:'users',firmalar:'building',alislar:'truck',servis:'wrench',siparis:'pkg',teklif:'file',eksikler:'clip',iadeler:'undo',fireler:'flame',sayim:'scan',sorgu:'shield',
-  gorev:'check',vardiya:'cal',hedef:'target',hakedis:'note',primler:'award',egitim:'book',kasa:'wallet',odemeler:'card',masraf:'receipt',konsinye:'hand',satisrapor:'bars',sermaye:'pie',kazancrapor:'trend',yonetim:'sliders'};
+  personel:'users',gorev:'check',vardiya:'cal',hedef:'target',hakedis:'note',primler:'award',egitim:'book',kasa:'wallet',odemeler:'card',masraf:'receipt',konsinye:'hand',satisrapor:'bars',sermaye:'pie',kazancrapor:'trend',yonetim:'sliders'};
 
 /* ================= YARDIMCILAR ================= */
 const pad=n=>String(n).padStart(2,'0');
@@ -757,7 +765,7 @@ const can=p=>!!S.me&&(S.me.role==='owner'||String(p).split('|').some(x=>S.perms.
 const isOwner=()=>!!S.me&&S.me.role==='owner';
 const by=(arr)=>new Map(arr.map(x=>[x.id,x]));
 
-const NOID=new Set(['pos_bank_rates','training_progress','training_path_items','training_assignments','notification_reads','notification_state','price_deductions','cash_accounts','app_settings','accessory_costs','sale_accessory_costs','fx_rates','staff_settings','role_permissions','product_costs','sale_item_costs']);
+const NOID=new Set(['staff_profiles','staff_identity','leave_types','payroll_runs','prim_periods','staff_pay_profiles','warranty_types','pos_bank_rates','training_progress','training_path_items','training_assignments','notification_reads','notification_state','price_deductions','cash_accounts','app_settings','accessory_costs','sale_accessory_costs','fx_rates','staff_settings','role_permissions','product_costs','sale_item_costs']);
 async function all(table,order,asc){
   let out=[],from=0;
   for(;;){
@@ -769,9 +777,9 @@ async function all(table,order,asc){
     out=out.concat(data||[]);if(!data||data.length<1000)break;from+=1000}
   return out}
 /* uygulamanın yüklediği tablolar ve sıralamaları (canlı güncelleme de bunları kullanır) */
-const LOAD_NAMES=['prim_plans','prim_adjustments','gift_cards','gift_card_moves','gift_card_lots','m3_sales','protection_packages','protection_slots','protection_slot_items','protection_sales','warranty_packages','warranty_types','warranty_materials','campaigns','loyalty_items','pos_groups','pos_group_items','pos_banks','pos_bank_rates','trainings','training_progress','training_questions','training_paths','training_path_items','training_assignments','notification_reads','notification_state','price_refs','price_deductions','device_inspections','term_debts','term_debt_payments','work_schedules','shift_changes','owner_closings','entitlements','staff_pay_profiles','exchanges','service_costs','shortages','accessory_categories','accessory_families','expense_categories','expense_templates','expenses','cash_accounts','app_settings','day_closings','day_closing_lines','fx_rates','purchases','purchase_lines','profiles','staff_settings','role_permissions','contacts','products','product_costs','sales','sale_items','sale_payments','sale_trade_ins','sale_item_costs','commissions','sale_returns','cash_entries','party_entries','consignment_agreements','consignment_rates','notifications','service_orders','service_events','customer_orders','follow_ups','quotes','quote_items','attachments','shifts','time_clock','tasks','push_subscriptions','accessories','accessory_costs','accessory_moves','sale_accessory_items','sale_accessory_costs','sale_accessory_returns'];
+const LOAD_NAMES=['staff_profiles','staff_identity','staff_docs','leave_types','leave_requests','advance_requests','payroll_runs','prim_periods','prim_corrections','prim_plans','prim_adjustments','gift_cards','gift_card_moves','gift_card_lots','m3_sales','protection_packages','protection_slots','protection_slot_items','protection_sales','warranty_packages','warranty_types','warranty_materials','campaigns','loyalty_items','pos_groups','pos_group_items','pos_banks','pos_bank_rates','trainings','training_progress','training_questions','training_paths','training_path_items','training_assignments','notification_reads','notification_state','price_refs','price_deductions','device_inspections','term_debts','term_debt_payments','work_schedules','shift_changes','owner_closings','entitlements','staff_pay_profiles','exchanges','service_costs','shortages','accessory_categories','accessory_families','expense_categories','expense_templates','expenses','cash_accounts','app_settings','day_closings','day_closing_lines','fx_rates','purchases','purchase_lines','profiles','staff_settings','role_permissions','contacts','products','product_costs','sales','sale_items','sale_payments','sale_trade_ins','sale_item_costs','commissions','sale_returns','cash_entries','party_entries','consignment_agreements','consignment_rates','notifications','service_orders','service_events','customer_orders','follow_ups','quotes','quote_items','attachments','shifts','time_clock','tasks','push_subscriptions','accessories','accessory_costs','accessory_moves','sale_accessory_items','sale_accessory_costs','sale_accessory_returns'];
 const LOAD_ORDERS={device_inspections:'created_at',term_debts:'created_at',term_debt_payments:'created_at',work_schedules:'valid_from',shift_changes:'created_at',owner_closings:'created_at',entitlements:'created_at',staff_pay_profiles:'updated_at',exchanges:'created_at',service_costs:'created_at',shortages:'created_at',accessory_categories:'sort',accessory_families:'created_at',expenses:'created_at',expense_templates:'created_at',expense_categories:'sort',day_closings:'closed_at',cash_accounts:'sort',sales:'sold_at',cash_entries:'created_at',notifications:'created_at',party_entries:'created_at',service_orders:'received_at',service_events:'at',quotes:'created_at',attachments:'created_at',time_clock:'clock_in',tasks:'created_at',accessory_moves:'created_at',purchases:'created_at',fx_rates:'fetched_at'};
-const dropCaches=()=>{S.pm=undefined;S.pml=undefined;S.wd=null;S.prm=undefined;S.hp=undefined;S.ops=undefined;S.svp=undefined;S.work=undefined;S.team=null;S.tp=null};
+const dropCaches=()=>{S.ov=undefined;S.lbx={};S.ph={};S.pay={};S.pm=undefined;S.pml=undefined;S.wd=null;S.prm=undefined;S.hp=undefined;S.ops=undefined;S.svp=undefined;S.work=undefined;S.team=null;S.tp=null};
 async function loadAll(){
   dropCaches();
   const res=await Promise.all(LOAD_NAMES.map(n=>all(n,LOAD_ORDERS[n],false).catch(e=>{console.warn(n,e);return []})));
@@ -805,7 +813,7 @@ function refreshSoon(){clearTimeout(refreshT);refreshT=setTimeout(()=>rtFull(),9
 const LIVE={ok:false,ready:false,was:false,q:new Map(),t:null,lastSync:0,hiddenAt:0,busy:false,ping:null,wait:new Map(),stats:{fast:0,full:0}};
 /* bu tablolar değişince görünürlük başka tablolarda da değişebilir → tam yükleme */
 const RT_FULL=new Set(['role_permissions','training_assignments']);
-const RT_KEYS={product_costs:'product_id',sale_item_costs:'sale_item_id',sale_accessory_costs:'line_id',accessory_costs:'accessory_id',staff_settings:'profile_id',app_settings:'key',notification_state:'user_id'};
+const RT_KEYS={staff_profiles:'staff_id',staff_identity:'staff_id',leave_types:'code',payroll_runs:'period',prim_periods:'period',staff_pay_profiles:'staff_id',warranty_types:'code',product_costs:'product_id',sale_item_costs:'sale_item_id',sale_accessory_costs:'line_id',accessory_costs:'accessory_id',staff_settings:'profile_id',app_settings:'key',notification_state:'user_id'};
 const RT_SAFETY_MIN=20,RT_OFFLINE_MIN=2,RT_AWAY_SEC=60;
 const rtKey=t=>RT_KEYS[t]||(NOID.has(t)?null:'id');
 function rtEvent(p){
@@ -953,7 +961,7 @@ function subscribe(){
    Kendi işleminiz için gelen bildirim okunmuş sayılır. Tıklanan bildirim ilgili ekranı açar. */
 const NREF={sales:'satislar',sale_returns:'iadeler',service_orders:'servis',customer_orders:'siparis',follow_ups:'siparis',tasks:'gorev',quotes:'teklif',shortages:'eksikler',
   accessories:'aksesuar',shifts:'vardiya',targets:'hedef',day_closings:'kasa',expenses:'odemeler',term_debts:'odemeler',entitlements:'hakedis',commissions:'primler',
-  products:'stok',device_inspections:'stok',role_permissions:'yonetim',profiles:'yonetim',trainings:'egitim',notes:'notlar'};
+  products:'stok',device_inspections:'stok',role_permissions:'yonetim',profiles:'yonetim',trainings:'egitim',notes:'notlar',leave_requests:'personel',advance_requests:'personel',payroll_runs:'personel',prim_periods:'personel'};
 const NKIND={satis:['bag','b'],iade:['undo','w'],servis:['wrench','b'],siparis:['pkg','p'],gorev:['check','v'],vardiya:['clock','v'],kasa:['wallet','r'],odeme:['card','w'],
   stok:['headphones','p'],hedef:['target','g'],hakedis:['hand','g'],teklif:['file','v'],ozet:['bars','b'],denetim:['shield','w']};
 const nMeta=n=>{if(n.ref_table==='sales'&&n.kind==='iade')return NKIND.iade;if(n.ref_table==='accessories'&&n.kind==='siparis')return NKIND.siparis;if(n.ref_table==='device_inspections')return ['tag','p'];return NKIND[n.kind]||['bell','b']};
@@ -1099,14 +1107,14 @@ function pwModal(){S.uOpen=false;render();modal(`<h2>Şifremi değiştir</h2><in
    (localStorage 'anka_qs') tutulur; şifre sormadan geçilir. Gün değişince, mesai bitince ve çıkışta oturum bu cihazdan
    silinir ve sunucuda kapatılır. Kişisel alanlar (qs_secure_tabs) ortak bilgisayarda kişinin kendi şifresiyle açılır. */
 const QS_KEY='anka_qs';
-const QS_TABS=[['hakedis','Hakedişler'],['primler','Primler'],['odemeler','Ödemeler'],['kazancrapor','Kazanç Raporu'],['sermaye','Sermaye Raporu'],['satisrapor','Satış Raporu'],
+const QS_TABS=[['personel','Personeller'],['hakedis','Hakedişler'],['primler','Primler'],['odemeler','Ödemeler'],['kazancrapor','Kazanç Raporu'],['sermaye','Sermaye Raporu'],['satisrapor','Satış Raporu'],
   ['kasa','Kasa'],['masraf','Masraflar'],['konsinye','Konsinye'],['alislar','Alışlar'],['egitim','Eğitimler'],['notlar','Notlarım'],['yonetim','Yönetim']];
 const qsGet=()=>{let v;try{v=JSON.parse(localStorage.getItem(QS_KEY)||'{}')}catch(e){v={}}if(!v||typeof v!=='object')v={};v.users=v.users||{};return v};
 const qsPut=v=>{try{localStorage.setItem(QS_KEY,JSON.stringify(v))}catch(e){}};
 const qsShared=()=>!!qsGet().shared;
 const qsOn=()=>qsShared()&&(!S.d||appSet('qs_on','1')!=='0');
 const qsDev=()=>qsGet().name||'Ortak bilgisayar';
-const qsSecTabs=()=>S.d?appSet('qs_secure_tabs','hakedis,primler,odemeler,kazancrapor,yonetim,konsinye,notlar').split(',').filter(Boolean):[];
+const qsSecTabs=()=>S.d?appSet('qs_secure_tabs','hakedis,primler,odemeler,kazancrapor,yonetim,konsinye,notlar,personel').split(',').filter(Boolean):[];
 const qsSecLocked=tab=>qsOn()&&qsSecTabs().includes(tab)&&!((S.unlockUntil||0)>Date.now());
 /* oturumu bu cihazın listesine yazar (anahtarlar yenilendikçe güncellenir; "gün" ilk girişte konur) */
 function qsStore(session,extra){if(!session||!session.user||!qsShared())return;const v=qsGet(),u=session.user,o=v.users[u.id]||{};
@@ -1270,7 +1278,7 @@ const fmtSeen=t=>{if(!t)return 'hiç giriş yapmadı';const d=new Date(t);return
 
 /* ================= YÖNLENDİRME / ÇERÇEVE ================= */
 /* menüden bir sekmeye tıklanınca rapor ekranları kapanır, sekmenin ana sayfası açılır; menü kapanır */
-function resetReps(){S.ui.ti_dev=false;S.ui.mrep=false;S.ui.pl_dev=false;S.ui.kz_dev=false;S.ui.kz_acc=false;S.ui.pur_rep=false;S.ui.sh_dev=false;S.ui.sh_acc=false}
+function resetReps(){S.ui.pk=null;S.ui.ti_dev=false;S.ui.mrep=false;S.ui.pl_dev=false;S.ui.kz_dev=false;S.ui.kz_acc=false;S.ui.pur_rep=false;S.ui.sh_dev=false;S.ui.sh_acc=false}
 document.addEventListener('click',e=>{const a=e.target.closest&&e.target.closest('.dnav a[href^="#"]');if(!a)return;
   const same=a.getAttribute('href')==='#'+location.hash.slice(1)||(a.getAttribute('href')==='#panel'&&!location.hash.slice(1));drawer(false);
   if(same&&S.d&&(S.ui.ti_dev||S.ui.mrep||S.ui.pl_dev||S.ui.kz_dev||S.ui.kz_acc||S.ui.pur_rep||S.ui.sh_dev||S.ui.sh_acc)){resetReps();render()}});
@@ -1338,7 +1346,7 @@ function render(){
   document.documentElement.classList.toggle('ps-on',tab==='satis');
   const unread=nUnreadCount();
   const secLock=qsSecLocked(tab);
-  const page=secLock?qsLockPage(tab):qsUnlockBar(tab)+{kampanya:vKampanya,panel:vPanel,notlar:vNotlar,satis:vSatis,stok:vStok,aksesuar:vAksesuar,sayim:vSayim,sorgu:vSorgu,alislar:vAlislar,satislar:vSatislar,iadeler:vIadeler,fireler:vFireler,odemeler:vOdemeler,kazancrapor:vKazancRapor,satisrapor:vSatisRapor,sermaye:vSermaye,hakedis:vHakedis,primler:vPrimler,kasa:vKasa,masraf:vMasraf,musteriler:vMusteriler,firmalar:vFirmalar,konsinye:vKonsinye,servis:vServis,siparis:vSiparis,eksikler:vEksik,teklif:vTeklif,gorev:vGorev,vardiya:vVardiya,hedef:vHedef,egitim:vEgitim,yonetim:vYonetim}[tab]();
+  const page=secLock?qsLockPage(tab):qsUnlockBar(tab)+{personel:vPersonel,kampanya:vKampanya,panel:vPanel,notlar:vNotlar,satis:vSatis,stok:vStok,aksesuar:vAksesuar,sayim:vSayim,sorgu:vSorgu,alislar:vAlislar,satislar:vSatislar,iadeler:vIadeler,fireler:vFireler,odemeler:vOdemeler,kazancrapor:vKazancRapor,satisrapor:vSatisRapor,sermaye:vSermaye,hakedis:vHakedis,primler:vPrimler,kasa:vKasa,masraf:vMasraf,musteriler:vMusteriler,firmalar:vFirmalar,konsinye:vKonsinye,servis:vServis,siparis:vSiparis,eksikler:vEksik,teklif:vTeklif,gorev:vGorev,vardiya:vVardiya,hedef:vHedef,egitim:vEgitim,yonetim:vYonetim}[tab]();
   const grp=tabGroup(tab);
   document.getElementById('app').innerHTML=`<header class="top"><div class="wrap">
     <button class="ib" data-a="drawer-open" aria-label="Menüyü aç" title="Menü (Ctrl+K)">${ic('menu')}</button>
@@ -5609,7 +5617,7 @@ async function loadPrim(){if(S.hp!==undefined)return;S.hp=null;
 const hkPrim=(sid,m)=>sum((S.hp||[]).filter(r=>r.staff_id===sid&&String(r.period).slice(0,10)===m),r=>r.amount);
 const hkPm=(sid,m,mg)=>{if(!primNew(m))return '';pmLoad(m);const X=S.pm&&S.pm[monthStart(m)];if(!X)return '<div class="card empty" style="margin-top:12px">Prim hesaplanıyor…</div>';const b=pmOf(m,sid);return b?`<div style="margin-top:12px">${pmCard(b,X.store,mg)}</div>`:''};
 const hkEnt=(sid,m)=>(S.d.entitlements||[]).filter(e=>e.staff_id===sid&&(!m||e.period===m)&&e.status!=='iptal');
-function hkSum(l){const k={};HK_KINDS.forEach(([c])=>k[c]=0);l.forEach(e=>k[e.kind]+=Number(e.amount));
+function hkSum(l){l=l.filter(e=>!(e.kind==='avans'&&e.advance_id));const k={};HK_KINDS.forEach(([c])=>k[c]=0);l.forEach(e=>k[e.kind]+=Number(e.amount));
   const pl=l.filter(e=>!HK_MINUS.includes(e.kind)),plus=sum(pl,e=>e.amount),pend=sum(pl.filter(e=>e.status==='bekliyor'),e=>e.amount),
   pm=sum(l.filter(e=>e.kind==='kesinti'&&e.status==='bekliyor'),e=>e.amount)+sum(l.filter(e=>e.kind==='avans'&&!e.settled),e=>e.amount);
   return{k,plus,minus:k.kesinti+k.avans,paid:sum(pl.filter(e=>e.status==='odendi'),e=>e.amount),pend,remain:Math.max(0,pend-pm),net:plus-k.kesinti-k.avans}}
@@ -5618,9 +5626,9 @@ const hkName=id=>(S.d.profileMap.get(id)||{}).full_name||'?';
 function hkMonthBar(m){const d0=parse(m);return `<button class="btn" data-a="hkmonth" data-n="-1" aria-label="Önceki ay">‹</button><b style="min-width:110px;text-align:center">${MONN[d0.getMonth()]} ${d0.getFullYear()}</b><button class="btn" data-a="hkmonth" data-n="1" aria-label="Sonraki ay">›</button>`}
 function hkRowHtml(e,mg){const st=HK_ST[e.status]||['',e.status],q=e.qty?` · ${num(e.qty)} ${HK_QTY[e.kind]?HK_QTY[e.kind][0]:''}${e.unit_amount?' × '+money(e.unit_amount):''}`:'';
   const minus=HK_MINUS.includes(e.kind);
-  return `<div class="item"><div class="main"><b>${esc(HKL[e.kind])}</b> <span class="pill ${st[0]}">${st[1]}${e.kind==='avans'&&e.status==='odendi'?(e.settled?' · mahsup edildi':' · mahsup bekliyor'):''}</span> <span class="sub mono">${esc(e.entitlement_no)}</span>
+  return `<div class="item"><div class="main"><b>${esc(HKL[e.kind])}</b> <span class="pill ${st[0]}">${st[1]}${e.kind==='avans'&&e.status==='odendi'?(e.advance_id?' · taksitli mahsup':e.settled?' · mahsup edildi':' · mahsup bekliyor'):''}</span> <span class="sub mono">${esc(e.entitlement_no)}</span>
     <div class="meta">${e.description?`<span>${esc(e.description)}</span>`:''}${q?`<span>${esc(q.slice(3))}</span>`:''}<span>${e.status==='odendi'&&e.paid_date?'Ödeme '+fmtDate(e.paid_date):'Kayıt '+fmtDate(e.item_date)}</span></div></div>
-    <div class="side"><b class="${minus?'neg':''}">${minus?'−':''}${money(e.amount)}</b>${mg&&e.status==='bekliyor'?`<div><button class="btn sm" data-a="hk-edit" data-id="${e.id}">Düzenle</button> <button class="btn sm" data-a="hk-cancel" data-id="${e.id}">İptal</button></div>`:''}${mg&&e.kind==='avans'&&e.status==='odendi'&&!e.settled?`<div><button class="btn sm" data-a="hk-cancel" data-id="${e.id}">Avansı iptal et</button></div>`:''}</div></div>`}
+    <div class="side"><b class="${minus?'neg':''}">${minus?'−':''}${money(e.amount)}</b>${mg&&e.status==='bekliyor'&&!e.advance_id?`<div><button class="btn sm" data-a="hk-edit" data-id="${e.id}">Düzenle</button> <button class="btn sm" data-a="hk-cancel" data-id="${e.id}">İptal</button></div>`:''}${mg&&e.kind==='avans'&&e.status==='odendi'&&!e.settled&&!e.advance_id?`<div><button class="btn sm" data-a="hk-cancel" data-id="${e.id}">Avansı iptal et</button></div>`:''}</div></div>`}
 const hkTiles=(sm,live,rec)=>`<div class="grid g4">${tile('Toplam hakediş',money(sm.plus),sm.minus?'kesinti/avans −'+money(sm.minus):'')}${tile('Ödenen',money(sm.paid))}${tile('Ödenecek (net)',money(sm.remain),sm.remain>0?'bekleyen':'bekleyen yok',sm.remain>0?'bad':'')}${tile('Güncel satış primi',money(live),live-rec>0.004?'hakedişe işlenmemiş '+money(live-rec):'işlendi')}</div>`;
 const hkKindTiles=sm=>`<div class="grid g4" style="margin-top:8px">${['maas','prim','yol','yemek','mesai','kidem'].map(c=>tile(HKL[c],money(sm.k[c]))).join('')}${tile('İkramiye + diğer',money(sm.k.ikramiye+sm.k.diger))}${tile('Avans + kesinti',money(sm.minus))}</div>`;
 function vHakedis(){
@@ -5650,7 +5658,7 @@ function hkPerson(sid,m){const p=S.d.profileMap.get(sid),l=(S.d.entitlements||[]
   other=(S.d.entitlements||[]).filter(e=>e.staff_id===sid&&e.period!==m&&e.status==='bekliyor'),otherSum=sum(other,e=>e.amount);
   return `<div class="row"><button class="btn" data-a="hk-back">‹ Tüm personel</button><h1 style="margin-left:8px">${esc(p.full_name)}</h1><div class="sp"></div>${hkMonthBar(m)}</div>
   <p class="sub" style="margin-top:0">${ten?'Kıdem '+esc(ten)+' · ':''}${pf&&pf.base_salary>0?'Maaş tanımı '+money(pf.base_salary):'Maaş tanımı yok'}</p>
-  <div class="row" style="gap:6px;flex-wrap:wrap;margin:8px 0"><button class="btn pri" data-a="hk-pay" data-id="${sid}" ${sm.pend>0?'':'disabled'}>Öde (net ${money(sm.remain)})</button><button class="btn" data-a="hk-add" data-id="${sid}">+ Hakediş ekle</button><button class="btn" data-a="hk-adv" data-id="${sid}">Avans ver</button><button class="btn" data-a="hk-kes" data-id="${sid}">Kesinti ekle</button>${live-rec>0.004||(rec-live>0.004)?`<button class="btn" data-a="hk-prim" data-id="${sid}">Primi işle (${money(live-rec)})</button>`:''}</div>
+  <div class="row" style="gap:6px;flex-wrap:wrap;margin:8px 0"><button class="btn pri" data-a="hk-pay" data-id="${sid}" ${sm.pend>0?'':'disabled'}>Öde (net ${money(sm.remain)})</button><button class="btn" data-a="hk-add" data-id="${sid}">+ Hakediş ekle</button><button class="btn" data-a="hk-adv" data-id="${sid}">Avans ver</button><button class="btn" data-a="hk-kes" data-id="${sid}">Kesinti ekle</button><button class="btn" data-a="pc-open" data-id="${sid}">${ic('users','sm')} Personel kartı</button>${live-rec>0.004||(rec-live>0.004)?`<button class="btn" data-a="hk-prim" data-id="${sid}">Primi işle (${money(live-rec)})</button>`:''}</div>
   ${hkTiles(sm,live,rec)}${hkKindTiles(sm)}${hkPm(sid,m,can('manage_commissions'))}
   ${otherSum>0?`<div class="sub" style="margin:8px 0"><b>Diğer aylardan bekleyen:</b> ${money(otherSum)} (ilgili aya geçerek ödeyebilirsiniz)</div>`:''}
   <div class="card" style="margin-top:12px"><h2>${MONN[parse(m).getMonth()]} kayıtları</h2>${l.map(e=>hkRowHtml(e,true)).join('')||'<div class="empty">Bu ay için kayıt yok.</div>'}</div>`}
@@ -6663,7 +6671,7 @@ const A={
     const w=qsGet(),nm=w.name;w.shared=false;w.users={};qsPut(w);S.unlockUntil=0;qsDevLog(false,nm);toast('Ortak bilgisayar kapatıldı; diğer kullanıcıların oturumları sonlandırıldı');render()},
   async 'qs-save'(t){const want={qs_on:document.getElementById('qs-on').checked?'1':'0',qs_idle_min:String(g('qs-idle')),qs_secure_min:String(g('qs-smin')),
       qs_secure_tabs:[...document.querySelectorAll('.qs-t')].filter(x=>x.checked).map(x=>x.value).join(',')};
-    const def={qs_on:'1',qs_idle_min:'5',qs_secure_min:'10',qs_secure_tabs:'hakedis,primler,odemeler,kazancrapor,yonetim,konsinye,notlar'};
+    const def={qs_on:'1',qs_idle_min:'5',qs_secure_min:'10',qs_secure_tabs:'hakedis,primler,odemeler,kazancrapor,yonetim,konsinye,notlar,personel'};
     t.disabled=true;try{let n=0;for(const k of Object.keys(want)){if(want[k]===appSet(k,def[k]))continue;await call('set_security_setting',{p_key:k,p_value:want[k]});n++}
       toast(n?'Ayarlar kaydedildi':'Değişiklik yok');if(n)await reload()}catch(e){t.disabled=false}},
   taskfilter(t){S.ui.tf=t.dataset.v;render()},taskwho(t){S.ui.tw=t.dataset.v;render()},
@@ -6795,7 +6803,7 @@ const A={
   'acc-cart-del'(t){S.cart.acc.splice(+t.dataset.i,1);render()},
   hkmonth(t){S.ui.hkm=addMonths(S.ui.hkm||monthStart(today()),+t.dataset.n);render()},
   'hk-open'(t){S.ui.hkp=t.dataset.id;render()},'hk-back'(){S.ui.hkp=null;render()},
-  'hk-add'(t){hkAddModal(t.dataset.id||'')},'hk-adv'(t){hkAddModal(t.dataset.id,'avans')},'hk-kes'(t){hkAddModal(t.dataset.id,'kesinti')},
+  'hk-add'(t){hkAddModal(t.dataset.id||'')},'hk-adv'(t){avModal(t.dataset.id||'')},'hk-kes'(t){hkAddModal(t.dataset.id,'kesinti')},
   async 'hk-save'(t){const k=g('hk-kind'),sid=g('hk-staff'),per=g('hk-per');if(!sid)return setErr('Personeli seçin.');if(!per)return setErr('Dönemi seçin.');
     const amt=nv('hk-amt');if(!(amt>0))return setErr(HK_QTY[k]?'Miktar ve birim ücreti girin.':'Tutarı girin.');if(k==='avans'&&!g('hk-acc'))return setErr('Ödeme hesabını seçin.');
     const it={staff_id:sid,kind:k,period:per+'-01',description:g('hk-desc')||null};if(HK_QTY[k]){it.qty=nv('hk-q');it.unit_amount=nv('hk-u');it.amount=amt}else it.amount=amt;
@@ -7948,6 +7956,460 @@ document.addEventListener('change',e=>{const t=e.target;if(t.dataset&&(t.dataset
   else if(c==='wdev'&&ev==='change'){const l=wLineKeep();if(l){const box=document.querySelectorAll('[data-wmat]');box.forEach(s=>{const cur=s.value;s.innerHTML=wMatOpts(s.dataset.wmat,l.w.device,cur||(wMats(s.dataset.wmat,l.w.device).find(a=>a.stock_qty>0)||{}).id,'Şimdi uygulanmayacak (sonra "İlk uygulama")')})}}
   else if(c==='wpp'&&ev==='change'){const P=S.gw.pk,sl=P.parts[+t.dataset.i];if(t.checked){if(!sl.includes(t.dataset.k))sl.push(t.dataset.k)}else P.parts[+t.dataset.i]=sl.filter(x=>x!==t.dataset.k)}
   else if(c==='wmq'&&ev==='input'){const r=document.getElementById('w-mres');if(r)r.innerHTML=wMatRes(t.value)}}));
+/* ================= PERSONELLER: MODÜLER PERSONEL KARTI (072) =================
+   Mağaza müdürü ve personel için tek kart. Veriler mevcut tablolarla ortak (staff_pay_profiles, work_schedules, entitlements,
+   targets, shifts, trainings, prim planları): kartta yapılan değişiklik diğer ekranlarda, diğer ekranlardaki kartta görünür.
+   Yeni tablolar: staff_profiles, staff_identity, staff_docs, staff_history, leave_*, advance_requests, payroll_*, prim_periods. */
+const PC_TABS=[['genel','Genel'],['kimlik','Kimlik ve iletişim'],['istihdam','İstihdam ve çalışma'],['ucret','Ücret ve yan haklar'],['hakedis','Hakediş ve ödemeler'],['avans','Avans'],['izin','İzin'],['bordro','Bordro'],['prim','Prim'],['takip','Hedef · vardiya · eğitim'],['belge','Belgeler'],['hesap','Kullanıcı hesabı'],['gecmis','Geçmiş']];
+const PC_ROLE={owner:'İşletme sahibi',manager:'Mağaza müdürü',staff:'Personel'};
+const PC_EMP=[['tam','Tam zamanlı'],['yari','Yarı zamanlı'],['stajyer','Stajyer'],['sezonluk','Sezonluk']];
+const PC_CON=[['belirsiz','Belirsiz süreli'],['belirli','Belirli süreli']];
+const PC_DOCK=[['kimlik','Kimlik fotokopisi'],['sozlesme','İş sözleşmesi'],['sgk','SGK işe giriş / çıkış'],['diploma','Diploma / sertifika'],['saglik','Sağlık raporu (işe giriş)'],['rapor','Doktor raporu'],['izin','İzin belgesi'],['ihtar','Tutanak / ihtar'],['diger','Diğer']];
+const PC_DOCK_SELF=['rapor','izin','saglik','diploma','diger'];
+const PC_HK={kayit:'Kayıt',kimlik:'Kimlik',iletisim:'İletişim',istihdam:'İstihdam',ucret:'Ücret',calisma:'Çalışma düzeni',izin:'İzin',avans:'Avans',bordro:'Bordro',prim:'Prim',belge:'Belge',hesap:'Hesap',hedef:'Hedef',diger:'Diğer'};
+const LV_ST={bekliyor:['warn','Bekliyor'],onaylandi:['ok','Onaylandı'],reddedildi:['bad','Reddedildi'],iptal:['','İptal']};
+const AV_ST={bekliyor:['warn','Onay bekliyor'],onaylandi:['warn','Onaylandı · ödeme bekliyor'],reddedildi:['bad','Reddedildi'],odendi:['ok','Ödendi'],iptal:['','İptal']};
+const pcAll=()=>can('view_staff')||can('manage_staff')||can('manage_entitlements');
+const pcSelf=sid=>S.user&&sid===S.user.id;
+const pcSP=sid=>(S.d.staff_profiles||[]).find(x=>x.staff_id===sid)||{};
+const pcID=sid=>(S.d.staff_identity||[]).find(x=>x.staff_id===sid)||{};
+const pcPF=sid=>(S.d.staff_pay_profiles||[]).find(x=>x.staff_id===sid)||{};
+const pcSel=(v,L)=>((L.find(x=>x[0]===v)||[])[1])||'—';
+const pcV=v=>v==null||v===''?'<span class="sub">—</span>':esc(String(v));
+const pcD=v=>v?fmtDate(v):'<span class="sub">—</span>';
+const pcKv=(l,v)=>`<div class="pc-kv"><span>${l}</span><b>${v}</b></div>`;
+const pcTen=m=>m==null?'':(Math.floor(m/12)?Math.floor(m/12)+' yıl ':'')+(m%12)+' ay';
+const lvType=c=>(S.d.leave_types||[]).find(t=>t.code===c)||{name:c};
+const pcSafe=n=>String(n||'dosya').normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/ı/g,'i').replace(/[^\w.\-]+/g,'_').slice(-80);
+const pcRnd=()=>Math.random().toString(36).slice(2,10);
+async function pcOverview(force){if(!force&&S.ov!==undefined)return;S.ov=null;
+  try{S.ov=await call('staff_overview')||[]}catch(e){S.ov=[]}render()}
+const pcOv=sid=>(S.ov||[]).find(x=>x.staff_id===sid);
+async function pcHistLoad(sid){S.ph=S.ph||{};if(S.ph[sid]!==undefined)return;S.ph[sid]=null;
+  try{const r=await sb.from('staff_history').select('*').eq('staff_id',sid).order('at',{ascending:false}).limit(300);if(r.error)throw r.error;S.ph[sid]=r.data||[]}catch(e){S.ph[sid]=[]}render()}
+async function pcPayLoad(m){S.pay=S.pay||{};if(S.pay[m]!==undefined)return;S.pay[m]=null;
+  try{S.pay[m]=await call('payroll_get',{p_period:m})}catch(e){S.pay[m]={lines:[],err:msg(e)}}render()}
+async function pcLbLoad(sid){S.lbx=S.lbx||{};if(S.lbx[sid]!==undefined)return;S.lbx[sid]=null;
+  try{S.lbx[sid]=await call('leave_balance',{p_staff:sid})}catch(e){S.lbx[sid]=false}render()}
+
+/* ---------- Personeller sekmesi ---------- */
+function vPersonel(){const u=S.ui;
+  if(!pcAll())return pcCard(S.user.id);
+  if(u.pk&&S.d.profileMap.get(u.pk))return pcCard(u.pk);
+  pcOverview();
+  const V=[['liste','Çalışanlar'],['izin','İzin talepleri'],...(can('manage_entitlements')?[['avans','Avanslar'],['bordro','Bordro'],['prim','Prim dönemleri']]:[])],v=V.some(x=>x[0]===u.pv)?u.pv:'liste';
+  const head=`<div class="row"><h1>Personeller</h1><div class="sp"></div>${can('manage_users')?`<button class="btn pri" data-a="ua-new">${ic('userplus','sm')} Personel ekle</button>`:''}</div>
+   <div class="seg" style="margin:6px 0 12px">${V.map(([k,l])=>`<button data-a="pc-view" data-k="${k}" aria-pressed="${v===k}">${l}${k==='izin'&&lvPending().length?` <span class="pill warn">${lvPending().length}</span>`:''}${k==='avans'&&avPending().length?` <span class="pill warn">${avPending().length}</span>`:''}</button>`).join('')}</div>`;
+  return head+(v==='izin'?lvAllView():v==='avans'?avAllView():v==='bordro'?prView():v==='prim'?ppView():pcList())}
+const lvPending=()=>(S.d.leave_requests||[]).filter(l=>l.status==='bekliyor');
+const avPending=()=>(S.d.advance_requests||[]).filter(a=>a.status==='bekliyor'||a.status==='onaylandi');
+function pcList(){const u=S.ui,O=S.ov,mg=can('manage_entitlements'),m=monthStart(today());
+  if(!O)return '<div class="card empty">Yükleniyor…</div>';
+  const rows=O.filter(x=>u.ppas||x.active),act=O.filter(x=>x.active),soon=d=>d&&d>=today()&&d<=addDays(today(),30);
+  const alerts=act.filter(x=>soon(x.contract_end)||soon(x.probation_end)||x.docs_exp>0);
+  return `<div class="grid g4">${tile('Aktif çalışan',num(act.length),O.length>act.length?(O.length-act.length)+' pasif':'')}${tile('Bugün izinli',num(act.filter(x=>x.on_leave).length),act.filter(x=>x.on_leave).map(x=>esc(x.name)).join(', '))}
+   ${tile('Bekleyen izin talebi',num(lvPending().length),'',lvPending().length?'bad':'')}${mg?tile('Bekleyen avans',num(avPending().length),'',avPending().length?'bad':''):tile('Mesaide',num(act.filter(x=>x.clocked).length))}</div>
+   ${lvPending().length||(mg&&avPending().length)?`<div class="card"><h2>Onay bekleyen talepler</h2>${lvPending().map(l=>lvRow(l,true)).join('')}${mg?avPending().map(a=>avRow(a,true)).join(''):''}</div>`:''}
+   ${alerts.length?`<div class="card"><h2>Yaklaşan tarihler</h2>${alerts.map(x=>`<div class="item"><div class="main"><b>${esc(x.name)}</b><div class="meta">${soon(x.contract_end)?`<span>Sözleşme bitişi ${fmtDate(x.contract_end)}</span>`:''}${soon(x.probation_end)?`<span>Deneme süresi bitişi ${fmtDate(x.probation_end)}</span>`:''}${x.docs_exp>0?`<span>${x.docs_exp} belgenin süresi doluyor</span>`:''}</div></div><div class="side"><button class="btn sm" data-a="pc-open" data-id="${x.staff_id}">Kartı aç</button></div></div>`).join('')}</div>`:''}
+   <div class="card tw"><div class="row"><h2 style="margin:0;flex:1">Çalışanlar</h2>${O.length>act.length?`<button class="btn sm" data-a="pc-pas">${u.ppas?'Pasifleri gizle':'Pasifleri göster ('+(O.length-act.length)+')'}</button>`:''}</div>
+   <table class="pc-t"><thead><tr><th style="text-align:left">Çalışan</th><th style="text-align:left">Telefon</th><th>Kıdem</th><th style="text-align:left">Bugün</th><th>Yıllık izin</th>${mg?'<th>Bu ay ödenecek</th>':''}<th></th></tr></thead><tbody>
+   ${rows.map(x=>{const sm=mg?hkSum(hkEnt(x.staff_id,m)):null,sh=x.shift,today_=x.on_leave?'<span class="pill warn">İzinli</span>':sh?(sh.st==='planli'?`${esc(sh.s)}–${esc(sh.e)}`:'<span class="pill warn">'+(sh.st==='izinli'?'İzinli':'İptal')+'</span>'):'<span class="sub">Vardiya yok</span>';
+     return `<tr class="${x.active?'':'ua-off'}"><td style="text-align:left"><a href="#personel" data-a="pc-open" data-id="${x.staff_id}"><b>${esc(x.name)}</b></a> <span class="sub">${esc(PC_ROLE[x.role]||'')}${x.title?' · '+esc(x.title):''}</span>${x.active?'':' <span class="pill">Pasif</span>'}${x.pend_leave?` <span class="pill warn">${x.pend_leave} izin talebi</span>`:''}${x.pend_adv?` <span class="pill warn">avans</span>`:''}</td>
+      <td style="text-align:left">${x.phone?`<a href="tel:${esc(x.phone)}">${esc(x.phone)}</a>`:'<span class="sub">—</span>'}</td><td>${x.tenure_m!=null?pcTen(x.tenure_m):'<span class="sub">—</span>'}</td>
+      <td style="text-align:left">${today_}${x.clocked?' <span class="pill ok">Mesaide</span>':''}</td><td>${x.leave?`<b class="${x.leave.balance<0?'neg':''}">${num(x.leave.balance)} gün</b>`:'—'}</td>
+      ${mg?`<td>${money(sm.remain)}</td>`:''}<td><button class="btn sm" data-a="pc-open" data-id="${x.staff_id}">Kartı aç</button></td></tr>`}).join('')||'<tr><td colspan="7" class="empty">Kayıtlı çalışan yok</td></tr>'}</tbody></table></div>
+   <p class="sub">Kişiye tıklayınca personel kartı açılır. Hedefler, Vardiya, Hakedişler, Primler ve Eğitimler ekranlarında tüm çalışanlar birlikte yönetilmeye devam eder; iki yerde yapılan değişiklik aynı kayda yazılır.</p>`}
+
+/* ---------- Personel kartı ---------- */
+function pcTabs(sid){const self=pcSelf(sid),mg=can('manage_entitlements'),ms=can('manage_staff'),vs=can('view_staff');
+  return PC_TABS.filter(([k])=>({genel:1,kimlik:self||vs||ms,istihdam:self||vs||ms,ucret:self||mg,hakedis:self||mg,avans:self||mg,izin:self||vs||can('approve_leave'),bordro:self||mg,prim:self||mg||can('manage_commissions'),takip:1,belge:self||ms,hesap:self||can('manage_users'),gecmis:1})[k])}
+function pcCard(sid){const p=S.d.profileMap.get(sid);if(!p)return '<div class="card empty">Personel bulunamadı</div>';
+  if(p.role==='owner')return `<div class="card empty">İşletme sahibi personel listesinde yer almaz.${pcAll()?' <button class="btn sm" data-a="pc-back">Tüm çalışanlar</button>':''}</div>`;
+  pcOverview();const T=pcTabs(sid),t=T.some(x=>x[0]===S.ui.pkt)?S.ui.pkt:'genel',sp=pcSP(sid),ov=pcOv(sid),self=pcSelf(sid);
+  const body={genel:pcGenel,kimlik:pcKimlik,istihdam:pcIstihdam,ucret:pcUcret,hakedis:pcHakedis,avans:pcAvans,izin:pcIzin,bordro:pcBordro,prim:pcPrim,takip:pcTakip,belge:pcBelge,hesap:pcHesap,gecmis:pcGecmis}[t](sid);
+  return `<div class="row">${pcAll()?`<button class="btn" data-a="pc-back">‹ Tüm çalışanlar</button>`:''}<div class="pc-av">${esc((p.full_name||'?').split(' ').map(x=>x[0]).slice(0,2).join('').toLocaleUpperCase('tr'))}</div>
+   <div style="flex:1;min-width:200px"><h1 style="margin:0">${esc(p.full_name)}${self?' <span class="sub">(siz)</span>':''}</h1><div class="sub">${esc(PC_ROLE[p.role]||'')}${sp.title?' · '+esc(sp.title):''}${ov&&ov.tenure_m!=null?' · kıdem '+pcTen(ov.tenure_m):''}${p.active?'':' · <span class="pill bad">Pasif</span>'}${sp.phone?` · <a href="tel:${esc(sp.phone)}">${esc(sp.phone)}</a>`:''}</div></div>
+   <div class="row" style="gap:6px;flex-wrap:wrap"><button class="btn" data-a="lv-new" data-id="${sid}">${ic('cal','sm')} İzin ${self?'talebi':'gir'}</button>${self||can('manage_entitlements')?`<button class="btn" data-a="av-new" data-id="${sid}">${ic('wallet','sm')} Avans ${self?'talebi':'ver'}</button><button class="btn" data-a="st-open" data-id="${sid}">${ic('receipt','sm')} Ekstre</button>`:''}</div></div>
+   <div class="seg pc-tabs" role="tablist" style="margin:10px 0 12px">${T.map(([k,l])=>`<button role="tab" data-a="pc-tab" data-k="${k}" aria-pressed="${t===k}">${l}</button>`).join('')}</div>${body}`}
+const pcEditBtn=(sid,sec)=>`<button class="btn sm" data-a="pc-edit" data-id="${sid}" data-k="${sec}">${ic('pencil','sm')} Düzenle</button>`;
+function pcGenel(sid){const ov=pcOv(sid)||{},lb=ov.leave,m=monthStart(today()),mg=can('manage_entitlements')||pcSelf(sid),sm=hkSum(hkEnt(sid,m)),sp=pcSP(sid);
+  const sh=(S.d.shifts||[]).filter(s=>s.staff_id===sid&&s.shift_date>=today()&&s.shift_date<=addDays(today(),6)).sort((a,b)=>a.shift_date.localeCompare(b.shift_date));
+  const lv=(S.d.leave_requests||[]).filter(l=>l.staff_id===sid&&(l.status==='bekliyor'||(l.status==='onaylandi'&&l.end_date>=today()))).sort((a,b)=>a.start_date.localeCompare(b.start_date));
+  const av=(S.d.advance_requests||[]).filter(a=>a.staff_id===sid&&['bekliyor','onaylandi','odendi'].includes(a.status)&&(a.status!=='odendi'||avLeft(a)>0));
+  return `<div class="grid g4">${tile('Bugün',ov.on_leave?'İzinli':ov.shift&&ov.shift.st==='planli'?esc(ov.shift.s+'–'+ov.shift.e):'Vardiya yok',ov.clocked?'mesaide':'')}${tile('Yıllık izin bakiyesi',lb?num(lb.balance)+' gün':'—',lb&&lb.pending?lb.pending+' gün onay bekliyor':'',lb&&lb.balance<0?'bad':'')}
+   ${mg?tile('Bu ay hakediş',money(sm.plus),'ödenecek '+money(sm.remain)):tile('Kıdem',ov.tenure_m!=null?pcTen(ov.tenure_m):'—')}${mg?tile('Açık avans',money(sum(av,avLeft)),av.length?av.length+' kayıt':''):tile('İşe giriş',ov.hire_date?fmtDate(ov.hire_date):'—')}</div>
+   <div class="grid g2" style="margin-top:12px"><div class="card"><h2>Önümüzdeki 7 gün</h2>${sh.map(s=>`<div class="item" style="padding:5px 0"><div class="main"><b>${fmtDate(s.shift_date)}</b> <span class="sub">${['Paz','Pzt','Sal','Çar','Per','Cum','Cmt'][parse(s.shift_date).getDay()]}</span></div><div class="side">${s.status==='planli'?hhmm(s.start_time)+'–'+hhmm(s.end_time):`<span class="pill warn">${s.status==='izinli'?'İzinli':'İptal'}</span>`}</div></div>`).join('')||'<div class="empty">Planlı vardiya yok</div>'}</div>
+   <div class="card"><h2>Talepler</h2>${lv.map(l=>lvRow(l,false)).join('')}${mg?av.map(a=>avRow(a,false)).join(''):''}${lv.length||(mg&&av.length)?'':'<div class="empty">Açık izin veya avans talebi yok</div>'}</div></div>
+   <div class="card"><h2>Özet bilgiler</h2><div class="pc-grid">${pcKv('Unvan',pcV(sp.title))}${pcKv('Çalışma şekli',pcSel(sp.employment_type,PC_EMP))}${pcKv('İşe giriş',pcD(ov.hire_date))}${pcKv('Telefon',pcV(sp.phone))}${pcKv('E-posta',pcV(sp.email))}${pcKv('Acil durum',sp.emergency_name?esc(sp.emergency_name)+(sp.emergency_phone?' · '+esc(sp.emergency_phone):''):pcV(''))}</div></div>`}
+function pcKimlik(sid){const sp=pcSP(sid),id=pcID(sid),self=pcSelf(sid),ms=can('manage_staff'),p=S.d.profileMap.get(sid);
+  return `<div class="card"><div class="row"><h2 style="flex:1;margin:0">İletişim</h2>${self||ms?pcEditBtn(sid,'iletisim'):''}</div><div class="pc-grid">${pcKv('Telefon',pcV(sp.phone))}${pcKv('E-posta',pcV(sp.email))}${pcKv('Adres',pcV(sp.address))}${pcKv('Şehir',pcV(sp.city))}${pcKv('Acil durumda aranacak kişi',pcV(sp.emergency_name))}${pcKv('Yakınlığı',pcV(sp.emergency_relation))}${pcKv('Acil durum telefonu',pcV(sp.emergency_phone))}</div>${self&&!ms?'<p class="sub">İletişim bilgilerinizi kendiniz güncelleyebilirsiniz.</p>':''}</div>
+   ${self||ms?`<div class="card"><div class="row"><h2 style="flex:1;margin:0">Kimlik bilgileri</h2>${ms?pcEditBtn(sid,'kimlik'):''}${ms||can('manage_users')?` <button class="btn sm" data-a="pc-edit" data-id="${sid}" data-k="ad">Ad soyad</button>`:''}</div><div class="pc-grid">${pcKv('Ad soyad',esc(p.full_name))}${pcKv('TC kimlik no',id.tc_no?esc(ms||self?id.tc_no:id.tc_no.slice(0,3)+'••••••'+id.tc_no.slice(-2)):pcV(''))}${pcKv('Doğum tarihi',pcD(id.birth_date))}${pcKv('Doğum yeri',pcV(id.birth_place))}${pcKv('Cinsiyet',id.gender==='kadin'?'Kadın':id.gender==='erkek'?'Erkek':pcV(''))}${pcKv('Medeni durum',id.marital==='evli'?'Evli':id.marital==='bekar'?'Bekâr':pcV(''))}${pcKv('Çocuk sayısı',pcV(id.children))}${pcKv('Kan grubu',pcV(id.blood_type))}${pcKv('Eğitim',pcV(id.education))}${pcKv('Uyruk',pcV(id.nationality))}${pcKv('SGK sicil no',pcV(id.sgk_no))}${pcKv('Banka',pcV(id.bank_name))}${pcKv('IBAN',id.iban?esc(id.iban.replace(/(.{4})/g,'$1 ').trim()):pcV(''))}</div><p class="sub">Kimlik bilgileri kişisel veridir: yalnız işletme sahibi (personel kartı düzenleme yetkisi) ve kişinin kendisi görür.</p></div>`:''}`}
+function pcIstihdam(sid){const sp=pcSP(sid),pf=pcPF(sid),ov=pcOv(sid)||{},ms=can('manage_staff'),mss=can('manage_shifts');
+  const W=(S.d.work_schedules||[]).filter(w=>w.staff_id===sid).sort((a,b)=>b.valid_from.localeCompare(a.valid_from)),DN=['Pzt','Sal','Çar','Per','Cum','Cmt','Paz'];
+  const pend=(d)=>d&&d<=addDays(today(),30)&&d>=today();
+  return `<div class="card"><div class="row"><h2 style="flex:1;margin:0">İstihdam</h2>${ms?pcEditBtn(sid,'istihdam'):''}</div><div class="pc-grid">
+   ${pcKv('Unvan',pcV(sp.title))}${pcKv('Bölüm',pcV(sp.department))}${pcKv('Rol (yetki)',esc(PC_ROLE[(S.d.profileMap.get(sid)||{}).role]||''))}${pcKv('Çalışma şekli',pcSel(sp.employment_type,PC_EMP))}
+   ${pcKv('Sözleşme',pcSel(sp.contract_type,PC_CON)+(sp.contract_end?' · bitiş '+fmtDate(sp.contract_end)+(pend(sp.contract_end)?' <span class="pill warn">yaklaşıyor</span>':''):''))}
+   ${pcKv('Deneme süresi bitişi',sp.probation_end?fmtDate(sp.probation_end)+(pend(sp.probation_end)?' <span class="pill warn">yaklaşıyor</span>':''):pcV(''))}
+   ${pcKv('İşe giriş',pcD(pf.hire_date||ov.hire_date))}${pcKv('Kıdem',ov.tenure_m!=null?pcTen(ov.tenure_m):pcV(''))}${pcKv('Yıllık izin hakkı',sp.annual_leave_days!=null?sp.annual_leave_days+' gün (kişiye özel)':'Kıdeme göre (İş Kanunu)')}
+   ${pcKv('Devreden izin',num(sp.leave_carry||0)+' gün')}${sp.leave_date?pcKv('İşten ayrılış',fmtDate(sp.leave_date)+(sp.leave_reason?' · '+esc(sp.leave_reason):'')):''}</div>
+   <p class="sub">İşe giriş tarihi Hakedişler › Maaş ve ücret tanımları ile ortaktır; kıdem, yıllık izin hakkı ve bordroda kıst maaş buradan hesaplanır.</p></div>
+   <div class="card"><div class="row"><h2 style="flex:1;margin:0">Çalışma düzeni</h2>${mss?`<button class="btn sm" data-a="cd-new" data-staff="${sid}">Düzeni değiştir</button> <button class="btn sm" data-a="cg-new-s" data-staff="${sid}">Vardiya değişikliği</button>`:''}</div>
+   ${W.map((w,i)=>`<div class="item"><div class="main"><b>${w.weekdays.slice().sort().map(d=>DN[d-1]).join(', ')}</b> · ${hhmm(w.start_time)}–${hhmm(w.end_time)}${!w.valid_to||w.valid_to>=today()?' <span class="pill ok">geçerli</span>':''}<div class="meta"><span>${fmtDate(w.valid_from)} – ${w.valid_to?fmtDate(w.valid_to):'süresiz'}</span>${w.note?`<span>${esc(w.note)}</span>`:''}</div></div></div>`).join('')||'<div class="empty">Çalışma düzeni tanımlı değil. Vardiyalar elle planlanıyor.</div>'}
+   <p class="sub">Çalışma düzeni Vardiya ekranıyla aynıdır; buradan değiştirince vardiyalar ve hedeflerdeki çalışma günleri de güncellenir.</p></div>`}
+function pcUcret(sid){const pf=pcPF(sid),mg=can('manage_entitlements'),B=pf.benefits||[],ss=(S.d.staff_settings||[]).find(x=>x.profile_id===sid)||{},pl=(S.d.prim_plans||[]).find(x=>x.id===ss.prim_plan_id);
+  const role=(S.d.profileMap.get(sid)||{}).role,dp=(S.d.prim_plans||[]).find(x=>x.role_default===role);
+  return `<div class="card"><div class="row"><h2 style="flex:1;margin:0">Ücret</h2>${mg?pcEditBtn(sid,'ucret'):''}</div><div class="pc-grid">${pcKv('Aylık net maaş',money(pf.base_salary||0))}${pcKv('Günlük yol',money(pf.travel_daily||0))}${pcKv('Günlük yemek',money(pf.meal_daily||0))}
+   ${pcKv('Fazla mesai saat ücreti',Number(pf.overtime_hourly)>0?money(pf.overtime_hourly):'Otomatik: maaş ÷ 225 × 1,5 = '+money(Math.round((pf.base_salary||0)/225*1.5*100)/100))}${pf.note?pcKv('Not',esc(pf.note)):''}</div>
+   <p class="sub">Bu tanımlar Hakedişler › Maaş ve ücret tanımları, Aylık toplu hakediş ve Bordro hazırlığıyla ortaktır. Tutarlar NET'tir; resmî bordro (SGK, vergi) mali müşavirde kalır.</p></div>
+   <div class="card"><h2>Yan haklar</h2>${B.map(b=>`<div class="item" style="padding:5px 0"><div class="main"><b>${esc(b.name)}</b> ${b.payroll?'<span class="pill ok">bordroya eklenir</span>':'<span class="pill">bilgi</span>'}</div><div class="side">${money(b.amount)} / ay</div></div>`).join('')||'<div class="empty">Tanımlı yan hak yok</div>'}
+   <p class="sub">"Bordroya eklenir" işaretli yan haklar her ay bordroda hakediş olarak yazılır (ör. telefon hattı, yakıt desteği). Diğerleri bilgi amaçlıdır (ör. özel sağlık sigortası).</p></div>
+   <div class="card"><div class="row"><h2 style="flex:1;margin:0">Prim planı</h2>${can('manage_commissions')?`<select class="in" style="width:auto" data-c="pm-plan" data-id="${sid}">${pmPlanOpts(sid)}</select>`:''}</div><p style="margin:4px 0">${pl?'<b>'+esc(pl.name)+'</b> (kişiye özel)':dp?'<b>'+esc(dp.name)+'</b> (rolünün varsayılanı)':'Tanımlı plan yok'}</p><p class="sub">Primler ekranındaki planla aynıdır. Ayrıntı için Prim sekmesine bakın.</p></div>`}
+function pcHakedis(sid){const m=S.ui.pcm||monthStart(today()),mg=can('manage_entitlements'),l=hkEnt(sid,m).sort((a,b)=>String(a.created_at).localeCompare(String(b.created_at))),sm=hkSum(l),live=hkPrim(sid,m),
+  rec=sum(l.filter(e=>e.kind==='prim'),e=>e.amount)-sum(l.filter(e=>e.kind==='kesinti'&&String(e.description||'').startsWith('Prim düzeltmesi')),e=>e.amount);if(S.hp===undefined)loadPrim();
+  const months=[...new Set(hkEnt(sid).map(e=>e.period))].sort().reverse().slice(0,12);
+  return `<div class="row" style="gap:6px;flex-wrap:wrap">${pcMonthBar(m)}<div class="sp"></div>${mg?`<button class="btn pri" data-a="hk-pay" data-id="${sid}" ${sm.pend>0?'':'disabled'}>Öde (net ${money(sm.remain)})</button><button class="btn" data-a="hk-add" data-id="${sid}">+ Hakediş</button><button class="btn" data-a="hk-kes" data-id="${sid}">Kesinti</button>`:''}<button class="btn" data-a="st-open" data-id="${sid}">${ic('receipt','sm')} Ekstre</button></div>
+   <div style="margin-top:10px">${hkTiles(sm,live,rec)}${hkKindTiles(sm)}</div>
+   <div class="card" style="margin-top:12px"><h2>${MONN[parse(m).getMonth()]} ${parse(m).getFullYear()} kayıtları</h2>${l.map(e=>hkRowHtml(e,mg)).join('')||'<div class="empty">Bu ay için kayıt yok.</div>'}</div>
+   ${months.length?`<div class="card"><h2>Dönemler</h2>${months.map(pm=>{const x=hkSum(hkEnt(sid,pm)),d=parse(pm);return `<div class="item" style="padding:6px 0"><div class="main"><a href="#personel" data-a="pc-month" data-m="${pm}"><b>${MONN[d.getMonth()]} ${d.getFullYear()}</b></a></div><div class="side"><b>${money(x.net)}</b><div class="sub">ödenen ${money(x.paid)}${x.remain>0?' · bekleyen '+money(x.remain):''}</div></div></div>`}).join('')}</div>`:''}
+   <p class="sub">Ödeme yapıldığında tutar seçilen kasa / banka hesabından çıkar ve Masraflar'a personel kategorisinde yazılır; avans taksitleri ve kesintiler net ödemeden düşer.</p>`}
+function pcMonthBar(m){const d0=parse(m);return `<button class="btn" data-a="pc-mon" data-n="-1" aria-label="Önceki ay">‹</button><b style="min-width:110px;text-align:center;display:inline-block">${MONN[d0.getMonth()]} ${d0.getFullYear()}</b><button class="btn" data-a="pc-mon" data-n="1" aria-label="Sonraki ay">›</button>`}
+/* avans */
+const avInst=a=>(S.d.entitlements||[]).filter(e=>e.advance_id===a.id&&e.kind==='kesinti'&&e.status!=='iptal').sort((x,y)=>x.period.localeCompare(y.period));
+const avLeft=a=>a.status==='odendi'?sum(avInst(a).filter(e=>e.status==='bekliyor'),e=>e.amount):a.status==='iptal'||a.status==='reddedildi'?0:Number(a.amount);
+function avRow(a,withName){const st=AV_ST[a.status]||['',a.status],mg=can('manage_entitlements'),I=avInst(a),done=I.filter(e=>e.status==='odendi').length;
+  return `<div class="item"><div class="main"><b>${withName?esc(hkName(a.staff_id))+' · ':''}Avans ${money(a.amount)}</b> <span class="pill ${st[0]}">${st[1]}</span> <span class="sub mono">${esc(a.adv_no)}</span>
+   <div class="meta"><span>${esc(a.reason)}</span><span>${a.installments>1?a.installments+' taksit':'tek seferde'} · ${a.start_period?MONN[parse(a.start_period).getMonth()]+' '+parse(a.start_period).getFullYear()+' hakedişinden':''}</span>${a.status==='odendi'?`<span>Ödendi ${fmtDate(a.paid_date)} · mahsup ${done}/${I.length} · kalan ${money(avLeft(a))}</span>`:''}${a.decision_note?`<span>Not: ${esc(a.decision_note)}</span>`:''}<span>Talep ${fmtTime(a.created_at)}</span></div>
+   ${a.status==='odendi'&&I.length?`<div class="pc-inst">${I.map(e=>`<span class="pill ${e.status==='odendi'?'ok':''}" title="${esc(e.description||'')}">${MONN[parse(e.period).getMonth()].slice(0,3)} ${parse(e.period).getFullYear()%100} · ${money(e.amount)}</span>`).join('')}</div>`:''}</div>
+   <div class="side">${mg&&a.status==='bekliyor'?`<button class="btn sm pri" data-a="av-dec" data-id="${a.id}">Değerlendir</button>`:''}${mg&&a.status==='onaylandi'?`<button class="btn sm pri" data-a="av-pay" data-id="${a.id}">Öde</button>`:''}${mg&&a.status==='odendi'&&avLeft(a)>0?`<button class="btn sm" data-a="av-plan" data-id="${a.id}">Planı değiştir</button>`:''}
+   ${(mg&&['bekliyor','onaylandi'].includes(a.status))||(pcSelf(a.staff_id)&&a.status==='bekliyor')||(mg&&a.status==='odendi'&&!I.some(e=>e.status==='odendi'))?` <button class="btn sm" data-a="av-cancel" data-id="${a.id}">İptal</button>`:''}</div></div>`}
+function pcAvans(sid){const A=(S.d.advance_requests||[]).filter(a=>a.staff_id===sid).sort((a,b)=>String(b.created_at).localeCompare(String(a.created_at))),open=A.filter(a=>avLeft(a)>0),pf=pcPF(sid);
+  return `<div class="grid g4">${tile('Açık avans (mahsup bekleyen)',money(sum(open,avLeft)))}${tile('Bu yıl verilen',money(sum(A.filter(a=>a.status==='odendi'&&String(a.paid_date).slice(0,4)===today().slice(0,4)),a=>a.amount)))}${tile('Bekleyen talep',num(A.filter(a=>a.status==='bekliyor').length))}${tile('Aylık net maaş',money(pf.base_salary||0))}</div>
+   <div class="card" style="margin-top:12px"><div class="row"><h2 style="flex:1;margin:0">Avans talepleri ve mahsup planları</h2><button class="btn pri" data-a="av-new" data-id="${sid}">${pcSelf(sid)?'Avans talep et':'+ Avans'}</button></div>${A.map(a=>avRow(a,false)).join('')||'<div class="empty">Avans kaydı yok</div>'}</div>
+   <p class="sub">Talep → işletme sahibi onayı (tek seferde ya da taksitli mahsup planı) → ödeme (seçilen kasa / banka hesabından otomatik kasa hareketi). Her taksit ilgili ayın hakedişinden kesinti olarak düşer. Tüm adımlar personel geçmişine yazılır.</p>`}
+function avAllView(){const A=(S.d.advance_requests||[]).slice().sort((a,b)=>String(b.created_at).localeCompare(String(a.created_at))),p=A.filter(a=>a.status==='bekliyor'||a.status==='onaylandi'),o=A.filter(a=>a.status==='odendi'&&avLeft(a)>0),h=A.filter(a=>!p.includes(a)&&!o.includes(a)).slice(0,50);
+  return `<div class="grid g4">${tile('Onay / ödeme bekleyen',num(p.length),money(sum(p,a=>a.amount)),p.length?'bad':'')}${tile('Mahsubu süren',num(o.length),money(sum(o,avLeft)))}${tile('Bu ay verilen',money(sum(A.filter(a=>a.status==='odendi'&&String(a.paid_date).slice(0,7)===today().slice(0,7)),a=>a.amount)))}${tile('Bu ay mahsup',money(sum((S.d.entitlements||[]).filter(e=>e.advance_id&&e.kind==='kesinti'&&e.status!=='iptal'&&e.period===monthStart(today())),e=>e.amount)))}</div>
+   <div class="card" style="margin-top:12px"><div class="row"><h2 style="flex:1;margin:0">Onay ve ödeme bekleyenler</h2><button class="btn" data-a="av-new" data-id="">+ Avans ver</button></div>${p.map(a=>avRow(a,true)).join('')||'<div class="empty">Bekleyen talep yok</div>'}</div>
+   <div class="card"><h2>Mahsubu süren avanslar</h2>${o.map(a=>avRow(a,true)).join('')||'<div class="empty">Yok</div>'}</div><div class="card"><h2>Geçmiş</h2>${h.map(a=>avRow(a,true)).join('')||'<div class="empty">Yok</div>'}</div>`}
+/* izin */
+function lvRow(l,withName){const st=LV_ST[l.status]||['',l.status],t=lvType(l.type_code),ap=can('approve_leave'),docs=(S.d.staff_docs||[]).filter(d=>d.leave_id===l.id);
+  return `<div class="item"><div class="main"><b>${withName?esc(hkName(l.staff_id))+' · ':''}${esc(t.name)}</b> <span class="pill ${st[0]}">${st[1]}</span> <span class="sub mono">${esc(l.leave_no)}</span>${t.paid===false?' <span class="pill bad">ücretsiz</span>':''}
+   <div class="meta"><span>${fmtDate(l.start_date)}${l.end_date!==l.start_date?' – '+fmtDate(l.end_date):''} · <b>${num(Number(l.days))} gün</b></span>${l.note?`<span>${esc(l.note)}</span>`:''}${l.decision_note?`<span>Karar notu: ${esc(l.decision_note)}</span>`:''}${t.needs_doc&&!docs.length?'<span class="neg">Belge eklenmedi</span>':''}${docs.map(d=>`<span><a href="#personel" data-a="pd-open" data-path="${esc(d.path)}">${ic('clip','sm')} ${esc(d.title)}</a></span>`).join('')}</div></div>
+   <div class="side">${ap&&l.status==='bekliyor'&&(!pcSelf(l.staff_id)||isOwner())?`<button class="btn sm pri" data-a="lv-dec" data-id="${l.id}">Değerlendir</button>`:''}${(ap&&['bekliyor','onaylandi'].includes(l.status))||(pcSelf(l.staff_id)&&l.status==='bekliyor')?` <button class="btn sm" data-a="lv-cancel" data-id="${l.id}">İptal</button>`:''}${(pcSelf(l.staff_id)||can('manage_staff'))&&['bekliyor','onaylandi'].includes(l.status)?` <button class="btn sm" data-a="lv-doc" data-id="${l.id}">Belge ekle</button>`:''}</div></div>`}
+function pcIzin(sid){pcLbLoad(sid);const b=S.lbx&&S.lbx[sid],L=(S.d.leave_requests||[]).filter(l=>l.staff_id===sid).sort((a,c)=>c.start_date.localeCompare(a.start_date)),y=today().slice(0,4);
+  const used=k=>sum(L.filter(l=>l.status==='onaylandi'&&l.type_code===k&&l.start_date.slice(0,4)===y),l=>Number(l.days));
+  return `<div class="grid g4">${tile('Kalan yıllık izin',b?num(b.balance)+' gün':'…',b&&b.pending?b.pending+' gün onay bekliyor':'',b&&b.balance<0?'bad':'')}${tile('Hak edilen (toplam)',b?num(b.earned)+' gün':'…',b&&b.carry?'devreden '+num(b.carry)+' gün dahil değil':'')}${tile('Kullanılan yıllık izin',b?num(b.used)+' gün':'…')}${tile('Sonraki hak ediş',b&&b.next_date?fmtDate(b.next_date):'—',b&&b.next_days?'+'+b.next_days+' gün':b&&!b.hire_date?'işe giriş tarihi yok':'')}</div>
+   <div class="grid g4" style="margin-top:8px">${(S.d.leave_types||[]).filter(t=>t.active).slice(0,4).map(t=>tile(esc(t.name)+' · '+y,num(used(t.code))+' gün')).join('')}</div>
+   <div class="card" style="margin-top:12px"><div class="row"><h2 style="flex:1;margin:0">İzin talepleri ve geçmiş</h2><button class="btn pri" data-a="lv-new" data-id="${sid}">${pcSelf(sid)?'İzin talep et':'+ İzin gir'}</button></div>${L.map(l=>lvRow(l,false)).join('')||'<div class="empty">İzin kaydı yok</div>'}</div>
+   ${b&&b.per_year&&b.per_year.length?`<div class="card"><h2>Yıllık izin hak edişleri</h2><div class="tw"><table><tr><th style="text-align:left">Hizmet yılı</th><th>Hak ediş tarihi</th><th>Gün</th></tr>${b.per_year.map(r=>`<tr><td style="text-align:left">${r.year}. yıl</td><td>${fmtDate(r.date)}</td><td>${r.days}</td></tr>`).join('')}</table></div><p class="sub">${b.override!=null?'Kişiye özel yıllık izin hakkı: '+b.override+' gün.':'İş Kanunu: 1–5 yıl 14 gün, 5–15 yıl 20 gün, 15 yıl ve üstü 26 gün; 18 yaş altı ve 50 yaş üstü en az 20 gün (doğum tarihi kimlik bilgisinden).'} Devreden / başlangıç bakiyesi İstihdam bölümünden girilir.</p></div>`:''}
+   <p class="sub">Onaylanan izin günleri vardiyada "İzinli" olur; hedeflerde çalışma günü sayılmaz. Ücretsiz izin ve devamsızlık günleri bordroda maaştan (aylık ÷ 30) düşülür.</p>`}
+function lvAllView(){const u=S.ui,m=u.lvm||monthStart(today()),e=addDays(addMonths(m,1),-1),L=(S.d.leave_requests||[]).filter(l=>l.start_date<=e&&l.end_date>=m&&l.status!=='iptal').sort((a,b)=>a.start_date.localeCompare(b.start_date)),P=lvPending();
+  const sts=S.d.profiles.filter(isStaffP),days=Array.from({length:parse(e).getDate()},(_,i)=>addDays(m,i));
+  const cell=(sid,d)=>{const l=L.find(x=>x.staff_id===sid&&x.status==='onaylandi'&&(x.dates||[]).includes(d)),p=L.find(x=>x.staff_id===sid&&x.status==='bekliyor'&&d>=x.start_date&&d<=x.end_date);return l?`<i class="lvd ${lvType(l.type_code).paid===false?'u':''}" title="${esc(lvType(l.type_code).name)}"></i>`:p?'<i class="lvd p" title="Onay bekliyor"></i>':''};
+  return `<div class="card"><div class="row"><h2 style="flex:1;margin:0">Onay bekleyen izin talepleri</h2>${can('approve_leave')?`<button class="btn" data-a="lv-new" data-id="">+ İzin gir</button>`:''}</div>${P.map(l=>lvRow(l,true)).join('')||'<div class="empty">Bekleyen talep yok</div>'}</div>
+   <div class="card tw"><div class="row"><h2 style="flex:1;margin:0">İzin takvimi</h2><button class="btn" data-a="lv-mon" data-n="-1">‹</button><b style="min-width:110px;text-align:center">${MONN[parse(m).getMonth()]} ${parse(m).getFullYear()}</b><button class="btn" data-a="lv-mon" data-n="1">›</button></div>
+   <table class="lv-cal"><tr><th style="text-align:left">Çalışan</th>${days.map(d=>`<th class="${[0,6].includes(parse(d).getDay())?'we':''}">${parse(d).getDate()}</th>`).join('')}</tr>${sts.map(p=>`<tr><td style="text-align:left;white-space:nowrap">${esc(p.full_name)}</td>${days.map(d=>`<td>${cell(p.id,d)}</td>`).join('')}</tr>`).join('')}</table>
+   <div class="sub" style="margin-top:6px"><i class="lvd"></i> ücretli izin · <i class="lvd u"></i> ücretsiz / devamsızlık · <i class="lvd p"></i> onay bekliyor</div></div>
+   <div class="card"><h2>${MONN[parse(m).getMonth()]} izinleri</h2>${L.filter(l=>l.status!=='bekliyor').map(l=>lvRow(l,true)).join('')||'<div class="empty">Bu ay izin yok</div>'}</div>`}
+/* bordro */
+const PR_COLS=[['salary','Maaş'],['overtime','Fazla mesai'],['travel','Yol'],['meal','Yemek'],['prim','Prim'],['benefits','Yan hak'],['extra_plus','Ek'],['other_plus','Diğer hakediş']];
+function prLineHtml(L,run,big){const r=L.result||{},c=L.calc||{},e=L.edits||{};
+  const row=(l,s,v,neg)=>`<tr><td style="text-align:left">${l}</td><td style="text-align:left" class="sub">${s}</td><td class="${neg?'neg':''}"><b>${neg&&v?'−':''}${money(v)}</b></td></tr>`;
+  return `<div class="tw"><table class="pm-t"><tr><th style="text-align:left">Kalem</th><th style="text-align:left">Hesap</th><th>Tutar</th></tr>
+   ${row('Maaş',`${money(c.base)} × ${c.emp_days}/30 gün${r.unpaid_days>0?` − ${num(r.unpaid_days)} gün ücretsiz izin / devamsızlık (${money(r.salary_cut)})`:''}${c.emp_days<30?' · kıst (işe giriş / ayrılış)':''}`,r.salary)}
+   ${row('Fazla mesai',`${num(r.ot_hours)} saat × ${money(c.ot_rate)}${c.ot_auto_rate?' (maaş ÷ 225 × 1,5)':''}${e.ot_hours!=null&&e.ot_hours!==c.ot_hours?` · sistem ${num(c.ot_hours)} saat hesapladı`:''}`,r.overtime)}
+   ${row('Yol',`${num(r.travel_days)} gün × ${money(c.travel_daily)}`,r.travel)}${row('Yemek',`${num(r.meal_days)} gün × ${money(c.meal_daily)}`,r.meal)}
+   ${row('Prim',c.prim_closed!=null?'kesinleşmiş prim dönemi':'güncel prim (dönem kesinleşmedi)',r.prim)}${r.benefits?row('Yan haklar',esc(c.benefit_names||''),r.benefits):''}
+   ${(e.extra||[]).map(x=>row(esc(HKL[x.kind]||x.kind),esc(x.desc),x.amount,x.kind==='kesinti')).join('')}${r.other_plus?row('Diğer hakedişler','kıdem / ikramiye / diğer (kayıtlı)',r.other_plus):''}
+   ${c.adv_inst?row('Avans taksiti','bu ayın mahsubu',c.adv_inst,true):''}${c.kesinti?row('Kesinti','kayıtlı kesintiler',c.kesinti,true):''}${c.old_avans?row('Avans (mahsup)','tek seferde mahsup',c.old_avans,true):''}
+   <tr class="tot"><td style="text-align:left"><b>Net ödenecek</b></td><td class="sub">${c.work_days!=null?`çalışma günü ${c.work_days} · giriş-çıkış ${c.clock_days} gün`:''}</td><td><b>${money(r.net)}</b></td></tr></table></div>${e.note?`<p class="sub">Not: ${esc(e.note)}</p>`:''}`}
+function pcBordro(sid){const m=S.ui.pcm||monthStart(today()),run=(S.d.payroll_runs||[]).find(r=>r.period===m),mg=can('manage_entitlements');
+  if(run&&(mg||run.status==='kesin'))pcPayLoad(m);const P=S.pay&&S.pay[m],L=P&&P.lines&&P.lines.find(x=>x.staff_id===sid);
+  const R=(S.d.payroll_runs||[]).filter(r=>r.status==='kesin').sort((a,b)=>b.period.localeCompare(a.period)).slice(0,12);
+  return `<div class="row" style="gap:6px">${pcMonthBar(m)}<div class="sp"></div>${mg?`<button class="btn" data-a="pc-view-go" data-k="bordro" data-m="${m}">Bordro ekranı</button>`:''}${L&&run&&run.status==='kesin'?`<button class="btn" data-a="pr-slip" data-id="${sid}" data-m="${m}">${ic('printer','sm')} Pusula</button>`:''}</div>
+   <div class="card" style="margin-top:10px">${!run?'<div class="empty">Bu ayın bordrosu henüz hazırlanmadı.</div>':run.status!=='kesin'&&!mg?'<div class="empty">Bu ayın bordrosu hazırlanıyor; kesinleşince burada görünür.</div>':!P?'<div class="empty">Yükleniyor…</div>':!L?'<div class="empty">Bu bordroda satırınız yok.</div>':
+    `<div class="row"><h2 style="flex:1;margin:0">${MONN[parse(m).getMonth()]} ${parse(m).getFullYear()} bordrosu</h2><span class="pill ${run.status==='kesin'?'ok':'warn'}">${run.status==='kesin'?'Kesinleşti':'Taslak'}</span>${run.status==='kesin'?` <span class="pill ${L.paid>0?'ok':'warn'}">${L.open>0?'Ödeme bekliyor':'Ödendi'}</span>`:''}</div>${prLineHtml(L,run)}`}</div>
+   ${R.length?`<div class="card"><h2>Geçmiş dönemler</h2>${R.map(r=>`<div class="item" style="padding:5px 0"><div class="main"><a href="#personel" data-a="pc-month" data-m="${r.period}"><b>${MONN[parse(r.period).getMonth()]} ${parse(r.period).getFullYear()}</b></a></div><div class="side"><span class="sub">kesinleşti ${fmtDate(r.finalized_at)}</span></div></div>`).join('')}</div>`:''}
+   <p class="sub">Bordro hazırlığı NET ödemedir; resmî bordro, SGK ve vergi işlemleri mali müşavirde kalır.</p>`}
+function prView(){const m=S.ui.prm2||addMonths(monthStart(today()),0),run=(S.d.payroll_runs||[]).find(r=>r.period===m);if(run)pcPayLoad(m);const P=run&&S.pay&&S.pay[m],L=(P&&P.lines)||[],k=run&&run.status==='kesin';
+  const tot=f=>sum(L,x=>Number((x.result||{})[f]||0));
+  return `<div class="row" style="gap:6px;flex-wrap:wrap"><button class="btn" data-a="pr-mon" data-n="-1">‹</button><b style="min-width:110px;text-align:center">${MONN[parse(m).getMonth()]} ${parse(m).getFullYear()}</b><button class="btn" data-a="pr-mon" data-n="1">›</button>
+   ${run?`<span class="pill ${k?'ok':'warn'}">${k?'Kesinleşti '+fmtDate(run.finalized_at):'Taslak'}</span>`:''}<div class="sp"></div>
+   ${!k?`<button class="btn" data-a="pr-prep" data-m="${m}">${run?'Yeniden hesapla':'Bordroyu hazırla'}</button>`:''}${run&&!k&&L.length?`<button class="btn pri" data-a="pr-fin" data-m="${m}">Kontrol ettim, kesinleştir</button>`:''}
+   ${k?`<button class="btn pri" data-a="pr-pay" data-m="${m}">Toplu öde</button><button class="btn" data-a="pr-reopen" data-m="${m}">Yeniden aç</button>`:''}${L.length?`<button class="btn" data-a="pr-csv" data-m="${m}">CSV</button>`:''}</div>
+   ${!run?`<div class="card empty" style="margin-top:10px">Bu ayın bordrosu hazırlanmadı. "Bordroyu hazırla" ile sistem maaş, fazla mesai, izin, yol, yemek, prim, yan haklar, avans taksitleri ve kesintileri hesaplar; siz kontrol edip düzeltir ve kesinleştirirsiniz.</div>`:!P?'<div class="card empty">Yükleniyor…</div>':`
+   <div class="grid g4" style="margin-top:10px">${tile('Çalışan',num(L.length))}${tile('Toplam hakediş',money(tot('gross')))}${tile('Kesinti + avans',money(tot('deductions')))}${tile('Net ödenecek',money(tot('net')),k?'ödenen '+money(sum(L,x=>x.paid)):'')}</div>
+   ${!P.prim_closed?`<div class="note">${P.month_ended?'Prim dönemi kesinleşmedi; bordro kesinleştirilince bu ayın primi de kesinleşir.':'Ay bitmediği için prim güncel değerle gösterilir; prim, ay bitince Prim dönemleri bölümünden kesinleşir ve hakedişe ayrıca yazılır.'}</div>`:''}
+   <div class="card tw"><table class="pr-t"><thead><tr><th style="text-align:left">Çalışan</th>${PR_COLS.map(([,l])=>`<th>${l}</th>`).join('')}<th>Kesinti / avans</th><th>Net</th><th></th></tr></thead><tbody>
+   ${L.map(x=>{const r=x.result||{},c=x.calc||{};return `<tr><td style="text-align:left"><a href="#personel" data-a="pc-open" data-id="${x.staff_id}"><b>${esc(x.name)}</b></a>${!c.has_pay_profile?' <span class="pill warn">ücret tanımı yok</span>':''}${r.unpaid_days>0?` <span class="pill bad">${num(r.unpaid_days)} gün ücretsiz</span>`:''}${x.edits&&Object.keys(x.edits).length?' <span class="pill">düzeltildi</span>':''}</td>
+     ${PR_COLS.map(([f])=>`<td>${Number(r[f])?money(r[f]):'<span class="sub">—</span>'}${f==='overtime'&&r.ot_hours?`<div class="sub">${num(r.ot_hours)} sa</div>`:''}</td>`).join('')}<td class="${r.deductions?'neg':''}">${r.deductions?'−'+money(r.deductions):'—'}</td><td><b>${money(r.net)}</b>${k?`<div class="sub">${x.open>0?'ödeme bekliyor':'ödendi'}</div>`:''}</td>
+     <td>${!k?`<button class="btn sm" data-a="pr-edit" data-id="${x.staff_id}" data-m="${m}">Düzelt</button>`:`<button class="btn sm" data-a="pr-slip" data-id="${x.staff_id}" data-m="${m}">Pusula</button>`}</td></tr>`}).join('')}</tbody>
+   <tfoot><tr class="tot"><td style="text-align:left"><b>Toplam</b></td>${PR_COLS.map(([f])=>`<td><b>${money(tot(f))}</b></td>`).join('')}<td><b>${money(tot('deductions'))}</b></td><td><b>${money(tot('net'))}</b></td><td></td></tr></tfoot></table></div>`}
+   <div class="card"><h2>Geçmiş dönemler</h2>${(S.d.payroll_runs||[]).slice().sort((a,b)=>b.period.localeCompare(a.period)).slice(0,12).map(r=>`<div class="item" style="padding:5px 0"><div class="main"><a href="#personel" data-a="pr-go" data-m="${r.period}"><b>${MONN[parse(r.period).getMonth()]} ${parse(r.period).getFullYear()}</b></a></div><div class="side"><span class="pill ${r.status==='kesin'?'ok':'warn'}">${r.status==='kesin'?'Kesin':'Taslak'}</span>${r.reopened?` <span class="sub">${r.reopened} kez yeniden açıldı</span>`:''}</div></div>`).join('')||'<div class="empty">Henüz bordro yok</div>'}</div>
+   <p class="sub">Fazla mesai giriş-çıkış kaydından (planlı saatin üstü) hesaplanır; yol ve yemek giriş yapılan günler üzerinden (giriş kaydı yoksa planlı çalışma günleri). Kesinleştirince her kalem hakediş olarak yazılır; elle girilmiş aynı tür hakediş varsa yalnız fark eklenir. Ödeme yapıldıktan sonraki düzeltmeler ayrı hakediş / kesinti kaydıdır.</p>`}
+/* prim */
+function pcPrim(sid){const m=S.ui.pcm||monthStart(today()),mg=can('manage_entitlements'),pp=(S.d.prim_periods||[]).find(x=>x.period===m),C=(S.d.prim_corrections||[]).filter(x=>x.staff_id===sid&&x.period===m);if(S.hp===undefined)loadPrim();
+  const live=hkPrim(sid,m),snap=pp?Number((pp.snapshot||{})[sid]||0):null,corr=sum(C,x=>x.amount);
+  let card='';if(primNew(m)){pmLoad(m);const X=S.pm&&S.pm[monthStart(m)],b=X&&pmOf(m,sid);card=X?b?pmCard(b,X.store,can('manage_commissions')):'<div class="card empty">Bu ay prim planı yok</div>':'<div class="card empty">Prim hesaplanıyor…</div>'}
+  return `<div class="row" style="gap:6px">${pcMonthBar(m)}<div class="sp"></div>${pp?`<span class="pill ok">Kesinleşti ${fmtDate(pp.finalized_at)}</span>`:m<monthStart(today())?'<span class="pill warn">Kesinleşmedi</span>':'<span class="pill">Ay sürüyor</span>'}</div>
+   <div class="grid g4" style="margin-top:10px">${tile('Güncel prim',money(live))}${tile('Kesinleşen',pp?money(snap):'—')}${tile('Sonraki düzeltmeler',pp?money(corr):'—',C.length?C.length+' kayıt':'')}${tile('Fark',pp?money(live-snap-corr):'—',pp&&Math.abs(live-snap-corr)>0.004?'düzeltme kaydı bekliyor':'',pp&&Math.abs(live-snap-corr)>0.004?'bad':'')}</div>
+   ${mg&&pp&&Math.abs(live-snap-corr)>0.004?`<div class="row" style="margin:8px 0"><button class="btn pri" data-a="pp-corr" data-id="${sid}" data-m="${m}">Düzeltme kaydı oluştur (${money(live-snap-corr)})</button></div>`:''}
+   ${card?`<div style="margin-top:12px">${card}</div>`:''}
+   ${C.length?`<div class="card"><h2>Düzeltme kayıtları</h2>${C.map(x=>`<div class="item" style="padding:5px 0"><div class="main"><b>${x.amount>0?'+':'−'}${money(Math.abs(x.amount))}</b><div class="meta"><span>${esc(x.reason||'')}</span><span>${fmtTime(x.at)} · ${esc(hkName(x.actor))}</span></div></div></div>`).join('')}</div>`:''}
+   <p class="sub">Primler satışlardan otomatik hesaplanır. Ay bitince işletme sahibi primi inceleyip kesinleştirir (Personeller › Prim dönemleri ya da bordro). Kesinleşen döneme sonradan gelen farklar (iade, düzeltme) ayrı kayıt olarak hakedişe yazılır.</p>`}
+function ppView(){if(S.hp===undefined)loadPrim();const cur=monthStart(today()),M=Array.from({length:6},(_,i)=>addMonths(cur,-i)),sts=S.d.profiles.filter(p=>p.role!=='owner');
+  return M.map(m=>{const pp=(S.d.prim_periods||[]).find(x=>x.period===m),ended=m<cur;
+    const rows=sts.map(p=>{const live=hkPrim(p.id,m),snap=pp?Number((pp.snapshot||{})[p.id]||0):null,corr=sum((S.d.prim_corrections||[]).filter(x=>x.staff_id===p.id&&x.period===m),x=>x.amount);return{p,live,snap,corr,diff:pp?live-snap-corr:0}}).filter(r=>r.live||r.snap);
+    return `<div class="card"><div class="row"><h2 style="flex:1;margin:0">${MONN[parse(m).getMonth()]} ${parse(m).getFullYear()}</h2>${pp?`<span class="pill ok">Kesinleşti ${fmtDate(pp.finalized_at)} · ${esc(hkName(pp.finalized_by))}</span>`:ended?`<button class="btn pri" data-a="pp-close" data-m="${m}">İncele ve kesinleştir</button>`:'<span class="pill">Ay sürüyor</span>'}</div>
+     <div class="tw"><table><tr><th style="text-align:left">Çalışan</th><th>Güncel prim</th>${pp?'<th>Kesinleşen</th><th>Düzeltmeler</th><th>Fark</th><th></th>':''}</tr>${rows.map(r=>`<tr><td style="text-align:left">${esc(r.p.full_name)}</td><td>${money(r.live)}</td>${pp?`<td>${money(r.snap)}</td><td>${money(r.corr)}</td><td class="${Math.abs(r.diff)>0.004?'neg':''}">${money(r.diff)}</td><td>${Math.abs(r.diff)>0.004?`<button class="btn sm" data-a="pp-corr" data-id="${r.p.id}" data-m="${m}">Düzeltme kaydı</button>`:''}</td>`:''}</tr>`).join('')||`<tr><td colspan="6" class="empty">Prim yok</td></tr>`}</table></div></div>`}).join('')
+   +'<p class="sub">Kesinleştirme, o ayın primini her çalışanın hakedişine yazar ve dönemi kilitler. Sonradan iade ya da düzeltmeyle prim değişirse fark "Düzeltme kaydı" ile ayrı hakediş olarak işlenir ve kayıt altında tutulur.</p>'}
+/* hedef · vardiya · eğitim */
+function pcTakip(sid){const m=monthStart(today()),p=S.d.profileMap.get(sid),T=(S.d.targets||[]).find(t=>t.staff_id===sid&&t.month===m),self=pcSelf(sid);
+  const sh=(S.d.shifts||[]).filter(s=>s.staff_id===sid&&s.shift_date>=addDays(today(),-7)&&s.shift_date<=addDays(today(),20)).sort((a,b)=>a.shift_date.localeCompare(b.shift_date));
+  const tr=(S.d.trainings||[]).filter(t=>t.active!==false&&egVisibleFor(t,p));
+  const tv=(k,l,f)=>T&&T[k]!=null?pcKv(l,f(T[k])):'';
+  return `<div class="card"><div class="row"><h2 style="flex:1;margin:0">Hedef · ${MONN[parse(m).getMonth()]}</h2>${can('manage_targets')?`<button class="btn sm" data-a="target-edit" data-staff="${sid}" data-name="${esc(p.full_name)}">Hedefi düzenle</button>`:''} <a class="btn sm" href="#hedef">Hedefler</a></div>
+   ${T?`<div class="pc-grid">${tv('dev_count','Cihaz satış adedi',num)}${tv('acc_amount','Aksesuar cirosu',money)}${tv('monthly_amount','Aylık ciro',money)}${tv('monthly_count','Satış adedi',num)}${tv('daily_amount','Günlük ciro',money)}</div>`:'<div class="empty">Bu ay için kişisel hedef tanımlı değil</div>'}
+   <p class="sub">İlerleme, kalan gün ve günde gereken tutar Hedefler ekranındadır; onaylı izin günleri çalışma günü sayılmaz.</p></div>
+   <div class="card"><div class="row"><h2 style="flex:1;margin:0">Vardiyalar (son 7 gün – sonraki 3 hafta)</h2>${can('manage_shifts')?`<button class="btn sm" data-a="cg-new-s" data-staff="${sid}">Vardiya değişikliği</button>`:''} <a class="btn sm" href="#vardiya">Vardiya</a></div>
+   <div class="pc-sh">${sh.map(s=>`<div class="pc-shd ${s.shift_date===today()?'now':''} ${s.status}"><b>${parse(s.shift_date).getDate()} ${MONN[parse(s.shift_date).getMonth()].slice(0,3)}</b><span>${['Paz','Pzt','Sal','Çar','Per','Cum','Cmt'][parse(s.shift_date).getDay()]}</span><span>${s.status==='planli'?hhmm(s.start_time)+'–'+hhmm(s.end_time):s.status==='izinli'?'İzinli':'İptal'}</span></div>`).join('')||'<div class="empty">Kayıtlı vardiya yok</div>'}</div></div>
+   <div class="card"><div class="row"><h2 style="flex:1;margin:0">Eğitimler</h2><a class="btn sm" href="#egitim">Eğitimler</a></div>${tr.map(t=>{const dn=egDoneFor(t,sid),due=egDue(t,sid);return `<div class="item" style="padding:5px 0"><div class="main"><b>${esc(t.title)}</b>${t.required?' <span class="pill">zorunlu</span>':''}<div class="meta">${due?`<span class="${!dn&&due<today()?'neg':''}">son tarih ${fmtDate(due)}</span>`:''}</div></div><div class="side">${dn?'<span class="pill ok">Tamamlandı</span>':'<span class="pill warn">Bekliyor</span>'}${can('manage_trainings')?` <button class="btn sm" data-a="eg-status" data-id="${t.id}">Durum</button>`:''}</div></div>`}).join('')||'<div class="empty">Atanmış eğitim yok</div>'}</div>`}
+/* belgeler */
+function pcBelge(sid){const D=(S.d.staff_docs||[]).filter(d=>d.staff_id===sid).sort((a,b)=>String(b.created_at).localeCompare(String(a.created_at))),ms=can('manage_staff');
+  return `<div class="card"><div class="row"><h2 style="flex:1;margin:0">Belgeler</h2><button class="btn pri" data-a="pd-new" data-id="${sid}">${ic('upload','sm')} Belge yükle</button></div>
+   ${D.map(d=>{const ex=d.expires_on&&d.expires_on<=addDays(today(),30);return `<div class="item"><div class="main"><b>${esc(d.title)}</b> <span class="pill">${esc(pcSel(d.kind,PC_DOCK))}</span>${d.leave_id?' <span class="pill">izne bağlı</span>':''}
+     <div class="meta"><span>${esc(d.file_name)}</span><span>${fmtTime(d.created_at)}</span>${d.expires_on?`<span class="${ex?'neg':''}">geçerlilik ${fmtDate(d.expires_on)}${ex?' · yaklaşıyor':''}</span>`:''}${d.note?`<span>${esc(d.note)}</span>`:''}</div></div>
+     <div class="side"><button class="btn sm" data-a="pd-open" data-path="${esc(d.path)}">Aç</button>${ms||(pcSelf(sid)&&d.created_by===S.user.id)?` <button class="btn sm" data-a="pd-del" data-id="${d.id}">Sil</button>`:''}</div></div>`}).join('')||'<div class="empty">Yüklenmiş belge yok</div>'}
+   <p class="sub">Fotoğraf veya PDF, en çok 10 MB. Belgeler özel kovada tutulur; yalnız işletme sahibi ve kişinin kendisi açabilir (izne bağlı raporu izni onaylayan yönetici de görür). Geçerlilik tarihi yaklaşanlar listede uyarı verir.</p></div>`}
+/* kullanıcı hesabı */
+function pcHesap(sid){const p=S.d.profileMap.get(sid),mu=can('manage_users');if(mu&&S.ul===undefined){S.ul=null;uaLoad().then(()=>{if(S.ui.pkt==='hesap')render()})}const u=S.ul&&S.ul.get&&S.ul.get(sid);
+  return `<div class="card"><h2>Kullanıcı hesabı</h2><div class="pc-grid">${pcKv('Giriş',u?esc(String(u.email||'').replace('@cepos.local','')):mu?'…':pcV(''))}${pcKv('Son giriş',u?(u.last_sign_in_at?fmtTime(u.last_sign_in_at):'hiç giriş yapmadı'):pcV(''))}${pcKv('Rol',esc(PC_ROLE[p.role]||p.role))}${pcKv('Durum',p.active?'<span class="pill ok">Aktif</span>':'<span class="pill bad">Pasif</span>')}${p.must_change_password?pcKv('Şifre','<span class="pill warn">değiştirmesi bekleniyor</span>'):''}</div>
+   <div class="row" style="gap:6px;flex-wrap:wrap;margin-top:10px">${pcSelf(sid)?'<button class="btn" data-a="pw-change">Şifremi değiştir</button>':''}${mu&&!pcSelf(sid)?`<button class="btn" data-a="ua-reset" data-id="${sid}">Şifre sıfırla</button><button class="btn" data-a="pc-login" data-id="${sid}">Giriş bilgisi</button>${p.active?`<button class="btn" data-a="ua-off" data-id="${sid}">Pasife al</button>`:`<button class="btn" data-a="ua-on" data-id="${sid}">Aktif et</button>`}`:''}${mu?' <a class="btn" href="#yonetim">Yönetim › Kullanıcılar</a>':''}</div>
+   <p class="sub">Hesap işlemleri Yönetim › Kullanıcılar ile aynıdır. Rol ve yetkiler Yönetim › Yetkiler'den yönetilir. İşten ayrılan çalışan pasife alınır; geçmiş kayıtları korunur.</p></div>`}
+/* geçmiş */
+function pcGecmis(sid){pcHistLoad(sid);const H=S.ph&&S.ph[sid],f=S.ui.phf||'';
+  if(!H)return '<div class="card empty">Yükleniyor…</div>';const ks=[...new Set(H.map(h=>h.kind))],L=H.filter(h=>!f||h.kind===f);
+  return `<div class="card"><div class="row"><h2 style="flex:1;margin:0">Personel geçmişi</h2><div class="seg"><button data-a="ph-f" data-k="" aria-pressed="${!f}">Tümü</button>${ks.map(k=>`<button data-a="ph-f" data-k="${k}" aria-pressed="${f===k}">${PC_HK[k]||k}</button>`).join('')}</div></div>
+   ${L.map(h=>`<div class="item" style="padding:6px 0"><div class="main"><span class="pill">${PC_HK[h.kind]||h.kind}</span> ${esc(h.summary)}<div class="meta"><span>${fmtTime(h.at)}</span>${h.actor?`<span>${esc(hkName(h.actor))}</span>`:''}</div></div></div>`).join('')||'<div class="empty">Kayıt yok</div>'}
+   <p class="sub">Karttan ya da diğer ekranlardan (Hakedişler, Vardiya, Hedefler, Primler, Yönetim) yapılan değişiklikler burada tarih ve kişiyle kayıt altındadır.</p></div>`}
+/* ---------- düzenleme pencereleri ---------- */
+const pcIn=(id,l,v,o)=>{o=o||{};return `<label class="f${o.full?' full':''}">${l}<input class="in" id="${id}" ${o.type?`type="${o.type}"`:''} ${o.max?`maxlength="${o.max}"`:''} ${o.mode?`inputmode="${o.mode}"`:''} value="${esc(v==null?'':String(v))}"${o.ph?` placeholder="${esc(o.ph)}"`:''}></label>`};
+const pcSl=(id,l,v,L,blank)=>`<label class="f">${l}<select class="in" id="${id}">${opts(L,v||'',blank===undefined?'—':blank)}</select></label>`;
+function pcEditModal(sid,sec){const sp=pcSP(sid),id=pcID(sid),pf=pcPF(sid),p=S.d.profileMap.get(sid);S.pce={sid,sec,ben:(pf.benefits||[]).map(b=>Object.assign({},b))};
+  const T={iletisim:'İletişim bilgileri',kimlik:'Kimlik bilgileri',istihdam:'İstihdam bilgileri',ucret:'Ücret ve yan haklar',ad:'Ad soyad'}[sec];
+  const F={iletisim:()=>pcIn('pe-phone','Telefon',sp.phone,{max:30,mode:'tel'})+pcIn('pe-email','E-posta',sp.email,{max:120,type:'email'})+pcIn('pe-address','Adres',sp.address,{max:300,full:1})+pcIn('pe-city','Şehir',sp.city,{max:60})
+      +pcIn('pe-emergency_name','Acil durumda aranacak kişi',sp.emergency_name,{max:80})+pcIn('pe-emergency_relation','Yakınlığı',sp.emergency_relation,{max:40})+pcIn('pe-emergency_phone','Acil durum telefonu',sp.emergency_phone,{max:30,mode:'tel'}),
+    kimlik:()=>pcIn('pe-tc_no','TC kimlik no',id.tc_no,{max:11,mode:'numeric'})+pcIn('pe-birth_date','Doğum tarihi',id.birth_date,{type:'date'})+pcIn('pe-birth_place','Doğum yeri',id.birth_place,{max:60})
+      +pcSl('pe-gender','Cinsiyet',id.gender,[['kadin','Kadın'],['erkek','Erkek']])+pcSl('pe-marital','Medeni durum',id.marital,[['bekar','Bekâr'],['evli','Evli']])+pcIn('pe-children','Çocuk sayısı',id.children,{type:'number'})
+      +pcIn('pe-blood_type','Kan grubu',id.blood_type,{max:10,ph:'ör. A Rh+'})+pcIn('pe-education','Eğitim',id.education,{max:60})+pcIn('pe-nationality','Uyruk',id.nationality,{max:40,ph:'T.C.'})+pcIn('pe-sgk_no','SGK sicil no',id.sgk_no,{max:30})
+      +pcIn('pe-bank_name','Banka',id.bank_name,{max:60})+pcIn('pe-iban','IBAN',id.iban,{max:34,ph:'TR00 0000 0000 0000 0000 0000 00'}),
+    istihdam:()=>pcIn('pe-title','Unvan',sp.title,{max:60,ph:'ör. Satış danışmanı'})+pcIn('pe-department','Bölüm',sp.department,{max:60})+pcSl('pe-employment_type','Çalışma şekli',sp.employment_type,PC_EMP)+pcSl('pe-contract_type','Sözleşme türü',sp.contract_type,PC_CON)
+      +pcIn('pe-contract_end','Sözleşme bitişi (belirli süreli)',sp.contract_end,{type:'date'})+pcIn('pe-probation_end','Deneme süresi bitişi',sp.probation_end,{type:'date'})+pcIn('pe-hire_date','İşe giriş tarihi',pf.hire_date||(pcOv(sid)||{}).hire_date,{type:'date'})
+      +pcIn('pe-annual_leave_days','Yıllık izin hakkı (gün) · boş = kıdeme göre',sp.annual_leave_days,{type:'number'})+pcIn('pe-leave_carry','Devreden / başlangıç izin bakiyesi (gün)',sp.leave_carry||'',{type:'number'})
+      +pcIn('pe-leave_date','İşten ayrılış tarihi',sp.leave_date,{type:'date'})+pcIn('pe-leave_reason','Ayrılış nedeni',sp.leave_reason,{max:200}),
+    ucret:()=>pcIn('pe-base_salary','Aylık net maaş (₺)',pf.base_salary||'',{type:'number'})+pcIn('pe-travel_daily','Günlük yol (₺)',pf.travel_daily||'',{type:'number'})+pcIn('pe-meal_daily','Günlük yemek (₺)',pf.meal_daily||'',{type:'number'})
+      +pcIn('pe-overtime_hourly','Fazla mesai saat ücreti (₺) · boş = maaş ÷ 225 × 1,5',Number(pf.overtime_hourly)>0?pf.overtime_hourly:'',{type:'number'})+pcIn('pe-note','Not',pf.note,{max:200,full:1})+'<div class="f full" id="pe-ben"></div>',
+    ad:()=>pcIn('pe-full_name','Ad soyad',p.full_name,{max:80,full:1})}[sec];
+  modal(`<h2>${T} · ${esc(p.full_name)}</h2><div class="form">${F()}</div>${sec==='istihdam'?'<p class="sub">Belirli süreli sözleşme ve deneme süresi bitişi yaklaşınca listede uyarı görünür. İşten ayrılış tarihi bordroda kıst maaş hesabında kullanılır; hesabı kapatmak için Kullanıcı hesabı › Pasife al.</p>':''}
+   <div class="err" id="f-err" hidden></div><div class="actions"><button class="btn" data-a="close">Vazgeç</button><button class="btn pri" data-a="pc-save">Kaydet</button></div>`);if(sec==='ucret')pcBenDraw()}
+function pcBenDraw(){const el=document.getElementById('pe-ben');if(!el)return;const B=S.pce.ben;
+  el.innerHTML=`<span><b>Yan haklar</b></span>${B.map((b,i)=>`<div class="row" style="gap:6px;margin:4px 0"><input class="in" style="flex:1" data-c="pce-b" data-i="${i}" data-k="name" maxlength="60" placeholder="ör. Telefon hattı" value="${esc(b.name||'')}"><input class="in" style="width:110px" type="number" min="0" data-c="pce-b" data-i="${i}" data-k="amount" placeholder="₺ / ay" value="${esc(b.amount==null?'':b.amount)}"><label class="chk"><input type="checkbox" data-c="pce-b" data-i="${i}" data-k="payroll" ${b.payroll?'checked':''}> bordroya ekle</label><button class="btn sm" data-a="pce-bdel" data-i="${i}">Sil</button></div>`).join('')}<button class="btn sm" data-a="pce-badd" style="margin-top:4px">+ Yan hak</button>`}
+async function pcSave(t){const E=S.pce;if(!E)return;const p={staff:E.sid,section:E.sec};
+  document.querySelectorAll('[id^="pe-"]').forEach(el=>{if(el.id==='pe-ben')return;p[el.id.slice(3)]=el.value.trim()});
+  if(E.sec==='ucret'){['base_salary','travel_daily','meal_daily','overtime_hourly'].forEach(k=>p[k]=p[k]===''?0:trNum(p[k]));p.benefits=E.ben.filter(b=>String(b.name||'').trim()).map(b=>({name:String(b.name).trim(),amount:trNum(b.amount)||0,payroll:!!b.payroll}))}
+  if(E.sec==='kimlik'&&p.tc_no&&!/^[1-9]\d{10}$/.test(p.tc_no))return setErr('TC kimlik no 11 hane olmalı');
+  t.disabled=true;if(await mcall('staff_save',{p},'Kaydedildi')){closeModal();S.pce=null;S.ov=undefined;S.ph={};S.lbx={};await reload()}else t.disabled=false}
+
+/* izin talebi */
+function lvModal(sid){const ap=can('approve_leave'),self=pcSelf(sid),T=(S.d.leave_types||[]).filter(t=>t.active&&(t.self_request||ap)).sort((a,b)=>a.sort-b.sort);
+  S.lvn={sid:sid||''};
+  modal(`<h2>${sid&&self?'İzin talebi':'İzin gir'}</h2><div class="form">${!sid?`<label class="f full">Çalışan<select class="in" id="lv-s">${opts(staffOpts(),'','- seçin -')}</select></label>`:''}
+   <label class="f">İzin türü<select class="in" id="lv-t" data-c="lvt">${opts(T.map(t=>[t.code,t.name+(t.paid?'':' (ücretsiz)')]),T[0]&&T[0].code)}</select></label><span></span>
+   <label class="f">Başlangıç<input class="in" id="lv-f" type="date" value="${today()}" data-c="lvd"></label><label class="f">Bitiş<input class="in" id="lv-e" type="date" value="${today()}" data-c="lvd"></label>
+   <label class="f full">Açıklama<input class="in" id="lv-n" maxlength="500" placeholder="ör. Aile ziyareti"></label>
+   <label class="f full">Belge (isteğe bağlı: rapor, dilekçe)<input class="in" id="lv-file" type="file" accept="image/*,application/pdf"></label>
+   ${ap&&(!self||isOwner())?`<label class="chk full"><input type="checkbox" id="lv-ok" ${self?'':'checked'}> Onaylı olarak kaydet</label>`:''}</div>
+   <p class="sub" id="lv-hint"></p><div class="err" id="f-err" hidden></div><div class="actions"><button class="btn" data-a="close">Vazgeç</button><button class="btn pri" data-a="lv-save">${ap&&!self?'Kaydet':'Talep gönder'}</button></div>`);lvHint()}
+function lvHint(){const el=document.getElementById('lv-hint');if(!el)return;const sid=S.lvn.sid||g('lv-s'),t=lvType(g('lv-t')),f=g('lv-f'),e=g('lv-e');let txt='';
+  if(f&&e&&e>=f){const wd=sid?(S.d.work_schedules||[]).filter(w=>w.staff_id===sid):[];let n=0;for(let d=f;d<=e;d=addDays(d,1)){const dow=parse(d).getDay()||7,sh=(S.d.shifts||[]).filter(s=>s.staff_id===sid&&s.shift_date===d);
+      if(sh.length?sh.some(s=>s.status==='planli'):wd.length?wd.some(w=>w.valid_from<=d&&(!w.valid_to||w.valid_to>=d)&&w.weekdays.includes(dow)):dow!==7)n++}
+    txt=`Yaklaşık <b>${n} çalışma günü</b>${wd.length?' (çalışma düzenine göre)':' (pazar hariç)'}.`;const b=sid&&S.lbx&&S.lbx[sid];if(t.annual&&b)txt+=` Yıllık izin bakiyesi ${num(b.balance)} gün${n>b.balance?' — <span class="neg">bakiye yetersiz, onaylayan karar verir</span>':''}.`}
+  if(t.needs_doc)txt+=' Bu izin türü için belge eklemeniz istenir.';if(t.paid===false)txt+=' Ücretsiz izin günleri maaştan düşülür.';el.innerHTML=txt}
+async function pcUpload(sid,file,meta){const f=await shrink(file);if(f.size>10485760)throw new Error('Dosya 10 MB sınırını aşıyor');if(!/^(image\/|application\/pdf)/.test(f.type))throw new Error('Yalnız fotoğraf veya PDF yüklenebilir');
+  const path=`${sid}/${pcRnd()}-${pcSafe(f.name)}`,up=await sb.storage.from('anka-staff').upload(path,f,{contentType:f.type});if(up.error)throw up.error;
+  try{await call('staff_doc_add',{p:Object.assign({staff:sid,path,file_name:f.name,mime:f.type,size_bytes:f.size},meta)})}catch(e){await sb.storage.from('anka-staff').remove([path]);throw e}}
+async function lvSave(t){const sid=S.lvn.sid||g('lv-s');if(!sid)return setErr('Çalışan seçin');const f=g('lv-f'),e=g('lv-e');if(!f||!e||e<f)return setErr('Tarih aralığını doğru seçin');
+  const ok=document.getElementById('lv-ok'),file=(document.getElementById('lv-file')||{}).files;t.disabled=true;
+  try{const id=await call('leave_request',{p:{staff:sid,type:g('lv-t'),from:f,to:e,note:g('lv-n'),approve:!!(ok&&ok.checked)}});
+    if(file&&file[0])try{await pcUpload(sid,file[0],{kind:g('lv-t')==='rapor'?'rapor':'izin',title:lvType(g('lv-t')).name+' belgesi',leave_id:id})}catch(x){toast('İzin kaydedildi ama belge yüklenemedi: '+msg(x),true)}
+    closeModal();toast(ok&&ok.checked?'İzin kaydedildi':'İzin talebiniz gönderildi');S.lbx={};S.ov=undefined;S.ph={};await reload()}catch(x){setErr(msg(x));t.disabled=false}}
+function lvDecModal(id){const l=(S.d.leave_requests||[]).find(x=>x.id===id);if(!l)return;const t=lvType(l.type_code);pcLbLoad(l.staff_id);const b=S.lbx&&S.lbx[l.staff_id];S.lvd=id;
+  modal(`<h2>İzin talebi · ${esc(hkName(l.staff_id))}</h2><div class="pc-grid">${pcKv('Tür',esc(t.name)+(t.paid?'':' <span class="pill bad">ücretsiz</span>'))}${pcKv('Tarih',fmtDate(l.start_date)+' – '+fmtDate(l.end_date))}${pcKv('Gün',num(Number(l.days))+' çalışma günü')}${t.annual?pcKv('Yıllık izin bakiyesi',b?num(b.balance)+' gün'+(Number(l.days)>b.balance?' <span class="pill bad">yetersiz</span>':''):'…'):''}${pcKv('Açıklama',pcV(l.note))}</div>
+   <label class="f full" style="margin-top:10px">Not (reddederken zorunlu)<input class="in" id="lv-dn" maxlength="300"></label><p class="sub">Onaylanınca bu günlerdeki vardiyalar "İzinli" olur ve hedeflerde çalışma günü sayılmaz.</p>
+   <div class="err" id="f-err" hidden></div><div class="actions"><button class="btn" data-a="close">Vazgeç</button><button class="btn bad" data-a="lv-rej">Reddet</button><button class="btn pri" data-a="lv-app">Onayla</button></div>`)}
+/* avans */
+function avModal(sid){const mg=can('manage_entitlements'),self=pcSelf(sid),pf=sid?pcPF(sid):{};S.avn={sid:sid||''};
+  modal(`<h2>${self?'Avans talebi':'Avans ver'}</h2><div class="form">${!sid?`<label class="f full">Çalışan<select class="in" id="av-s">${opts(staffOpts(),'','- seçin -')}</select></label>`:''}
+   <label class="f">Tutar (₺)<input class="in" id="av-a" inputmode="decimal" placeholder="ör. 3.000"></label><label class="f">Mahsup<select class="in" id="av-n">${opts(Array.from({length:12},(_,i)=>[String(i+1),i?i+1+' taksit':'Tek seferde']),'1')}</select></label>
+   <label class="f">İlk mahsup ayı<input class="in" id="av-p" type="month" value="${today().slice(0,7)}"></label><label class="f full">Açıklama<input class="in" id="av-r" maxlength="300" placeholder="ör. Kira ödemesi"></label>
+   ${mg&&!self?`<label class="f">Ödeme hesabı<select class="in" id="av-acc">${opts(EX_ACC,'nakit_gunluk')}</select></label><label class="f">Ödeme tarihi<input class="in" id="av-d" type="date" value="${today()}" max="${today()}"></label>`:''}</div>
+   <p class="sub">${mg&&!self?'Kaydedince avans hemen ödenir (kasa hareketi yazılır) ve taksitler ilgili ayların hakedişinden kesinti olarak düşer.':'Talebiniz işletme sahibine gider; onaylanınca ödeme yapılır, taksitler hakedişinizden düşer.'}${Number(pf.base_salary)>0?' Aylık net maaş: '+money(pf.base_salary)+'.':''}</p>
+   <div class="err" id="f-err" hidden></div><div class="actions"><button class="btn" data-a="close">Vazgeç</button><button class="btn pri" data-a="av-save">${mg&&!self?'Avansı öde':'Talep gönder'}</button></div>`)}
+async function avSave(t){const sid=S.avn.sid||g('av-s');if(!sid)return setErr('Çalışan seçin');const a=trNum(g('av-a'));if(!(a>0))return setErr('Tutarı yazın');if(g('av-r').length<2)return setErr('Açıklama yazın');
+  const p={staff:sid,amount:a,reason:g('av-r'),installments:+g('av-n'),start_period:g('av-p')+'-01'},acc=document.getElementById('av-acc');if(acc){p.account=acc.value;p.paid_date=g('av-d')}
+  t.disabled=true;if(await mcall('advance_request',{p},acc?'Avans ödendi':'Avans talebiniz gönderildi')){closeModal();S.ov=undefined;S.ph={};await reload()}else t.disabled=false}
+function avDecModal(id){const a=(S.d.advance_requests||[]).find(x=>x.id===id);if(!a)return;S.avd=id;const pf=pcPF(a.staff_id),open=sum((S.d.advance_requests||[]).filter(x=>x.staff_id===a.staff_id&&x.id!==a.id),avLeft);
+  modal(`<h2>Avans talebi · ${esc(hkName(a.staff_id))}</h2><div class="pc-grid">${pcKv('Talep',money(a.amount)+' · '+esc(a.reason))}${pcKv('İstenen mahsup',a.installments>1?a.installments+' taksit':'tek seferde')}${pcKv('Aylık net maaş',money(pf.base_salary||0))}${pcKv('Diğer açık avanslar',money(open))}</div>
+   <div class="form" style="margin-top:10px"><label class="f">Onaylanan tutar (₺)<input class="in" id="ad-a" inputmode="decimal" value="${String(a.amount).replace('.',',')}"></label><label class="f">Mahsup<select class="in" id="ad-n">${opts(Array.from({length:12},(_,i)=>[String(i+1),i?i+1+' taksit':'Tek seferde']),String(a.installments))}</select></label>
+   <label class="f">İlk mahsup ayı<input class="in" id="ad-p" type="month" value="${(a.start_period&&a.start_period>=monthStart(today())?a.start_period:today()).slice(0,7)}"></label><label class="f">Not<input class="in" id="ad-note" maxlength="300" placeholder="reddederken zorunlu"></label>
+   <label class="chk full"><input type="checkbox" id="ad-pay" checked data-c="adpay"> Şimdi öde</label><label class="f" id="ad-accw">Ödeme hesabı<select class="in" id="ad-acc">${opts(EX_ACC,'nakit_gunluk')}</select></label></div>
+   ${Number(pf.base_salary)>0&&trNum(String(a.amount))/a.installments>pf.base_salary*0.5?'<p class="note">Aylık taksit, net maaşın yarısından fazla.</p>':''}
+   <div class="err" id="f-err" hidden></div><div class="actions"><button class="btn" data-a="close">Vazgeç</button><button class="btn bad" data-a="av-rej">Reddet</button><button class="btn pri" data-a="av-app">Onayla</button></div>`)}
+function avPayModal(id){S.avd=id;const a=(S.d.advance_requests||[]).find(x=>x.id===id);modal(`<h2>Avans öde · ${esc(hkName(a.staff_id))} · ${money(a.amount)}</h2><div class="form"><label class="f">Ödeme hesabı<select class="in" id="ap-acc">${opts(EX_ACC,'nakit_gunluk')}</select></label><label class="f">Tarih<input class="in" id="ap-d" type="date" value="${today()}" max="${today()}"></label></div>
+   <div class="err" id="f-err" hidden></div><div class="actions"><button class="btn" data-a="close">Vazgeç</button><button class="btn pri" data-a="av-pay-do">Ödemeyi kaydet</button></div>`)}
+function avPlanModal(id){S.avd=id;const a=(S.d.advance_requests||[]).find(x=>x.id===id);modal(`<h2>Mahsup planını değiştir · ${esc(a.adv_no)}</h2><p class="sub">Kalan ${money(avLeft(a))} yeni plana göre eşit bölünür.</p><div class="form"><label class="f">Taksit<select class="in" id="aq-n">${opts(Array.from({length:12},(_,i)=>[String(i+1),i?i+1+' taksit':'Tek seferde']),'1')}</select></label><label class="f">İlk ay<input class="in" id="aq-p" type="month" value="${today().slice(0,7)}"></label></div>
+   <div class="err" id="f-err" hidden></div><div class="actions"><button class="btn" data-a="close">Vazgeç</button><button class="btn pri" data-a="av-plan-do">Kaydet</button></div>`)}
+/* belge yükleme */
+function pdModal(sid){const ms=can('manage_staff');S.pdn={sid};modal(`<h2>Belge yükle</h2><div class="form"><label class="f">Tür<select class="in" id="pd-k">${opts(PC_DOCK.filter(x=>ms||PC_DOCK_SELF.includes(x[0])),ms?'sozlesme':'rapor')}</select></label>${pcIn('pd-t','Başlık','',{max:120,ph:'ör. İş sözleşmesi 2026'})}
+   ${pcIn('pd-x','Geçerlilik bitişi (varsa)','',{type:'date'})}${pcIn('pd-note','Not','',{max:300})}<label class="f full">Dosya (fotoğraf veya PDF, en çok 10 MB)<input class="in" id="pd-f" type="file" accept="image/*,application/pdf"></label></div>
+   <div class="err" id="f-err" hidden></div><div class="actions"><button class="btn" data-a="close">Vazgeç</button><button class="btn pri" data-a="pd-save">Yükle</button></div>`)}
+/* bordro satırı düzelt */
+function prEditModal(sid,m){const L=((S.pay&&S.pay[m]&&S.pay[m].lines)||[]).find(x=>x.staff_id===sid);if(!L)return;const c=L.calc,e=L.edits||{};S.pre={sid,m,extra:(e.extra||[]).map(x=>Object.assign({},x))};
+  modal(`<h2>Bordro düzelt · ${esc(L.name)}</h2><p class="sub">Boş bırakılan alan sistem hesabıyla kalır.</p><div class="form">
+   ${pcIn('pe2-ot_hours',`Fazla mesai (saat) · sistem ${num(c.ot_hours)}`,e.ot_hours,{type:'number'})}${pcIn('pe2-unpaid_days',`Ücretsiz izin / devamsızlık (gün) · sistem ${num(c.unpaid_days)}`,e.unpaid_days,{type:'number'})}
+   ${pcIn('pe2-travel_days',`Yol günü · sistem ${num(c.att_days)}`,e.travel_days,{type:'number'})}${pcIn('pe2-meal_days',`Yemek günü · sistem ${num(c.att_days)}`,e.meal_days,{type:'number'})}${pcIn('pe2-note','Not',e.note,{max:200,full:1})}<div class="f full" id="pe2-x"></div></div>
+   <div class="err" id="f-err" hidden></div><div class="actions"><button class="btn" data-a="close">Vazgeç</button><button class="btn pri" data-a="pr-edit-save">Kaydet</button></div>`);prXDraw()}
+function prXDraw(){const el=document.getElementById('pe2-x');if(!el)return;el.innerHTML=`<span><b>Ek kalemler</b> (ikramiye, kıdem, diğer ödeme ya da kesinti)</span>${S.pre.extra.map((x,i)=>`<div class="row" style="gap:6px;margin:4px 0"><select class="in" style="width:auto" data-c="pre-x" data-i="${i}" data-k="kind">${opts([['ikramiye','İkramiye'],['kidem','Kıdem'],['diger','Diğer ödeme'],['kesinti','Kesinti']],x.kind)}</select><input class="in" style="width:110px" data-c="pre-x" data-i="${i}" data-k="amount" inputmode="decimal" value="${esc(x.amount==null?'':String(x.amount).replace('.',','))}" placeholder="₺"><input class="in" style="flex:1" data-c="pre-x" data-i="${i}" data-k="desc" maxlength="120" value="${esc(x.desc||'')}" placeholder="Açıklama"><button class="btn sm" data-a="pre-xdel" data-i="${i}">Sil</button></div>`).join('')}<button class="btn sm" data-a="pre-xadd">+ Ek kalem</button>`}
+function prSlip(sid,m){const L=((S.pay&&S.pay[m]&&S.pay[m].lines)||[]).find(x=>x.staff_id===sid);if(!L)return;const sh=shopSet();
+  modal(`<div class="qdoc"><div class="row"><div style="flex:1"><h2 style="margin:0">${esc(sh.name)}</h2><div class="sub">Ücret pusulası · ${MONN[parse(m).getMonth()]} ${parse(m).getFullYear()}</div></div><div style="text-align:right"><b>${esc(L.name)}</b><div class="sub">${esc(PC_ROLE[L.role]||'')}${pcSP(sid).title?' · '+esc(pcSP(sid).title):''}</div></div></div>
+   ${prLineHtml(L)}<p class="sub">Bu belge net ödeme hazırlığıdır; resmî bordro yerine geçmez. Oluşturma ${fmtDate(today())}.</p></div>
+   <div class="actions no-print"><button class="btn" data-a="close">Kapat</button><button class="btn pri" data-a="q-print">Yazdır / PDF</button></div>`)}
+/* ---------- ekstre (PDF, paylaş, WhatsApp, e-posta) ---------- */
+const ST_T={maas:'Maaş',prim:'Prim',yol:'Yol',yemek:'Yemek',mesai:'Fazla mesai',kidem:'Kıdem',ikramiye:'İkramiye',diger:'Diğer',kesinti:'Kesinti',avans:'Avans ödemesi',mahsup:'Avans mahsubu',odeme:'Ödeme'};
+function stModal(sid){S.st={sid,from:addMonths(monthStart(today()),-2),to:today(),data:null};
+  modal(`<h2>Personel ekstresi · ${esc(hkName(sid))}</h2><div class="form"><label class="f">Başlangıç<input class="in" type="date" id="st-f" data-c="stdate" value="${S.st.from}"></label><label class="f">Bitiş<input class="in" type="date" id="st-t" data-c="stdate" value="${S.st.to}"></label></div>
+   <div id="st-body" class="card" style="margin-top:10px"><div class="empty">Yükleniyor…</div></div><div class="err" id="f-err" hidden></div>
+   <div class="actions"><button class="btn" data-a="close">Kapat</button><button class="btn" data-a="st-pdf">PDF indir</button><button class="btn" data-a="st-share">Paylaş</button><button class="btn" data-a="st-wa">WhatsApp</button><button class="btn" data-a="st-mail">E-posta</button></div>`);pcWide();stLoad()}
+async function stLoad(){const s=S.st;if(!s)return;s.from=g('st-f')||s.from;s.to=g('st-t')||s.to;const el=document.getElementById('st-body');
+  try{s.data=await call('staff_statement',{p_staff:s.sid,p_from:s.from,p_to:s.to})}catch(e){if(el)el.innerHTML=`<div class="note bad">${esc(msg(e))}</div>`;return}
+  const d=s.data;if(el)el.innerHTML=`<div class="grid g4">${tile('Devreden',money(d.opening))}${tile('Hakediş',money(d.credit))}${tile('Ödeme / avans / kesinti',money(d.debit))}${tile('Bakiye',money(d.closing),d.closing>0.004?'işletmenin borcu':d.closing<-0.004?'çalışanın borcu':'kapalı',d.closing<-0.004?'bad':'')}</div>
+   <div class="tw" style="max-height:46vh;overflow:auto;margin-top:8px"><table><tr><th style="text-align:left">Tarih</th><th style="text-align:left">İşlem</th><th style="text-align:left">Açıklama</th><th>Hakediş</th><th>Ödeme / kesinti</th><th>Bakiye</th></tr>
+   ${d.rows.map(r=>`<tr><td style="text-align:left">${fmtDate(r.date)}</td><td style="text-align:left">${esc(ST_T[r.type]||r.type)}</td><td style="text-align:left">${esc(r.desc||'')}${r.info?` <span class="sub">(${money(r.info)} maaştan düştü)</span>`:''}</td><td>${Number(r.credit)?money(r.credit):''}</td><td>${Number(r.debit)?money(r.debit):''}</td><td>${money(r.balance)}</td></tr>`).join('')||'<tr><td colspan="6" class="empty">Bu aralıkta hareket yok</td></tr>'}</table></div>`}
+const stText=d=>`${shopSet().name} · Personel ekstresi\n${d.name}\nDönem: ${fmtDate(d.from)} - ${fmtDate(d.to)}\nDevreden: ${money(d.opening)}\nHakediş: ${money(d.credit)}\nÖdeme / avans / kesinti: ${money(d.debit)}\nBakiye: ${money(d.closing)}${d.closing>0.004?' (ödenecek)':d.closing<-0.004?' (avans borcu)':''}`;
+function stCanvases(d){const W=1240,H=1754,M=80,F='Inter, Arial, Helvetica, sans-serif',per=34,pages=[],R=d.rows,n=Math.max(1,Math.ceil(R.length/per));
+  for(let pg=0;pg<n;pg++){const cv=document.createElement('canvas');cv.width=W;cv.height=H;const x=cv.getContext('2d');x.fillStyle='#fff';x.fillRect(0,0,W,H);
+    const T=(t,px,X,y,o)=>{o=o||{};x.font=(o.b?'700 ':'400 ')+px+'px '+F;x.fillStyle=o.c||'#111';x.textAlign=o.r?'right':'left';let s=String(t);if(o.w)while(x.measureText(s).width>o.w&&s.length>3)s=s.slice(0,-2)+'…';x.fillText(s,X,y)};
+    const sh=shopSet();T(sh.name,40,M,110,{b:1});T('Personel Ekstresi',28,M,152,{c:'#0f6b82',b:1});T(d.name,28,W-M,110,{b:1,r:1});T(fmtDate(d.from)+' – '+fmtDate(d.to),22,W-M,150,{c:'#555',r:1});
+    x.fillStyle='#0f6b82';x.fillRect(M,175,W-2*M,4);let y=220;
+    if(pg===0){[['Devreden',d.opening],['Hakediş',d.credit],['Ödeme / avans / kesinti',d.debit],['Bakiye',d.closing]].forEach(([l,v],i)=>{const X=M+i*((W-2*M)/4);T(l,20,X,y,{c:'#666'});T(money(v),28,X,y+36,{b:1})});y+=90}
+    const C=[[M,'Tarih'],[M+130,'İşlem'],[M+330,'Açıklama'],[W-M-330,'Hakediş',1],[W-M-170,'Ödeme',1],[W-M,'Bakiye',1]];
+    C.forEach(([X,l,r])=>T(l,20,X,y,{b:1,c:'#0f6b82',r}));y+=12;x.fillStyle='#ccc';x.fillRect(M,y,W-2*M,2);
+    for(const r of R.slice(pg*per,(pg+1)*per)){y+=38;T(fmtDate(r.date),20,M,y);T(ST_T[r.type]||r.type,20,M+130,y,{w:190});T(r.desc||'',19,M+330,y,{w:W-2*M-330-350,c:'#333'});
+      T(Number(r.credit)?money(r.credit):'',20,W-M-330,y,{r:1});T(Number(r.debit)?money(r.debit):'',20,W-M-170,y,{r:1});T(money(r.balance),20,W-M,y,{r:1,b:1});y+=10;x.fillStyle='#eee';x.fillRect(M,y,W-2*M,1)}
+    if(!R.length){y+=50;T('Bu aralıkta hareket yok',22,M,y,{c:'#666'})}
+    T('Bakiye: (+) işletmenin çalışana borcu, (−) çalışanın avans borcu. Oluşturma '+fmtDate(today())+' · sayfa '+(pg+1)+'/'+n,18,M,H-70,{c:'#888'});pages.push(cv)}
+  return pages}
+function pdfPages(cvs){const enc=new TextEncoder(),parts=[],offs=[];let len=0;const add=d=>{const u=typeof d==='string'?enc.encode(d):d;parts.push(u);len+=u.length};
+  const imgs=cvs.map(cv=>{const b=atob(cv.toDataURL('image/jpeg',0.9).split(',')[1]),u=new Uint8Array(b.length);for(let i=0;i<b.length;i++)u[i]=b.charCodeAt(i);return u});
+  add('%PDF-1.4\n');const obj=(n,body,stream)=>{offs[n]=len;add(n+' 0 obj\n'+body);if(stream){add('\nstream\n');add(stream);add('\nendstream')}add('\nendobj\n')};
+  const N=cvs.length,kids=cvs.map((_,i)=>(3+i*3)+' 0 R').join(' ');obj(1,'<< /Type /Catalog /Pages 2 0 R >>');obj(2,'<< /Type /Pages /Kids ['+kids+'] /Count '+N+' >>');
+  cvs.forEach((cv,i)=>{const p=3+i*3;obj(p,'<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595.28 841.89] /Resources << /XObject << /Im0 '+(p+1)+' 0 R >> >> /Contents '+(p+2)+' 0 R >>');
+    obj(p+1,'<< /Type /XObject /Subtype /Image /Width '+cv.width+' /Height '+cv.height+' /ColorSpace /DeviceRGB /BitsPerComponent 8 /Filter /DCTDecode /Length '+imgs[i].length+' >>',imgs[i]);
+    const cs='q 595.28 0 0 841.89 0 0 cm /Im0 Do Q';obj(p+2,'<< /Length '+cs.length+' >>',cs)});
+  const tot=3+N*3,xo=len;add('xref\n0 '+tot+'\n0000000000 65535 f \n');for(let i=1;i<tot;i++)add(String(offs[i]).padStart(10,'0')+' 00000 n \n');
+  add('trailer\n<< /Size '+tot+' /Root 1 0 R >>\nstartxref\n'+xo+'\n%%EOF');const out=new Uint8Array(len);let q=0;for(const u of parts){out.set(u,q);q+=u.length}return out}
+const stFile=d=>'Ekstre-'+pcSafe(d.name).replace(/_/g,'-')+'-'+d.from+'_'+d.to+'.pdf';
+function stPdf(){const d=S.st&&S.st.data;if(!d)return null;return new Blob([pdfPages(stCanvases(d))],{type:'application/pdf'})}
+const pcWide=()=>{const m=document.querySelector('#modal .modal');if(m)m.classList.add('wide')};
+async function pcDo(t,name,args,okMsg,after){t.disabled=true;try{const r=await call(name,args,okMsg);closeModal();S.ov=undefined;S.ph={};S.lbx={};S.pay={};if(after)after(r);await reload();return r}catch(e){setErr(msg(e));t.disabled=false}}
+Object.assign(A,{
+  'pc-view'(t){S.ui.pv=t.dataset.k;render()},
+  'pc-view-go'(t){S.ui.pk=null;S.ui.pv=t.dataset.k;if(t.dataset.m)S.ui.prm2=t.dataset.m;render()},
+  'pc-open'(t){const id=t.dataset.id,go=()=>{S.ui.pk=id;S.ui.pkt='genel';S.ui.pcm=monthStart(today())};if(S.ui.tab!=='personel'){S.navAfter=go;location.hash='#personel'}else{go();render();window.scrollTo(0,0)}},
+  'pc-back'(){S.ui.pk=null;render()},'pc-pas'(){S.ui.ppas=!S.ui.ppas;render()},
+  'pc-tab'(t){S.ui.pkt=t.dataset.k;render()},
+  'pc-mon'(t){S.ui.pcm=addMonths(S.ui.pcm||monthStart(today()),+t.dataset.n);render()},
+  'pc-month'(t){S.ui.pcm=t.dataset.m;render()},
+  'pc-edit'(t){pcEditModal(t.dataset.id,t.dataset.k)},
+  'pc-save'(t){pcSave(t)},
+  'pce-badd'(){S.pce.ben.push({name:'',amount:'',payroll:false});pcBenDraw()},
+  'pce-bdel'(t){S.pce.ben.splice(+t.dataset.i,1);pcBenDraw()},
+  'pc-login'(t){if(S.ul===undefined)uaLoad();uaLoginModal(t.dataset.id)},
+  'cg-new-s'(t){cgModal({staff:t.dataset.staff,date:today(),type:'izin'})},
+  'ph-f'(t){S.ui.phf=t.dataset.k;render()},
+  /* izin */
+  'lv-new'(t){const sid=t.dataset.id||'';if(sid)pcLbLoad(sid);lvModal(sid)},
+  'lv-save'(t){lvSave(t)},
+  'lv-dec'(t){lvDecModal(t.dataset.id)},
+  async 'lv-app'(t){await pcDo(t,'leave_decide',{p_id:S.lvd,p_approve:true,p_note:g('lv-dn')||null},'İzin onaylandı; vardiyalar güncellendi')},
+  async 'lv-rej'(t){if(!g('lv-dn'))return setErr('Reddetme nedenini yazın');await pcDo(t,'leave_decide',{p_id:S.lvd,p_approve:false,p_note:g('lv-dn')},'İzin talebi reddedildi')},
+  async 'lv-cancel'(t){if(!armed(t,'İptal edilsin mi?'))return;try{await call('leave_cancel',{p_id:t.dataset.id,p_reason:null},'İzin iptal edildi');S.lbx={};S.ov=undefined;S.ph={};await reload()}catch(e){}},
+  'lv-doc'(t){const l=(S.d.leave_requests||[]).find(x=>x.id===t.dataset.id);if(!l)return;S.pdn={sid:l.staff_id,leave:l.id};
+    modal(`<h2>İzne belge ekle · ${esc(l.leave_no)}</h2><div class="form"><label class="f full">Dosya (fotoğraf veya PDF)<input class="in" id="pd-f" type="file" accept="image/*,application/pdf"></label></div><div class="err" id="f-err" hidden></div><div class="actions"><button class="btn" data-a="close">Vazgeç</button><button class="btn pri" data-a="pd-save">Yükle</button></div>`)},
+  'lv-mon'(t){S.ui.lvm=addMonths(S.ui.lvm||monthStart(today()),+t.dataset.n);render()},
+  /* avans */
+  'av-new'(t){avModal(t.dataset.id||'')},
+  'av-save'(t){avSave(t)},
+  'av-dec'(t){avDecModal(t.dataset.id)},
+  async 'av-app'(t){const n=+g('ad-n'),p={installments:n,start_period:g('ad-p')+'-01',note:g('ad-note')||null,amount:trNum(g('ad-a'))},pay=document.getElementById('ad-pay').checked,acc=g('ad-acc');
+    if(!(p.amount>0))return setErr('Tutarı yazın');t.disabled=true;
+    try{await call('advance_decide',{p_id:S.avd,p_approve:true,p});if(pay)await call('advance_pay',{p_id:S.avd,p_account:acc,p_date:today()});toast(pay?'Avans onaylandı ve ödendi':'Avans onaylandı');closeModal();S.ov=undefined;S.ph={};await reload()}catch(e){setErr(msg(e));t.disabled=false}},
+  async 'av-rej'(t){if(!g('ad-note'))return setErr('Reddetme nedenini yazın');await pcDo(t,'advance_decide',{p_id:S.avd,p_approve:false,p:{note:g('ad-note')}},'Avans talebi reddedildi')},
+  'av-pay'(t){avPayModal(t.dataset.id)},
+  async 'av-pay-do'(t){await pcDo(t,'advance_pay',{p_id:S.avd,p_account:g('ap-acc'),p_date:g('ap-d')||today()},'Avans ödendi')},
+  'av-plan'(t){avPlanModal(t.dataset.id)},
+  async 'av-plan-do'(t){await pcDo(t,'advance_replan',{p_id:S.avd,p_installments:+g('aq-n'),p_start:g('aq-p')+'-01'},'Mahsup planı güncellendi')},
+  async 'av-cancel'(t){if(!armed(t,'İptal edilsin mi?'))return;try{await call('advance_cancel',{p_id:t.dataset.id,p_reason:null},'Avans iptal edildi');S.ov=undefined;S.ph={};await reload()}catch(e){}},
+  /* belgeler */
+  'pd-new'(t){pdModal(t.dataset.id)},
+  async 'pd-save'(t){const f=(document.getElementById('pd-f')||{}).files;if(!f||!f[0])return setErr('Dosya seçin');const P=S.pdn;t.disabled=true;
+    try{await pcUpload(P.sid,f[0],P.leave?{kind:'izin',title:'İzin belgesi',leave_id:P.leave}:{kind:g('pd-k'),title:g('pd-t')||f[0].name,expires_on:g('pd-x')||null,note:g('pd-note')||null});toast('Belge yüklendi');closeModal();S.ph={};await reload()}catch(e){setErr(msg(e));t.disabled=false}},
+  async 'pd-open'(t){const w=window.open('','_blank');try{const r=await sb.storage.from('anka-staff').createSignedUrl(t.dataset.path,300);if(r.error)throw r.error;if(w)w.location=r.data.signedUrl;else location.href=r.data.signedUrl}catch(e){if(w)w.close();toast('Belge açılamadı: '+msg(e),true)}},
+  async 'pd-del'(t){if(!armed(t,'Silinsin mi?'))return;try{const path=await call('staff_doc_delete',{p_id:t.dataset.id},'Belge silindi');try{await sb.storage.from('anka-staff').remove([path])}catch(e){}S.ph={};await reload()}catch(e){}},
+  /* bordro */
+  'pr-mon'(t){S.ui.prm2=addMonths(S.ui.prm2||monthStart(today()),+t.dataset.n);render()},
+  'pr-go'(t){S.ui.prm2=t.dataset.m;render()},
+  async 'pr-prep'(t){t.disabled=true;try{const r=await call('payroll_prepare',{p_period:t.dataset.m},'Bordro hesaplandı');S.pay=S.pay||{};S.pay[t.dataset.m]=r;await reload()}catch(e){t.disabled=false}},
+  'pr-edit'(t){prEditModal(t.dataset.id,t.dataset.m)},
+  'pre-xadd'(){S.pre.extra.push({kind:'ikramiye',amount:'',desc:''});prXDraw()},'pre-xdel'(t){S.pre.extra.splice(+t.dataset.i,1);prXDraw()},
+  async 'pr-edit-save'(t){const E=S.pre,e={};['ot_hours','unpaid_days','travel_days','meal_days'].forEach(k=>{const v=g('pe2-'+k);if(v!=='')e[k]=trNum(v)});if(g('pe2-note'))e.note=g('pe2-note');
+    e.extra=E.extra.filter(x=>String(x.desc||'').trim()||trNum(x.amount)>0).map(x=>({kind:x.kind,amount:trNum(String(x.amount)),desc:String(x.desc||'').trim()}));
+    await pcDo(t,'payroll_set_line',{p_period:E.m,p_staff:E.sid,p_edits:e},'Bordro satırı güncellendi')},
+  'pr-fin'(t){const m=t.dataset.m;S.prf=m;modal(`<h2>Bordroyu kesinleştir · ${MONN[parse(m).getMonth()]} ${parse(m).getFullYear()}</h2><p>Her çalışanın maaş, fazla mesai, yol, yemek, yan hak ve ek kalemleri hakediş olarak yazılır.${m<monthStart(today())?' Bu ayın prim dönemi de kesinleşir.':''} Elle girilmiş aynı tür hakediş varsa yalnız fark eklenir. Çalışanlara "Bordronuz hazır" bildirimi gider.</p>
+    <label class="f full">Not (isteğe bağlı)<input class="in" id="prf-n" maxlength="300"></label><div class="err" id="f-err" hidden></div><div class="actions"><button class="btn" data-a="close">Vazgeç</button><button class="btn pri" data-a="pr-fin-do">Kesinleştir</button></div>`)},
+  async 'pr-fin-do'(t){await pcDo(t,'payroll_finalize',{p_period:S.prf,p_note:g('prf-n')||null},'Bordro kesinleşti')},
+  'pr-reopen'(t){S.prf=t.dataset.m;modal(`<h2>Bordroyu yeniden aç</h2><p class="sub">Bordrodan oluşturulan ödenmemiş hakedişler iptal edilir ve bordro taslağa döner. Ödeme yapılmışsa yeniden açılamaz; düzeltmeyi ayrı hakediş / kesinti kaydıyla yapın.</p><label class="f full">Gerekçe<input class="in" id="prr-n" maxlength="200"></label><div class="err" id="f-err" hidden></div><div class="actions"><button class="btn" data-a="close">Vazgeç</button><button class="btn bad" data-a="pr-reopen-do">Yeniden aç</button></div>`)},
+  async 'pr-reopen-do'(t){if(!g('prr-n'))return setErr('Gerekçe yazın');await pcDo(t,'payroll_reopen',{p_period:S.prf,p_reason:g('prr-n')},'Bordro yeniden açıldı')},
+  'pr-pay'(t){const m=t.dataset.m,L=((S.pay&&S.pay[m]&&S.pay[m].lines)||[]).filter(x=>x.open>0);S.prf=m;
+    modal(`<h2>Bordroyu öde · ${MONN[parse(m).getMonth()]} ${parse(m).getFullYear()}</h2><p class="sub">Seçilen çalışanların bu ayki bekleyen kalemleri tek ödemede seçilen hesaptan çıkar; avans taksitleri ve kesintiler düşer.</p>
+     ${L.map(x=>`<label class="chk" style="display:flex;gap:8px;padding:4px 0"><input type="checkbox" class="pr-pc" value="${x.staff_id}" checked> <span>${esc(x.name)}</span><span style="margin-left:auto">${money(x.result.net)}</span></label>`).join('')||'<div class="empty">Ödenecek kalem kalmadı</div>'}
+     <div class="form" style="margin-top:8px"><label class="f">Ödeme hesabı<select class="in" id="prp-a">${opts(EX_ACC,'enpara')}</select></label><label class="f">Tarih<input class="in" id="prp-d" type="date" value="${today()}" max="${today()}"></label></div>
+     <div class="err" id="f-err" hidden></div><div class="actions"><button class="btn" data-a="close">Vazgeç</button><button class="btn pri" data-a="pr-pay-do" ${L.length?'':'disabled'}>Ödemeyi kaydet</button></div>`)},
+  async 'pr-pay-do'(t){const ids=[...document.querySelectorAll('.pr-pc')].filter(x=>x.checked).map(x=>x.value);if(!ids.length)return setErr('En az bir çalışan seçin');
+    await pcDo(t,'payroll_pay',{p_period:S.prf,p_account:g('prp-a'),p_date:g('prp-d')||today(),p_staff:ids},null,r=>{const ok=(r&&r.paid)||[],er=(r&&r.errors)||[];toast(ok.length+' ödeme kaydedildi'+(er.length?' · '+er.map(e=>e.name+': '+e.error).join(' · '):''),!!er.length)})},
+  'pr-slip'(t){const m=t.dataset.m;pcPayLoad(m);if(S.pay&&S.pay[m]&&S.pay[m].lines)prSlip(t.dataset.id,m);else toast('Bordro yükleniyor, tekrar deneyin')},
+  'pr-csv'(t){const m=t.dataset.m,L=(S.pay&&S.pay[m]&&S.pay[m].lines)||[];csvDl('Bordro-'+m.slice(0,7)+'.csv',[['Çalışan','Maaş','Ücretsiz gün','Mesai saat','Fazla mesai','Yol','Yemek','Prim','Yan hak','Ek','Diğer hakediş','Kesinti/avans','Net'],
+    ...L.map(x=>{const r=x.result||{};return [x.name,r.salary,r.unpaid_days,r.ot_hours,r.overtime,r.travel,r.meal,r.prim,r.benefits,r.extra_plus-r.extra_minus,r.other_plus,r.deductions,r.net]})])},
+  /* prim dönemi */
+  'pp-close'(t){const m=t.dataset.m;S.ppm=m;modal(`<h2>Prim dönemini kesinleştir · ${MONN[parse(m).getMonth()]} ${parse(m).getFullYear()}</h2><p>Bu ayın güncel primi her çalışanın hakedişine yazılır ve dönem kilitlenir. Sonradan değişen tutarlar ayrı düzeltme kaydıyla işlenir.</p><label class="f full">Not (isteğe bağlı)<input class="in" id="pp-n" maxlength="300"></label><div class="err" id="f-err" hidden></div><div class="actions"><button class="btn" data-a="close">Vazgeç</button><button class="btn pri" data-a="pp-close-do">Kesinleştir</button></div>`)},
+  async 'pp-close-do'(t){await pcDo(t,'prim_close',{p_period:S.ppm,p_note:g('pp-n')||null},'Prim dönemi kesinleşti');S.hp=undefined},
+  'pp-corr'(t){S.ppc={sid:t.dataset.id,m:t.dataset.m};modal(`<h2>Prim düzeltme kaydı · ${esc(hkName(t.dataset.id))}</h2><p class="sub">Kesinleşen primle güncel prim arasındaki fark ayrı hakediş (artışta prim, azalışta kesinti) olarak yazılır.</p><label class="f full">Gerekçe<input class="in" id="ppc-n" maxlength="200" placeholder="ör. Kasım iadesi"></label><div class="err" id="f-err" hidden></div><div class="actions"><button class="btn" data-a="close">Vazgeç</button><button class="btn pri" data-a="pp-corr-do">Kaydet</button></div>`)},
+  async 'pp-corr-do'(t){if(!g('ppc-n'))return setErr('Gerekçe yazın');await pcDo(t,'prim_correct',{p_period:S.ppc.m,p_staff:S.ppc.sid,p_reason:g('ppc-n')},'Düzeltme kaydı oluşturuldu');S.hp=undefined},
+  /* ekstre */
+  'st-open'(t){stModal(t.dataset.id)},
+  'st-pdf'(){const b=stPdf();if(!b)return;const u=URL.createObjectURL(b),a=document.createElement('a');a.href=u;a.download=stFile(S.st.data);document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(u),4000)},
+  async 'st-share'(){const d=S.st&&S.st.data,b=stPdf();if(!b)return;const f=new File([b],stFile(d),{type:'application/pdf'});
+    if(navigator.canShare&&navigator.canShare({files:[f]})){try{await navigator.share({files:[f],title:'Personel ekstresi',text:stText(d)})}catch(e){}}else{A['st-pdf']();toast('Bu cihaz dosya paylaşmayı desteklemiyor; PDF indirildi, WhatsApp veya e-postaya ekleyebilirsiniz')}},
+  'st-wa'(){const d=S.st&&S.st.data;if(!d)return;const ph=String(pcSP(S.st.sid).phone||'').replace(/\D/g,'').replace(/^0/,'90');window.open('https://wa.me/'+(ph.length>=10?(ph.startsWith('90')?ph:'90'+ph):'')+'?text='+encodeURIComponent(stText(d)),'_blank')},
+  'st-mail'(){const d=S.st&&S.st.data;if(!d)return;const em=pcSP(S.st.sid).email||'';location.href='mailto:'+encodeURIComponent(em)+'?subject='+encodeURIComponent(shopSet().name+' · Personel ekstresi')+'&body='+encodeURIComponent(stText(d)+'\n\nAyrıntılı ekstre PDF olarak ektedir.')}
+});
+document.addEventListener('change',e=>{const t=e.target;if(!t||!t.dataset)return;const c=t.dataset.c;
+  if(c==='pce-b'&&S.pce){const b=S.pce.ben[+t.dataset.i];if(b)b[t.dataset.k]=t.type==='checkbox'?t.checked:t.value}
+  else if(c==='pre-x'&&S.pre){const x=S.pre.extra[+t.dataset.i];if(x)x[t.dataset.k]=t.value}
+  else if(c==='lvt'||c==='lvd')lvHint();
+  else if(c==='stdate')stLoad();
+  else if(c==='adpay'){const w=document.getElementById('ad-accw');if(w)w.style.display=t.checked?'':'none'}});
+
 document.addEventListener('keydown',e=>{if(e.key==='Enter'&&e.target&&e.target.id==='w-q'){e.preventDefault();A['w-find']()}
   if(e.key==='Enter'&&e.target&&e.target.id==='w-ocode'){e.preventDefault();const b=document.querySelector('[data-a="w-overify"]');if(b)b.click();return}
   if(e.key==='Enter'&&e.target&&e.target.id==='w-cimei'){e.preventDefault();const b=document.querySelector('[data-a="w-csave"]');if(b)b.click()}});
