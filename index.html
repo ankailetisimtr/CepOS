@@ -422,6 +422,12 @@ button.fx{font-variant-numeric:tabular-nums;font-weight:600;white-space:nowrap}b
 .ctl-pi img{width:100%;height:100%;object-fit:cover}.ctl-pi>div{position:absolute;bottom:4px;right:4px;display:flex;gap:2px}.ctl-pi>div .ib{background:rgba(255,255,255,.92);color:#14212B}.ctl-pi .pill{position:absolute;top:6px;left:6px}
 .ctl-pi.add{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;cursor:pointer;border-style:dashed;color:var(--accent);font-size:13px}
 .dw-b{border-color:var(--ok);color:var(--ok)}
+#brk-bar{position:fixed;top:70px;left:50%;transform:translateX(-50%);z-index:60;display:flex;align-items:center;gap:10px;background:var(--surface);border:1px solid var(--line);border-left:4px solid var(--accent);border-radius:14px;padding:8px 10px 8px 12px;box-shadow:0 8px 28px rgba(0,0,0,.16);max-width:calc(100vw - 20px);font-size:14px}
+#brk-bar .t{font-variant-numeric:tabular-nums;color:var(--muted)}#brk-bar.warn{border-left-color:#E0A100}#brk-bar.warn .t{color:#9A5B00;font-weight:600}#brk-bar.over,#brk-bar.need{border-left-color:var(--bad,#BF3328)}#brk-bar.over .t{color:var(--bad,#BF3328);font-weight:700}
+#brk-bar .ic{flex:none}#brk-bar .btn{white-space:nowrap;flex:none}html.ps-full #brk-bar{top:8px}@media(max-width:600px){#brk-bar{top:auto;bottom:calc(84px + env(safe-area-inset-bottom));font-size:13px}}
+.brk-u.warn [data-brk-live]{color:#9A5B00;font-weight:600}.brk-u.over [data-brk-live]{color:var(--bad,#BF3328);font-weight:700}[data-brk-live]{font-variant-numeric:tabular-nums}
+.brk-acts{display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end;align-items:flex-start}.brk-sum{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin:10px 0}.brk-sum div{background:var(--surface2);border-radius:10px;padding:8px 10px}.brk-sum small{display:block;color:var(--muted);font-size:12px}
+@media(max-width:600px){.brk-sum{grid-template-columns:repeat(2,minmax(0,1fr))}}.brk-ex{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:4px 12px;margin:8px 0 10px}
 .vl-wrap{display:grid;grid-template-columns:minmax(0,1fr) 320px;gap:16px}@media(max-width:860px){.vl-wrap{grid-template-columns:1fr}}
 .vl-list{max-height:46vh;overflow:auto;border:1px solid var(--line);border-radius:12px;padding:4px 8px}.vl-row{display:flex;align-items:center;gap:10px;padding:5px 0;border-bottom:1px solid var(--line);margin:0}.vl-row:last-child{border-bottom:0}
 .vl-row .ctl-th{width:40px;height:40px;border-radius:9px}.vl-row span{display:flex;flex-direction:column}.vl-row small{color:var(--muted)}
@@ -780,7 +786,7 @@ logout:'<path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9"/
 moon:'<path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9z"/>',
 expand:'<path d="M8 3H5a2 2 0 0 0-2 2v3M21 8V5a2 2 0 0 0-2-2h-3M3 16v3a2 2 0 0 0 2 2h3M16 21h3a2 2 0 0 0 2-2v-3"/>',
 clock:'<circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/>',
-alert:'<path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><path d="M12 9v4M12 17h.01"/>',
+coffee:'<path d="M4 8h12v5a5 5 0 0 1-5 5H9a5 5 0 0 1-5-5z"/><path d="M16 9h1.5a2.5 2.5 0 0 1 0 5H16"/><path d="M8 3.5c0 1 1 1 1 2s-1 1-1 2M12 3.5c0 1 1 1 1 2s-1 1-1 2"/>',alert:'<path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><path d="M12 9v4M12 17h.01"/>',
 userplus:'<path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M19 8v6M22 11h-6"/>',
 activity:'<path d="M22 12h-4l-3 9L9 3l-3 9H2"/>',
 mobile_bell:'<path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/>'};
@@ -821,7 +827,7 @@ const can=p=>!!S.me&&(S.me.role==='owner'||String(p).split('|').some(x=>S.perms.
 const isOwner=()=>!!S.me&&S.me.role==='owner';
 const by=(arr)=>new Map(arr.map(x=>[x.id,x]));
 
-const NOID=new Set(['catalog_items','staff_profiles','staff_identity','leave_types','payroll_runs','prim_periods','staff_pay_profiles','warranty_types','pos_bank_rates','training_progress','training_path_items','training_assignments','notification_reads','notification_state','price_deductions','cash_accounts','app_settings','accessory_costs','sale_accessory_costs','fx_rates','staff_settings','role_permissions','product_costs','sale_item_costs']);
+const NOID=new Set(['break_limits','catalog_items','staff_profiles','staff_identity','leave_types','payroll_runs','prim_periods','staff_pay_profiles','warranty_types','pos_bank_rates','training_progress','training_path_items','training_assignments','notification_reads','notification_state','price_deductions','cash_accounts','app_settings','accessory_costs','sale_accessory_costs','fx_rates','staff_settings','role_permissions','product_costs','sale_item_costs']);
 async function all(table,order,asc){
   let out=[],from=0;
   for(;;){
@@ -833,8 +839,8 @@ async function all(table,order,asc){
     out=out.concat(data||[]);if(!data||data.length<1000)break;from+=1000}
   return out}
 /* uygulamanın yüklediği tablolar ve sıralamaları (canlı güncelleme de bunları kullanır) */
-const LOAD_NAMES=['device_warranties','catalog_items','catalog_photos','catalog_reservations','staff_profiles','staff_identity','staff_docs','leave_types','leave_requests','advance_requests','payroll_runs','prim_periods','prim_corrections','prim_plans','prim_adjustments','gift_cards','gift_card_moves','gift_card_lots','m3_sales','protection_packages','protection_slots','protection_slot_items','protection_sales','warranty_packages','warranty_types','warranty_materials','campaigns','loyalty_items','pos_groups','pos_group_items','pos_banks','pos_bank_rates','trainings','training_progress','training_questions','training_paths','training_path_items','training_assignments','notification_reads','notification_state','price_refs','price_deductions','device_inspections','term_debts','term_debt_payments','work_schedules','shift_changes','owner_closings','entitlements','staff_pay_profiles','exchanges','service_costs','shortages','accessory_categories','accessory_families','expense_categories','expense_templates','expenses','cash_accounts','app_settings','day_closings','day_closing_lines','fx_rates','purchases','purchase_lines','profiles','staff_settings','role_permissions','contacts','products','product_costs','sales','sale_items','sale_payments','sale_trade_ins','sale_item_costs','commissions','sale_returns','cash_entries','party_entries','consignment_agreements','consignment_rates','notifications','service_orders','service_events','customer_orders','follow_ups','quotes','quote_items','attachments','shifts','time_clock','tasks','push_subscriptions','accessories','accessory_costs','accessory_moves','sale_accessory_items','sale_accessory_costs','sale_accessory_returns'];
-const LOAD_ORDERS={device_warranties:'created_at',catalog_reservations:'created_at',catalog_photos:'sort',device_inspections:'created_at',term_debts:'created_at',term_debt_payments:'created_at',work_schedules:'valid_from',shift_changes:'created_at',owner_closings:'created_at',entitlements:'created_at',staff_pay_profiles:'updated_at',exchanges:'created_at',service_costs:'created_at',shortages:'created_at',accessory_categories:'sort',accessory_families:'created_at',expenses:'created_at',expense_templates:'created_at',expense_categories:'sort',day_closings:'closed_at',cash_accounts:'sort',sales:'sold_at',cash_entries:'created_at',notifications:'created_at',party_entries:'created_at',service_orders:'received_at',service_events:'at',quotes:'created_at',attachments:'created_at',time_clock:'clock_in',tasks:'created_at',accessory_moves:'created_at',purchases:'created_at',fx_rates:'fetched_at'};
+const LOAD_NAMES=['breaks','break_limits','device_warranties','catalog_items','catalog_photos','catalog_reservations','staff_profiles','staff_identity','staff_docs','leave_types','leave_requests','advance_requests','payroll_runs','prim_periods','prim_corrections','prim_plans','prim_adjustments','gift_cards','gift_card_moves','gift_card_lots','m3_sales','protection_packages','protection_slots','protection_slot_items','protection_sales','warranty_packages','warranty_types','warranty_materials','campaigns','loyalty_items','pos_groups','pos_group_items','pos_banks','pos_bank_rates','trainings','training_progress','training_questions','training_paths','training_path_items','training_assignments','notification_reads','notification_state','price_refs','price_deductions','device_inspections','term_debts','term_debt_payments','work_schedules','shift_changes','owner_closings','entitlements','staff_pay_profiles','exchanges','service_costs','shortages','accessory_categories','accessory_families','expense_categories','expense_templates','expenses','cash_accounts','app_settings','day_closings','day_closing_lines','fx_rates','purchases','purchase_lines','profiles','staff_settings','role_permissions','contacts','products','product_costs','sales','sale_items','sale_payments','sale_trade_ins','sale_item_costs','commissions','sale_returns','cash_entries','party_entries','consignment_agreements','consignment_rates','notifications','service_orders','service_events','customer_orders','follow_ups','quotes','quote_items','attachments','shifts','time_clock','tasks','push_subscriptions','accessories','accessory_costs','accessory_moves','sale_accessory_items','sale_accessory_costs','sale_accessory_returns'];
+const LOAD_ORDERS={breaks:'started_at',device_warranties:'created_at',catalog_reservations:'created_at',catalog_photos:'sort',device_inspections:'created_at',term_debts:'created_at',term_debt_payments:'created_at',work_schedules:'valid_from',shift_changes:'created_at',owner_closings:'created_at',entitlements:'created_at',staff_pay_profiles:'updated_at',exchanges:'created_at',service_costs:'created_at',shortages:'created_at',accessory_categories:'sort',accessory_families:'created_at',expenses:'created_at',expense_templates:'created_at',expense_categories:'sort',day_closings:'closed_at',cash_accounts:'sort',sales:'sold_at',cash_entries:'created_at',notifications:'created_at',party_entries:'created_at',service_orders:'received_at',service_events:'at',quotes:'created_at',attachments:'created_at',time_clock:'clock_in',tasks:'created_at',accessory_moves:'created_at',purchases:'created_at',fx_rates:'fetched_at'};
 const dropCaches=()=>{S.ov=undefined;S.lbx={};S.ph={};S.pay={};S.pm=undefined;S.pml=undefined;S.wd=null;S.prm=undefined;S.hp=undefined;S.ops=undefined;S.svp=undefined;S.work=undefined;S.team=null;S.tp=null};
 async function loadAll(){
   dropCaches();
@@ -869,7 +875,7 @@ function refreshSoon(){clearTimeout(refreshT);refreshT=setTimeout(()=>rtFull(),9
 const LIVE={ok:false,ready:false,was:false,q:new Map(),t:null,lastSync:0,hiddenAt:0,busy:false,ping:null,wait:new Map(),stats:{fast:0,full:0}};
 /* bu tablolar değişince görünürlük başka tablolarda da değişebilir → tam yükleme */
 const RT_FULL=new Set(['role_permissions','training_assignments']);
-const RT_KEYS={catalog_items:'product_id',staff_profiles:'staff_id',staff_identity:'staff_id',leave_types:'code',payroll_runs:'period',prim_periods:'period',staff_pay_profiles:'staff_id',warranty_types:'code',product_costs:'product_id',sale_item_costs:'sale_item_id',sale_accessory_costs:'line_id',accessory_costs:'accessory_id',staff_settings:'profile_id',app_settings:'key',notification_state:'user_id'};
+const RT_KEYS={break_limits:'user_id',catalog_items:'product_id',staff_profiles:'staff_id',staff_identity:'staff_id',leave_types:'code',payroll_runs:'period',prim_periods:'period',staff_pay_profiles:'staff_id',warranty_types:'code',product_costs:'product_id',sale_item_costs:'sale_item_id',sale_accessory_costs:'line_id',accessory_costs:'accessory_id',staff_settings:'profile_id',app_settings:'key',notification_state:'user_id'};
 const RT_SAFETY_MIN=20,RT_OFFLINE_MIN=2,RT_AWAY_SEC=60;
 const rtKey=t=>RT_KEYS[t]||(NOID.has(t)?null:'id');
 function rtEvent(p){
@@ -1015,7 +1021,7 @@ function subscribe(){
 /* ================= BİLDİRİM MERKEZİ =================
    Okundu bilgisi sunucuda tutulur (notification_reads / notification_state): bir cihazda okunan her yerde okunmuş görünür.
    Kendi işleminiz için gelen bildirim okunmuş sayılır. Tıklanan bildirim ilgili ekranı açar. */
-const NREF={catalog_reservations:'katalog',sales:'satislar',sale_returns:'iadeler',service_orders:'servis',customer_orders:'siparis',follow_ups:'siparis',tasks:'gorev',quotes:'teklif',shortages:'eksikler',
+const NREF={breaks:'vardiya',catalog_reservations:'katalog',sales:'satislar',sale_returns:'iadeler',service_orders:'servis',customer_orders:'siparis',follow_ups:'siparis',tasks:'gorev',quotes:'teklif',shortages:'eksikler',
   accessories:'aksesuar',shifts:'vardiya',targets:'hedef',day_closings:'kasa',expenses:'odemeler',term_debts:'odemeler',entitlements:'hakedis',commissions:'primler',
   products:'stok',device_inspections:'stok',role_permissions:'yonetim',profiles:'yonetim',trainings:'egitim',notes:'notlar',leave_requests:'personel',advance_requests:'personel',payroll_runs:'personel',prim_periods:'personel'};
 const NKIND={satis:['bag','b'],iade:['undo','w'],servis:['wrench','b'],siparis:['pkg','p'],gorev:['check','v'],vardiya:['clock','v'],kasa:['wallet','r'],odeme:['card','w'],
@@ -1046,6 +1052,7 @@ function notifOpen(id){const n=(S.d.notifications||[]).find(x=>x.id===id);S.noti
   else if(n.ref_table==='service_orders'&&n.ref_id){const sv=(S.d.service_orders||[]).find(x=>x.id===n.ref_id);if(sv)after=()=>{S.ui.svq=sv.ticket_no;S.ui.svf='';S.ui.svk='';S.ui.svv='liste'}}
   else if(n.ref_table==='trainings'&&n.ref_id)after=()=>{S.ui.egOpen=n.ref_id};
   else if(n.ref_table==='notes')after=()=>{const N=NT();N.q='';if(n.ref_id)S.ui.ntOpen=n.ref_id;else{N.view='bugun';N.day=today()}};
+  else if(n.ref_table==='breaks'&&n.ref_id){const b=(S.d.breaks||[]).find(x=>x.id===n.ref_id);if(b&&brkNeedEx(b)&&b.ended_at){render();return brkExcuse(b.id)}after=()=>{S.ui.brkp=b&&b.day<weekStart(today())?'ay':b&&b.day<today()?'hafta':'gun';S.ui.ntHi='breaks:'+n.ref_id;setTimeout(()=>{nlHiRun();document.getElementById('brk-card')?.scrollIntoView({block:'start'})},60)}}
   else if(n.ref_table==='catalog_reservations')after=()=>{S.ui.ctt='rez';S.ui.ctf='tum';S.ui.ctq='';S.ui.ctOpen=n.ref_id;S.ui.ntHi='catalog_reservations:'+n.ref_id;nlHiRun()};
   else if(n.ref_table==='device_inspections'&&prOn())after=()=>{S.ui.pl_dev=true;S.ui.plq=(n.title.split(' · ')[1]||'')};
   if(!tab||!TABS.some(t=>t[0]===tab&&(!t[2]||can(t[2]))))return render();
@@ -1054,7 +1061,7 @@ function notifOpen(id){const n=(S.d.notifications||[]).find(x=>x.id===id);S.noti
 /* ---- Bildirim ayarları (sahip / kullanıcı yöneticisi) ---- */
 const NCODES=[['Kasa ve satış',[['kasa_fark','Kasa farkı (gün sonu sayımı tutmazsa) · sahibe acil'],['gunsonu','23:00 gün sonu alınmadı'],['satis_zarar','Zararına satış · kâr görenlere'],['satis_indirim','Yüksek indirimli satış'],['satis_iptal','Satış iptali'],['ozet_gun','22:30 günlük özet · sahibe'],['ozet_hafta','Pazartesi haftalık özet · sahibe'],['satis_adina','Adınıza satış girildi · o personele'],['konsinye_satis','Konsinye cihaz satıldı · konsinye görenlere'],['sik_iade','Sık iade: müşteri 6 ayda 3+ iade · yöneticilere'],['iade_kontrol','09:30 iade 3+ gündür kontrol bekliyor'],['gunsonu_iptal','Gün sonu iptal edildi · sahibe acil'],['kasa_elle','Elle kasa hareketi (sahip dışında) · sahibe'],['kasa_birikti','Günlük kasada nakit eşiği aşıldı (günde bir)']]],
   ['Ödemeler',[['odeme','09:30 bugün ödenecekler + 3 gün kala hatırlatma'],['kur','Dolar kuru sıçraması (açık dolar borç varken)'],['hakedis','Maaş / hakediş ödendi · personele'],['masraf_buyuk','Büyük masraf (sahip dışında) · sahibe'],['masraf_tekrar','Tekrarlayan masraf otomatik açıldı (sessiz)'],['firma_vade','09:30 firma ödeme vadesi: 3 gün kala, vade günü, sonra haftada bir'],['musteri_alacak','Pazartesi açık müşteri alacakları · yöneticilere'],['alis_yeni','Yeni alış / vadeli alım (sahip dışında) · sahibe'],['alis_iptal','Alış iptali · sahibe']]],
-  ['Personel',[['gec_kalma','Geç kalma (vardiya başladı, mesai girişi yok)'],['mesai_acik','23:30 mesai hâlâ açık'],['vardiya_degisim','Vardiya değişikliği · ilgili personele'],['gorev','09:30 görevler: bugün son gün / gecikmiş'],['takip','09:30 müşteri takipleri'],['hedef','Hedef tamamlandı (personel ve mağaza, günlük ve aylık)'],['hedef_ara','Her ayın 15\'i: hedefin gerisindeyse günlük gereken'],['egitim','09:30 eğitim son tarihi: 2 gün kala ve gecikince'],['gorev_bitti','Görev tamamlandı · görevi verene'],['egitim_bitti','Eğitim tamamlandı · eğitim yöneticilerine'],['egitim_yonetici','09:30 geciken eğitimler · eğitim yöneticilerine (pazartesi tam liste)'],['erken_cikis','Erken çıkış (vardiya bitmeden) · vardiya yöneticilerine'],['plansiz_mesai','Planlı vardiya yokken mesai başladı'],['avans_kesinti','Avans / kesinti eklendi · personele'],['prim_oran','Prim oranı değişti · personele'],['prim_hakedis','Prim hakedişe işlendi · personele'],['hakedis_odenmedi','Ayın 5\'i: geçmiş aydan ödenmemiş hakedişler'],['atama','Sipariş / müşteri takibi size atandı']]],
+  ['Personel',[['gec_kalma','Geç kalma (vardiya başladı, mesai girişi yok)'],['mesai_acik','23:30 mesai hâlâ açık'],['vardiya_degisim','Vardiya değişikliği · ilgili personele'],['mola_uyari','Mola: bitmeden önce uyarı · ilgili personele'],['mola_asim','Mola süresi aşıldı · personele acil, müdür ve sahibe'],['mola_mazeret','Mola mazereti istendi / yazıldı · personel, müdür ve sahip'],['gorev','09:30 görevler: bugün son gün / gecikmiş'],['takip','09:30 müşteri takipleri'],['hedef','Hedef tamamlandı (personel ve mağaza, günlük ve aylık)'],['hedef_ara','Her ayın 15\'i: hedefin gerisindeyse günlük gereken'],['egitim','09:30 eğitim son tarihi: 2 gün kala ve gecikince'],['gorev_bitti','Görev tamamlandı · görevi verene'],['egitim_bitti','Eğitim tamamlandı · eğitim yöneticilerine'],['egitim_yonetici','09:30 geciken eğitimler · eğitim yöneticilerine (pazartesi tam liste)'],['erken_cikis','Erken çıkış (vardiya bitmeden) · vardiya yöneticilerine'],['plansiz_mesai','Planlı vardiya yokken mesai başladı'],['avans_kesinti','Avans / kesinti eklendi · personele'],['prim_oran','Prim oranı değişti · personele'],['prim_hakedis','Prim hakedişe işlendi · personele'],['hakedis_odenmedi','Ayın 5\'i: geçmiş aydan ödenmemiş hakedişler'],['atama','Sipariş / müşteri takibi size atandı']]],
   ['Servis ve teklif',[['katalog_rezerve','Katalogdan cihaz rezerve edildi / rezervasyon kapandı veya süresi doldu'],['servis_gecikme','Servis: söz verilen tarih geçti'],['servis_bekleyen','Servis: hazır, 7 gündür teslim alınmadı'],['servis_teklif','Servis fiyat teklifi 2 gündür cevapsız'],['dis_servis','Dış serviste süre aşıldı'],['teklif_sure','Teklif geçerliliği yarın bitiyor'],['teklif_sonuc','Teklif kabul / red edildi · yöneticilere ve hazırlayana'],['servis_atama','Servis size atandı · teknisyene'],['servis_red','Müşteri servis teklifini reddetti'],['servis_zarar','Servis gideri ücretten fazla (zararına teslim) · sahibe'],['servis_garanti','Garanti içinde aynı cihaz (IMEI) tekrar geldi'],['siparis_yeni','Yeni müşteri siparişi · sipariş yetkililerine'],['siparis_bekleyen','09:30 sipariş N gündür bekliyor · sorumluya (haftada bir)']]],
   ['Stok ve denetim',[['kritik_stok','Kritik stok / stok tükendi (aksesuar)'],['fiyat_listesi','Kontrol edilen model fiyat listesinde yok'],['denetim','Denetim: maliyet, prim, yetki ve kullanıcı değişiklikleri · sahibe'],['eksik_gecikme','09:30 eksik ürünün beklenen tarihi geçti'],['alis_fiyat','Aksesuar alış fiyatı öncekinden yüksek · alış yetkililerine'],['fire','Fire kaydı (sahip dışında) · sahibe'],['sayim','Stok sayımı farkla tamamlandı · sahibe'],['hareketsiz','Pazartesi hareketsiz stok özeti · maliyet görenlere (sessiz)'],['kontrol_fiyat','Cihaz bedeli fiyat önerisinin üstünde · sahibe'],['ortak_pc','Ortak bilgisayar açıldı / kapatıldı · sahibe'],['giris_yok','Eklenen kullanıcı 3 gündür hiç giriş yapmadı · ekleyene'],['push_gecersiz','Telefon bildirimi bir cihazda çalışmaz oldu · kişiye']]]];
 const NTHR=[['ns-cl','notify_cash_limit','20000','Günlük kasada nakit eşiği (₺)'],['ns-el','notify_expense_limit','5000','Büyük masraf eşiği (₺)'],['ns-bp','notify_buy_pct','10','Alış fiyatı artış eşiği (%)'],['ns-ip','notify_insp_pct','15','Cihaz bedeli öneri üstü eşiği (%)'],['ns-id','notify_idle_days','60','Hareketsiz stok (gün)'],['ns-od','notify_order_days','5','Sipariş bekleme (gün)'],['ns-rd','notify_receivable_days','30','Müşteri alacağı (gün)']];
@@ -1383,7 +1390,7 @@ function userMenu(){const w=S.work,since=w&&w.clock_open_since,sh=w?(w.my_shift_
   const thm=themeGet(),thl=(THEMES.find(t=>t[0]===thm)||THEMES[0])[1]+(thm==='system'?' ('+(themeDark()?'koyu':'açık')+')':'');
   return `<div class="udd" role="menu"><div class="hd"><b>${esc(S.me.full_name||'')}</b><div class="sub">${esc(ROLES.find(r=>r[0]===S.me.role)[1])}${S.user&&S.user.email?' · '+esc(loginShow(S.user.email)):''}</div></div>
    ${w?`<div class="work"><div class="row" style="gap:8px;flex-wrap:nowrap"><div style="min-width:0">${since?`<b><span class="dot-on"></span>Mesaidesiniz</b><div class="sub">${fmtTime(since)} itibarıyla</div>`:'<b>Mesaide değilsiniz</b>'}<div class="sub">Bugünkü vardiya: ${esc(sh||'planlanmadı')}</div></div><div class="sp"></div>
-     <button class="btn sm ${since?'':'pri'}" data-a="${since?'clock-out':'clock-in'}">${since?'Bitir':'Başla'}</button></div></div>`:''}
+     <button class="btn sm ${since?'':'pri'}" data-a="${since?'clock-out':'clock-in'}">${since?'Bitir':'Başla'}</button></div></div>`:''}${brkMenu()}
    <button class="it wide-btn" role="menuitem" data-a="wide-toggle" aria-pressed="${wide}">${ic('expand')}Geniş ekran<span class="v">${wide?'Açık':'Kapalı'}</span></button>
    <button class="it" role="menuitem" data-a="theme" title="Açık → Koyu → Sistem">${ic('moon')}Tema<span class="v">${thl}</span></button>
    <button class="it" role="menuitem" data-a="snd-toggle" aria-pressed="${sndOn()}">${ic('bell')}Bildirim sesi<span class="v">${sndOn()?'Açık':'Kapalı'}</span></button>
@@ -5639,6 +5646,7 @@ function vVardiya(){
   <div class="card tw"><table><tr><th style="text-align:left">Kişi</th>${days.map((dt,i)=>`<th style="${dt===today()?'color:var(--accent)':''}">${DAYN[i]}<br>${dt.slice(8)}.${dt.slice(5,7)}</th>`).join('')}</tr>
    ${team.map(p=>`<tr><td style="text-align:left"><b>${esc(p.full_name)}</b><div class="sub" style="margin:0">${wk(p)}</div></td>${days.map(dt=>cell(p,dt)).join('')}</tr>`).join('')}
    <tr><td style="text-align:left"><b>Kadro</b><div class="sub" style="margin:0">çalışan kişi</div></td>${cov.map(n=>`<td class="${n?'':'neg'}" style="text-align:left">${n?n+' kişi':'⚠ kimse yok'}</td>`).join('')}</tr></table></div>
+  ${brkCard()}
   <div class="card"><div class="row"><h2 style="margin:0">Çalışma düzenleri</h2><div class="sp"></div>${mg?`<button class="btn sm" data-a="cd-gen" data-m="${wm}">${MONN[d0.getMonth()]} vardiyalarını oluştur</button>`:''}</div>
    <p class="sub">Düzen tanımlı kişilerin vardiyaları her ay otomatik oluşur. Düzen değişirse yeni düzen belirli bir tarihten başlar, eskisi o tarihte kapanır; geçmiş aylar etkilenmez.</p>
    ${team.map(p=>{const cur=cdSched(p.id,today())||(d.work_schedules||[]).filter(x=>x.staff_id===p.id&&x.valid_from>today()).sort((a,b)=>a.valid_from.localeCompare(b.valid_from))[0];
@@ -5649,7 +5657,7 @@ function vVardiya(){
    ${wdr.map(r=>`<tr><td style="text-align:left"><b>${esc(r.name)}</b></td><td>${r.has_plan?r.work_days_total:'-'}</td><td>${r.has_plan?hrsTxt(Number(r.work_hours_total)):'-'}</td><td>${r.has_plan?r.work_days_elapsed:'-'}</td><td>${r.has_plan?r.work_days_left:'-'}</td><td>${r.clock_days} gün · ${hrsTxt(Number(r.clock_hours))}</td></tr>`).join('')}</tbody></table></div>`:'<div class="sub">Yükleniyor…</div>'}</div>
   ${hist.length?`<div class="card"><h2>Değişiklik geçmişi</h2>${hist.map(c=>`<div class="item" style="padding:8px 0"><div class="main"><b>${CG_TYPE_L[c.change_type]||esc(c.change_type)}</b> · ${esc(pname(c.staff_id))}${c.other_staff_id?' ⇄ '+esc(pname(c.other_staff_id)):''}
    <div class="meta"><span>${c.shift_date?fmtDate(c.shift_date):''}${c.other_date?' ⇄ '+fmtDate(c.other_date):''}</span><span>${esc(CG_REASON_L[c.reason_code]||({ilk_kurulum:'İlk kurulum',yeni_personel:'Yeni personel',calisma_sekli_degisti:'Çalışma şekli değişti',sezon:'Sezon / dönem',isten_ayrildi:'İşten ayrıldı',uzun_izin:'Uzun süreli izin',diger:'Diğer'})[c.reason_code]||c.reason_code)}</span>${c.reason_note?`<span>${esc(c.reason_note)}</span>`:''}</div></div><div class="side sub">${fmtTime(c.created_at)}</div></div>`).join('')}</div>`:''}
-  ${mg?`<div class="card"><h2>Mesai kayıtları (giriş-çıkış)</h2>${clocks.map(c=>`<div class="item" style="padding:8px 0"><div class="main"><b>${esc(pname(c.staff_id))}</b><div class="meta"><span>Giriş ${fmtTime(c.clock_in)}</span><span>${c.clock_out?'Çıkış '+fmtTime(c.clock_out):'<b class="pos">Hâlâ mesaide</b>'}</span></div></div>
+  ${mg?`<div class="card"><h2>Mesai kayıtları (giriş-çıkış)</h2>${clocks.map(c=>`<div class="item" style="padding:8px 0"><div class="main"><b>${esc(pname(c.staff_id))}</b><div class="meta"><span>Giriş ${fmtTime(c.clock_in)}</span><span>${c.clock_out?'Çıkış '+fmtTime(c.clock_out):'<b class="pos">Hâlâ mesaide</b>'}</span>${(()=>{if(!brkInstalled())return '';const m=(S.d.breaks||[]).filter(b=>b.user_id===c.staff_id&&b.started_at>=c.clock_in&&(!c.clock_out||b.started_at<=c.clock_out));return m.length?`<span>Mola ${m.length} kez · ${dk(sum(m,brkEl))}</span>`:''})()}</div></div>
    <div class="side">${c.clock_out?hrsTxt((new Date(c.clock_out)-new Date(c.clock_in))/36e5):''}</div></div>`).join('')||'<div class="sub">Bu hafta kayıt yok.</div>'}</div>`:''}`}
 function cdModal(sid,end){
   const x=cdSched(sid,today())||{},nm=pname(sid);
@@ -8243,6 +8251,116 @@ document.addEventListener('change',e=>{const t=e.target;if(!t||!t.dataset||!S.vl
   else if(c==='vl-o'){S.vl[t.dataset.k]=t.checked;S.vl.optOpen=true;vlOptsSave();vlDraw()}
   else if(c==='vl-n'){S.vl.n=Math.max(1,Math.min(8,Number(t.value)||1))}});
 document.addEventListener('input',e=>{const t=e.target;if(!t||t.dataset.c!=='dwq')return;S.ui.dwq=t.value;const pos=t.selectionStart;render();const n=document.getElementById('dwq');if(n){n.focus();try{n.setSelectionRange(pos,pos)}catch(x){}}});
+/* ================= MOLA TAKİBİ (077) =================
+   Kullanıcı menüsünde mesai giriş-çıkışının altında Molaya çık / Moladan dön; molada üstte geri sayım şeridi.
+   Sunucu her dakika kontrol eder: bitmeden uyarı, aşımda kişiye aşım + mazeret bildirimi, müdür ve sahibe aşım bildirimi.
+   Vardiya bölümünde: mola ayarları (yönetici), şu an moladakiler, kişi bazında kullanım, aşımlar ve mazeretler. */
+const BRK_DEF={on:true,daily_min:60,warn_min:5,max_breaks:0,max_concurrent:1,need_clock:true,excuse:true,remind_min:30};
+const BRK_EX=[['musteri','Müşteriyle ilgilendim'],['acil','Acil kişisel durum'],['saglik','Sağlık'],['yemek','Yemek / sipariş gecikti'],['yonetici','Yönetici izniyle'],['unuttum','Saati kaçırdım'],['diger','Diğer']];
+const brkHm=t=>t?new Date(t).toLocaleTimeString('tr-TR',{hour:'2-digit',minute:'2-digit'}):'';
+const brkExL=c=>(BRK_EX.find(x=>x[0]===c)||[,c||''])[1];
+const brkInstalled=()=>!!(S.d&&Array.isArray(S.d.breaks)&&(S.d.app_settings||[]).some(x=>x.key==='break_rules'));
+function brkR(){let o={};try{const v=(S.d.app_settings||[]).find(x=>x.key==='break_rules');o=v?JSON.parse(v.value):{}}catch(e){}return Object.assign({},BRK_DEF,o)}
+const brkOn=()=>brkInstalled()&&brkR().on!==false;
+const brkLimit=uid=>{const l=(S.d.break_limits||[]).find(x=>x.user_id===uid);return l?Number(l.daily_min):Number(brkR().daily_min)};
+const brkNow=()=>Date.now()+(S.brkSkew||0);
+const brkEl=b=>Math.max(0,Math.round(((b.ended_at?new Date(b.ended_at).getTime():brkNow())-new Date(b.started_at).getTime())/1000));
+const brkLeft=b=>Number(b.allowed_sec)-brkEl(b);
+const brkOver=b=>b.ended_at?Number(b.over_sec)||0:Math.max(0,-brkLeft(b));
+const brkOpen=uid=>(S.d.breaks||[]).find(b=>b.user_id===uid&&!b.ended_at);
+const brkDay=(uid,day)=>(S.d.breaks||[]).filter(b=>b.user_id===uid&&b.day===day);
+const brkUsed=(uid,day)=>sum(brkDay(uid,day),brkEl);
+const mmss=s=>{s=Math.max(0,Math.round(s));const h=Math.floor(s/3600),m=Math.floor(s%3600/60),x=s%60;return (h?h+':'+String(m).padStart(2,'0'):m)+':'+String(x).padStart(2,'0')};
+const dk=s=>Math.ceil(Math.max(0,s)/60)+' dk';
+const brkNeedEx=b=>b.user_id===S.me.id&&(b.over_at||Number(b.over_sec)>0)&&!b.excuse_at&&!b.review&&brkR().excuse!==false;
+const brkPending=()=>brkInstalled()&&S.me?(S.d.breaks||[]).filter(b=>brkNeedEx(b)&&b.ended_at&&b.day>=addDays(today(),-7)):[];
+/* kullanıcı menüsü satırı */
+function brkMenu(){if(!brkOn()||!S.me)return '';const R=brkR(),b=brkOpen(S.me.id),lim=brkLimit(S.me.id),used=brkUsed(S.me.id,today()),w=S.work,inWork=!!(w&&w.clock_open_since);
+  if(b){const l=brkLeft(b);return `<div class="work brk-u${l<=0?' over':l<=R.warn_min*60?' warn':''}"><div class="row" style="gap:8px;flex-wrap:nowrap"><div style="min-width:0"><b>${ic('coffee')} Moladasınız</b>
+    <div class="sub" data-brk-live>${l>0?'Kalan '+mmss(l):'Süre aşıldı · +'+mmss(-l)}</div><div class="sub">${brkHm(b.started_at)} itibarıyla · günlük hak ${lim} dk</div></div><div class="sp"></div>
+    <button class="btn sm pri" data-a="brk-end">Moladan dön</button></div></div>`}
+  const can0=!R.need_clock||inWork,left=Math.max(0,lim*60-used);
+  return `<div class="work brk-u"><div class="row" style="gap:8px;flex-wrap:nowrap"><div style="min-width:0"><b>${ic('coffee')} Mola</b><div class="sub">Bugün ${dk(used)} / ${lim} dk kullanıldı${left?' · kalan '+dk(left):' · hakkınız doldu'}</div>
+    ${!can0?'<div class="sub">Molaya çıkmak için önce mesaiye başlayın</div>':''}</div><div class="sp"></div>
+    <button class="btn sm" data-a="brk-start" ${can0?'':'disabled'}>Molaya çık</button></div></div>`}
+/* geri sayım şeridi + bekleyen mazeret şeridi (render'dan bağımsız, saniyede bir güncellenir) */
+function brkTick(){if(!S.d||!S.me||!brkInstalled()){document.getElementById('brk-bar')?.remove();return}
+  const b=brkOpen(S.me.id),pend=b?[]:brkPending();let el=document.getElementById('brk-bar');
+  if(!b&&!pend.length){if(el)el.remove();return}
+  if(!el){el=document.createElement('div');el.id='brk-bar';el.setAttribute('role','status');document.body.appendChild(el)}
+  let cls,html;
+  if(b){const R=brkR(),l=brkLeft(b);cls=l<=0?'over':l<=R.warn_min*60?'warn':'';
+    html=`${ic('coffee')}<span><b>${l>0?'Moladasınız':'Mola süreniz aşıldı'}</b> <span class="t">${l>0?'kalan '+mmss(l):'+'+mmss(-l)}</span></span><button class="btn sm${l<=0?' pri':''}" data-a="brk-end">Moladan dön</button>`;
+    if(cls==='warn'&&S.brkWarned!==b.id){S.brkWarned=b.id;toast('Molanızın bitmesine '+dk(l)+' kaldı')}
+    if(cls==='over'&&S.brkOverSeen!==b.id){S.brkOverSeen=b.id;try{chimeUrgent()}catch(e){}}}
+  else{cls='need';html=`${ic('alert')}<span><b>Mola aşımı için mazeret bekleniyor</b> <span class="t">${pend.length>1?pend.length+' mola':fmtDate(pend[0].day)+' · '+dk(pend[0].over_sec)+' aşım'}</span></span><button class="btn sm pri" data-a="brk-exc" data-id="${pend[0].id}">Mazeret yaz</button>`}
+  const key=cls+'|'+html;if(el.dataset.k!==key){el.className=cls;el.innerHTML=html;el.dataset.k=key}
+  document.querySelectorAll('[data-brk-live]').forEach(x=>{x.textContent=b?(brkLeft(b)>0?'Kalan '+mmss(brkLeft(b)):'Süre aşıldı · +'+mmss(-brkLeft(b))):''});
+  document.querySelectorAll('[data-brk-row]').forEach(x=>{const r=(S.d.breaks||[]).find(y=>y.id===x.dataset.brkRow);if(r&&!r.ended_at){const l=brkLeft(r);x.textContent=l>0?'kalan '+mmss(l):'+'+mmss(-l)+' aşım';x.className=l<=0?'neg':''}})}
+setInterval(brkTick,1000);
+/* mazeret formu */
+function brkExcuse(id){const b=(S.d.breaks||[]).find(x=>x.id===id);if(!b)return toast('Mola kaydı bulunamadı',true);
+  modal(`<div class="nt-mh"><h2 style="margin:0">${ic('coffee')} Mola aşımı · mazeret</h2><div class="sp"></div><button class="ib" data-a="close" aria-label="Kapat">${ic('x')}</button></div>
+  <div class="brk-sum"><div><small>Tarih</small><b>${fmtDate(b.day)}</b></div><div><small>Mola</small><b>${brkHm(b.started_at)}${b.ended_at?' – '+brkHm(b.ended_at):' · devam ediyor'}</b></div><div><small>Günlük hak</small><b>${b.limit_min} dk</b></div><div><small>Aşım</small><b class="neg">${dk(brkOver(b))}</b></div></div>
+  <p class="sub">Mola süresini neden aştığınızı seçin; gerekirse kısaca açıklayın. Mazeretiniz mağaza müdürüne ve işletme sahibine iletilir.</p>
+  <div class="brk-ex">${BRK_EX.map(([k,t])=>`<label class="chk"><input type="radio" name="brk-c" value="${k}" ${b.excuse_code===k?'checked':''}> ${t}</label>`).join('')}</div>
+  <label class="f full">Açıklama <span class="sub">("Diğer" seçildiyse zorunlu)</span><textarea class="in" id="brk-t" rows="3" maxlength="500" placeholder="ör. Kasada uzun bir işlem vardı">${esc(b.excuse||'')}</textarea></label>
+  ${b.review?`<p class="sub">Bu mazeret ${b.review==='kabul'?'kabul edildi':'kabul edilmedi'}; değiştirilemez.</p>`:''}
+  <div class="err" id="f-err" hidden></div>
+  <div class="actions"><button class="btn" data-a="close">Sonra</button>${b.review?'':`<button class="btn pri" data-a="brk-exc-save" data-id="${b.id}">Mazereti gönder</button>`}</div>`)}
+/* yönetici: mola ayarları */
+function brkSetModal(){const R=brkR(),team=S.d.profiles.filter(p=>p.active!==false&&p.role!=='owner');
+  const num=(k,t,mn,mx,h)=>`<label class="f">${t}<input class="in" type="number" id="brs-${k}" min="${mn}" max="${mx}" value="${R[k]}">${h?`<span class="sub">${h}</span>`:''}</label>`;
+  const chk=(k,t)=>`<label class="chk full"><input type="checkbox" id="brs-${k}" ${R[k]?'checked':''}> ${t}</label>`;
+  modal(`<div class="nt-mh"><h2 style="margin:0">${ic('coffee')} Mola ayarları</h2><div class="sp"></div><button class="ib" data-a="close" aria-label="Kapat">${ic('x')}</button></div>
+  <div class="form">${chk('on','Mola takibi açık')}
+   ${num('daily_min','Günlük mola hakkı (dakika)',0,480,'Gün içindeki tüm molaların toplamı')}${num('warn_min','Bitmeden kaç dakika önce uyarı',1,30)}
+   ${num('max_breaks','Günde en çok mola sayısı',0,10,'0 = sınırsız')}${num('max_concurrent','Aynı anda en çok moladaki kişi',0,20,'Mağaza boş kalmasın; 0 = sınırsız')}
+   ${num('remind_min','Mazeret yazılmazsa kaç dakika sonra hatırlat',0,240,'0 = hatırlatma yok')}
+   ${chk('need_clock','Yalnız mesaideyken molaya çıkılabilir')}${chk('excuse','Süre aşımında mazeret iste')}</div>
+  <h3 style="margin:14px 0 4px">Kişiye özel günlük mola</h3><p class="sub" style="margin-top:0">Boş bırakılan kişi genel süreyi (${R.daily_min} dk) kullanır.</p>
+  <div class="tw"><table><tbody>${team.map(p=>{const l=(S.d.break_limits||[]).find(x=>x.user_id===p.id);return `<tr><td style="text-align:left"><b>${esc(p.full_name)}</b></td><td><input class="in brs-u" type="number" min="0" max="480" data-id="${p.id}" value="${l?l.daily_min:''}" placeholder="${R.daily_min}" style="width:90px"> dk</td></tr>`}).join('')||'<tr><td>Personel yok.</td></tr>'}</tbody></table></div>
+  <div class="err" id="f-err" hidden></div>
+  <div class="actions"><button class="btn" data-a="close">Vazgeç</button><button class="btn pri" data-a="brk-set-save">Kaydet</button></div>`)}
+/* Vardiya bölümündeki kart */
+function brkCard(){if(!brkInstalled())return '';const R=brkR(),mg=can('manage_shifts'),me=S.me.id,per=S.ui.brkp||'gun',all=S.d.breaks||[];
+  const from=per==='gun'?today():per==='hafta'?weekStart(today()):monthStart(today()),days=Math.round((parse(today())-parse(from))/864e5)+1;
+  const L=all.filter(b=>b.day>=from&&b.day<=today()&&(mg||b.user_id===me));
+  const open=all.filter(b=>!b.ended_at&&(mg||b.user_id===me));
+  const ppl=mg?S.d.profiles.filter(p=>p.active!==false&&(isStaffP(p)||L.some(b=>b.user_id===p.id))):[S.me];
+  const rows=ppl.map(p=>{const m=L.filter(b=>b.user_id===p.id),ov=m.filter(b=>brkOver(b)>0);return {p,n:m.length,sec:sum(m,brkEl),ov:ov.length,ovs:sum(ov,brkOver),pend:ov.filter(b=>!b.excuse_at&&!b.review).length,lim:brkLimit(p.id)}}).filter(r=>mg?true:1);
+  const OV=L.filter(b=>brkOver(b)>0).sort((a,b)=>String(b.started_at).localeCompare(String(a.started_at)));
+  const exRow=b=>`<div class="item brk-it" style="padding:8px 0" data-nl="breaks:${b.id}"><div class="main"><b>${esc(pname(b.user_id))}</b> <span class="pill bad">${dk(brkOver(b))} aşım</span>${b.review?` <span class="pill ${b.review==='kabul'?'stock':'warn'}">${b.review==='kabul'?'Mazeret kabul':'Mazeret ret'}</span>`:b.excuse_at?' <span class="pill">Mazeret var</span>':' <span class="pill warn">Mazeret bekleniyor</span>'}
+    <div class="meta"><span>${fmtDate(b.day)} · ${brkHm(b.started_at)}${b.ended_at?' – '+brkHm(b.ended_at):' · hâlâ molada'}</span><span>${dk(brkEl(b))} mola / ${b.limit_min} dk hak</span>${b.closed_by==='otomatik'?'<span>Mesai çıkışında kapandı</span>':b.closed_by==='yonetici'?'<span>Yönetici bitirdi</span>':''}</div>
+    ${b.excuse_at?`<div class="meta"><span><b>${esc(brkExL(b.excuse_code))}</b>${b.excuse?' — '+esc(b.excuse):''}</span></div>`:''}${b.review_note?`<div class="meta"><span>Değerlendirme: ${esc(b.review_note)}</span></div>`:''}</div>
+    <div class="side brk-acts">${b.user_id===me&&!b.review?`<button class="btn sm${b.excuse_at?'':' pri'}" data-a="brk-exc" data-id="${b.id}">${b.excuse_at?'Mazereti düzenle':'Mazeret yaz'}</button>`:''}
+      ${mg&&!b.review&&(b.user_id!==me||S.me.role==='owner')?`<button class="btn sm" data-a="brk-rev" data-id="${b.id}" data-v="kabul">Kabul</button><button class="btn sm" data-a="brk-rev" data-id="${b.id}" data-v="ret">Ret</button>`:''}</div></div>`;
+  return `<div class="card" id="brk-card"><div class="row"><h2 style="margin:0">${ic('coffee')} Mola takibi</h2>${R.on===false?' <span class="pill warn">Kapalı</span>':''}<div class="sp"></div>
+    <div class="seg">${[['gun','Bugün'],['hafta','Bu hafta'],['ay','Bu ay']].map(([k,t])=>`<button data-a="brk-per" data-v="${k}" aria-pressed="${per===k}">${t}</button>`).join('')}</div>${mg?`<button class="btn sm" data-a="brk-set">Mola ayarları</button>`:''}</div>
+   <p class="sub">Günlük mola hakkı ${R.daily_min} dk · bitmeden ${R.warn_min} dk önce uyarı${R.max_concurrent?' · aynı anda en çok '+R.max_concurrent+' kişi':''}${R.max_breaks?' · günde en çok '+R.max_breaks+' mola':''}. Molaya çıkmak için sağ üstte adınıza dokunun.</p>
+   ${open.length?`<h3 style="margin:10px 0 4px">Şu an molada</h3>${open.map(b=>`<div class="item" style="padding:6px 0"><div class="main"><b>${esc(pname(b.user_id))}</b><div class="meta"><span>${brkHm(b.started_at)} itibarıyla</span><span data-brk-row="${b.id}">${brkLeft(b)>0?'kalan '+mmss(brkLeft(b)):'+'+mmss(-brkLeft(b))+' aşım'}</span></div></div>
+     <div class="side">${mg&&b.user_id!==me?`<button class="btn sm" data-a="brk-force" data-id="${b.id}">Molayı bitir</button>`:''}</div></div>`).join('')}`:''}
+   <div class="tw"><table><thead><tr><th style="text-align:left">Kişi</th><th>Mola</th><th>Toplam</th><th>${per==='gun'?'Günlük hak':'Hak (gün başına)'}</th><th>Aşım</th><th>Mazeret bekleyen</th></tr></thead><tbody>
+    ${rows.map(r=>`<tr><td style="text-align:left"><b>${esc(r.p.full_name)}</b></td><td>${r.n}</td><td>${hrsTxt(r.sec/3600)}${per==='gun'&&r.lim?` <span class="sub">(%${Math.round(r.sec/60/r.lim*100)})</span>`:''}</td><td>${r.lim} dk</td><td class="${r.ov?'neg':''}">${r.ov?r.ov+' kez · '+dk(r.ovs):'—'}</td><td class="${r.pend?'neg':''}">${r.pend||'—'}</td></tr>`).join('')}</tbody></table></div>
+   <h3 style="margin:12px 0 4px">Süre aşımları ve mazeretler</h3>${OV.map(exRow).join('')||`<div class="sub">${days>1?'Bu dönemde':'Bugün'} süre aşımı yok.</div>`}</div>`}
+Object.assign(A,{
+  async 'brk-start'(){try{const r=await call('break_start',{});S.uOpen=false;toast('Mola başladı · kalan hakkınız '+dk(r.allowed_sec));await reload()}catch(e){}},
+  async 'brk-end'(){try{const r=await call('break_end',{});S.uOpen=false;await reload();
+    if(r.need_excuse){toast('Mola süresi '+dk(r.over_sec)+' aşıldı; lütfen mazeret yazın',true);brkExcuse(r.id)}else toast('Moladan döndünüz · bugün kalan '+dk(r.left_sec))}catch(e){}},
+  'brk-exc'(t){brkExcuse(t.dataset.id)},
+  async 'brk-exc-save'(t){const c=(document.querySelector('input[name="brk-c"]:checked')||{}).value,x=document.getElementById('brk-t').value.trim();
+    if(!c)return setErr('Mazeret nedenini seçin.');if(c==='diger'&&x.length<3)return setErr('"Diğer" için açıklama yazın.');
+    const ok=await mcall('break_excuse',{p_id:t.dataset.id,p_code:c,p_text:x||null},'Mazeretiniz iletildi');if(ok){closeModal();await reload()}},
+  'brk-per'(t){S.ui.brkp=t.dataset.v;render()},
+  'brk-set'(){brkSetModal()},
+  async 'brk-set-save'(){const g=id=>document.getElementById(id),p={};
+    ['daily_min','warn_min','max_breaks','max_concurrent','remind_min'].forEach(k=>p[k]=g('brs-'+k).value);['on','need_clock','excuse'].forEach(k=>p[k]=g('brs-'+k).checked);
+    if(!(await mcall('set_break_rules',{p})))return;
+    for(const i of document.querySelectorAll('.brs-u')){const v=i.value.trim(),cur=(S.d.break_limits||[]).find(x=>x.user_id===i.dataset.id);
+      if((cur?String(cur.daily_min):'')===v)continue;if(!(await mcall('set_break_limit',{p_user:i.dataset.id,p_min:v===''?null:Number(v)})))return}
+    toast('Mola ayarları kaydedildi');closeModal();await reload()},
+  async 'brk-rev'(t){const note=t.dataset.v==='ret'?prompt('Ret nedeni (isteğe bağlı)')||'':'';try{await call('break_review',{p_id:t.dataset.id,p_decision:t.dataset.v,p_note:note||null},t.dataset.v==='kabul'?'Mazeret kabul edildi':'Mazeret reddedildi');await reload()}catch(e){}},
+  async 'brk-force'(t){if(!armed(t,'Molayı bitir?'))return;try{const r=await call('break_force_end',{p_id:t.dataset.id},'Mola bitirildi');await reload()}catch(e){}}});
 function nlMeta(n,compact){const L=NT().links.filter(l=>l.note_id===n.id);if(!L.length)return '';const T=NL[L[0].ref_table]||{ic:'notebook'};
   return `<span class="nl-m" title="${esc(L.map(l=>l.label).join(', '))}">${ic(T.ic,'sm')}${compact?(L.length>1?L.length:''):esc(String(L[0].label).slice(0,28))+(L.length>1?' +'+(L.length-1):'')}</span>`}
 document.addEventListener('mousedown',e=>{if(e.target.closest&&e.target.closest('[data-a="nt-cmd"],[data-a="nt-slash"],[data-a="nt-line2task"]'))e.preventDefault()});
