@@ -740,7 +740,7 @@ const invOk=sub=>/\(AF\)$/.test(sub||''),invPill=sub=>sub?(invOk(sub)?'<span cla
 const COSM=['Kusursuz','Çok İyi','İyi','Orta','Hasarlı / Kırık'],WARR=['Garantisiz','Distribütör Garantili','İthalatçı Garantili','Mağaza Garantili'];
 const METHODS=[['nakit','Nakit'],['pos','POS'],['havale','Havale']];
 const MOVES=[['gider','Masraf / Gider'],['diger_gelir','Diğer Gelir'],['acilis','Açılış Bakiyesi'],['sermaye_sahip','Sahip Sermaye Girişi'],['sahip_cekimi','Sahip Çekimi'],['duzeltme_arti','Düzeltme (+)'],['duzeltme_eksi','Düzeltme (-)']];
-const TYPE_LABEL={enpara:'EnPara banka hesabı',odeal:'ÖdeAl banka hesabı',konsinye:'Konsinye sermayesi',hediye_ceki:'Hediye çeki satışı / iadesi',satis:'Satış',alis:'Ürün alışı',alis_iptal:'Alış iptali',iade:'İade',gider:'Masraf',diger_gelir:'Diğer gelir',acilis:'Açılış',sermaye_sahip:'Sahip sermayesi',sahip_cekimi:'Sahip çekimi',sahip_aktarim:'Sahip kasasına aktarım',sahip_geri:'Sahip kasasından işletmeye',sahip_cekim:'Sahip çekimi / harcama',sahip_giris:'Sahip kasasına giriş',
+const TYPE_LABEL={cihaz_onarim:'Cihaz onarımı (maliyete eklendi)',cihaz_onarim_iptal:'Cihaz onarımı iptali',enpara:'EnPara banka hesabı',odeal:'ÖdeAl banka hesabı',konsinye:'Konsinye sermayesi',hediye_ceki:'Hediye çeki satışı / iadesi',satis:'Satış',alis:'Ürün alışı',alis_iptal:'Alış iptali',iade:'İade',gider:'Masraf',diger_gelir:'Diğer gelir',acilis:'Açılış',sermaye_sahip:'Sahip sermayesi',sahip_cekimi:'Sahip çekimi',sahip_aktarim:'Sahip kasasına aktarım',sahip_geri:'Sahip kasasından işletmeye',sahip_cekim:'Sahip çekimi / harcama',sahip_giris:'Sahip kasasına giriş',
   duzeltme_arti:'Düzeltme (+)',duzeltme_eksi:'Düzeltme (-)',transfer:'Transfer',cari_odeme:'Cari ödeme',sermaye:'Yatırım sermayesi',
   alis_borc:'Veresiye alış',alis_odeme:'Alış ödemesi',kur_farki:'Kur farkı',odeme:'Ödeme',sermaye_girisi:'Sermaye girişi',sermaye_iadesi:'Sermaye iadesi',hakedis:'Hakediş',hakedis_iptal:'Hakediş iptali',hakedis_odeme:'Hakediş ödemesi',alis_iade:'Firma iadesi',iade_tahsilat:'İade bedeli geri alındı',cari_iade:'Firma iade tahsilatı',firma_iade:'Firmaya iade'};
 const ROLES=[['owner','İşletme sahibi'],['manager','Mağaza müdürü'],['staff','Personel']];
@@ -1983,9 +1983,24 @@ function stokList(){
       <div class="meta">${p.imei?`<span class="mono">${esc(p.imei)}</span>`:''}${p.barcode?`<span class="mono">${esc(p.barcode)}</span>`:''}${p.battery!=null?`<span>Pil %${p.battery}</span>`:''}${p.cosmetic?`<span>${esc(p.cosmetic)}</span>`:''}${p.warranty?`<span>${esc(p.warranty)}${p.warranty_period?' · '+esc(p.warranty_period):''}</span>`:p.warranty_period?`<span>Garanti: ${esc(p.warranty_period)}</span>`:''}${p.installment==='yapilabilir'&&!sold&&tiBank()&&p.target_price?`<button class="pill stock ti-pill" data-a="ti-dev" data-id="${p.id}" title="Taksit tablosunu aç">Taksit yapılabilir · ${(()=>{const b=tiBank(),n=tiN(b),c=tiCamp(b,n,tiCampTot(p));return c?n+' × '+money(c.mon):''})()}</button>`:p.installment?`<span class="pill ${p.installment==='yapilabilir'?'stock':'warn'}">Taksit ${p.installment==='yapilabilir'?'yapılabilir':'yapılamaz'}</span>`:''}</div>
       <div class="meta"><span>Alış ${fmtDate(p.buy_date)}${src?' · '+esc(src.name):''} · ${esc(p.buy_source)}</span></div>${p.notes?`<div class="meta"><span>${esc(p.notes)}</span></div>`:''}</div>
       <div class="side"><div><span class="pill ${st[0]}">${st[1]}</span> <span class="pill ${cls}">${age} gün</span></div>
-      <div class="sub">${showCost?`Maliyet <b>${money(d.cost.get(p.id))}</b>`:''}${p.target_price!=null?` ${showCost?'· ':''}Hedef <b>${money(p.target_price)}</b>`:''}</div>
-      <div class="acts">${p.status==='stokta'&&can('make_sale')?`<button class="btn sm pri" data-a="to-cart" data-id="${p.id}">Sat</button>`:''}${ntBtn('products',p.id)}${ctlCanM&&ctlCanM()&&ctlInstalled()&&['stokta','rezerve'].includes(p.status)?`<button class="btn sm${(ctlItem(p.id)||{}).published?' ctl-on':''}" data-a="ctl-edit" data-id="${p.id}" title="Katalog">${ic('store','sm')}${(ctlItem(p.id)||{}).published?'Katalogda':'Katalog'}</button>`:''}${can('manage_products')?`<button class="btn sm" data-a="edit-product" data-id="${p.id}">Düzenle</button>`:''}${!sold&&can('print_labels')?`<button class="btn sm" data-a="lbl-open" data-k="c" data-id="${p.id}">Etiket</button>`:''}${p.status==='stokta'?pqBtn('cihaz',p.id):''}${docBtn('products',p.id,'Foto')}${(()=>{const ir=(S.d.device_inspections||[]).find(x=>x.product_id===p.id);return ir?`<button class="btn sm" data-a="ins-report" data-id="${ir.id}">Kontrol raporu</button>`:''})()}</div></div></div>`}).join('')
+      <div class="sub">${showCost?`Maliyet <b>${money(d.cost.get(p.id))}</b>${pRepair(p.id)>0?` <span class="pill warn" title="Onarım giderleri maliyete eklendi">Onarım +${money(pRepair(p.id))}</span>`:''}`:''}${p.target_price!=null?` ${showCost?'· ':''}Hedef <b>${money(p.target_price)}</b>`:''}</div>
+      <div class="acts">${p.status==='stokta'&&can('make_sale')?`<button class="btn sm pri" data-a="to-cart" data-id="${p.id}">Sat</button>`:''}${ntBtn('products',p.id)}${ctlCanM&&ctlCanM()&&ctlInstalled()&&['stokta','rezerve'].includes(p.status)?`<button class="btn sm${(ctlItem(p.id)||{}).published?' ctl-on':''}" data-a="ctl-edit" data-id="${p.id}" title="Katalog">${ic('store','sm')}${(ctlItem(p.id)||{}).published?'Katalogda':'Katalog'}</button>`:''}${can('manage_products')?`<button class="btn sm" data-a="edit-product" data-id="${p.id}">Düzenle</button>`:''}${!sold&&can('print_labels')?`<button class="btn sm" data-a="lbl-open" data-k="c" data-id="${p.id}">Etiket</button>`:''}${p.status==='stokta'?pqBtn('cihaz',p.id):''}${p.status==='stokta'&&can('manage_service')?`<button class="btn sm" data-a="sv-stock" data-id="${p.id}">Servise gönder</button>`:''}${docBtn('products',p.id,'Foto')}${(()=>{const ir=(S.d.device_inspections||[]).find(x=>x.product_id===p.id);return ir?`<button class="btn sm" data-a="ins-report" data-id="${ir.id}">Kontrol raporu</button>`:''})()}</div></div></div>`}).join('')
     :'<div class="empty">Bu filtreyle eşleşen ürün yok.</div>'}
+/* stok cihazı onarımı (089) */
+const pRepair=id=>Number(((S.d.product_costs||[]).find(c=>c.product_id===id)||{}).repair_try)||0;
+const svStockDev=x=>!!(x&&x.from_stock&&x.kind==='telefon'&&x.product_id);
+function fltCard(p){if(!can('manage_service'))return '';const on=!!p.service_issue;
+  return `<div class="full"><label class="chk"><input type="checkbox" id="p-flt" data-c="pflt" ${on?'checked':''}> <span><b>Cihaz arızalı</b> · kaydedince servis kaydı açılsın (onarım giderleri cihaz maliyetine eklenir)</span></label></div>
+   <label class="f full" id="p-flt-w" ${on?'':'hidden'}>Arıza<input class="in" id="p-flti" maxlength="300" placeholder="Örn. Ekran kırık, şarj almıyor" value="${esc(p.service_issue||'')}"></label>`}
+function fltIssue(){const c=document.getElementById('p-flt');if(!c||!c.checked)return '';return g('p-flti')||null}
+function svStockModal(pid){const p=S.d.productMap.get(pid);if(!p)return;
+  modal(`<h2>Servise gönder · ${esc(p.model)}</h2><p class="sub">${p.imei?'IMEI '+esc(p.imei)+' · ':''}${p.owner==='konsinye'?'Konsinye (yatırım) cihazı: onarım giderleri konsinye sermayesinden ödenir.':'Anka İletişim cihazı: onarım giderleri Anka kasasından ödenir.'} Giderler cihaz maliyetine eklenir; cihaz onarım bitene kadar "Serviste" görünür ve satılamaz.</p>
+  <div class="form"><label class="f full">Arıza<input class="in" id="ss-i" maxlength="300" placeholder="Örn. Ekran kırık, şarj almıyor"></label>
+   <label class="f">Onarım yeri<select class="in" id="ss-r" data-c="ssrep">${opts(Object.entries(RBS),'anka')}</select></label>
+   <div id="ss-f" style="display:contents" hidden>${csel('ss-c','firma',null,'Servis firması')}</div>
+   <label class="f full">Not (isteğe bağlı)<input class="in" id="ss-n" maxlength="200"></label></div>
+  <div class="err" id="f-err" hidden></div><div class="actions"><button class="btn" data-a="close">Vazgeç</button><button class="btn pri" data-a="sv-stock-save" data-id="${pid}">Servis kaydını aç</button></div>`);
+  const f=document.getElementById('ss-f');if(f)f.style.display='none'}
 function productModal(p,pre){
   const fm=!!S.pfd,e=!!p&&!pre&&!fm;p=pre||p||{cat:CATS[0],sub:SUBS[0],buy_date:today(),buy_source:'toptan',owner:'anka'};S.pinsp=e?'':(p.inspection_id||'');
   const inspCard=`<div class="card" style="margin-top:8px"><div class="row" style="gap:8px;flex-wrap:wrap"><b>Cihaz kontrolü</b>${insBadge(S.pinsp)}<div class="sp"></div><button type="button" class="btn sm pri" data-a="p-insp">${S.pinsp?'Kontrolü aç / düzenle':'Kontrol yap'}</button></div><div class="sub">Akıllı Telefon, Tablet ve Akıllı Saat için. Sıfır dışındaki cihazlarda kontrol zorunludur; müşteriden alışta ayrıca kimlik fotoğrafı ve imzalı sözleşme gerekir.</div></div>`;
@@ -2008,7 +2023,7 @@ function productModal(p,pre){
   fm?`<fieldset><legend>Fatura kalemi</legend><div class="form">
     <label class="f">Birim maliyet (₺)<input class="in" id="p-cost" type="number" min="0" step="0.01" inputmode="decimal" value="${p.cost==null?'':p.cost}"></label>
     <label class="f">Adet<input class="in" id="p-qty" type="number" min="1" max="500" step="1" inputmode="numeric" value="${p.qty||1}"></label></div>
-    <p class="sub">Tedarikçi, belge, iskonto ve ödeme toplu alım ekranında fatura düzeyinde girilir. Adet 1'den fazlaysa IMEI boş ve cihaz Sıfır olmalıdır (kontrollü cihazlar ayrı eklenir).</p>${inspCard}</fieldset>`:
+    <p class="sub">Tedarikçi, belge, iskonto ve ödeme toplu alım ekranında fatura düzeyinde girilir. Adet 1'den fazlaysa IMEI boş ve cihaz Sıfır olmalıdır (kontrollü cihazlar ayrı eklenir).</p>${inspCard}${e?'':fltCard(p)}</fieldset>`:
   `<fieldset><legend>Alış</legend><div class="form">
     <label class="f">Alış tarihi<input class="in" id="p-date" type="date" value="${p.buy_date}"></label>
     <label class="f">Alış kaynağı<select class="in" id="p-src" data-c="srcchg">${opts([['toptan','Firma (toptan)'],['musteri','Müşteri (2.El)']],src)}</select></label>
@@ -2017,7 +2032,7 @@ function productModal(p,pre){
     <label class="f">İskonto (₺) <span class="sub">fiş toplamından düşer</span><input class="in" id="p-disc" type="number" min="0" step="0.01" inputmode="decimal" data-c="costin" value="${p.disc_in??''}"></label>
     <label class="f">Şimdi ödenen (₺)<input class="in" id="p-paid" type="number" min="0" step="0.01" inputmode="decimal" value="${p.paid_in??''}"></label>
     <label class="f">Ödeme şekli<select class="in" id="p-pay">${payOpts(p.pay_in||'nakit',p.owner==='konsinye')}</select></label></div>
-    ${inspCard}
+    ${inspCard}${e?'':fltCard(p)}
     <p class="sub" id="p-net"></p>
     <p class="sub">İskonto maliyetten düşülür; ödenen tutar net maliyetten azsa kalan, seçilen firmaya veresiye borç yazılır.</p></fieldset>`}
   <label class="f" style="margin-top:12px">Notlar<textarea class="in" id="p-notes">${esc(p.notes)}</textarea></label>
@@ -2044,9 +2059,11 @@ async function saveProduct(id){
       const paid=nv('p-paid');const owner=g('p-owner')||'anka';
       if(owner!=='konsinye'&&insCat(g('p-cat'))&&!g('p-sub').startsWith('Sıfır')&&insOn()){const ir=insRow(S.pinsp);if(!ir||!ir.completed_at)return setErr(g('p-src')==='musteri'?'Müşteriden alışta “Cihaz kontrolü” tamamlanmalı (kimlik fotoğrafı ve imzalı sözleşme dahil).':'Bu kategoride 2.El / Yenilenmiş alışta “Cihaz kontrolü” tamamlanmalı (Sıfır cihazlar hariç).');if(ir.imei_source==='ithalat'&&!g('p-sub').startsWith('Yenilenmiş'))return setErr('İthalat IMEI’li cihaz “Yenilenmiş” olarak yazılmalı.')}
       if(owner==='konsinye'&&!g('p-agr'))return setErr('Konsinye anlaşması seçin.');
+      const flt=fltIssue();if(flt===null)return setErr('Arızayı yazın (ya da "Cihaz arızalı" işaretini kaldırın).');
       if(!payWarn('save-product',g('p-pay'),paid==null?net:paid))return;
       const nid=await call('create_product',{p:{cat:g('p-cat'),sub:g('p-sub'),model,imei,battery:g('p-bat'),cosmetic:g('p-cos'),warranty:g('p-war'),warranty_period:g('p-warp'),installment:g('p-inst'),buy_date:g('p-date'),buy_source:g('p-src'),buy_contact_id:contact||'',
         target_price:g('p-target'),notes:g('p-notes'),owner,agreement_id:owner==='konsinye'?g('p-agr'):'',inspection_id:S.pinsp||'',cost,discount:disc||null,paid_amount:paid==null?net:paid,pay_method:g('p-pay')}},'Ürün stoğa eklendi');
+      if(flt&&nid){try{await call('stock_service_open',{p_product:nid,p_issue:flt,p_repair_by:'anka',p_repair_contact:null,p_note:'Alışta arızalı'},'Servis kaydı açıldı')}catch(x){toast('Cihaz kaydedildi ama servis kaydı açılamadı: '+msg(x),true)}}
       if(S.qconv)await qConvDone(nid)}
     closeModal();await reload()}
   catch(e){setErr(msg(e))}}
@@ -3955,7 +3972,7 @@ function pfOpen(sup,term,mode){
    <div class="actions"><button class="btn" data-a="close">Vazgeç</button></div>`);return}
   S.pf={mode:term?'aksesuar':mode,term:!!term,due:'',sup:sup||'',nn:'',nt:'',type:'fatura',docno:'',date:today(),rate:S.fx&&S.fx.ok?S.fx.rate:'',method:'havale',paid:'',dtype:'yok',disc:'',note:'',owner:'anka',agr:'',phones:[],accs:[],cur:term?'USD':'TRY'};S.pfd=null;pfModal();fxGet(false)}
 const insNeed=(cat,sub)=>insOn()&&insCat(cat)&&!String(sub||'').startsWith('Sıfır');
-function pfDevCard(x,i){const ir=x.inspection_id?insBadge(x.inspection_id):(insNeed(x.cat,x.sub)?'<span class="pill bad">Kontrol eksik</span>':'<span class="pill">Kontrol gerekmez</span>');
+function pfDevCard(x,i){const ir=(x.service_issue?`<span class="pill warn" title="${esc(x.service_issue)}">Arızalı · servis açılacak</span> `:'')+(x.inspection_id?insBadge(x.inspection_id):(S.pf&&S.pf.owner==='konsinye'?'<span class="pill">Kontrol gerekmez</span>':insNeed(x.cat,x.sub)?'<span class="pill bad">Kontrol eksik</span>':'<span class="pill">Kontrol gerekmez</span>'));
   return `<div class="item" style="padding:8px 0"><div class="main"><b>${esc(x.model)}</b> <span class="pill">${esc(x.cat)} · ${esc(x.sub)}</span> ${invPill(x.sub)}
    <div class="meta">${x.imei?`<span class="mono">${esc(x.imei)}</span>`:''}<span>${Math.max(1,Math.round(Number(x.qty)||1))} adet × ${money(Number(x.cost)||0)}</span>${x.battery!=null&&x.battery!==''?`<span>Pil %${esc(x.battery)}</span>`:''}${x.cosmetic?`<span>${esc(x.cosmetic)}</span>`:''}${ir}</div></div>
    <div class="side"><b>${money(x._t||0)}</b><div class="acts"><button class="btn sm" data-a="pf-edit-d" data-i="${i}">Düzenle</button><button class="btn sm" data-a="pf-clone-d" data-i="${i}">Benzer ekle</button><button class="btn sm danger" data-a="pf-del-p" data-i="${i}">Çıkar</button></div></div></div>`}
@@ -3976,7 +3993,8 @@ async function pfDevSave(){const p=S.pf,i=S.pfd.i;
   if(!kon&&insNeed(cat,sub)){const ir=insRow(S.pinsp);if(!ir||!ir.completed_at)return setErr('Bu kategoride 2.El / Yenilenmiş alışta “Cihaz kontrolü” tamamlanmalı (Sıfır cihazlar hariç).');
     if(ir.imei_source==='ithalat'&&!sub.startsWith('Yenilenmiş'))return setErr('İthalat IMEI’li cihaz “Yenilenmiş” olarak yazılmalı.');
     if(p.phones.some((x,j)=>j!==i&&x.inspection_id===S.pinsp))return setErr('Bu kontrol kaydı faturadaki başka bir cihaza bağlı.')}
-  const dev={cat,sub,model,imei,battery:nv('p-bat'),cosmetic:g('p-cos'),warranty:g('p-war'),warranty_period:g('p-warp'),installment:g('p-inst'),target_price:nv('p-target'),notes:g('p-notes'),cost,qty,inspection_id:S.pinsp||''};
+  const flt=fltIssue();if(flt===null)return setErr('Arızayı yazın (ya da "Cihaz arızalı" işaretini kaldırın).');if(flt&&qty>1)return setErr('Arızalı cihaz tek tek eklenmeli (adet 1).');
+  const dev={service_issue:flt||'',cat,sub,model,imei,battery:nv('p-bat'),cosmetic:g('p-cos'),warranty:g('p-war'),warranty_period:g('p-warp'),installment:g('p-inst'),target_price:nv('p-target'),notes:g('p-notes'),cost,qty,inspection_id:S.pinsp||''};
   if(i>=0)p.phones[i]=dev;else p.phones.push(dev);
   S.pfd=null;pfModal();toast(model+' faturaya eklendi')}
 function pfCalc(){const p=S.pf,rate=Number(p.rate)||0;let ph=0,ac=0,usd=0,miss=false;
@@ -4061,7 +4079,7 @@ async function pfSave(){const p=S.pf,k=pfCalc();
       if(String(x.imei||'').trim()&&q>1)return setErr((i+1)+'. cihaz: IMEI yazılacaksa adet 1 olmalı.');
       if(!pfKon(p)&&insNeed(x.cat,x.sub)){const ir=insRow(x.inspection_id);if(!ir||!ir.completed_at)return setErr((i+1)+'. cihaz ('+x.model+'): cihaz kontrolü tamamlanmalı.')}
       lines.push({kind:'cihaz',cat:x.cat,sub:x.sub,model:String(x.model).trim(),imei:String(x.imei||'').trim()||null,qty:q,cost:c,target_price:x.target_price==null||x.target_price===''?null:Number(x.target_price),
-        battery:x.battery==null||x.battery===''?null:Number(x.battery),cosmetic:x.cosmetic||null,warranty:x.warranty||null,warranty_period:x.warranty_period||null,installment:x.installment||null,notes:x.notes||null,inspection_id:x.inspection_id||null})}
+        battery:x.battery==null||x.battery===''?null:Number(x.battery),cosmetic:x.cosmetic||null,warranty:x.warranty||null,warranty_period:x.warranty_period||null,installment:x.installment||null,notes:x.notes||null,inspection_id:x.inspection_id||null,...(x.service_issue?{service_issue:x.service_issue}:{})})}
     for(const [i,x] of p.accs.entries()){const q=Math.round(Number(x.qty)||0),c=x.cost===''?null:Number(x.cost);
       if(q<1)return setErr((i+1)+'. aksesuar satırında adet yazın.');if(c==null||!(c>=0))return setErr((i+1)+'. aksesuar satırında birim maliyeti yazın.');
       lines.push({kind:'aksesuar',accessory_id:x.id,qty:q,currency:x.cur,unit_cost:c})}
@@ -4857,13 +4875,13 @@ function vServis(){
   const row=x=>{const c=d.contactMap.get(x.contact_id),rc=d.contactMap.get(x.repair_contact_id),lt=svOpen(x)&&x.status!=='hazir'&&x.promised_date&&x.promised_date<today(),acc=x.kind==='aksesuar';
     const st=svStatuses(x);const stOpts=SV.filter(o=>st.includes(o[0])||o[0]===x.status).filter(o=>o[0]!=='teslim');
     return `<div class="item"><div class="main"><b>${esc(x.device)}${acc&&x.qty>1?' × '+x.qty:''}</b> <span class="pill ${svTone(x.status)}">${esc(SVL[x.status])}</span> ${acc?'<span class="pill">Aksesuar · '+esc((RT.find(r=>r[0]===x.request_type)||[])[1]||'')+'</span>':''}<span class="pill ${svExt(x)?'warn':''}">${esc(RBS[x.repair_by]||'')}</span>${x.warranty_service?' <span class="pill">Garanti kapsamı</span>':''}${x.quote_status&&x.quote_status!=='yok'?` <span class="pill ${x.quote_status==='kabul'?'sold':x.quote_status==='red'?'bad':'warn'}">${SQL[x.quote_status]}</span>`:''}${svOpen(x)&&svRepeat(x)?' <span class="pill bad">Onarım garantisi içinde tekrar arıza</span>':''}${x.status==='teslim'&&x.warranty_until?` <span class="pill ${x.warranty_until>=today()?'sold':''}">Onarım garantisi ${x.warranty_until>=today()?fmtDate(x.warranty_until)+'\'e kadar':'bitti'}</span>`:''}
-    <div class="meta"><span class="mono">${esc(x.ticket_no)}</span>${c?`<span>${esc(c.name)}${c.phone?' · '+esc(c.phone):''}</span>`:''}${x.imei?`<span class="mono">${esc(x.imei)}</span>${dwPill(x.imei)}`:''}<span>Kabul ${fmtDate(x.received_at)}</span>${x.promised_date?`<span class="${lt?'neg':''}">Söz verilen ${fmtDate(x.promised_date)}${lt?' (geçti)':''}</span>`:''}${x.assigned_to?`<span>${esc(pname(x.assigned_to))}</span>`:''}</div>
+    <div class="meta"><span class="mono">${esc(x.ticket_no)}</span>${svStockDev(x)?`<span class="pill ${(d.productMap.get(x.product_id)||{}).owner==='konsinye'?'warn':''}">Stok cihazı · ${(d.productMap.get(x.product_id)||{}).owner==='konsinye'?'Konsinye':'Anka'}</span>`:''}${c?`<span>${esc(c.name)}${c.phone?' · '+esc(c.phone):''}</span>`:''}${x.imei?`<span class="mono">${esc(x.imei)}</span>${dwPill(x.imei)}`:''}<span>Kabul ${fmtDate(x.received_at)}</span>${x.promised_date?`<span class="${lt?'neg':''}">Söz verilen ${fmtDate(x.promised_date)}${lt?' (geçti)':''}</span>`:''}${x.assigned_to?`<span>${esc(pname(x.assigned_to))}</span>`:''}</div>
     ${svExt(x)?`<div class="meta"><span>Onaran: <b>${esc(rc?rc.name:RBS[x.repair_by])}</b></span>${x.external_ref?`<span>Dosya no <span class="mono">${esc(x.external_ref)}</span></span>`:''}${x.sent_on?`<span>Gönderim ${fmtDate(x.sent_on)}</span>`:''}${x.external_due?`<span class="${svExtLate(x)?'neg':''}">Beklenen dönüş ${fmtDate(x.external_due)}${svExtLate(x)?' (geçti)':''}</span>`:''}${x.returned_on?`<span>Döndü ${fmtDate(x.returned_on)}${x.external_result?' · '+esc({onarildi:'onarıldı',degisti:'değiştirildi',onarilamadi:'onarılamadı',diger:'diğer'}[x.external_result]):''}</span>`:''}${x.external_cost!=null?`<span>Dış servis maliyeti ${money(x.external_cost)}</span>`:''}</div>`:''}
     ${svMoneyLine(x)}<div class="meta"><span>${acc?'Sorun':'Arıza'}: ${esc(x.issue)}</span>${x.accessories?`<span>Teslim alınan: ${esc(x.accessories)}</span>`:''}</div>${x.note?`<div class="meta"><span>${esc(x.note)}</span></div>`:''}
     ${u.openSv===x.id?`<div style="margin-top:8px">${d.service_events.filter(e=>e.service_id===x.id).sort((a,b)=>String(a.at).localeCompare(String(b.at))).map(e=>`<div class="sub">${fmtTime(e.at)} · ${esc(SVL[e.status]||'')}${e.note?' · '+esc(e.note):''}${e.by?' · '+esc(pname(e.by)):''}</div>`).join('')||'<div class="sub">Kayıt yok.</div>'}</div>`:''}</div>
     <div class="side"><div class="sub num">${x.final_price!=null?'Ücret <b>'+money(x.final_price)+'</b>':(x.estimate!=null?'Tahmini '+money(x.estimate):'')}</div>
     ${svOpen(x)?`<select class="in" data-c="svstatus" data-id="${x.id}" style="width:auto" aria-label="Durum">${opts(stOpts,x.status)}</select>`:''}
-    <div class="acts">${ntBtn('service_orders',x.id)}${svOpen(x)&&svExt(x)&&['kabul','inceleme','onay_bekliyor','parca_bekliyor'].includes(x.status)?`<button class="btn sm" data-a="sv-send" data-id="${x.id}">Dış servise gönder</button>`:''}${svOpen(x)&&svAtExt(x)?`<button class="btn sm" data-a="sv-back" data-id="${x.id}">Döndü</button>`:''}${svOpen(x)&&x.status==='dondu'?`<button class="btn sm" data-a="sv-ready" data-id="${x.id}">Hazır yap</button>`:''}${svOpen(x)?`<button class="btn sm pri" data-a="sv-deliver" data-id="${x.id}">Teslim et</button>`:''}${svOpen(x)?`<button class="btn sm" data-a="sv-quote" data-id="${x.id}">Teklif</button>`:''}<button class="btn sm" data-a="sv-cost" data-id="${x.id}">Gider</button><button class="btn sm" data-a="sv-forms" data-id="${x.id}">Formlar</button><button class="btn sm" data-a="sv-hist" data-id="${x.id}">Geçmiş</button>${docBtn('service_orders',x.id)}${svOpen(x)?`<button class="btn sm" data-a="sv-edit" data-id="${x.id}">Düzenle</button>`:''}</div></div></div>`};
+    <div class="acts">${ntBtn('service_orders',x.id)}${svOpen(x)&&svExt(x)&&['kabul','inceleme','onay_bekliyor','parca_bekliyor'].includes(x.status)?`<button class="btn sm" data-a="sv-send" data-id="${x.id}">Dış servise gönder</button>`:''}${svOpen(x)&&svAtExt(x)?`<button class="btn sm" data-a="sv-back" data-id="${x.id}">Döndü</button>`:''}${svOpen(x)&&x.status==='dondu'?`<button class="btn sm" data-a="sv-ready" data-id="${x.id}">Hazır yap</button>`:''}${svOpen(x)?(svStockDev(x)?`<button class="btn sm pri" data-a="sv-stock-done" data-id="${x.id}">Onarım bitti · stoğa al</button>`:`<button class="btn sm pri" data-a="sv-deliver" data-id="${x.id}">Teslim et</button>`):''}${svOpen(x)?`<button class="btn sm" data-a="sv-quote" data-id="${x.id}">Teklif</button>`:''}<button class="btn sm" data-a="sv-cost" data-id="${x.id}">Gider</button><button class="btn sm" data-a="sv-forms" data-id="${x.id}">Formlar</button><button class="btn sm" data-a="sv-hist" data-id="${x.id}">Geçmiş</button>${docBtn('service_orders',x.id)}${svOpen(x)?`<button class="btn sm" data-a="sv-edit" data-id="${x.id}">Düzenle</button>`:''}</div></div></div>`};
   return `${svHead()}
   ${cnt.length?`<div class="sub">Dış serviste ${cnt.length} kayıt var${late?` · <b class="neg">${late} tanesinin beklenen dönüş tarihi geçti</b>`:''}.</div>`:''}
   <div class="row"><div class="seg">${[['acik','Açık'],['hazir','Hazır'],['dis','Dış serviste'],['tum','Tümü']].map(([v,t])=>`<button data-a="svfilter" data-v="${v}" aria-pressed="${f===v}">${t}</button>`).join('')}</div>
@@ -5212,6 +5230,12 @@ function vKazancRapor(){
 async function svLoadReport(){const R=S.svr;R.busy=true;
   try{const r=await sb.rpc('service_profit_report',{p_from:R.from,p_to:R.to});if(r.error)throw r.error;R.data=r.data}catch(e){R.data=false;toast(msg(e),true)}
   R.busy=false;if(S.ui.tab==='servis'||S.ui.tab==='kazancrapor')render()}
+function svStockPay(x){const p=S.d.productMap.get(x.product_id)||{},kon=p.owner==='konsinye';
+  if(!can('service_stock_cost'))return '<p class="sub full">Stok cihazının onarım giderini yetkili kişi (müdür, sahip) girer.</p>';
+  const L=kon?[['konsinye','Konsinye sermayesinden öde · kasadaki yatırımcı parası '+money(payBal('konsinye'))]]
+    :[...EX_ACC.filter(a=>!['enpara','odeal'].includes(a[0])||payXOn()).map(a=>[a[0],a[1]+' · '+money(cashBal(a[0],null,'anka'))]),['veresiye','Henüz ödenmedi · seçilen firmaya borç yaz']];
+  return `<div class="full note">${kon?'<b>Konsinye cihazı</b>: gider cihaz maliyetine eklenir ve <b>konsinye sermayesinden</b> ödenir.':'<b>Anka İletişim cihazı</b>: gider cihaz maliyetine eklenir ve <b>Anka kasasından</b> ödenir.'} Masraf (gider) yazılmaz; kâr satışta görünür.</div>
+   <label class="f full">Ödeme<select class="in" id="sc-spay">${opts(L,L[0][0])}</select></label>`}
 function svCostModal(id){
   const x=S.d.service_orders.find(s=>s.id===id),list=(S.d.service_costs||[]).filter(c=>c.service_id===id),prof=isOwner();
   modal(`<h2>Servis giderleri</h2><p class="sub">${esc(x.ticket_no)} · ${esc(x.device)}</p>
@@ -5223,7 +5247,7 @@ function svCostModal(id){
    <label class="f full">Açıklama (parça adı, usta adı...)<input class="in" id="sc-d" maxlength="120"></label>
    ${csel('sc-sup','firma',null,'Tedarikçi (parçayı aldığınız firma)')}
    <label class="f">Teknisyen (isteğe bağlı)<select class="in" id="sc-st">${opts([['','- seçilmedi -'],...staffOpts()],'')}</select></label>
-   ${can('manage_expenses')?`<label class="f full">Ödeme<select class="in" id="sc-pay">${opts([['','Henüz ödenmedi (Masraflar\'da ödeme bekler)'],...EX_ACC.map(a=>[a[0],a[1]+' hesabından şimdi öde'])],'')}</select></label>`:'<p class="sub full">Gider ödenmemiş masraf olarak kaydedilir; ödemeyi yetkili kişi Masraflar\'dan yapar.</p>'}</div>
+   ${svStockDev(x)?svStockPay(x):can('manage_expenses')?`<label class="f full">Ödeme<select class="in" id="sc-pay">${opts([['','Henüz ödenmedi (Masraflar\'da ödeme bekler)'],...EX_ACC.map(a=>[a[0],a[1]+' hesabından şimdi öde'])],'')}</select></label>`:'<p class="sub full">Gider ödenmemiş masraf olarak kaydedilir; ödemeyi yetkili kişi Masraflar\'dan yapar.</p>'}</div>
   <div class="err" id="f-err" hidden></div><div class="actions"><button class="btn" data-a="close">Kapat</button><button class="btn pri" data-a="sv-cost-add" data-id="${id}">Gideri ekle</button></div>`)}
 function svQuoteModal(id){
   const x=S.d.service_orders.find(s=>s.id===id),c=S.d.contactMap.get(x.contact_id)||{},qs=x.quote_status||'yok';
@@ -7224,6 +7248,12 @@ const A={
       const r=id?await sb.from('service_orders').update(o).eq('id',id):await sb.from('service_orders').insert({...o,branch_id:S.me.branch_id});
       if(r.error)throw r.error;toast('Servis kaydı kaydedildi');closeModal();await reload()}catch(e){setErr(msg(e))}},
   'sv-deliver'(t){svDeliverModal(t.dataset.id)},
+  'sv-stock'(t){svStockModal(t.dataset.id)},
+  async 'sv-stock-save'(t){const i=g('ss-i');if(!i)return setErr('Arızayı yazın.');const r=g('ss-r')||'anka';let c=null;
+    try{if(r!=='anka'){c=await resolveContact('firma','ss-c');if(r==='anlasmali'&&!c)return setErr('Anlaşmalı servis firmasını seçin.')}
+      t.disabled=true;await call('stock_service_open',{p_product:t.dataset.id,p_issue:i,p_repair_by:r,p_repair_contact:c||null,p_note:g('ss-n')||null},'Servis kaydı açıldı');closeModal();await reload()}catch(e){t.disabled=false;setErr(msg(e))}},
+  async 'sv-stock-done'(t){if(!armed(t,'Cihaz stoğa alınacak · tekrar tıklayın'))return;
+    try{await call('deliver_service',{p_service:t.dataset.id,p_price:0,p_payments:[],p_note:null},'Onarım bitti; cihaz stokta');await reload()}catch(e){delete t.dataset.armed;toast(msg(e),true)}},
   'sv-send'(t){svSendModal(t.dataset.id)},'sv-back'(t){svBackModal(t.dataset.id)},
   async 'sv-ready'(t){const r=await sb.from('service_orders').update({status:'hazir'}).eq('id',t.dataset.id);r.error?toast(msg(r.error),true):(toast('Durum güncellendi'),reload())},
   async 'sv-send-do'(t){try{const x=S.d.service_orders.find(s=>s.id===t.dataset.id),rc=await resolveContact('firma','ss-rc');if(!rc&&x.repair_by==='anlasmali')return setErr('Anlaşmalı servis firmasını seçin.');
@@ -7282,6 +7312,10 @@ const A={
   'sr-range'(t){const R=S.svr;R.from=t.dataset.a1;R.to=t.dataset.b1;R.data=undefined;R.busy=false;render()},
   'sv-cost'(t){svCostModal(t.dataset.id)},
   async 'sv-cost-add'(t){const a=nv('sc-a');if(!a||a<=0)return setErr('Gider tutarını yazın.');
+    {const sx=S.d.service_orders.find(o=>o.id===t.dataset.id);if(svStockDev(sx)){if(!can('service_stock_cost'))return setErr('Stok cihazının onarım giderini yetkili kişi girer.');
+      try{const sup=await resolveContact('firma','sc-sup'),pay=g('sc-spay');if(pay==='veresiye'&&!sup)return setErr('Borç yazılacak firmayı seçin.');
+        await call('add_stock_repair_cost',{p_service:t.dataset.id,p_kind:g('sc-k'),p_desc:g('sc-d')||null,p_amount:a,p_pay:pay,p_supplier:sup||null,p_staff:g('sc-st')||null},'Gider cihaz maliyetine eklendi');
+        await syncData();svCostModal(t.dataset.id)}catch(e){setErr(msg(e))}return}}
     try{const sup=await resolveContact('firma','sc-sup'),pay=document.getElementById('sc-pay');
       await call('add_service_cost',{p_service:t.dataset.id,p_kind:g('sc-k'),p_desc:g('sc-d')||null,p_amount:a,p_account:pay&&pay.value?pay.value:null,p_supplier:sup||null,p_staff:g('sc-st')||null},'Gider kaydedildi');
       await reload();svCostModal(t.dataset.id)}catch(e){setErr(msg(e))}},
@@ -9622,6 +9656,8 @@ document.addEventListener('change',async e=>{
     case 'cartnote':S.cart.note=t.value;break;
     case 'paymethod':S.cart.pays[i].method=t.value;break;
     case 'srcchg':{const k=t.value==='toptan'?'firma':'musteri';document.getElementById('p-contact').innerHTML=csel('p-bc',k,'',k==='firma'?'Firma':'Müşteri');break}
+    case 'pflt':{const w=document.getElementById('p-flt-w');if(w)w.hidden=!t.checked;break}
+    case 'ssrep':{const f=document.getElementById('ss-f');if(f)f.style.display=t.value==='anka'?'none':'contents';break}
     case 'ownerchg':{document.getElementById('p-agr-w').hidden=t.value!=='konsinye';const pp=document.getElementById('p-pay');if(pp)pp.innerHTML=payOpts(pp.value,t.value==='konsinye');break}
     case 'pw-show':{document.querySelectorAll('#pw-n,#pw-r').forEach(i=>i.type=t.checked?'text':'password');break}
     case 'pname':{const r=await sb.from('profiles').update({full_name:t.value.trim()}).eq('id',t.dataset.id);r.error?toast(r.error.message,true):(toast('Kaydedildi'),reload());break}
