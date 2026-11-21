@@ -740,7 +740,7 @@ const invOk=sub=>/\(AF\)$/.test(sub||''),invPill=sub=>sub?(invOk(sub)?'<span cla
 const COSM=['Kusursuz','Çok İyi','İyi','Orta','Hasarlı / Kırık'],WARR=['Garantisiz','Distribütör Garantili','İthalatçı Garantili','Mağaza Garantili'];
 const METHODS=[['nakit','Nakit'],['pos','POS'],['havale','Havale']];
 const MOVES=[['gider','Masraf / Gider'],['diger_gelir','Diğer Gelir'],['acilis','Açılış Bakiyesi'],['sermaye_sahip','Sahip Sermaye Girişi'],['sahip_cekimi','Sahip Çekimi'],['duzeltme_arti','Düzeltme (+)'],['duzeltme_eksi','Düzeltme (-)']];
-const TYPE_LABEL={hediye_ceki:'Hediye çeki satışı / iadesi',satis:'Satış',alis:'Ürün alışı',alis_iptal:'Alış iptali',iade:'İade',gider:'Masraf',diger_gelir:'Diğer gelir',acilis:'Açılış',sermaye_sahip:'Sahip sermayesi',sahip_cekimi:'Sahip çekimi',sahip_aktarim:'Sahip kasasına aktarım',sahip_geri:'Sahip kasasından işletmeye',sahip_cekim:'Sahip çekimi / harcama',sahip_giris:'Sahip kasasına giriş',
+const TYPE_LABEL={enpara:'EnPara banka hesabı',odeal:'ÖdeAl banka hesabı',konsinye:'Konsinye sermayesi',hediye_ceki:'Hediye çeki satışı / iadesi',satis:'Satış',alis:'Ürün alışı',alis_iptal:'Alış iptali',iade:'İade',gider:'Masraf',diger_gelir:'Diğer gelir',acilis:'Açılış',sermaye_sahip:'Sahip sermayesi',sahip_cekimi:'Sahip çekimi',sahip_aktarim:'Sahip kasasına aktarım',sahip_geri:'Sahip kasasından işletmeye',sahip_cekim:'Sahip çekimi / harcama',sahip_giris:'Sahip kasasına giriş',
   duzeltme_arti:'Düzeltme (+)',duzeltme_eksi:'Düzeltme (-)',transfer:'Transfer',cari_odeme:'Cari ödeme',sermaye:'Yatırım sermayesi',
   alis_borc:'Veresiye alış',alis_odeme:'Alış ödemesi',kur_farki:'Kur farkı',odeme:'Ödeme',sermaye_girisi:'Sermaye girişi',sermaye_iadesi:'Sermaye iadesi',hakedis:'Hakediş',hakedis_iptal:'Hakediş iptali',hakedis_odeme:'Hakediş ödemesi',alis_iade:'Firma iadesi',iade_tahsilat:'İade bedeli geri alındı',cari_iade:'Firma iade tahsilatı',firma_iade:'Firmaya iade'};
 const ROLES=[['owner','İşletme sahibi'],['manager','Mağaza müdürü'],['staff','Personel']];
@@ -2016,7 +2016,7 @@ function productModal(p,pre){
     <label class="f">Maliyet (₺)<input class="in" id="p-cost" type="number" min="0" step="0.01" inputmode="decimal" data-c="costin" value="${p.cost==null?'':p.cost}"></label>
     <label class="f">İskonto (₺) <span class="sub">fiş toplamından düşer</span><input class="in" id="p-disc" type="number" min="0" step="0.01" inputmode="decimal" data-c="costin" value="${p.disc_in??''}"></label>
     <label class="f">Şimdi ödenen (₺)<input class="in" id="p-paid" type="number" min="0" step="0.01" inputmode="decimal" value="${p.paid_in??''}"></label>
-    <label class="f">Ödeme şekli<select class="in" id="p-pay">${opts(METHODS,p.pay_in||'nakit')}</select></label></div>
+    <label class="f">Ödeme şekli<select class="in" id="p-pay">${payOpts(p.pay_in||'nakit',p.owner==='konsinye')}</select></label></div>
     ${inspCard}
     <p class="sub" id="p-net"></p>
     <p class="sub">İskonto maliyetten düşülür; ödenen tutar net maliyetten azsa kalan, seçilen firmaya veresiye borç yazılır.</p></fieldset>`}
@@ -2044,6 +2044,7 @@ async function saveProduct(id){
       const paid=nv('p-paid');const owner=g('p-owner')||'anka';
       if(owner!=='konsinye'&&insCat(g('p-cat'))&&!g('p-sub').startsWith('Sıfır')&&insOn()){const ir=insRow(S.pinsp);if(!ir||!ir.completed_at)return setErr(g('p-src')==='musteri'?'Müşteriden alışta “Cihaz kontrolü” tamamlanmalı (kimlik fotoğrafı ve imzalı sözleşme dahil).':'Bu kategoride 2.El / Yenilenmiş alışta “Cihaz kontrolü” tamamlanmalı (Sıfır cihazlar hariç).');if(ir.imei_source==='ithalat'&&!g('p-sub').startsWith('Yenilenmiş'))return setErr('İthalat IMEI’li cihaz “Yenilenmiş” olarak yazılmalı.')}
       if(owner==='konsinye'&&!g('p-agr'))return setErr('Konsinye anlaşması seçin.');
+      if(!payWarn('save-product',g('p-pay'),paid==null?net:paid))return;
       const nid=await call('create_product',{p:{cat:g('p-cat'),sub:g('p-sub'),model,imei,battery:g('p-bat'),cosmetic:g('p-cos'),warranty:g('p-war'),warranty_period:g('p-warp'),installment:g('p-inst'),buy_date:g('p-date'),buy_source:g('p-src'),buy_contact_id:contact||'',
         target_price:g('p-target'),notes:g('p-notes'),owner,agreement_id:owner==='konsinye'?g('p-agr'):'',inspection_id:S.pinsp||'',cost,discount:disc||null,paid_amount:paid==null?net:paid,pay_method:g('p-pay')}},'Ürün stoğa eklendi');
       if(S.qconv)await qConvDone(nid)}
@@ -3794,7 +3795,7 @@ function accRecvModal(id){
    <label class="f">İskonto türü<select class="in" id="ar-dt" data-c="arcalc">${opts([['tutar','Tutar'],['yuzde','Yüzde (%)']],'tutar')}</select></label>
    <label class="f">İskonto <span class="sub" id="ar-dl">(₺ / fiş toplamından)</span><input class="in" id="ar-dv" type="number" min="0" step="0.01" inputmode="decimal" data-c="arcalc"></label>
    <label class="f">Ödenen toplam (₺) <span class="sub">boş = net tutarın tamamı</span><input class="in" id="ar-p" type="number" min="0" step="0.01" inputmode="decimal"></label>
-   <label class="f">Ödeme şekli<select class="in" id="ar-m">${opts(METHODS,'nakit')}</select></label>
+   <label class="f">Ödeme şekli<select class="in" id="ar-m">${payOpts('nakit')}</select></label>
    ${csel('ar-f','firma',null,'Firma (kalan borç için)')}
    <label class="f">Tarih<input class="in" id="ar-d" type="date" max="${today()}" value="${today()}"></label>
    <label class="f full">Not<input class="in" id="ar-n"></label></div>
@@ -3815,7 +3816,17 @@ function arPrev(){const e=document.getElementById('ar-prev');if(!e)return;const 
 /* ================= ALIŞLAR (TOPLU ALIM) ================= */
 const DOCT={fis:'Fiş',fatura:'Fatura',irsaliye:'İrsaliye',diger:'Diğer belge'};
 /* ---- Alış raporu (tarih aralığı, dönem karşılaştırma, tedarikçi/ürün kırılımı, fiyat değişimi) ---- */
-const PAYL={nakit:'Nakit',pos:'POS',havale:'Havale / EFT'};
+const PAYL={nakit:'Nakit',pos:'POS',havale:'Havale / EFT',enpara:'EnPara banka hesabı',odeal:'ÖdeAl banka hesabı',konsinye:'Konsinye sermayesi'};
+/* alışta ödeme hesabı (086): yönetici günlük kasalar dışında EnPara / ÖdeAl / Konsinye sermayesinden öder */
+const PAY_X=[['enpara','EnPara banka hesabı'],['odeal','ÖdeAl banka hesabı'],['konsinye','Konsinye sermayesi']];
+const payXOn=()=>can('pay_from_accounts');
+const payBal=m=>r2(m==='konsinye'?sum((S.d.cash_entries||[]).filter(e=>e.fund==='yatirimci'),e=>e.amount):cashBal(m,null,'anka'));
+function payOpts(sel,kon){const L=METHODS.slice();if(payXOn())PAY_X.forEach(([k,l])=>{if(k!=='konsinye'||kon)L.push([k,l+' · '+money(payBal(k))])});
+  if(!L.some(x=>x[0]===sel))sel=L[0][0];return opts(L,sel)}
+/* banka bakiyesi kayıtlarda yetmiyorsa uyar; ikinci tıklamada devam (kullanıcı kararı: engelleme yok) */
+function payWarn(a,m,amt){if(!['enpara','odeal'].includes(m)||!(amt>0))return true;const b=payBal(m);if(amt<=b+0.005)return true;
+  const t=document.querySelector('.modal [data-a="'+a+'"]')||document.querySelector('[data-a="'+a+'"]');if(!t)return true;
+  if(!t.dataset.armed)toast(`${PAYL[m]} kayıtlı bakiyesi ${money(b)}, ödeme ${money(amt)}. Bankadaki gerçek bakiyeyi kontrol edin; doğruysa tekrar tıklayın.`,true);return armed(t,'Bakiye yetersiz · yine de kaydet')}
 function prRange(){const u=S.ui,a=u.prf||addDays(today(),-30),b=u.prt||today();return a<=b?[a,b]:[b,a]}
 function prData(){
   const d=S.d,[lo,hi]=prRange(),span=diffDays(lo,hi)+1,plo=addDays(lo,-span),phi=addDays(lo,-1),sup=id=>(d.contactMap.get(id)||{}).name||'?';
@@ -3923,7 +3934,7 @@ function tdPayModal(id){const t=(S.d.term_debts||[]).find(z=>z.id===id);if(!t)re
   modal(`<h2>Borç öde · ${esc(t.debt_no)}</h2><p class="sub">${esc(sup)} · vade ${fmtDate(t.due_date)} · kalan <b>${tdAmt(t,t.remaining)}</b></p><div class="form">
    <label class="f">Ödenecek tutar ${usd?'($)':'(₺)'}<input class="in" id="td-a" type="number" min="0" step="0.01" inputmode="decimal" data-c="tdcalc" value="${t.remaining}"></label>
    ${usd?`<label class="f">Güncel kur (₺ / $)<span class="inl"><input class="in" id="td-r" type="number" min="0" step="0.0001" inputmode="decimal" data-c="tdcalc" value="${S.fx&&S.fx.ok?S.fx.rate:''}"><button type="button" class="btn sm" data-a="fx-use" data-t="td-r">Canlı kuru al</button></span><span class="sub fx-hint">${fxHintHtml()}</span></label>`:''}
-   <label class="f">Ödeme şekli<select class="in" id="td-m">${opts(METHODS,'havale')}</select></label>
+   <label class="f">Ödeme şekli<select class="in" id="td-m">${payOpts('havale')}</select></label>
    <label class="f">Tarih<input class="in" id="td-d" type="date" max="${today()}" value="${today()}"></label>
    <label class="f full">Not<input class="in" id="td-n"></label></div>
   <div class="card" id="td-prev"></div>
@@ -4018,7 +4029,7 @@ function pfModal(){const p=S.pf,ov0=document.querySelector('#modal .ov'),st=ov0?
    <label class="f" id="pf-dw" ${p.dtype==='yok'?'hidden':''}>İskonto <span class="sub" id="pf-dl"></span><input class="in" id="pf-disc" type="number" min="0" step="0.01" inputmode="decimal" data-c="pfh" data-f="disc" value="${esc(p.disc)}"></label>
    <div class="full sub neg" id="pf-dmix" hidden>TL ve dolar kalemli karışık fişte iskonto yalnız yüzde olarak girilebilir.</div>
    ${p.term?`<label class="f">Vade tarihi<input class="in" id="pf-due" type="date" min="${esc(p.date)}" data-c="pfh" data-f="due" value="${esc(p.due)}"></label>`:`<label class="f">Ödenen toplam (₺) <span class="sub">boş = net tutarın tamamı</span><input class="in" id="pf-paid" type="number" min="0" step="0.01" inputmode="decimal" data-c="pfh" data-f="paid" value="${esc(p.paid)}"></label>
-   <label class="f">Ödeme şekli<select class="in" data-c="pfh" data-f="method">${opts(METHODS,p.method)}</select></label>`}
+   <label class="f">Ödeme şekli<select class="in" data-c="pfh" data-f="method">${payOpts(p.method)}</select></label>`}
    <label class="f full">Not<input class="in" data-c="pfh" data-f="note" value="${esc(p.note)}"></label></div>
   <div class="err" id="f-err" hidden></div><div class="actions"><button class="btn" data-a="close">Vazgeç</button><button class="btn pri" data-a="pf-save">${p.term?'Vadeli alışı kaydet':'Alışı kaydet'}</button></div>`);
   const m=document.querySelector('#modal .modal');if(m)m.classList.add('wide');
@@ -4051,6 +4062,7 @@ async function pfSave(){const p=S.pf,k=pfCalc();
     if(p.dtype!=='yok'&&!(Number(p.disc)>0))return setErr('İskonto tutarını yazın veya iskonto türünü kaldırın.');if(p.dtype==='yuzde'&&Number(p.disc)>100)return setErr('İskonto yüzdesi 100\'ü geçemez.');
     if(p.dtype==='tutar'&&k.mixed)return setErr('Karışık (TL + dolar) fişte iskonto yüzde olarak girilmeli.');
     const paid=p.term||p.paid===''?null:Number(p.paid);if(paid!=null&&(paid<0||paid>k.net+0.05))return setErr('Ödenen tutar 0 ile net toplam ('+money(k.net)+') arasında olmalı.');
+    if(!p.term&&!payWarn('pf-save',p.method,paid==null?k.net:paid))return;
     const id=await call(p.term?'create_term_purchase':'create_purchase',{p:{due_date:p.term?p.due:null,supplier_id:sup,doc_type:p.type,doc_no:p.docno||null,purchase_date:p.date||today(),fx_rate:k.hasUsd?Number(p.rate):null,fx_source:k.hasUsd&&S.fx&&S.fx.ok&&Number(p.rate)===S.fx.rate?S.fx.source:(k.hasUsd?'elle':null),pay_method:p.method,paid_amount:paid,discount_type:p.dtype,discount:p.dtype==='yok'?null:Number(p.disc),note:p.note||null,lines}});
     S.pf=null;closeModal();await reload();toast('Alış kaydedildi');if(id)puDetail(id)}catch(e){setErr(msg(e))}}
 /* ================= MÜŞTERİLER VE FİRMALAR (CARİ KARTLAR) ================= */
@@ -4321,7 +4333,7 @@ function cRead(){const g2=id=>{const el=document.getElementById(id);return el?el
 function payModal(cid,konsinye,pay){
   const c=S.d.contactMap.get(cid),bal=pay!=null?pay:konsinye?(S.agr[konsinye]||{}).earnings_payable:balance(cid);
   modal(`<h2>${konsinye?'Hakediş ödemesi':'Ödeme yap'} · ${esc(c.name)}</h2><p class="sub">${konsinye?'Ödenecek hakediş':'Güncel borcumuz'}: <b>${money(bal)}</b>${!konsinye&&c.iban?`<br>IBAN: ${esc(c.iban)}`:''}</p><div class="form">
-   <label class="f">Tutar (₺)<input class="in" id="y-amt" type="number" min="0" step="0.01" inputmode="decimal" value="${bal>0?bal:''}"></label><label class="f">Ödeme şekli<select class="in" id="y-met">${opts(METHODS,'nakit')}</select></label>
+   <label class="f">Tutar (₺)<input class="in" id="y-amt" type="number" min="0" step="0.01" inputmode="decimal" value="${bal>0?bal:''}"></label><label class="f">Ödeme şekli<select class="in" id="y-met">${payOpts('nakit')}</select></label>
    <label class="f">Tarih<input class="in" id="y-date" type="date" value="${today()}"></label><label class="f">Not<input class="in" id="y-note"></label></div><div class="err" id="f-err" hidden></div>
   <div class="actions"><button class="btn" data-a="close">Vazgeç</button><button class="btn pri" data-a="save-pay" data-id="${cid}">Ödemeyi kaydet</button></div>`)}
 /* firmaya iade */
@@ -6468,7 +6480,7 @@ function famModal(){const m=S.fm,existing=!!(m.fid||m.conv),fam=m.fid?(S.d.acces
   <div class="form">${existing?'':`<label class="f full">Ana ürün adı<input class="in" data-c="fmtop" data-f="name" value="${esc(m.name)}" placeholder="Örn. Silikon kılıf iPhone 13"></label>${catCtl('fm-cat','fm-newcat',m.cat)}`}
    ${m.conv?`<label class="f full">Mevcut ürünün varyant adı (stok ve geçmiş korunur)<input class="in" data-c="fmtop" data-f="convLabel" value="${esc(m.convLabel)}" placeholder="Örn. Siyah"></label>`:''}
    <label class="f">Ortak satış fiyatı (₺, boş bırakılan varyantlara)<input class="in" type="number" min="0" step="0.01" inputmode="decimal" data-c="fmtop" data-f="price" value="${esc(m.price)}"></label>
-   ${m.host?`<label class="f">Maliyet para birimi (faturadaki satırlar)<select class="in" data-c="fmtop" data-f="cur">${opts([['TRY','₺ TL'],['USD','$ Dolar']],m.cur)}</select></label>`:`<label class="f">İlk alış ödeme şekli<select class="in" data-c="fmtop" data-f="method">${opts(METHODS,m.method)}</select></label>`}
+   ${m.host?`<label class="f">Maliyet para birimi (faturadaki satırlar)<select class="in" data-c="fmtop" data-f="cur">${opts([['TRY','₺ TL'],['USD','$ Dolar']],m.cur)}</select></label>`:`<label class="f">İlk alış ödeme şekli<select class="in" data-c="fmtop" data-f="method">${payOpts(m.method)}</select></label>`}
    <label class="f full">Hızlı ekle: virgülle ayırın<span class="inl"><input class="in" id="fm-quick" placeholder="Siyah, Mavi, Kırmızı"><button type="button" class="btn sm" data-a="fm-quick-add">Satırlara ekle</button></span></label></div>
   <h3 style="margin:12px 0 4px">Yeni varyantlar</h3>
   ${m.rows.map((r,i)=>`<div class="card" style="margin:6px 0"><div class="form"><label class="f">Varyant adı<input class="in" data-c="fmrow" data-i="${i}" data-f="label" value="${esc(r.label)}" placeholder="Renk / model / beden"></label>
@@ -6518,7 +6530,7 @@ function accModal(a){
    <label class="f">${h?'Faturadaki adet':'İlk alış adedi'}<input class="in" id="ac-q0" type="number" min="1" step="1" inputmode="numeric" ${h?'value="1"':''}></label>
    <label class="f">Maliyet para birimi<select class="in" id="ac-cur0">${opts(h?[['TRY','₺ TL'],['USD','$ Dolar']]:[['TRY','₺ TL'],['USD','$ Dolar (₺ karşılığı canlı kurla)']],h?(S.pf&&S.pf.cur)||'TRY':'TRY')}</select></label>
    <label class="f">Birim maliyet<input class="in" id="ac-c0" type="number" min="0" step="0.0001" inputmode="decimal"></label>
-   ${h?'':`<label class="f">Ödeme şekli<select class="in" id="ac-m0">${opts(METHODS,'nakit')}</select></label>`}`}</div>
+   ${h?'':`<label class="f">Ödeme şekli<select class="in" id="ac-m0">${payOpts('nakit')}</select></label>`}`}</div>
   <div class="err" id="f-err" hidden></div><div class="actions"><button class="btn" data-a="${h?'host-back':'close'}">Vazgeç</button><button class="btn pri" data-a="acc-save" data-id="${e?a.id:''}">${h?'Kaydet ve faturaya ekle':'Kaydet'}</button></div>`)}
 function accCountModal(id){
   const a=S.d.accMap.get(id);
@@ -6909,7 +6921,7 @@ const A={
   'fr-wa'(){const m=S.fr;if(!m||!m.data)return;const c=S.d.contactMap.get(m.id)||{},ph=waPhone(c.phone);window.open('https://wa.me/'+(ph?ph:'')+'?text='+encodeURIComponent(frText(m.data)),'_blank','noopener')},
   ekstre(t){S.ui.ekstre=S.ui.ekstre===t.dataset.id?'':t.dataset.id;render()},
   'pay-party'(t){payModal(t.dataset.id)},
-  async 'save-pay'(t){try{await call('pay_party',{p_contact:t.dataset.id,p_amount:nv('y-amt'),p_method:g('y-met'),p_note:g('y-note')||null,p_date:g('y-date')},'Ödeme kaydedildi');closeModal();S.agr={};await reload()}catch(e){setErr(msg(e))}},
+  async 'save-pay'(t){if(!payWarn('save-pay',g('y-met'),nv('y-amt')))return;try{await call('pay_party',{p_contact:t.dataset.id,p_amount:nv('y-amt'),p_method:g('y-met'),p_note:g('y-note')||null,p_date:g('y-date')},'Ödeme kaydedildi');closeModal();S.agr={};await reload()}catch(e){setErr(msg(e))}},
   'new-agr'(){agrModal()},
   async 'save-agr'(){const n=g('a-name');if(!n)return setErr('Yatırımcı adını yazın.');
     try{const ins=await sb.from('contacts').insert({kind:'konsinye',name:n,phone:g('a-phone')||null,branch_id:S.me.branch_id}).select('id').single();if(ins.error)throw ins.error;
@@ -7025,6 +7037,7 @@ const A={
         if(q>0&&c!=null&&c>=0)await call('receive_accessory',usd?{p_accessory:nid,p_qty:Math.round(q),p_unit_cost:null,p_method:g('ac-m0'),p_usd_cost:c,p_fx_rate:S.fx.rate}:{p_accessory:nid,p_qty:Math.round(q),p_unit_cost:c,p_method:g('ac-m0')})}
       toast('Kaydedildi');closeModal();await reload()}catch(e){setErr(msg(e))}},
   async 'acc-recv-save'(t){const v=arVals();if(!(v.q>=1)||v.c==null||v.c<0)return setErr('Adet ve birim maliyeti girin.');if(v.disc<0||v.disc>v.gross)return setErr('İskonto 0 ile fiş toplamı arasında olmalı.');if(v.usd&&!(v.fx>0))return setErr('Dolar için kuru yazın.');
+    {const pp=nv('ar-p');if(!payWarn('acc-recv-save',g('ar-m'),pp==null?v.total:pp))return}
     try{const f=await resolveContact('firma','ar-f');
       await call('receive_accessory',{p_accessory:t.dataset.id,p_qty:v.q,p_unit_cost:v.usd?v.unit:v.c,p_paid:nv('ar-p'),p_method:g('ar-m'),p_contact:f,p_date:g('ar-d')||today(),p_note:g('ar-n')||null,p_usd_cost:v.usd?v.c:null,p_fx_rate:v.usd?v.fx:null,p_discount:v.disc>0?v.disc:0},'Alış kaydedildi');
       closeModal();await reload()}catch(e){setErr(msg(e))}},
@@ -7064,6 +7077,7 @@ const A={
   'td-pay'(t){tdPayModal(t.dataset.id)},
   async 'td-pay-save'(){const t=(S.d.term_debts||[]).find(z=>z.id===S.td);if(!t)return;const a=nv('td-a'),r=nv('td-r');
     if(!(a>0))return setErr('Ödenecek tutarı girin.');if(a>Number(t.remaining)+0.001)return setErr('Tutar kalan borçtan büyük olamaz.');if(t.currency==='USD'&&!(r>0))return setErr('Güncel kuru girin.');
+    if(!payWarn('td-pay-save',g('td-m'),t.currency==='USD'?r2(a*r):a))return;
     try{const d=await call('pay_term_debt',{p_debt:t.id,p_amount:a,p_rate:t.currency==='USD'?r:null,p_method:g('td-m'),p_date:g('td-d')||today(),p_note:g('td-n')||null});
       closeModal();await reload();toast('Ödeme kaydedildi'+(d&&Number(d.fx_diff_try)?' · kur farkı '+money(d.fx_diff_try)+' maliyete eklendi':''))}catch(e){setErr(msg(e))}},
   async 'pu-cancel'(t){if(!armed(t,'Emin misiniz? Tekrar tıklayın'))return;try{await call('cancel_purchase',{p_purchase:t.dataset.id,p_reason:g('pu-why')||null},'Alış iptal edildi');closeModal();await reload()}catch(e){delete t.dataset.armed;setErr(msg(e))}},
@@ -9571,7 +9585,7 @@ document.addEventListener('change',async e=>{
     case 'cartnote':S.cart.note=t.value;break;
     case 'paymethod':S.cart.pays[i].method=t.value;break;
     case 'srcchg':{const k=t.value==='toptan'?'firma':'musteri';document.getElementById('p-contact').innerHTML=csel('p-bc',k,'',k==='firma'?'Firma':'Müşteri');break}
-    case 'ownerchg':document.getElementById('p-agr-w').hidden=t.value!=='konsinye';break;
+    case 'ownerchg':{document.getElementById('p-agr-w').hidden=t.value!=='konsinye';const pp=document.getElementById('p-pay');if(pp)pp.innerHTML=payOpts(pp.value,t.value==='konsinye');break}
     case 'pw-show':{document.querySelectorAll('#pw-n,#pw-r').forEach(i=>i.type=t.checked?'text':'password');break}
     case 'pname':{const r=await sb.from('profiles').update({full_name:t.value.trim()}).eq('id',t.dataset.id);r.error?toast(r.error.message,true):(toast('Kaydedildi'),reload());break}
     case 'prole':{const r=await sb.from('profiles').update({role:t.value}).eq('id',t.dataset.id);r.error?toast(r.error.message,true):(toast('Rol güncellendi'),reload());break}
