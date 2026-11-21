@@ -321,7 +321,7 @@ button.fx{font-variant-numeric:tabular-nums;font-weight:600;white-space:nowrap}b
 @media print{body.lbl-print>*:not(#lblsheet){display:none!important}body.lbl-print #lblsheet,body.lbl-print #lblsheet *{visibility:visible!important}}
 @media print{.qdoc.rcpt.w80{width:76mm!important;font-size:11px}.qdoc.rcpt{border:0!important;padding:0!important}}
 .rcpt{background:#fff;color:#000;font-family:Arial,Helvetica,sans-serif;border:1px dashed #bbb;padding:12px;line-height:1.35}.rcpt.w80{width:302px;max-width:100%;margin:0 auto;font-size:12px}.rcpt.wa4{max-width:720px;margin:0 auto;font-size:14px}
-.rcpt .r{display:flex;justify-content:space-between;gap:8px}.rcpt hr{border:0;border-top:1px dashed #000;margin:6px 0}
+.rcpt .r{display:flex;justify-content:space-between;gap:8px}.rcpt .rc-save{border:1px dashed #000;border-radius:4px;padding:2px 6px;margin:4px 0}.rcpt hr{border:0;border-top:1px dashed #000;margin:6px 0}
 @media print{body:not(.lbl-print):not(.vl-print):not(.pr-on) *{visibility:hidden}.qdoc,.qdoc *{visibility:visible}.qdoc{position:absolute;left:0;top:0;width:100%;border:0}.no-print{display:none!important}}
 .inl{display:flex;gap:6px;align-items:stretch}.inl .in{flex:1;min-width:0}
 .thumb{max-width:100%;max-height:220px;border-radius:6px;margin-top:6px;border:1px solid var(--line)}
@@ -3443,6 +3443,8 @@ function rcData(id){const d=S.d,s=d.sales.find(x=>x.id===id);if(!s)return null;
   const items=(d.itemsBySale.get(id)||[]).map(i=>({p:d.productMap.get(i.product_id)||{},i})),acc=(d.accBySale.get(id)||[]).map(l=>({a:d.accMap.get(l.accessory_id)||{},l})),
     pays=d.sale_payments.filter(p=>p.sale_id===id),trades=d.sale_trade_ins.filter(t=>t.sale_id===id);
   return {s,items,acc,pays,trades,cust:d.contactMap.get(s.customer_id),st:d.profileMap.get(s.staff_id),paid:sum(pays,p=>p.amount)}}
+/* müşteri fişinde indirimler tek satır: kampanya, iskonto, puan ve damga ödülü (satır indirimlerinin toplamı) */
+const rcSave=s=>r2(Number(s.discount)||0);
 function rcHtml(id,w){const D=rcData(id);if(!D)return '';const {s,items,acc,pays,trades,cust,st,paid}=D,sh=shopSet(),dt=new Date(s.sold_at);
   const dts=pad(dt.getDate())+'.'+pad(dt.getMonth()+1)+'.'+dt.getFullYear()+' '+pad(dt.getHours())+':'+pad(dt.getMinutes());
   const R=(a,b,x)=>`<div class="r"${x?` style="${x}"`:''}><span>${a}</span><span>${b}</span></div>`,rest=Number(s.total)-paid;
@@ -3452,16 +3454,15 @@ function rcHtml(id,w){const D=rcData(id);if(!D)return '';const {s,items,acc,pays
    <div style="text-align:center"><b>SATIŞ FİŞİ</b>${s.status==='iptal'?'<div style="font-weight:700;border:2px solid #000;margin:4px 0;padding:2px">İPTAL EDİLDİ</div>':s.status==='kismi_iade'?'<div style="font-weight:700">KISMİ İADE VAR</div>':''}</div>
    ${R('Fiş no','<b>'+esc(s.sale_no)+'</b>')}${R('Tarih',dts)}${st?R('Satışı yapan',esc(st.full_name)):''}${cust?R('Müşteri',esc(cust.name)+(cust.phone?' · '+esc(cust.phone):'')):''}<hr>
    ${items.map(({p,i})=>`<div style="margin:4px 0">${R('<b>'+esc(p.model||'Cihaz')+'</b>',money(i.price),i.returned?'text-decoration:line-through':'')}
-     <div style="font-size:.85em;color:#333">${p.imei?'IMEI: '+esc(p.imei)+'<br>':''}${p.sub?esc(p.sub):''}${war(p)?'<br>Garanti: '+esc(war(p)):''}${Number(i.discount)?'<br>İndirim: -'+money(i.discount):''}${i.returned?'<br>İADE EDİLDİ':''}</div></div>`).join('')}
+     <div style="font-size:.85em;color:#333">${p.imei?'IMEI: '+esc(p.imei)+'<br>':''}${p.sub?esc(p.sub):''}${war(p)?'<br>Garanti: '+esc(war(p)):''}${i.returned?'<br>İADE EDİLDİ':''}</div></div>`).join('')}
    ${acc.map(({a,l})=>`<div style="margin:4px 0">${R('<b>'+esc(a.name||'Aksesuar')+'</b>'+(l.qty>1?' x'+l.qty:''),money(Number(l.qty)*Number(l.unit_price)))}
-     <div style="font-size:.85em;color:#333">${l.qty>1?l.qty+' x '+money(l.unit_price):''}${Number(l.discount)?(l.qty>1?'<br>':'')+'İndirim: -'+money(l.discount):''}${l.returned_qty?'<br>'+l.returned_qty+' adet iade edildi':''}</div></div>`).join('')}<hr>
-   ${R('Ara toplam',money(s.subtotal))}${Number(s.discount)>0?R('İndirim','-'+money(s.discount)):''}
+     <div style="font-size:.85em;color:#333">${l.qty>1?l.qty+' x '+money(l.unit_price):''}${l.returned_qty?(l.qty>1?'<br>':'')+l.returned_qty+' adet iade edildi':''}</div></div>`).join('')}<hr>
+   ${R('Ara toplam',money(s.subtotal))}${rcSave(s)>0?`<div class="rc-save">${R('<b>Tasarrufunuz</b>','<b>-'+money(rcSave(s))+'</b>')}</div>`:''}
    ${trades.map(t=>R('Takas: '+esc((S.d.productMap.get(t.product_id)||{}).model||'cihaz'),'-'+money(t.value))).join('')}
    <div style="font-size:1.25em;margin:4px 0">${R('<b>TOPLAM</b>','<b>'+money(s.total)+'</b>')}</div><hr>
    ${pays.map(p=>R(payL(p.method)+(p.gift_card_id&&(S.d.gift_cards||[]).find(g=>g.id===p.gift_card_id)?' · '+(S.d.gift_cards||[]).find(g=>g.id===p.gift_card_id).card_no:''),money(p.amount))).join('')||'<div>Ödeme kaydı yok</div>'}
    ${rest>0.5&&s.status!=='iptal'?R('<b>Kalan</b>','<b>'+money(rest)+'</b>'):''}<hr>
-   ${(S.d.protection_sales||[]).filter(x=>x.sale_id===s.id).map(x=>R('Koruma paketi: '+esc(x.name),'-'+money(x.discount))).join('')}${omSaleRows(s).map(l=>R('Eski model indirimi: '+esc((S.d.accMap.get(l.accessory_id)||{}).name||'')+(l.om_model?' ('+esc(l.om_model)+')':''),'-'+money(l.om))).join('')}${(S.d.m3_sales||[]).filter(x=>x.sale_id===s.id).map(x=>R(esc(mName(x.rules||{buy:3,free:1}))+' · hediye: '+esc((x.free||[]).map(f=>f.name+' ('+money(f.price)+')').join(', ')),'-'+money(x.discount))).join('')}
-   ${s.loyalty_member?`<div style="text-align:center"><b>SADAKAT PROGRAMI</b></div>${s.ly_spent?R('Kullanılan puan','-'+num(s.ly_spent)+' ('+money(s.ly_spent)+')'):''}${Number(s.ly_reward)?R('Damga ödülü','-'+money(s.ly_reward)):''}${R('Kazanılan puan','+'+num(s.ly_earned||0))}${s.ly_stamp?R('Damga','+1'):''}${R('Kullanılabilir bakiye',num(s.ly_balance||0)+' puan')}<div style="font-size:.8em">Kazanılan puan ${lyR().wait_days} gün sonra kullanılabilir. 1 puan = 1 ₺.</div><hr>`:''}
+   ${s.loyalty_member?`<div style="text-align:center"><b>SADAKAT PROGRAMI</b></div>${R('Kazanılan puan','+'+num(s.ly_earned||0))}${s.ly_stamp?R('Damga','+1'):''}${R('Kullanılabilir bakiye',num(s.ly_balance||0)+' puan')}<div style="font-size:.8em">Kazanılan puan ${lyR().wait_days} gün sonra kullanılabilir. 1 puan = 1 ₺.</div><hr>`:''}
    ${s.note?`<div style="font-size:.85em">Not: ${esc(s.note)}</div>`:''}
    <div style="text-align:center;font-size:.85em;margin-top:6px">${esc(sh.note)}<br><span style="color:#555">Bu belge bilgi fişidir; mali belge (fatura / e-arşiv / yazarkasa fişi) yerine geçmez.</span></div></div>`}
 function saleReceipt(id,w){w=w||S.ui.rcw||'80';S.ui.rcw=w;const D=rcData(id);if(!D)return;
@@ -3472,8 +3473,8 @@ function saleReceipt(id,w){w=w||S.ui.rcw||'80';S.ui.rcw=w;const D=rcData(id);if(
    <a class="btn" target="_blank" rel="noopener" href="https://wa.me/${ph}?text=${encodeURIComponent(txt)}">WhatsApp</a>${c&&c.email?`<a class="btn" href="mailto:${encodeURIComponent(c.email)}?subject=${encodeURIComponent(shopSet().name+' · Satış fişi '+D.s.sale_no)}&body=${encodeURIComponent(txt)}">E-posta</a>`:''}</div>`)}
 function rcText(id){const D=rcData(id);if(!D)return '';const {s,items,acc,pays,cust}=D,sh=shopSet();
   return [`${sh.name} · Satış fişi ${s.sale_no}`,fmtDate(s.sold_at),cust?'Sayın '+cust.name:'',''].filter((x,i)=>x||i>2).join('\n')+'\n'
-   +[...items.map(({p,i})=>`• ${p.model||'Cihaz'}${p.imei?' (IMEI '+p.imei+')':''} — ${money(Number(i.price)-Number(i.discount))}`),...acc.map(({a,l})=>`• ${a.name||'Aksesuar'} x${l.qty} — ${money(accLineNet(l))}`)].join('\n')
-   +`\nToplam: ${money(s.total)}\n`+pays.map(p=>`${payL(p.method)}: ${money(p.amount)}`).join(' · ')+`\n\n${sh.note}\n${sh.phone}`}
+   +[...items.map(({p,i})=>`• ${p.model||'Cihaz'}${p.imei?' (IMEI '+p.imei+')':''} — ${money(i.price)}`),...acc.map(({a,l})=>`• ${a.name||'Aksesuar'} x${l.qty} — ${money(Number(l.qty)*Number(l.unit_price))}`)].join('\n')
+   +(rcSave(s)>0?`\nTasarrufunuz: -${money(rcSave(s))}`:'')+`\nToplam: ${money(s.total)}\n`+pays.map(p=>`${payL(p.method)}: ${money(p.amount)}`).join(' · ')+`\n\n${sh.note}\n${sh.phone}`}
 /* Yazdırma sayfalarının ortak temizliği. Safari ve Chrome "afterprint" olayını önizleme hazırlanmadan da gönderebiliyor;
    bu yüzden temizlik print sonrası ilk tıklama/tuşa (ya da bir sonraki yazdırmaya) bırakılır. */
 function prReset(){['prsheet','lblsheet','vlsheet','rcstyle','lblstyle','vlstyle'].forEach(i=>document.getElementById(i)?.remove());document.body.classList.remove('pr-on','lbl-print','vl-print')}
