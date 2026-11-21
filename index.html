@@ -834,7 +834,7 @@ const sb=window.supabase.createClient(CFG.URL,CFG.KEY,{auth:{persistSession:true
 const S={user:null,me:null,perms:new Set(),d:null,loading:false,agr:{},dash:null,mine:null,notifOpen:false,nf:'',nRead:new Set(),nAll:0,navAfter:null,grpOpen:'',grpX:0,seen:0,
   ui:{tab:'panel',period:'month',ref:today(),from:today(),to:today(),q:'',fs:'stokta',fo:'',fc:'',fx:'',kasaAcc:'',kasaFund:'',exs:'',exc:'',kasaDate:today(),cq:'',cdebt:false,kind:'musteri',openSale:'',salesRange:'7',openAgr:'',ekstre:''},
   cart:{items:[],acc:[],trades:[],pays:[],customer:'',staff:'',note:'',q:''}};
-const PERM_FB={view_cash_all:'view_cash',view_cash_basic:'view_cash|close_day',manage_cash:'add_expense',manage_suppliers:'manage_contacts',print_labels:'manage_products|manage_accessories',view_store_targets:'view_all_sales',void_sale:'process_refund'};
+const PERM_FB={view_cash_all:'view_cash',view_cash_basic:'view_cash|close_day',manage_cash:'add_expense',manage_suppliers:'manage_contacts',print_labels:'manage_products|manage_accessories',archive_accessory:'manage_accessories',view_store_targets:'view_all_sales',void_sale:'process_refund'};
 const can=p=>!!S.me&&(S.me.role==='owner'||String(p).split('|').some(x=>S.perms.has(x)));
 const isOwner=()=>!!S.me&&S.me.role==='owner';
 const by=(arr)=>new Map(arr.map(x=>[x.id,x]));
@@ -6414,6 +6414,20 @@ const accUsd=id=>S.d.accUsd&&S.d.accUsd.has(id)?S.d.accUsd.get(id):null;
 const accAvg=id=>{const c=S.d.accCost&&S.d.accCost.get(id);return c==null?null:Number(c)};
 const accFind=code=>{const v=String(code||'').trim().toUpperCase();return v&&S.d.accessories.find(a=>a.active!==false&&((a.barcode&&a.barcode.toUpperCase()===v)||(a.sku&&a.sku.toUpperCase()===v)))};
 
+/* aksesuar pasife alma / silme (087) */
+const ACC_IDLE=90;
+function accLastMove(a){let m='';for(const x of S.d.accessory_moves||[])if(x.accessory_id===a.id&&String(x.move_date)>m)m=String(x.move_date);return m||String(a.created_at||'').slice(0,10)}
+const accIdleDays=a=>{const m=accLastMove(a);return m?Math.floor((Date.parse(today())-Date.parse(m.slice(0,10)))/864e5):9999};
+const accIdleTxt=a=>{const d=accIdleDays(a);return d>=9999?'yok':d+' gün önce'};
+async function accSetActive(ids,on){const r=await sb.from('accessories').update({active:on}).in('id',ids);if(r.error)throw r.error;await syncData();render()}
+async function accDelOpen(id){const a=S.d.accMap.get(id);if(!a)return;let c;try{c=await call('accessory_delete_check',{p_id:id})}catch(e){return toast(msg(e),true)}
+  const cash=(c.cash||[]).map(x=>`${esc(x.account)} <b>+${money(x.amount)}</b>`).join(', ');
+  modal(`<h2>Ürünü sil · ${esc(a.name)}</h2>${c.ok?`<p>Bu ürün <b>kalıcı olarak silinir</b>; geri alınamaz.</p>
+   ${c.receives?`<div class="note">${num(c.receives)} stok girişi (${num(a.stock_qty)} adet) geri alınır.${cash?' Ödeme kasaya geri yazılır: '+cash+'.':''}${Number(c.debt)>0?' Firmaya yazılan <b>'+money(c.debt)+'</b> borç kapatılır.':''}</div>`:''}
+   <div class="form"><label class="f full">Neden (isteğe bağlı)<input class="in" id="ad-why" placeholder="Örn. Çift açılmış, yanlış isim"></label></div>
+   <div class="err" id="f-err" hidden></div><div class="actions"><button class="btn" data-a="close">Vazgeç</button><button class="btn danger" data-a="acc-del-do" data-id="${id}">Kalıcı olarak sil</button></div>`
+  :`<p>Bu ürün <b>silinemez</b> çünkü geçmiş kaydı var: ${(c.blockers||[]).map(esc).join(', ')}.</p><p class="sub">Silmek satış, kasa ve stok raporlarını bozardı. Ürünü <b>pasife alın</b>: satış ekranında ve aramalarda çıkmaz, geçmişi korunur.</p>
+   <div class="actions"><button class="btn" data-a="close">Kapat</button>${can('archive_accessory')&&a.active!==false?`<button class="btn pri" data-a="acc-arch" data-id="${id}">Pasife al</button>`:''}</div>`}`)}
 function vAksesuar(){
   if(S.ui.kz_acc&&isOwner())return kzView('acc');
   if(S.ui.sh_acc&&can('view_cost'))return shView('acc');
@@ -6423,7 +6437,8 @@ function vAksesuar(){
   if(u.ac)l=l.filter(a=>a.category===u.ac);
   if(u.alow)l=l.filter(accLow);
   if(u.asvc)l=l.filter(a=>u.asvc==='hizmet'?a.is_service:!a.is_service);
-  l=l.slice().sort((a,b)=>a.name.localeCompare(b.name,'tr'));
+  const arch=can('archive_accessory'),idle=arch&&u.aidle;if(idle)l=l.filter(a=>a.active!==false&&!a.is_service&&accIdleDays(a)>=ACC_IDLE);
+  l=l.slice().sort((a,b)=>a.name.localeCompare(b.name,'tr'));S.ui.aidleIds=idle?l.map(a=>a.id):[];
   const famOf=id=>(d.accessory_families||[]).find(f=>f.id===id),groups=[],seenF=new Map();
   l.forEach(a=>{if(a.family_id&&famOf(a.family_id)){let gr=seenF.get(a.family_id);if(!gr){gr={f:famOf(a.family_id),items:[]};seenF.set(a.family_id,gr);groups.push(gr)}gr.items.push(a)}else groups.push({a})});
   groups.forEach(gr=>{if(gr.items)gr.items.sort((x,y)=>x.variant_label.localeCompare(y.variant_label,'tr'))});
@@ -6431,19 +6446,21 @@ function vAksesuar(){
   const totalQty=sum(l,a=>a.stock_qty),totalVal=showCost?sum(l,a=>a.stock_qty*(accAvg(a.id)||0)):null;
   const row=(a,inFam)=>{const low=accLow(a),avg=accAvg(a.id),m=a.sale_price!=null&&avg!=null?Number(a.sale_price)-avg:null;
     return `<div class="item"><div class="main"><b>${esc(inFam?a.variant_label:a.name)}</b>${a.category&&!inFam?` <span class="pill">${esc(a.category)}</span>`:''}${a.is_service?' <span class="pill svc">Hizmet</span>':''}${a.active===false?' <span class="pill bad">Pasif</span>':''}${low?` <span class="pill ${a.stock_qty===0?'bad':'warn'}">${a.stock_qty===0?'Stok bitti':'Stok azaldı'}</span>`:''}
-      <div class="meta">${a.barcode?`<span class="mono">${esc(a.barcode)}</span>`:''}${a.sku?`<span>${esc(a.sku)}</span>`:''}${Number(a.min_stock)>0?`<span>Asgari ${a.min_stock}</span>`:''}</div>${a.notes?`<div class="meta"><span>${esc(a.notes)}</span></div>`:''}${pqPills('aksesuar',a.id)?`<div class="meta">${pqPills('aksesuar',a.id)}</div>`:''}</div>
+      <div class="meta">${idle?`<span class="pill warn">Son hareket ${accIdleTxt(a)}</span>`:''}${a.barcode?`<span class="mono">${esc(a.barcode)}</span>`:''}${a.sku?`<span>${esc(a.sku)}</span>`:''}${Number(a.min_stock)>0?`<span>Asgari ${a.min_stock}</span>`:''}</div>${a.notes?`<div class="meta"><span>${esc(a.notes)}</span></div>`:''}${pqPills('aksesuar',a.id)?`<div class="meta">${pqPills('aksesuar',a.id)}</div>`:''}</div>
       <div class="side">${a.is_service?'<div class="sub">Stok takibi yok</div>':`<div class="num"><b class="${a.stock_qty===0?'neg':''}" style="font-size:18px">${a.stock_qty}</b> <span class="sub">adet</span></div>`}
       <div class="sub num">${a.price_open&&!a.sale_price?'Fiyat satışta belirlenir':a.sale_price==null?'Fiyat yok':'Satış '+money(a.sale_price)+(a.price_open?' (değişebilir)':'')}${showCost&&avg!=null?` · Maliyet ${money(avg)}${accUsd(a.id)!=null?` <span class="pill" title="Dolar maliyetli: TL karşılığı canlı kurla güncellenir">$${fxN(accUsd(a.id))}</span>`:''}`:''}${showCost&&m!=null?` · <span class="${sgn(m)}">Kâr ${money(m)}</span>`:''}</div>
       <div class="acts">${ntBtn('accessories',a.id)}${can('make_sale')&&a.active!==false&&aAvail(a)>0?`<button class="btn sm pri" data-a="acc-sell" data-id="${a.id}">Sat</button>`:''}
       ${a.is_service?(mg?`<button class="btn sm" data-a="lbl-open" data-k="a" data-id="${a.id}">Etiket</button><button class="btn sm" data-a="svc-edit" data-id="${a.id}">Düzenle</button>${pqBtn('aksesuar',a.id)}`:can('print_labels')?`<button class="btn sm" data-a="lbl-open" data-k="a" data-id="${a.id}">Etiket</button>`:''):`${canFire()&&!mg?`<button class="btn sm" data-a="acc-write" data-id="${a.id}">Fire</button>`:''}${!mg&&can('print_labels')?`<button class="btn sm" data-a="lbl-open" data-k="a" data-id="${a.id}">Etiket</button>`:''}`}${mg&&!a.is_service?`<button class="btn sm" data-a="acc-recv" data-id="${a.id}">Alış</button><button class="btn sm" data-a="acc-count" data-id="${a.id}">Sayım</button><button class="btn sm" data-a="acc-write" data-id="${a.id}">Fire</button><button class="btn sm" data-a="lbl-open" data-k="a" data-id="${a.id}">Etiket</button><button class="btn sm" data-a="acc-edit" data-id="${a.id}">Düzenle</button>${pqBtn('aksesuar',a.id)}${!a.family_id?`<button class="btn sm" data-a="fam-conv" data-id="${a.id}">Varyant ekle</button>`:''}`:''}
-      ${(showCost||mg)?`<button class="btn sm" data-a="acc-moves" data-id="${a.id}">Hareketler</button>`:''}</div></div></div>`};
+      ${arch&&!a.is_service?(a.active===false?`<button class="btn sm" data-a="acc-unarch" data-id="${a.id}">Etkinleştir</button>`:`<button class="btn sm" data-a="acc-arch" data-id="${a.id}">Pasife al</button>`):''}${can('delete_accessory')&&!a.is_service?`<button class="btn sm danger" data-a="acc-del" data-id="${a.id}">Sil</button>`:''}
+      ${(showCost||mg)?`<button class="btn sm" data-a="acc-moves" data-id=""${a.id}">Hareketler</button>`:''}</div></div></div>`};
   const av=u.av==='fire'&&canSeeMoves()?'fire':'urun';
   return `<div class="row"><h1>Aksesuarlar</h1><div class="sp"></div>${can('view_cost')?'<button class="btn" data-a="sh-open" data-k="acc">Stok Sağlığı</button>':''}${isOwner()?'<button class="btn" data-a="kz-open" data-k="acc">Kazanç Raporu</button>':''}${!mg&&av==='urun'&&can('print_labels')?'<button class="btn" data-a="lbl-open" data-k="a">Barkod / etiket</button>':''}${mg&&av==='urun'?'<button class="btn" data-a="acat">Kategoriler</button><button class="btn" data-a="lbl-open" data-k="a">Barkod / etiket</button><button class="btn" data-a="fam-new">+ Varyantlı ürün</button><button class="btn" data-a="acc-usd">Maliyet para birimi</button><button class="btn" data-a="svc-new">+ Hizmet</button><button class="btn pri" data-a="acc-new">+ Yeni ürün</button>':''}</div>
   ${canSeeMoves()?`<div class="row"><div class="seg">${[['urun','Ürünler'],['fire','Fire kayıtları']].map(([v,t])=>`<button data-a="avtab" data-v="${v}" aria-pressed="${av===v}">${t}</button>`).join('')}</div></div>`:''}
   ${av==='fire'?vFire():`<div class="row"><span class="inl" style="flex:1;min-width:220px"><input class="in" id="aq" type="search" placeholder="Ad, barkod, kategori" value="${esc(u.aq||'')}"><button type="button" class="btn sm" data-a="scan" data-t="aq" aria-label="Kamerayla okut">Tara</button></span>
    <select class="in" id="ac" data-c="accfilter" style="width:auto">${opts([['','Tüm kategoriler'],...cats],u.ac||'')}</select>
    <select class="in" data-c="pqsvcf" style="width:auto" aria-label="Tür">${opts([['','Ürün ve hizmetler'],['urun','Yalnız stoklu ürünler'],['hizmet','Yalnız hizmetler']],u.asvc||'')}</select>
-   <label class="chk"><input type="checkbox" data-c="acclow" ${u.alow?'checked':''}> Yalnızca azalanlar</label>${mg?`<label class="chk"><input type="checkbox" data-c="accinact" ${u.ainact?'checked':''}> Pasifleri göster</label>`:''}</div>
+   <label class="chk"><input type="checkbox" data-c="acclow" ${u.alow?'checked':''}> Yalnızca azalanlar</label>${mg?`<label class="chk"><input type="checkbox" data-c="accinact" ${u.ainact?'checked':''}> Pasifleri göster</label>`:''}${arch?`<label class="chk"><input type="checkbox" data-c="accidle" ${u.aidle?'checked':''}> ${ACC_IDLE}+ gün hareketsiz</label>`:''}</div>
+  ${idle?`<div class="note" style="display:flex;gap:10px;align-items:center;flex-wrap:wrap"><span><b>${l.length}</b> ürün ${ACC_IDLE} gündür alış, satış, sayım ya da fire görmedi. Pasif ürün satış ekranında ve aramalarda çıkmaz; geçmişi ve raporları korunur, istediğiniz an yeniden etkinleştirilir.</span>${l.length?`<button class="btn sm" data-a="acc-arch-all">Listedekilerin hepsini pasife al (${l.length})</button>`:''}</div>`:''}
   <div class="card"><div class="sub" style="margin-bottom:6px"><b>${groups.length}</b> ürün${groups.some(x=>x.f)?` (${l.length} kalem)`:''} · <b>${num(totalQty)}</b> adet${totalVal!=null?` · stok değeri <b>${money(totalVal)}</b>`:''}</div>${groups.map(gr=>gr.f?`<div class="row" style="margin:14px 0 2px"><b style="font-size:15px">${esc(gr.f.name)}</b>${gr.f.category?` <span class="pill">${esc(gr.f.category)}</span>`:''} <span class="pill">${gr.items.length} varyant</span> <span class="sub">toplam ${sum(gr.items,a=>a.stock_qty)} adet</span><div class="sp"></div>${mg?`<button class="btn sm" data-a="fam-edit" data-id="${gr.f.id}">Düzenle</button><button class="btn sm pri" data-a="fam-add" data-id="${gr.f.id}">+ Varyant</button>`:''}</div><div style="margin-left:10px;border-left:3px solid var(--line);padding-left:10px">${gr.items.map(a=>row(a,true)).join('')}</div>`:row(gr.a,false)).join('')||'<div class="empty">Ürün yok.</div>'}</div>`}`}
 
 function accUsdModal(){
@@ -6525,7 +6542,7 @@ function accModal(a){
    <label class="f">Satış fiyatı (₺)<input class="in" id="ac-price" type="number" min="0" step="0.01" inputmode="decimal" value="${a.sale_price==null?'':a.sale_price}"></label>
    <label class="f">Asgari stok (uyarı)<input class="in" id="ac-min" type="number" min="0" step="1" inputmode="numeric" value="${a.min_stock||0}"></label>
    <label class="f full">Not<input class="in" id="ac-notes" value="${esc(a.notes)}"></label>
-   ${e?`<label class="chk full"><input type="checkbox" id="ac-act" ${a.active!==false?'checked':''}> Aktif (satışta görünür)</label>${!a.family_id&&Number(a.stock_qty)===0&&!a.is_service?`<div class="full note">Bu ürünün stoğu yok. Garanti paketi, temizlik gibi stok tutulmayan bir satış kalemiyse <button type="button" class="lnk" data-a="svc-conv" data-id="${a.id}">hizmete çevirin</button> (stok takibi kapanır).</div>`:''}`:`
+   ${e?`${can('archive_accessory')||a.is_service?`<label class="chk full"><input type="checkbox" id="ac-act" ${a.active!==false?'checked':''}> Aktif (satışta görünür)</label>`:''}${!a.family_id&&Number(a.stock_qty)===0&&!a.is_service?`<div class="full note">Bu ürünün stoğu yok. Garanti paketi, temizlik gibi stok tutulmayan bir satış kalemiyse <button type="button" class="lnk" data-a="svc-conv" data-id="${a.id}">hizmete çevirin</button> (stok takibi kapanır).</div>`:''}`:`
    <div class="full sub" style="margin-top:4px">${h?'Faturadaki satır bilgisi (ürün tanımlanır ve bu faturaya eklenir):':'İsterseniz ilk alışı da şimdi girin (boş bırakırsanız sonra "Alış" ile girersiniz):'}</div>
    <label class="f">${h?'Faturadaki adet':'İlk alış adedi'}<input class="in" id="ac-q0" type="number" min="1" step="1" inputmode="numeric" ${h?'value="1"':''}></label>
    <label class="f">Maliyet para birimi<select class="in" id="ac-cur0">${opts(h?[['TRY','₺ TL'],['USD','$ Dolar']]:[['TRY','₺ TL'],['USD','$ Dolar (₺ karşılığı canlı kurla)']],h?(S.pf&&S.pf.cur)||'TRY':'TRY')}</select></label>
@@ -6815,6 +6832,16 @@ const A={
   kind(t){S.ui.kind=t.dataset.v;render()},
   opensale(t,e){if(e.target.closest('button'))return;S.ui.openSale=S.ui.openSale===t.dataset.id?'':t.dataset.id;render()},
   'new-product'(){productModal()},'edit-product'(t){productModal(S.d.productMap.get(t.dataset.id))},'save-product'(t){saveProduct(t.dataset.id)},
+  async 'acc-arch'(t){const a=S.d.accMap.get(t.dataset.id);if(!a)return;
+    if(Number(a.stock_qty)>0&&!t.dataset.armed)toast(`Stokta ${a.stock_qty} adet var. Pasif ürün satışta çıkmaz ama stok değerinde kalır; gerekirse önce firma iadesi ya da fire yapın.`);
+    if(Number(a.stock_qty)>0&&!armed(t,'Stokta '+a.stock_qty+' adet · yine de pasife al'))return;
+    try{await accSetActive([a.id],false);if(document.querySelector('#modal .modal'))closeModal();toast(a.name+' pasife alındı')}catch(e){toast(msg(e),true)}},
+  async 'acc-unarch'(t){const a=S.d.accMap.get(t.dataset.id);try{await accSetActive([t.dataset.id],true);toast((a?a.name:'Ürün')+' yeniden etkin')}catch(e){toast(msg(e),true)}},
+  async 'acc-arch-all'(t){const ids=(S.ui.aidleIds||[]).slice();if(!ids.length)return;if(!armed(t,ids.length+' ürün pasife alınacak · onaylamak için tekrar tıklayın'))return;
+    try{await accSetActive(ids,false);toast(ids.length+' ürün pasife alındı')}catch(e){toast(msg(e),true)}},
+  'acc-del'(t){accDelOpen(t.dataset.id)},
+  async 'acc-del-do'(t){if(!armed(t,'Emin misiniz? Silmek için tekrar tıklayın'))return;t.disabled=true;
+    try{const r=await call('delete_accessory',{p_id:t.dataset.id,p_reason:g('ad-why')||null});closeModal();await reload();toast(r.name+' silindi'+(Number(r.cash_back)?' · kasaya '+money(r.cash_back)+' geri yazıldı':'')+(Number(r.debt_closed)?' · firma borcu '+money(r.debt_closed)+' kapandı':''))}catch(e){t.disabled=false;delete t.dataset.armed;setErr(msg(e))}},
   'to-cart'(t){cartAdd(t.dataset.id)},
   'cart-del'(t){S.cart.items.splice(+t.dataset.i,1);render()},
   'trade-add'(){
@@ -7025,7 +7052,7 @@ const A={
     const a0=id?S.d.accMap.get(id):null;const o={name,category:null,barcode:g('ac-bar')||null,sku:g('ac-sku')||null,sale_price:nv('ac-price'),min_stock:Math.max(0,Math.round(nv('ac-min')||0)),notes:g('ac-notes')||null};
     try{
       if(a0&&a0.family_id){delete o.name;delete o.category;o.variant_label=name}else o.category=await catResolve('ac-cat','ac-newcat');
-      if(id){const r=await sb.from('accessories').update({...o,active:document.getElementById('ac-act').checked}).eq('id',id);if(r.error)throw r.error}
+      if(id){const ae=document.getElementById('ac-act'),r=await sb.from('accessories').update({...o,...(ae?{active:ae.checked}:{})}).eq('id',id);if(r.error)throw r.error}
       else if(S.accHost&&S.pf){const q=Math.round(nv('ac-q0')||0),c=nv('ac-c0'),cur=g('ac-cur0')||'TRY';
         if(q<1)return setErr('Faturadaki adedi yazın.');if(c==null||c<0)return setErr('Birim maliyeti yazın.');
         const nid=await call('create_accessory',{p:o});const ab=document.getElementById('ac-autobar');if(!o.barcode&&ab&&ab.checked)await call('generate_barcode',{p_kind:'aksesuar',p_id:nid});
@@ -9629,6 +9656,7 @@ document.addEventListener('change',async e=>{
     case 'psub':{const el=document.getElementById('p-inv');if(el)el.innerHTML=invPill(t.value);break}
     case 'acclow':S.ui.alow=t.checked;render();break;
     case 'accinact':S.ui.ainact=t.checked;render();break;
+    case 'accidle':S.ui.aidle=t.checked;render();break;
     case 'accqty':{const l=S.cart.acc[i],a=l&&S.d.accMap.get(l.aid);if(!l)break;let q=Math.max(1,Math.round(Number(t.value)||1));if(q>a.stock_qty){q=a.stock_qty;toast(`${a.name}: stokta ${a.stock_qty} adet var`,true)}l.qty=q;t.value=q;refreshSums();break}
     case 'rfq':{const l=S.d.sale_accessory_items.find(x=>x.id===t.dataset.id);if(!l)break;const rem=l.qty-l.returned_qty;let q=Math.min(rem,Math.max(1,Math.round(Number(t.value)||1)));t.value=q;{const cp=mRetCapL(l,q,[]);document.getElementById('rf-a').value=cp==null?accRefundValue(l,q):Math.max(0,cp)}break}
     case 'perm':{const r=await sb.from('role_permissions').update({allowed:t.checked}).eq('role',t.dataset.r).eq('permission',t.dataset.p);r.error?toast(r.error.message,true):(toast('Yetki güncellendi'),reload());break}
