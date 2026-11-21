@@ -3877,7 +3877,7 @@ function vAlislar(){
   const live=l.filter(x=>x.status!=='iptal'),tot=sum(live,x=>x.total_try),paid=sum(live,x=>x.paid_amount);
   const sups=[...new Set(d.purchases.map(x=>x.supplier_id))].map(id=>[id,sup(id)]).sort((a,b)=>a[1].localeCompare(b[1],'tr'));
   const row=x=>{const ls=d.plBy.get(x.id)||[],ph=ls.filter(z=>z.kind==='cihaz').length,ac=sum(ls.filter(z=>z.kind==='aksesuar'),z=>z.qty),iptal=x.status==='iptal';
-    return `<div class="item" style="${iptal?'opacity:.6':''}"><div class="main"><b class="mono">${esc(x.purchase_no)}</b> <span class="pill">${esc(DOCT[x.doc_type]||'Belge')}${x.doc_no?' '+esc(x.doc_no):''}</span>${iptal?' <span class="pill bad">İptal</span>':''}
+    return `<div class="item" style="${iptal?'opacity:.6':''}"><div class="main"><b class="mono">${esc(x.purchase_no)}</b> <span class="pill">${esc(DOCT[x.doc_type]||'Belge')}${x.doc_no?' '+esc(x.doc_no):''}</span>${iptal?' <span class="pill bad">İptal</span>':''}${x.owner==='konsinye'?' <span class="pill">Konsinye</span>':''}
       <div class="meta"><span>${fmtDate(x.purchase_date)}</span><span>${esc(sup(x.supplier_id))}</span><span>${ph?ph+' cihaz':''}${ph&&ac?' + ':''}${ac?ac+' adet aksesuar':''}</span>${Number(x.total_usd)>0?`<span>$${fxN(x.total_usd)} @ ${fxN(x.fx_rate)}</span>`:''}</div>
       ${x.note?`<div class="meta"><span>${esc(x.note)}</span></div>`:''}</div>
      <div class="side"><b>${money(x.total_try)}</b>${x.term&&!iptal?tdSide(x):Number(x.total_try)>Number(x.paid_amount)&&!iptal?`<div class="sub neg">Kalan borç ${money(x.total_try-x.paid_amount)}</div>`:''}
@@ -3899,6 +3899,7 @@ function puDetail(id){
   ${ls.map(z=>`<tr><td style="text-align:left">${esc(z.description)}${z.kind==='cihaz'?' <span class="pill">cihaz</span>':''}</td><td>${z.qty}</td><td>${money(z.unit_cost_try)}</td><td>${z.unit_cost_usd==null?'-':'$'+fxN(z.unit_cost_usd)}</td><td>${money(z.line_total_try)}</td></tr>`).join('')}</table></div>
   <div class="card" style="margin-top:10px">${Number(x.discount_try)>0?`<div class="sum"><span>Brüt toplam</span><span>${money(x.gross_try)}</span></div><div class="sum"><span>İskonto${x.discount_type==='yuzde'?' %'+fxN(Number(x.discount_input)):''}${Number(x.discount_usd)>0?' ($'+fxN(x.discount_usd)+')':''}</span><span>− ${money(x.discount_try)}</span></div>`:''}<div class="sum"><span>${Number(x.discount_try)>0?'Net toplam':'Toplam'}</span><b>${money(x.total_try)}</b></div>
    ${Number(x.total_usd)>0?`<div class="sum"><span>Dolar kalemler</span><span>$${fxN(x.total_usd)} · kur ${fxN(x.fx_rate)}${x.fx_source?' ('+esc(x.fx_source)+')':''}</span></div>`:''}
+   ${x.owner==='konsinye'?`<div class="sum"><span>Sahip</span><span>Konsinye (yatırım) · ${esc(((S.d.consignment_agreements||[]).find(z=>z.id===x.agreement_id)||{}).name||'')}</span></div>`:''}
    <div class="sum"><span>Ödenen${x.pay_method?' ('+esc(label(x.pay_method))+')':''}</span><span>${money(x.paid_amount)}</span></div>
    ${Number(x.total_try)>Number(x.paid_amount)?`<div class="sum"><span>Kalan borç (cariye yazıldı)</span><b class="neg">${money(x.total_try-x.paid_amount)}</b></div>`:''}</div>
   ${x.term?tdDetail(x):''}
@@ -3951,7 +3952,7 @@ function pfOpen(sup,term,mode){
    <div class="form"><button class="btn pri" style="display:flex;flex-direction:column;align-items:center;justify-content:flex-start;gap:6px;padding:22px 10px;font-size:17px;min-height:110px;text-align:center" data-a="pf-mode" data-m="cihaz" data-sup="${esc(sup||'')}"><span>Cihaz Al</span><span style="font-size:13px;font-weight:400;color:#fff;opacity:.95;white-space:normal">Telefon, tablet, akıllı saat · tam alış formu ve cihaz kontrolü</span></button>
    <button class="btn pri" style="display:flex;flex-direction:column;align-items:center;justify-content:flex-start;gap:6px;padding:22px 10px;font-size:17px;min-height:110px;text-align:center" data-a="pf-mode" data-m="aksesuar" data-sup="${esc(sup||'')}"><span>Aksesuar Al</span><span style="font-size:13px;font-weight:400;color:#fff;opacity:.95;white-space:normal">Mevcut ürün, yeni ürün veya varyantlı yeni ürün</span></button></div>
    <div class="actions"><button class="btn" data-a="close">Vazgeç</button></div>`);return}
-  S.pf={mode:term?'aksesuar':mode,term:!!term,due:'',sup:sup||'',nn:'',nt:'',type:'fatura',docno:'',date:today(),rate:S.fx&&S.fx.ok?S.fx.rate:'',method:'havale',paid:'',dtype:'yok',disc:'',note:'',phones:[],accs:[],cur:term?'USD':'TRY'};S.pfd=null;pfModal();fxGet(false)}
+  S.pf={mode:term?'aksesuar':mode,term:!!term,due:'',sup:sup||'',nn:'',nt:'',type:'fatura',docno:'',date:today(),rate:S.fx&&S.fx.ok?S.fx.rate:'',method:'havale',paid:'',dtype:'yok',disc:'',note:'',owner:'anka',agr:'',phones:[],accs:[],cur:term?'USD':'TRY'};S.pfd=null;pfModal();fxGet(false)}
 const insNeed=(cat,sub)=>insOn()&&insCat(cat)&&!String(sub||'').startsWith('Sıfır');
 function pfDevCard(x,i){const ir=x.inspection_id?insBadge(x.inspection_id):(insNeed(x.cat,x.sub)?'<span class="pill bad">Kontrol eksik</span>':'<span class="pill">Kontrol gerekmez</span>');
   return `<div class="item" style="padding:8px 0"><div class="main"><b>${esc(x.model)}</b> <span class="pill">${esc(x.cat)} · ${esc(x.sub)}</span> ${invPill(x.sub)}
@@ -3969,8 +3970,9 @@ async function pfDevSave(){const p=S.pf,i=S.pfd.i;
   if(cost==null||cost<0)return setErr('Birim maliyeti girin.');
   if(qty<1||qty>500)return setErr('Adet 1 ile 500 arasında olmalı.');
   if(qty>1&&imei)return setErr('IMEI yazılacaksa adet 1 olmalı (her cihaz ayrı eklenir).');
-  if(qty>1&&(S.pinsp||insNeed(cat,sub)))return setErr('Cihaz kontrolü gereken veya kontrol kaydı olan cihazlar tek tek eklenmeli (adet 1).');
-  if(insNeed(cat,sub)){const ir=insRow(S.pinsp);if(!ir||!ir.completed_at)return setErr('Bu kategoride 2.El / Yenilenmiş alışta “Cihaz kontrolü” tamamlanmalı (Sıfır cihazlar hariç).');
+  const kon=p.owner==='konsinye';
+  if(qty>1&&(S.pinsp||(!kon&&insNeed(cat,sub))))return setErr('Cihaz kontrolü gereken veya kontrol kaydı olan cihazlar tek tek eklenmeli (adet 1).');
+  if(!kon&&insNeed(cat,sub)){const ir=insRow(S.pinsp);if(!ir||!ir.completed_at)return setErr('Bu kategoride 2.El / Yenilenmiş alışta “Cihaz kontrolü” tamamlanmalı (Sıfır cihazlar hariç).');
     if(ir.imei_source==='ithalat'&&!sub.startsWith('Yenilenmiş'))return setErr('İthalat IMEI’li cihaz “Yenilenmiş” olarak yazılmalı.');
     if(p.phones.some((x,j)=>j!==i&&x.inspection_id===S.pinsp))return setErr('Bu kontrol kaydı faturadaki başka bir cihaza bağlı.')}
   const dev={cat,sub,model,imei,battery:nv('p-bat'),cosmetic:g('p-cos'),warranty:g('p-war'),warranty_period:g('p-warp'),installment:g('p-inst'),target_price:nv('p-target'),notes:g('p-notes'),cost,qty,inspection_id:S.pinsp||''};
@@ -4004,10 +4006,16 @@ function pfSums(){const p=S.pf;if(!p)return;const k=pfCalc(),e=document.getEleme
    ${k.disc>0?`<div class="sum"><span>İskonto${p.dtype==='yuzde'?' %'+fxN(Number(p.disc)):''}</span><span>− ${money(k.disc)}</span></div><div class="sum big"><span>Net toplam (₺)</span><span>${money(k.net)}</span></div>`:''}
    ${p.term?`<div class="sum"><span>Vadeli borç (tamamı)</span><b class="neg">${k.hasUsd?'$'+fxN(k.nusd)+' · ':''}${money(k.net)}</b></div>`:`<div class="sum"><span>Ödenen</span><span>${money(paid)}</span></div>`}${debt>0&&!p.term?`<div class="sum"><span>Kalan borç (tedarikçiye yazılır)</span><b class="neg">${money(debt)}</b></div>`:debt<0?'<div class="sum neg">Ödenen tutar toplamı aşıyor</div>':''}`;
   const pi=document.getElementById('pf-paid');if(pi)pi.placeholder=String(k.net)}
+/* toplu cihaz alımında sahip (088) */
+const pfKon=p=>p.mode==='cihaz'&&!p.term&&p.owner==='konsinye';
+function pfOwnerCtl(p){if(p.mode!=='cihaz'||p.term||!can('view_consignment'))return '';const agrs=(S.d.consignment_agreements||[]).filter(a=>a.active);
+  return `<label class="f">Sahip<select class="in" data-c="pfh" data-f="owner">${opts([['anka','Anka İletişim'],['konsinye','Konsinye (yatırım)']],p.owner||'anka')}</select></label>
+   ${p.owner==='konsinye'?`<label class="f">Konsinye anlaşması<select class="in" data-c="pfh" data-f="agr">${opts([['','- anlaşma seçin -'],...agrs.map(a=>[a.id,a.name])],p.agr||'')}</select></label>
+   <div class="full note">Faturadaki tüm cihazlar bu yatırımcıya ait olarak stoğa girer; ödeme yatırımcı payından düşer, cihaz kontrolü şartı aranmaz.</div>`:''}`}
 function pfModal(){const p=S.pf,ov0=document.querySelector('#modal .ov'),st=ov0?ov0.scrollTop:0;
   const k0=pfCalc();
   modal(`<h2>${p.term?'Vadeli alım (aksesuar, borçlu)':p.mode==='cihaz'?'Toplu alım · Cihaz':'Toplu alım · Aksesuar'}</h2>${p.term?'<p class="sub">Alışın tamamı vadeli borç olarak yazılır. Dolar kalemlerde borç <b>dolar</b> olarak tutulur; ödeme gününde güncel kurla TL\'ye çevrilip kasadan ödenir, kur farkı aksesuar maliyetine eklenir. Tüm kalemler aynı para biriminde olmalı.</p>':''}<p class="sub" ${p.term?'hidden':''}>${p.mode==='cihaz'?'Tek belge, tek ödeme, tek cari borç. Her cihaz tam alış formundan ve (gerekiyorsa) cihaz kontrolünden geçer; kaydedince hepsi birlikte stoğa girer. Cihazlar yalnızca ₺’dir.':'Tek belge, tek ödeme, tek cari borç. Aksesuarları dolar veya ₺ cinsinden girebilirsiniz; dolar kalemler fiş toplamında kurla ₺’ye çevrilip ₺ olarak kaydedilir.'}</p>
-  <div class="form">${csel('pf-sup','firma',p.sup,'Tedarikçi (firma)')}
+  <div class="form">${csel('pf-sup','firma',p.sup,'Tedarikçi (firma)')}${pfOwnerCtl(p)}
    <label class="f">Belge türü<select class="in" data-c="pfh" data-f="type">${opts(Object.entries(DOCT),p.type)}</select></label>
    <label class="f">Belge no<input class="in" data-c="pfh" data-f="docno" value="${esc(p.docno)}" placeholder="Fatura / fiş numarası"></label>
    <label class="f">Tarih<input class="in" type="date" max="${today()}" data-c="pfh" data-f="date" value="${esc(p.date)}"></label>
@@ -4029,14 +4037,14 @@ function pfModal(){const p=S.pf,ov0=document.querySelector('#modal .ov'),st=ov0?
    <label class="f" id="pf-dw" ${p.dtype==='yok'?'hidden':''}>İskonto <span class="sub" id="pf-dl"></span><input class="in" id="pf-disc" type="number" min="0" step="0.01" inputmode="decimal" data-c="pfh" data-f="disc" value="${esc(p.disc)}"></label>
    <div class="full sub neg" id="pf-dmix" hidden>TL ve dolar kalemli karışık fişte iskonto yalnız yüzde olarak girilebilir.</div>
    ${p.term?`<label class="f">Vade tarihi<input class="in" id="pf-due" type="date" min="${esc(p.date)}" data-c="pfh" data-f="due" value="${esc(p.due)}"></label>`:`<label class="f">Ödenen toplam (₺) <span class="sub">boş = net tutarın tamamı</span><input class="in" id="pf-paid" type="number" min="0" step="0.01" inputmode="decimal" data-c="pfh" data-f="paid" value="${esc(p.paid)}"></label>
-   <label class="f">Ödeme şekli<select class="in" data-c="pfh" data-f="method">${payOpts(p.method)}</select></label>`}
+   <label class="f">Ödeme şekli<select class="in" data-c="pfh" data-f="method">${payOpts(p.method,pfKon(p))}</select></label>`}
    <label class="f full">Not<input class="in" data-c="pfh" data-f="note" value="${esc(p.note)}"></label></div>
   <div class="err" id="f-err" hidden></div><div class="actions"><button class="btn" data-a="close">Vazgeç</button><button class="btn pri" data-a="pf-save">${p.term?'Vadeli alışı kaydet':'Alışı kaydet'}</button></div>`);
   const m=document.querySelector('#modal .modal');if(m)m.classList.add('wide');
   if(p.sup==='__new__'){const a=document.getElementById('pf-sup-nn'),b=document.getElementById('pf-sup-nt');if(a)a.value=p.nn;if(b)b.value=p.nt}
   const ov=document.querySelector('#modal .ov');if(ov)ov.scrollTop=st;pfSums()}
 function pfField(t){const p=S.pf,f=t.dataset.f,c=t.dataset.c;
-  if(c==='pfh'){p[f]=t.value;if(f==='rate'||f==='paid'||f==='disc'||f==='dtype')pfSums();else if(f==='method'||f==='type'||f==='docno'||f==='date'||f==='note'){}return}
+  if(c==='pfh'){p[f]=t.value;if(f==='owner'){if(t.value!=='konsinye'&&p.method==='konsinye')p.method='havale';pfModal();return}if(f==='rate'||f==='paid'||f==='disc'||f==='dtype')pfSums();else if(f==='method'||f==='type'||f==='docno'||f==='date'||f==='note'){}return}
   const row=p.accs[+t.dataset.i];if(!row)return;row[f]=t.value;if(f==='cur')p.cur=t.value;pfSums()}
 function pfAddAcc(id){const p=S.pf;if(!p)return;const a=S.d.accMap.get(id);if(!a)return toast('Ürün bulunamadı',true);
   const ex=p.accs.find(x=>x.id===id);if(ex)ex.qty=(Number(ex.qty)||0)+1;else p.accs.push({id,qty:1,cur:p.cur||'TRY',cost:''});
@@ -4050,20 +4058,21 @@ async function pfSave(){const p=S.pf,k=pfCalc();
     for(const [i,x] of p.phones.entries()){const q=Math.round(Number(x.qty)||1),c=x.cost===''||x.cost==null?null:Number(x.cost);
       if(!String(x.model||'').trim())return setErr((i+1)+'. cihazda marka / model yazın.');if(c==null||!(c>=0))return setErr((i+1)+'. cihazda birim maliyeti yazın.');
       if(String(x.imei||'').trim()&&q>1)return setErr((i+1)+'. cihaz: IMEI yazılacaksa adet 1 olmalı.');
-      if(insNeed(x.cat,x.sub)){const ir=insRow(x.inspection_id);if(!ir||!ir.completed_at)return setErr((i+1)+'. cihaz ('+x.model+'): cihaz kontrolü tamamlanmalı.')}
+      if(!pfKon(p)&&insNeed(x.cat,x.sub)){const ir=insRow(x.inspection_id);if(!ir||!ir.completed_at)return setErr((i+1)+'. cihaz ('+x.model+'): cihaz kontrolü tamamlanmalı.')}
       lines.push({kind:'cihaz',cat:x.cat,sub:x.sub,model:String(x.model).trim(),imei:String(x.imei||'').trim()||null,qty:q,cost:c,target_price:x.target_price==null||x.target_price===''?null:Number(x.target_price),
         battery:x.battery==null||x.battery===''?null:Number(x.battery),cosmetic:x.cosmetic||null,warranty:x.warranty||null,warranty_period:x.warranty_period||null,installment:x.installment||null,notes:x.notes||null,inspection_id:x.inspection_id||null})}
     for(const [i,x] of p.accs.entries()){const q=Math.round(Number(x.qty)||0),c=x.cost===''?null:Number(x.cost);
       if(q<1)return setErr((i+1)+'. aksesuar satırında adet yazın.');if(c==null||!(c>=0))return setErr((i+1)+'. aksesuar satırında birim maliyeti yazın.');
       lines.push({kind:'aksesuar',accessory_id:x.id,qty:q,currency:x.cur,unit_cost:c})}
     if(!lines.length)return setErr(p.mode==='cihaz'?'En az bir cihaz ekleyin.':'En az bir aksesuar satırı ekleyin.');
+    if(pfKon(p)&&!p.agr)return setErr('Konsinye anlaşması seçin.');
     if(p.term){if(!p.due)return setErr('Vade tarihini seçin.');if(p.due<p.date)return setErr('Vade tarihi alış tarihinden önce olamaz.');if(new Set(p.accs.map(x=>x.cur)).size>1)return setErr('Vadeli alımda tüm kalemler aynı para biriminde olmalı.')}
     if(k.hasUsd&&!(Number(p.rate)>0))return setErr('Dolar kalemler için kuru yazın.');
     if(p.dtype!=='yok'&&!(Number(p.disc)>0))return setErr('İskonto tutarını yazın veya iskonto türünü kaldırın.');if(p.dtype==='yuzde'&&Number(p.disc)>100)return setErr('İskonto yüzdesi 100\'ü geçemez.');
     if(p.dtype==='tutar'&&k.mixed)return setErr('Karışık (TL + dolar) fişte iskonto yüzde olarak girilmeli.');
     const paid=p.term||p.paid===''?null:Number(p.paid);if(paid!=null&&(paid<0||paid>k.net+0.05))return setErr('Ödenen tutar 0 ile net toplam ('+money(k.net)+') arasında olmalı.');
     if(!p.term&&!payWarn('pf-save',p.method,paid==null?k.net:paid))return;
-    const id=await call(p.term?'create_term_purchase':'create_purchase',{p:{due_date:p.term?p.due:null,supplier_id:sup,doc_type:p.type,doc_no:p.docno||null,purchase_date:p.date||today(),fx_rate:k.hasUsd?Number(p.rate):null,fx_source:k.hasUsd&&S.fx&&S.fx.ok&&Number(p.rate)===S.fx.rate?S.fx.source:(k.hasUsd?'elle':null),pay_method:p.method,paid_amount:paid,discount_type:p.dtype,discount:p.dtype==='yok'?null:Number(p.disc),note:p.note||null,lines}});
+    const id=await call(p.term?'create_term_purchase':'create_purchase',{p:{due_date:p.term?p.due:null,supplier_id:sup,doc_type:p.type,doc_no:p.docno||null,purchase_date:p.date||today(),fx_rate:k.hasUsd?Number(p.rate):null,fx_source:k.hasUsd&&S.fx&&S.fx.ok&&Number(p.rate)===S.fx.rate?S.fx.source:(k.hasUsd?'elle':null),...(pfKon(p)?{owner:'konsinye',agreement_id:p.agr}:{}),pay_method:p.method,paid_amount:paid,discount_type:p.dtype,discount:p.dtype==='yok'?null:Number(p.disc),note:p.note||null,lines}});
     S.pf=null;closeModal();await reload();toast('Alış kaydedildi');if(id)puDetail(id)}catch(e){setErr(msg(e))}}
 /* ================= MÜŞTERİLER VE FİRMALAR (CARİ KARTLAR) ================= */
 function balance(cid){return sum(S.d.party_entries.filter(e=>e.contact_id===cid),e=>e.amount)}
