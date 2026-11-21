@@ -707,6 +707,8 @@ html.ps-on body{padding-bottom:0}html.ps-on main{padding:0}html.ps-on .wrap:not(
 .wcert{max-width:720px;margin:0 auto}tr.off td{opacity:.55}
 .ly-save{position:sticky;bottom:0;background:var(--card);padding:10px 0;border-top:1px solid var(--line);display:flex;gap:8px;justify-content:flex-end}
 .ps-sum .ly b,.sum .ly{color:var(--pink)}
+.in.imei-bad{border-color:var(--bad,#c62828)!important;box-shadow:0 0 0 2px color-mix(in srgb,var(--bad,#c62828) 18%,transparent)}
+.imei-h{display:block;color:var(--bad,#c62828);font-size:12px;margin-top:3px}
 </style>
 </head>
 <body>
@@ -1983,7 +1985,7 @@ function productModal(p,pre){
     <label class="f">Ana kategori<select class="in" id="p-cat">${opts(CATS,p.cat)}</select></label>
     <label class="f">Alt kategori<select class="in" id="p-sub" data-c="psub">${opts(SUBS,p.sub)}</select><span id="p-inv" style="margin-top:4px">${invPill(p.sub||SUBS[0])}</span></label>
     <label class="f full">Marka / Model<input class="in" id="p-model" value="${esc(p.model)}" placeholder="iPhone 13 128GB Mavi"></label>
-    <label class="f">IMEI / Seri no<span class="inl"><input class="in mono" id="p-imei" value="${esc(p.imei)}" inputmode="numeric"><button type="button" class="btn sm" data-a="scan" data-t="p-imei" aria-label="Kamerayla okut">Tara</button></span></label>
+    <label class="f">IMEI<span class="inl"><input class="in mono" id="p-imei" value="${esc(p.imei)}" ${imA()}><button type="button" class="btn sm" data-a="scan" data-t="p-imei" aria-label="Kamerayla okut">Tara</button></span></label>
     <label class="f">Pil sağlığı (%)<input class="in" id="p-bat" type="number" min="0" max="100" value="${p.battery==null?'':p.battery}"></label>
     <label class="f">Kozmetik<select class="in" id="p-cos">${opts(COSM,p.cosmetic,'-')}</select></label>
     <label class="f">Garanti Durumu<select class="in" id="p-war">${opts(WARR,p.warranty,'-')}</select></label>
@@ -2014,6 +2016,7 @@ function prodSnap(){return{cat:g('p-cat'),sub:g('p-sub'),model:g('p-model'),imei
 async function saveProduct(id){
   const model=g('p-model');if(!model)return setErr('Marka / model yazın.');
   const imei=g('p-imei');
+  {const o=id&&S.d.products.find(x=>x.id===id);if(!(o&&(o.imei||'')===imei)){const le=imeiLenErr(imei);if(le)return setErr(le)}}
   if(isImei(imei)&&!luhn(imei)&&S.imeiWarn!==imei){S.imeiWarn=imei;return setErr('Bu IMEI’nin sağlama hanesi tutmuyor, yanlış yazılmış olabilir. Doğruysa tekrar Kaydet’e basın.')}
   if(imei&&S.d.products.some(x=>x.imei===imei&&x.id!==id&&x.status!=='satildi'))return setErr('Bu IMEI başka bir üründe stokta kayıtlı.');
   try{
@@ -2691,10 +2694,10 @@ function wLineModal(aid){const l=S.cart.acc.find(x=>x.aid===aid),k=wPkg(aid);if(
   const slots=k.parts||[];S.wl={aid};
   modal(`<h2>${ic('star')} Ömür Boyu Garanti · ${esc(wPkgName(k))}</h2><p class="sub">Paket, cihazın IMEI numarasına ve seçili müşteriye kaydedilir. Değişimler yalnız bu cihaza ve bu müşteriye yapılır; garanti devredilemez.</p>
    <div class="form"><div class="f full"><label>Cihaz</label><select class="in" id="w-src" data-c="wsrc">${devs.map(p=>`<option value="p:${p.id}" ${src==='p:'+p.id?'selected':''}>Fişteki cihaz: ${esc(p.model)} · ${esc(p.imei)}</option>`).join('')}<option value="own" ${own?'selected':''}>Müşterinin kendi cihazı</option></select></div>
-    ${own?`<div class="f"><label>IMEI *</label><input class="in mono" id="w-imei" inputmode="numeric" maxlength="20" placeholder="15 hane (*#06#)" value="${esc(w.imei||'')}"></div>
-     <div class="f"><label>İkinci IMEI <small class="sub">(çift hat)</small></label><input class="in mono" id="w-imei2" inputmode="numeric" maxlength="20" value="${esc(w.imei2||'')}"></div>
+    ${own?`<div class="f"><label>IMEI *</label><input class="in mono" id="w-imei" inputmode="numeric" maxlength="15" data-imei="1" placeholder="15 hane (*#06#)" value="${esc(w.imei||'')}"></div>
+     <div class="f"><label>İkinci IMEI <small class="sub">(çift hat)</small></label><input class="in mono" id="w-imei2" inputmode="numeric" maxlength="15" data-imei="1" value="${esc(w.imei2||'')}"></div>
      <div class="f full"><label>Marka / model *</label><input class="in" id="w-dev" maxlength="80" placeholder="ör. iPhone 13 128 GB" value="${esc(w.device||'')}" data-c="wdev"></div>`
-    :`<div class="f full sub">IMEI ${esc(P?P.imei:'')} · ${esc(dev)}</div><div class="f"><label>İkinci IMEI <small class="sub">(varsa)</small></label><input class="in mono" id="w-imei2" inputmode="numeric" maxlength="20" value="${esc(w.imei2||'')}"></div>`}
+    :`<div class="f full sub">IMEI ${esc(P?P.imei:'')} · ${esc(dev)}</div><div class="f"><label>İkinci IMEI <small class="sub">(varsa)</small></label><input class="in mono" id="w-imei2" inputmode="numeric" maxlength="15" data-imei="1" value="${esc(w.imei2||'')}"></div>`}
     ${slots.map((sl,i)=>sl.length>1?`<div class="f full"><label>${i+1}. parça seçimi</label><div class="seg">${sl.map(c=>`<button type="button" data-a="w-pick" data-i="${i}" data-c2="${c}" aria-pressed="${(w.parts||[])[i]===c}">${esc(wTN(c))}</button>`).join('')}</div></div>`:'').join('')}
     <div class="f full"><label>İlk uygulama malzemeleri (stoktan düşer)</label>${wLineParts(k,w,dev)}</div>
     <div class="f full"><label>Not</label><input class="in" id="w-note" maxlength="200" value="${esc(w.note||'')}"></div></div>
@@ -2784,7 +2787,7 @@ function wHoldVal(w){if(!wR().otp_claim)return (document.getElementById('w-chold
 function wClaimModal(kind,type){const w=S.gw.sel,R=wR(),dev=w.device;S.gw.cl={kind,type};
   modal(`<h2>${kind==='ilk'?'İlk uygulama':'Değişim'} · ${esc(wTN(type))}</h2><p class="sub">${esc(w.no)} · ${esc(w.device)} · ${esc(w.customer||'')}</p>
    ${kind==='degisim'?`<div class="note">Bu paket yılında ${num(w.used)}/${num(w.limit)} hak kullanıldı; bu işlemle ${num(w.used+1)} olacak.</div>`:'<div class="note">İlk uygulama hak saymaz.</div>'}
-   <div class="form"><div class="f full"><label>Cihazın IMEI numarası * <small class="sub">(cihazda *#06# ile görün, okutun ya da yazın)</small></label><input class="in mono" id="w-cimei" inputmode="numeric" maxlength="20" autocomplete="off" placeholder="15 hane"></div>
+   <div class="form"><div class="f full"><label>Cihazın IMEI numarası * <small class="sub">(cihazda *#06# ile görün, okutun ya da yazın)</small></label><input class="in mono" id="w-cimei" inputmode="numeric" maxlength="15" data-imei="1" autocomplete="off" placeholder="15 hane"></div>
     <div class="f full"><label>Takılan malzeme (stoktan düşer)</label><select class="in" id="w-cacc">${wMatOpts(type,dev,(wMats(type,dev).find(a=>a.stock_qty>0)||{}).id,'Seçin')}</select></div>
     <div class="f full"><label>Not</label><input class="in" id="w-cnote" maxlength="200" placeholder="ör. ekran çatlamış"></div>
     ${wHoldHtml(w)}</div>
@@ -3806,6 +3809,7 @@ function pfDevOpen(i){const p=S.pf;S.pfd={i};const x=i>=0?p.phones[i]:null;
 async function pfDevSave(){const p=S.pf,i=S.pfd.i;
   const model=g('p-model');if(!model)return setErr('Marka / model yazın.');
   const imei=g('p-imei'),cat=g('p-cat'),sub=g('p-sub'),cost=nv('p-cost'),qty=Math.round(nv('p-qty')||1);
+  {const le=imeiLenErr(imei);if(le)return setErr(le)}
   if(isImei(imei)&&!luhn(imei)&&S.imeiWarn!==imei){S.imeiWarn=imei;return setErr('Bu IMEI’nin sağlama hanesi tutmuyor, yanlış yazılmış olabilir. Doğruysa tekrar “Faturaya ekle”ye basın.')}
   if(imei&&S.d.products.some(x=>x.imei===imei&&x.status!=='satildi'))return setErr('Bu IMEI başka bir üründe stokta kayıtlı.');
   if(imei&&p.phones.some((x,j)=>j!==i&&x.imei===imei))return setErr('Bu IMEI faturada zaten var.');
@@ -4691,7 +4695,7 @@ function svModal(x,k){
    <label class="f">Talep türü<select class="in" id="sv-rt">${opts(RT,x.request_type||'tamir')}</select></label>
    <label class="f">Seri no / parti (varsa)<input class="in mono" id="sv-imei" value="${esc(x.imei)}"></label>`
    :`<label class="f full">Cihaz (marka / model)<input class="in" id="sv-dev" value="${esc(x.device)}"></label>
-   <label class="f">IMEI / Seri no<span class="inl"><input class="in mono" id="sv-imei" value="${esc(x.imei)}"><button type="button" class="btn sm" data-a="scan" data-t="sv-imei" aria-label="Kamerayla okut">Tara</button></span></label>`}
+   <label class="f">IMEI<span class="inl"><input class="in mono" id="sv-imei" value="${esc(x.imei)}" ${imA()}><button type="button" class="btn sm" data-a="scan" data-t="sv-imei" aria-label="Kamerayla okut">Tara</button></span></label>`}
    <label class="f">Tahmini ücret (₺)<input class="in" id="sv-est" type="number" min="0" step="0.01" inputmode="decimal" value="${x.estimate==null?'':x.estimate}"></label>
    <label class="f full">${acc?'Sorun (çalışmıyor, kırık, hatalı ürün...)':'Arıza / yapılacak işlem'}<textarea class="in" id="sv-iss" style="min-height:70px;font-family:var(--font);font-size:14px">${esc(x.issue)}</textarea></label>
    ${acc?'':`<label class="f full">Teslim alınan aksesuarlar (şarj aleti, kılıf, SIM...)<input class="in" id="sv-acc" value="${esc(x.accessories)}"></label>`}
@@ -5272,7 +5276,7 @@ function qwBuyRender(){
     return `<fieldset style="margin-bottom:10px"><legend>${i+1}. cihaz</legend><div class="form">
      ${sel('cat','Ana kategori',CATS)}${sel('sub','Alt kategori',SUBS)}
      ${f('model','Marka / Model','full')}
-     <label class="f">IMEI / Seri no<input class="in mono" inputmode="numeric" data-c="qwb" data-f="imei" data-i="${i}" value="${esc(it.imei)}"></label>
+     <label class="f">IMEI<input class="in mono" ${imA()} data-c="qwb" data-f="imei" data-i="${i}" value="${esc(it.imei)}"></label>
      <label class="f">Pil sağlığı (%)<input class="in" type="number" min="0" max="100" data-c="qwb" data-f="battery" data-i="${i}" value="${esc(it.battery)}"></label>
      ${sel('cosmetic','Kozmetik',COSM,'-')}${sel('warranty','Garanti Durumu',WARR,'-')}
      ${f('warranty_period','Garanti Süresi (kalan)')}${sel('installment','Taksit imkanı',[['yapilabilir','Yapılabilir'],['yapilamaz','Yapılamaz']],'-')}
@@ -5308,6 +5312,7 @@ function qwValidate(key){
       if(!(Number(it.price)>0))return (i+1)+'. cihaz için alış bedeli girin.';
       if(it.battery!==''&&!(Number(it.battery)>=0&&Number(it.battery)<=100))return (i+1)+'. cihazın pil sağlığı 0-100 olmalı.';
       const im=String(it.imei||'').trim();
+      {const le=imeiLenErr(im,(i+1)+'. cihazın IMEI numarası');if(le)return le}
       if(im&&w.buy.some((o,j)=>j!==i&&String(o.imei||'').trim()===im))return 'Aynı IMEI iki cihazda yazılmış: '+im;
       if(im&&S.d.products.some(p=>p.imei===im&&inStock(p)))return (i+1)+'. cihazın IMEI numarası zaten stokta kayıtlı.';
       if(isImei(im)&&!luhn(im)&&S.imeiWarn!==im){S.imeiWarn=im;return (i+1)+'. cihazın IMEI sağlama hanesi tutmuyor, yanlış yazılmış olabilir. Doğruysa İleri’ye tekrar basın.'}}}
@@ -5377,7 +5382,7 @@ function insRender(){
   const head=`<h2>Cihaz kontrolü${w.model?' · '+esc(w.model):''}</h2><div class="seg" style="margin-bottom:10px;flex-wrap:wrap;pointer-events:none">${steps.map((k,i)=>`<button aria-pressed="${i===w.step}">${i+1}. ${INS_T[k]}</button>`).join('')}</div>`;
   let b='';
   if(key==='imei')b=`<div class="form"><label class="f full">Marka / Model<input class="in" data-c="insf" data-f="model" list="pr-models" autocomplete="off" value="${esc(w.model)}"></label>${prOn()?`<datalist id="pr-models">${[...new Set((S.d.price_refs||[]).filter(r=>r.cat===w.cat).map(r=>r.model))].sort().map(m=>`<option value="${esc(m)}">`).join('')}</datalist>`:''}
-    <label class="f full">IMEI / Seri no<input class="in mono" inputmode="numeric" data-c="insf" data-f="imei" value="${esc(w.imei)}"></label></div>
+    <label class="f full">IMEI<input class="in mono" ${imA()} data-c="insf" data-f="imei" value="${esc(w.imei)}"></label></div>
     <label style="display:flex;gap:8px;align-items:center;margin:10px 0"><input type="checkbox" data-c="insf" data-g="imei" data-k="done" ${insV('imei','done')?'checked':''}> IMEI sorgusu yapıldı</label>
     <label class="f">IMEI kaynağı<select class="in" data-c="insf" data-g="imei" data-k="source">${opts(INS_SRC,insV('imei','source')||'','- seçin -')}</select></label>
     ${insV('imei','source')==='ithalat'?'<div class="card" style="margin-top:8px"><b>İthalat yoluyla kaydedilen IMEI</b><div class="sub">Bu cihaz “Yenilenmiş” olarak yazılmak zorundadır; alt kategori otomatik “Yenilenmiş (MF)” yapılır (AF ise değiştirebilirsiniz).</div></div>':''}${insNote('imei','Sorgu sonucu, kayıt tarihi…')}`;
@@ -5469,7 +5474,7 @@ function prSiteOpen(k,q){const s=PR_SITES.find(x=>x[0]===k);if(!s)return;
   try{navigator.clipboard&&navigator.clipboard.writeText(q).catch(()=>{})}catch(e){}
   const u=/[=]$/.test(s[2])?s[2]+encodeURIComponent(q):s[2];window.open(u,'_blank','noopener');if(!/[=]$/.test(s[2]))toast('“'+q+'” kopyalandı; sitede arama kutusuna yapıştırın')}
 function insValidate(key){const w=S.ins;
-  if(key==='imei'){if(!w.model.trim())return 'Marka / model yazın.';if(!w.imei.trim())return 'IMEI yazın.';if(isImei(w.imei)&&!luhn(w.imei)&&S.imeiWarn!==w.imei){S.imeiWarn=w.imei;return 'IMEI sağlama hanesi tutmuyor, yanlış yazılmış olabilir. Doğruysa İleri’ye tekrar basın.'}
+  if(key==='imei'){if(!w.model.trim())return 'Marka / model yazın.';if(!w.imei.trim())return 'IMEI yazın.';{const le=imeiLenErr(w.imei.trim());if(le)return le}if(isImei(w.imei)&&!luhn(w.imei)&&S.imeiWarn!==w.imei){S.imeiWarn=w.imei;return 'IMEI sağlama hanesi tutmuyor, yanlış yazılmış olabilir. Doğruysa İleri’ye tekrar basın.'}
     if(!insV('imei','done'))return 'IMEI sorgusunun yapıldığını işaretleyin.';if(!insV('imei','source'))return 'IMEI kaynağını seçin.'}
   if(key==='depo'){if(!(Number(insV('storage','gb'))>0))return 'Depolama alanını seçin.';const p=insV('battery','pct');if(!((p===''||p==null)&&w.cat==='Tabletler')&&(p===''||p==null||Number(p)<0||Number(p)>100))return 'Pil sağlığı 0-100 olmalı.'}
   if(key==='kamera'&&['camera.front','camera.back','camera.zoom','sound.out','sound.in','sound.noise'].some(x=>!insV(...x.split('.'))))return 'Kamera ve ses maddelerinin hepsini işaretleyin.';
@@ -5881,9 +5886,19 @@ function targetModal(staff,name){
 /* ================= BARKOD / IMEI OKUTMA ================= */
 const luhn=s=>{let t=0;[...s].reverse().forEach((c,i)=>{let d=+c;if(i%2){d*=2;if(d>9)d-=9}t+=d});return t%10===0};
 const isImei=s=>/^\d{15}$/.test(s);
+// IMEI alanları: yalnız rakam, en çok 15 hane; doluysa tam 15 hane olmalı
+function imA(){return 'inputmode="numeric" maxlength="15" autocomplete="off" data-imei="1" placeholder="15 hane (*#06#)"'}
+function imeiLenErr(v,lbl){v=String(v||'').trim();if(!v)return '';const n=v.replace(/\D/g,'').length;if(!/^\d+$/.test(v))return (lbl||'IMEI')+' yalnız rakamlardan oluşmalı.';return n===15?'':`${lbl||'IMEI'} 15 haneli olmalı (${n} hane yazıldı). Cihazda *#06# ile görebilirsiniz.`}
+function imeiHint(t){const n=t.value.length,bad=n>0&&n<15;t.classList.toggle('imei-bad',bad);t.title=bad?`IMEI 15 haneli olmalı · ${n}/15`:'';
+  const an=t.parentElement&&t.parentElement.classList.contains('inl')?t.parentElement:t,box=an.parentElement;
+  let h=box&&box.querySelector(':scope>.imei-h');if(!h&&box){h=document.createElement('small');h.className='imei-h';an.insertAdjacentElement('afterend',h)}
+  if(h){h.textContent=bad?`IMEI 15 haneli olmalı · ${n}/15 hane`:'';h.hidden=!bad}}
+document.addEventListener('input',e=>{const t=e.target;if(!t||!t.dataset||t.dataset.imei!=='1')return;const v=t.value.replace(/\D/g,'').slice(0,15);if(v!==t.value){const p=t.selectionStart;t.value=v;try{t.setSelectionRange(Math.min(p,v.length),Math.min(p,v.length))}catch(_){}}imeiHint(t)},true);
+document.addEventListener('focusout',e=>{const t=e.target;if(t&&t.dataset&&t.dataset.imei==='1')imeiHint(t)},true);
 // okunan değer kabul edilir mi? 15 haneli ise sağlama hanesi tutmalı; EAN/UPC gibi ürün barkodları reddedilir
 const EANOK=new Set(['ps-q','fg-q','sg-code','sc-scan','cq','ac-bar','aq','q','pf-aq']);
 function scanOk(v,ean){v=String(v||'').trim();if(!v)return null;
+  {const el=scanState&&scanState.target&&document.getElementById(scanState.target);if(el&&el.dataset&&el.dataset.imei==='1')return isImei(v)&&luhn(v)?v:null}
   if(isImei(v))return luhn(v)?v:null;
   if(/^\d{12,14}$/.test(v))return ean?v:null;
   return /^[A-Za-z0-9\-]{6,20}$/.test(v)?v.toUpperCase():null}
@@ -6981,6 +6996,7 @@ const A={
   async 'sv-save'(t){const id=t.dataset.id,dev=g('sv-dev'),iss=g('sv-iss'),k=t.dataset.k||'telefon',acc=k==='aksesuar',rb=g('sv-rb')||'anka';
     if(!dev||!iss)return setErr(acc?'Aksesuarı ve sorunu yazın.':'Cihaz ve arıza bilgisini yazın.');
     const qty=acc?Math.round(nv('sv-qty')||0):1;if(acc&&qty<1)return setErr('Adet en az 1 olmalı.');
+    if(!acc){const im=g('sv-imei'),oo=id&&S.d.service_orders.find(o=>o.id===id);if(!(oo&&(oo.imei||'')===im)){const le=imeiLenErr(im);if(le)return setErr(le)}}
     try{const c=await resolveContact('musteri','sv-c');if(!c&&!acc&&!(id&&(S.d.service_orders.find(o=>o.id===id)||{}).from_stock))return setErr('Müşteri seçin veya yeni müşteri ekleyin.');
       let rc=null;if(rb!=='anka'){rc=await resolveContact('firma','sv-rc');if(!rc&&rb==='anlasmali')return setErr('Anlaşmalı servis firmasını seçin veya yeni firma ekleyin.')}
       const am=acc?ordAccMatch(dev):null;
@@ -8715,7 +8731,7 @@ Object.assign(A,{
     <div class="err" id="f-err" hidden></div><div class="actions"><button class="btn" data-a="close">Vazgeç</button><button class="btn pri" data-a="w-undogo">Geri al</button></div>`)},
   async 'w-undogo'(t){const r=(document.getElementById('w-ureason')||{}).value||'';if(r.trim().length<3)return setErr('Nedenini yazın.');t.disabled=true;
     try{S.gw.sel=await call('warranty_claim_cancel',{p_id:S.gw.un,p_reason:r.trim()},'İşlem geri alındı');closeModal();S.gw.list=undefined;S.gw.ld=0;await syncData();render()}catch(e){t.disabled=false;setErr(msg(e))}},
-  'w-edit'(){const w=S.gw.sel;modal(`<h2>Garanti kaydını düzelt · ${esc(w.no)}</h2><div class="form"><div class="f"><label>IMEI</label><input class="in mono" id="w-eimei" value="${esc(w.imei)}"></div><div class="f"><label>İkinci IMEI</label><input class="in mono" id="w-eimei2" value="${esc(w.imei2||'')}"></div>
+  'w-edit'(){const w=S.gw.sel;modal(`<h2>Garanti kaydını düzelt · ${esc(w.no)}</h2><div class="form"><div class="f"><label>IMEI</label><input class="in mono" id="w-eimei" value="${esc(w.imei)}" ${imA()}></div><div class="f"><label>İkinci IMEI</label><input class="in mono" id="w-eimei2" value="${esc(w.imei2||'')}" ${imA()}></div>
     <div class="f full"><label>Cihaz</label><input class="in" id="w-edev" maxlength="80" value="${esc(w.device)}"></div><div class="f full"><label>Not</label><input class="in" id="w-enote" maxlength="200" value="${esc(w.note||'')}"></div>
     <div class="f full"><label>Neden * <small class="sub">(kayıt geçmişine yazılır)</small></label><input class="in" id="w-ereason" maxlength="200"></div></div>
     <div class="err" id="f-err" hidden></div><div class="actions">${w.status==='aktif'?'<button class="btn danger" data-a="w-egocancel" style="margin-right:auto">Garantiyi iptal et</button>':''}<button class="btn" data-a="close">Vazgeç</button><button class="btn pri" data-a="w-ego">Kaydet</button></div>`)},
