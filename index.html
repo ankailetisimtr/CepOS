@@ -1683,7 +1683,7 @@ async function loadTeam(a,b){const key=a+b;if(S.team&&S.team.key===key)return;S.
   if(S.ui.tab==='panel')render()}
 function pnTeam(L){if(!can('view_all_sales'))return '';const [a,b]=pnTeamRange(),t=S.team&&S.team.key===a+b?S.team.rows:null,per=S.ui.pntp||'month',d=S.d;
   if(t===false)return '';
-  const prof=can('view_profit'),shifts=can('manage_shifts'),span=diffDays(a,b)+1,K=['dev','acc'];
+  const tp=can('view_team_perf'),prof=can('view_profit')||tp,shifts=can('manage_shifts')||tp,span=diffDays(a,b)+1,K=['dev','acc'];
   const agg=id=>{const o={dev:{q:0,r:0,p:0},acc:{q:0,r:0,p:0},days:null};
     K.forEach(k=>L[k].forEach(x=>{if(x.staff===id&&x.date>=a&&x.date<=b){o[k].q+=x.qty;o[k].r+=x.rev}}));
     if(prof&&a>=primFrom()){if(per!=='month'){o.dev.p=o.acc.p=null}else{pmLoad(a);const b2=pmOf(a,id);if(b2){o.dev.p=b2.dev.prim;o.acc.p=b2.total-b2.dev.prim}else o.dev.p=o.acc.p=null}}
