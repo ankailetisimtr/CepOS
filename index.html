@@ -674,6 +674,11 @@ html.ps-on body{padding-bottom:0}html.ps-on main{padding:0}html.ps-on .wrap:not(
 @media (max-width:620px){.ps-l{padding:12px;border-radius:14px}.ps-tool{width:52px}.ps-tool span{display:none}.ps-search{height:52px}.ps-fis{grid-template-columns:repeat(8,minmax(0,1fr));gap:4px}.ps-fis button{height:46px;font-size:16px}
   .ps-tools{grid-template-columns:repeat(6,minmax(0,1fr))}.ps-tools .ps-inl{grid-column:span 3}.ps-tools .ps-ic{grid-column:span 2;height:46px}.ps-cust .cq small{display:none}.ps-fis button i{top:2px;right:2px}.ps-line{grid-template-columns:minmax(0,1fr) auto 32px;}.ps-line .pr{grid-column:1/2}.ps-line .tt{grid-column:2/3}
   .ps-total .v{font-size:34px}.ps-pay{grid-template-columns:repeat(2,minmax(0,1fr))}.ps-top{flex-wrap:wrap}.ps-top .chip.pst{order:3;flex-basis:100%}.ps-cust .btn.soft{padding:0 10px}.ps-qp .btn{min-width:44px}.pq-it>.in{width:110px}}
+/* satış ekranı müşteri satırı, dar ekran: ad üst satırda tam genişlik, Sadakat / Notlar / Müşteri seç alt satırda */
+.ps-cust .cq b{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ps-cbtn{display:contents}
+@media (max-width:620px){.ps-cust{flex-wrap:wrap;row-gap:8px}.ps-cust>.cq{flex:1 1 0}
+ .ps-cbtn{display:flex;gap:8px;order:3;flex:1 0 100%;min-width:0}.ps-cbtn>.btn{flex:1 1 0;min-width:0;justify-content:center}.ps-cbtn>.btn.soft{flex:1.3 1 0}.ps-cust .cq small{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}}
 .btn.ly{background:color-mix(in srgb,var(--pink) 12%,transparent);color:var(--pink);border:1px solid color-mix(in srgb,var(--pink) 35%,transparent)}
 .btn.ly.on{background:var(--pink);color:#fff}
 .ly-card{border:1px solid color-mix(in srgb,var(--pink) 30%,var(--line));border-radius:12px;padding:12px;background:color-mix(in srgb,var(--pink) 5%,var(--card))}
@@ -2246,7 +2251,7 @@ function vSatis(){psInit();psCheck();
    <div class="ps-rel">${psResHtml()}</div>
    <div class="ps-row ps-cust"><span class="avatar">${cust?esc(initials(cust.name)):'?'}</span>
     <div class="cq">${cust?`<b>${esc(cust.name)}</b><small>${esc([cust.phone,acqShort(cust)].filter(Boolean).join(' · '))||'Müşteri'} <button class="lnk" data-a="ps-cclr">Kaldır</button></small>`:`<input id="ps-cq" type="search" autocomplete="off" placeholder="Müşteri seçin (ad veya telefon)" value="${esc(u.cq||'')}" data-c="pscq" aria-label="Müşteri ara"><small>Satış, iade ve değişim için isteğe bağlı</small>`}</div>
-    ${lyBtn(c)}${cust?nlPsBtn(cust.id):''}<button class="btn soft" data-a="ps-cust">${ic('userplus','sm')} Müşteri seç</button>
+    <div class="ps-cbtn">${lyBtn(c)}${cust?nlPsBtn(cust.id):''}<button class="btn soft" data-a="ps-cust">${ic('userplus','sm')} Müşteri seç</button></div>
     <button class="ps-tool sq" data-a="ps-more" aria-expanded="${!!u.more}" title="Satış bilgileri: satışı yapan, tarih, not">${ic('down')}${c.note||c.trades.length||(c.date&&c.date!==today())||(c.staff&&c.staff!==S.user.id)?'<i class="dot"></i>':''}</button></div>
    <div class="ps-rel" id="ps-cres">${!cust&&u.cq?psCustDd(u.cq):''}</div>
    ${u.more?psMoreHtml(c):''}
