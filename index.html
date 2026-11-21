@@ -736,7 +736,7 @@ const TYPE_LABEL={hediye_ceki:'Hediye çeki satışı / iadesi',satis:'Satış',
   alis_borc:'Veresiye alış',alis_odeme:'Alış ödemesi',kur_farki:'Kur farkı',odeme:'Ödeme',sermaye_girisi:'Sermaye girişi',sermaye_iadesi:'Sermaye iadesi',hakedis:'Hakediş',hakedis_iptal:'Hakediş iptali',hakedis_odeme:'Hakediş ödemesi',alis_iade:'Firma iadesi',iade_tahsilat:'İade bedeli geri alındı',cari_iade:'Firma iade tahsilatı',firma_iade:'Firmaya iade'};
 const ROLES=[['owner','İşletme sahibi'],['manager','Mağaza müdürü'],['staff','Personel']];
 const MON=['Oca','Şub','Mar','Nis','May','Haz','Tem','Ağu','Eyl','Eki','Kas','Ara'];
-const TABS=[['panel','Genel Bakış',null],['notlar','Notlarım',null],['satis','Satış','make_sale'],['stok','Cihazlar',null],['aksesuar','Aksesuarlar',null],['sayim','Stok Sayım','stock_count'],['sorgu','Sorgulamalar',null],['alislar','Alışlar','make_purchase'],['satislar','Satışlar',null],['iadeler','İade&Değişim','process_refund'],['kampanya','Kampanyalar','view_loyalty|warranty_use|view_warranty|view_protection|manage_protection|view_multibuy|manage_multibuy|gift_card_sell|view_gift_cards|manage_gift_cards'],['fireler','Fireler','record_waste'],['servis','Teknik Servis','manage_service'],['siparis','Siparişler','manage_orders'],['eksikler','Eksikler','manage_shortages'],['teklif','Teklifler','manage_quotes'],['katalog','Kataloglar','view_catalog|manage_catalog'],['personel','Personeller',null],['gorev','Görevler',null],['vardiya','Vardiya',null],['hedef','Hedefler',null],['hakedis','Hakedişler',null],['primler','Primler','manage_commissions'],['egitim','Eğitimler',null],['kasa','Kasa','view_cash'],['odemeler','Ödemeler','view_payments'],['satisrapor','Satış Raporu','view_all_sales'],['sermaye','Sermaye Raporu','view_cost'],['kazancrapor','Kazanç Raporu','view_payments'],['masraf','Masraflar','manage_expenses'],['musteriler','Müşteriler',null],['firmalar','Firmalar','manage_suppliers'],['konsinye','Konsinye','view_consignment'],['yonetim','Yönetim','manage_users']];
+const TABS=[['panel','Genel Bakış',null],['notlar','Notlarım',null],['satis','Satış','make_sale'],['stok','Cihazlar',null],['aksesuar','Aksesuarlar',null],['sayim','Stok Sayım','stock_count'],['sorgu','Sorgulamalar',null],['alislar','Alışlar','make_purchase'],['satislar','Satışlar',null],['iadeler','İade&Değişim','process_refund'],['kampanya','Kampanyalar','view_loyalty|warranty_use|view_warranty|view_protection|manage_protection|view_multibuy|manage_multibuy|gift_card_sell|view_gift_cards|manage_gift_cards'],['fireler','Fireler','record_waste'],['servis','Teknik Servis','manage_service'],['siparis','Siparişler','manage_orders'],['eksikler','Eksikler','manage_shortages'],['teklif','Teklifler','manage_quotes'],['katalog','Kataloglar','view_catalog|manage_catalog'],['personel','Personeller',null],['gorev','Görevler',null],['vardiya','Vardiya',null],['hedef','Hedefler',null],['hakedis','Hakedişler',null],['primler','Primler','manage_commissions'],['egitim','Eğitimler',null],['kasa','Kasa','view_cash_basic'],['odemeler','Ödemeler','view_payments'],['satisrapor','Satış Raporu','view_all_sales'],['sermaye','Sermaye Raporu','view_cost'],['kazancrapor','Kazanç Raporu','view_payments'],['masraf','Masraflar','manage_expenses'],['musteriler','Müşteriler',null],['firmalar','Firmalar','manage_suppliers'],['konsinye','Konsinye','view_consignment'],['yonetim','Yönetim','manage_users']];
 
 /* ================= İKONLAR (ince çizgili, 24x24) ================= */
 const IC={
@@ -825,7 +825,7 @@ const sb=window.supabase.createClient(CFG.URL,CFG.KEY,{auth:{persistSession:true
 const S={user:null,me:null,perms:new Set(),d:null,loading:false,agr:{},dash:null,mine:null,notifOpen:false,nf:'',nRead:new Set(),nAll:0,navAfter:null,grpOpen:'',grpX:0,seen:0,
   ui:{tab:'panel',period:'month',ref:today(),from:today(),to:today(),q:'',fs:'stokta',fo:'',fc:'',fx:'',kasaAcc:'',kasaFund:'',exs:'',exc:'',kasaDate:today(),cq:'',cdebt:false,kind:'musteri',openSale:'',salesRange:'7',openAgr:'',ekstre:''},
   cart:{items:[],acc:[],trades:[],pays:[],customer:'',staff:'',note:'',q:''}};
-const PERM_FB={manage_suppliers:'manage_contacts',print_labels:'manage_products|manage_accessories',view_store_targets:'view_all_sales',void_sale:'process_refund'};
+const PERM_FB={view_cash_all:'view_cash',view_cash_basic:'view_cash|close_day',manage_cash:'add_expense',manage_suppliers:'manage_contacts',print_labels:'manage_products|manage_accessories',view_store_targets:'view_all_sales',void_sale:'process_refund'};
 const can=p=>!!S.me&&(S.me.role==='owner'||String(p).split('|').some(x=>S.perms.has(x)));
 const isOwner=()=>!!S.me&&S.me.role==='owner';
 const by=(arr)=>new Map(arr.map(x=>[x.id,x]));
@@ -1107,7 +1107,7 @@ async function call(name,args,okMsg){
   if(error){toast(error.message,true);throw error}
   if(okMsg)toast(okMsg);return data}
 async function mcall(name,args,msg){try{await call(name,args,msg);return true}catch(e){setErr(e.message);return false}}
-async function reload(){await syncData();S.dash=null;S.agr={};render()}
+async function reload(){await syncData();S.dash=null;S.agr={};S.cashb=null;render()}
 
 /* ================= AÇILIŞ / GİRİŞ ================= */
 async function boot(){
@@ -3383,15 +3383,34 @@ const accList=()=>(S.d.cash_accounts||[]).filter(a=>a.active!==false&&a.kind!=='
 const accName=c=>((S.d.cash_accounts||[]).find(a=>a.code===c)||{}).name||c;
 function cashBal(acc,date,fund){return sum(S.d.cash_entries.filter(e=>e.account===acc&&(!date||e.entry_date<=date)&&(!fund||e.fund===fund)),e=>e.amount)}
 const KIND_L={nakit:'Nakit',gecis:'Gün sonunda aktarılır',banka:'Banka'};
+/* 082: tüm kasayı göremeyen (müdür, personel) yalnız dört hesabın bakiyesini sunucudan alır */
+const CB_ACC=['nakit_gunluk','nakit_biriken','havale','pos'];
+const cashAll=()=>can('view_cash_all');
+async function cbLoad(date,force){const key=date||'';if(!force&&S.cashb&&S.cashb.key===key&&(S.cashb.v||S.cashb.err)&&Date.now()-S.cashb.t<30000)return S.cashb;
+  S.cashb={key,v:null,t:Date.now()};try{S.cashb.v=await call('cash_basic',{p_date:date||null})}catch(e){S.cashb.err=msg(e)}
+  if(S.ui.tab==='kasa'&&!document.querySelector('#modal .modal'))render();return S.cashb}
+const cbTot=acc=>{const x=S.cashb&&S.cashb.v&&S.cashb.v[acc];return x?Number(x.total):0};
 const lastClosing=()=>(S.d.day_closings||[]).filter(c=>c.status==='tamam').sort((a,b)=>String(b.closed_at).localeCompare(String(a.closed_at)))[0];
-function vKasa(){
+function vKasaBasic(){
+  const u=S.ui,d=u.kasaDate,last=lastClosing(),canClose=can('close_day'),cb=S.cashb,key=d===today()?'':d;
+  if(!cb||cb.key!==key||Date.now()-cb.t>30000)cbLoad(key);
+  const closings=(S.d.day_closings||[]).slice().sort((a,b)=>String(b.closed_at).localeCompare(String(a.closed_at))).slice(0,8),pending=!last||last.business_date<today();
+  const sub={nakit_gunluk:'Çekmecedeki nakit',nakit_biriken:'Biriken nakit',havale:'Gün sonunda EnPara\'ya aktarılır',pos:'Gün sonunda ÖdeAl\'a aktarılır'};
+  return `<div class="row"><h1>Kasa</h1><div class="sp"></div>${canClose?'<button class="btn pri" data-a="gs-open">Gün sonu al</button>':''}${can('manage_cash')?'<button class="btn" data-a="transfer">Transfer</button><button class="btn" data-a="new-move">+ Hareket ekle</button>':''}</div>
+  <div class="card" id="kasa-basic"><div class="row" style="margin-bottom:12px"><label class="f">Bakiye tarihi<input class="in" type="date" id="k-date" value="${d}" max="${today()}" data-c="kasadate"></label></div>
+   ${cb&&cb.err?`<p class="err">${esc(cb.err)}</p>`:`<div class="grid" style="grid-template-columns:repeat(auto-fit,minmax(190px,1fr))">${CB_ACC.map(a=>tile(esc(accName(a)),cb&&cb.v?`<span class="${sgn(cbTot(a))}">${money(cbTot(a))}</span>`:'<span class="sub">…</span>',sub[a])).join('')}</div>`}
+   <p class="sub" style="margin:10px 0 0">Gün sonunda sayılan dört hesabın ${d===today()?'güncel':fmtDate(d)+' tarihindeki'} bakiyesi.</p></div>
+  <div class="card"><div class="row" style="margin-bottom:6px"><h2 style="margin:0">Gün sonu</h2><div class="sp"></div>${canClose?'<button class="btn sm pri" data-a="gs-open">Gün sonu al</button>':''}</div>
+   <p class="sub" style="margin:0 0 6px">${last?`Son gün sonu: <b class="mono">${esc(last.closing_no)}</b> · ${fmtDate(last.closed_at)} ${fmtTime(last.closed_at)} · ${esc(pname(last.closed_by))}`:'Henüz gün sonu alınmadı.'} ${pending?'<span class="pill warn">Bugünün gün sonu alınmadı</span>':'<span class="pill stock">Bugün alındı</span>'}</p>
+   ${closings.map(c=>`<div class="item" style="padding:8px 0;${c.status==='iptal'?'opacity:.55':''}"><div class="main"><b class="mono">${esc(c.closing_no)}</b>${c.status==='iptal'?' <span class="pill bad">İptal</span>':''}<div class="meta"><span>${fmtDate(c.business_date)} ${fmtTime(c.closed_at)}</span><span>${esc(pname(c.closed_by))}</span></div></div><div class="side"><button class="btn sm" data-a="gs-detail" data-id="${c.id}">Detay</button></div></div>`).join('')}</div>`}
+function vKasa(){if(!cashAll())return vKasaBasic();
   const u=S.ui,d=u.kasaDate,accs=accList(),last=lastClosing(),canClose=can('close_day');
   const anka=a=>cashBal(a,d,'anka'),yat=a=>cashBal(a,d,'yatirimci');
   const totA=sum(accs,a=>anka(a.code)),totY=sum(accs,a=>yat(a.code));
   const l=S.d.cash_entries.filter(e=>(!u.kasaAcc||e.account===u.kasaAcc)&&(u.kasaFund?e.fund===u.kasaFund:e.fund!=='sahip')).slice(0,100);
   const closings=(S.d.day_closings||[]).slice().sort((a,b)=>String(b.closed_at).localeCompare(String(a.closed_at))).slice(0,8);
   const pending=!last||last.business_date<today();
-  return `<div class="row"><h1>Kasa</h1><div class="sp"></div>${canClose?'<button class="btn pri" data-a="gs-open">Gün sonu al</button>':''}${can('add_expense')?'<button class="btn" data-a="transfer">Transfer</button><button class="btn" data-a="new-move">+ Hareket ekle</button>':''}</div>
+  return `<div class="row"><h1>Kasa</h1><div class="sp"></div>${canClose?'<button class="btn pri" data-a="gs-open">Gün sonu al</button>':''}${can('manage_cash')?'<button class="btn" data-a="transfer">Transfer</button><button class="btn" data-a="new-move">+ Hareket ekle</button>':''}</div>
   <div class="card"><div class="row" style="margin-bottom:12px"><label class="f">Bakiye tarihi<input class="in" type="date" id="k-date" value="${d}" data-c="kasadate"></label></div>
    <div class="grid" style="grid-template-columns:repeat(auto-fit,minmax(190px,1fr))">${accs.map(a=>{const y=yat(a.code);return tile(esc(a.name),`<span class="${sgn(anka(a.code))}">${money(anka(a.code))}</span>`,y?`+ Yatırımcı payı ${money(y)}`:KIND_L[a.kind])}).join('')}</div>
    <div class="grid g4" style="margin-top:10px">${tile('Anka toplam kasa',`<span class="${sgn(totA)}">${money(totA)}</span>`,'yatırımcı parası hariç','key')}${tile('Yatırımcıya ait (bilgi)',money(totY),'konsinye sermayesi, Anka bakiyesine girmez')}${tile('Fiziksel toplam',money(totA+totY),'banka ekstresi ve sayımla karşılaştırılacak tutar')}</div></div>
@@ -3547,12 +3566,14 @@ function transferModal(){
 const GS_STEPS=['gunluk','biriken','havale','pos'];
 const GS_T={gunluk:'Nakit günlük kasa',biriken:'Nakit biriken kasa',havale:'Havale',pos:'POS'};
 const num0=v=>{const n=Number(String(v).replace(',','.'));return v===''||v==null||!isFinite(n)?0:n};
-function gsOpen(){S.gs={i:0,gunluk:{ok:true,counted:'',to_biriken:'',to_enpara:'',note:''},biriken:{ok:true,counted:'',action:'beklemede',amount:'',note:''},havale:{ok:true,counted:'',note:''},pos:{ok:true,counted:'',note:''}};gsModal()}
-function gsExp(s){const g=S.gs;
-  if(s==='gunluk')return r2(cashBal('nakit_gunluk'));
-  if(s==='biriken')return r2(cashBal('nakit_biriken')+num0(g.gunluk.to_biriken));
-  if(s==='havale')return r2(cashBal('havale'));
-  return r2(cashBal('pos'))}
+async function gsOpen(){let bal=null;
+  if(!cashAll()){const r=await cbLoad('',true);if(!r.v)return toast(r.err||'Kasa bakiyeleri alınamadı',true);bal=Object.fromEntries(CB_ACC.map(a=>[a,Number(r.v[a].total)]))}
+  S.gs={bal,i:0,gunluk:{ok:true,counted:'',to_biriken:'',to_enpara:'',note:''},biriken:{ok:true,counted:'',action:'beklemede',amount:'',note:''},havale:{ok:true,counted:'',note:''},pos:{ok:true,counted:'',note:''}};gsModal()}
+function gsExp(s){const g=S.gs,B=a=>g.bal?Number(g.bal[a]||0):cashBal(a);
+  if(s==='gunluk')return r2(B('nakit_gunluk'));
+  if(s==='biriken')return r2(B('nakit_biriken')+num0(g.gunluk.to_biriken));
+  if(s==='havale')return r2(B('havale'));
+  return r2(B('pos'))}
 const gsCnt=s=>{const x=S.gs[s];return x.ok?gsExp(s):r2(num0(x.counted))};
 function gsCalc(){const g=S.gs,gc=gsCnt('gunluk'),tb=num0(g.gunluk.to_biriken),te=num0(g.gunluk.to_enpara),keep=r2(gc-tb-te);
   const bc=gsCnt('biriken'),hc=gsCnt('havale'),pc=gsCnt('pos'),rate=0,comm=0;
