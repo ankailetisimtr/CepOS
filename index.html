@@ -706,6 +706,7 @@ html.ps-on body{padding-bottom:0}html.ps-on main{padding:0}html.ps-on .wrap:not(
 .ly-tabs button.on{background:var(--pink);border-color:var(--pink);color:#fff}
 .ly-t{width:100%;border-collapse:collapse}.ly-t th,.ly-t td{padding:7px 8px;border-bottom:1px solid var(--line);text-align:right;white-space:nowrap}.ly-t th{font-size:.82em;color:var(--muted);font-weight:600}
 .ly-chips{display:flex;gap:6px;flex-wrap:wrap;margin:6px 0}
+.ly-rwp{margin:-2px 0 10px 8px;padding:6px 10px;border-left:3px solid color-mix(in srgb,var(--pink) 45%,transparent);display:flex;gap:6px;flex-wrap:wrap;align-items:center}.ly-rwp .ly-iadd{flex-basis:100%}
 .ly-ip{position:relative;flex:1;min-width:180px}.ly-ipr{position:absolute;z-index:5;left:0;right:0;top:100%;background:var(--card);border:1px solid var(--line);border-radius:8px;max-height:220px;overflow:auto}
 .ly-ipr button{display:block;width:100%;text-align:left;padding:6px 10px;border:0;background:transparent;color:var(--text);cursor:pointer;font:inherit}.ly-ipr button:hover{background:color-mix(in srgb,var(--pink) 10%,transparent)}
 .ly-rules fieldset{border:1px solid var(--line);border-radius:10px;padding:10px;margin:0 0 10px}.ly-rules legend{font-weight:700;color:var(--pink);padding:0 6px}
@@ -2321,7 +2322,7 @@ function psCheckOut(m){const c=S.cart,t=psTotals(c);
     if(c.ly&&c.ly.mid&&(t.ly||lyRw(c))){const R=lyR(),i=c.ly.info||{},nu=lyNeedUse();if(nu===null&&!can('loyalty_redeem_manual'))return 'Puan / ödül kullanımı için yetki gerekir (müdür, sahip).';
       if(nu===true&&!c.ly.otp&&!c.ly.man)return 'Puan / ödül kullanımı için müşteri doğrulaması gerekir: Sadakat düğmesinden SMS kodu ya da kasa kodu.';
       if(t.ly){if(t.ly<R.min_use)return 'En az '+R.min_use+' puan kullanılabilir.';if(t.ly>(i.avail||0))return 'Kullanılabilir puan yetersiz (bakiye '+(i.avail||0)+').';if(t.ly>Math.floor((t.sale+t.ly+t.lyr)*R.max_use_pct/100))return 'Bir fişte en çok %'+R.max_use_pct+' puanla ödenebilir.'}
-      if(lyRw(c)&&!t.lyr)return 'Damga ödülü için fişte seçili (damga) ürünü olmalı.'}
+      if(lyRw(c)&&!t.lyr){const n=lyRwItems(lyRw(c));return n?'Damga ödülü için fişe şu ürün eklenmeli: '+n+'.':'Damga ödülü için fişte seçili (damga) ürünü olmalı.'}}
     return ''}
   if(!c.rets.length)return c.mode==='iade'?'İade edilecek ürünü okutun.':'Değişime gelen ürünü okutun.';
   if(c.rets.some(r=>!r.rc))return 'Her kalem için iade nedenini seçin.';
@@ -2470,11 +2471,16 @@ function lyIn(list,kind,id){const L=(S.d.loyalty_items||[]).filter(x=>x.list===l
   if(kind==='aksesuar'){const a=S.d.accMap.get(id)||{};return L.some(x=>(x.ref_type==='aksesuar'&&x.ref===id)||(x.ref_type==='acc_kategori'&&String(x.ref).toLocaleLowerCase('tr')===String(a.category||'').toLocaleLowerCase('tr')))}
   const p=S.d.productMap.get(id)||{};return L.some(x=>(x.ref_type==='cihaz'&&x.ref===id)||(x.ref_type==='cihaz_kategori'&&x.ref===p.cat)||(x.ref_type==='cihaz_alt'&&x.ref===p.sub))}
 const lyRefName=x=>x.ref_type==='aksesuar'?((S.d.accMap.get(x.ref)||{}).name||'Silinmiş ürün'):x.ref_type==='cihaz'?((S.d.productMap.get(x.ref)||{}).model||'Silinmiş cihaz'):x.ref;
-/* fişteki damga ödülü tutarı: seçili ürünlerden en pahalı `units` adet */
-function lyRewardVal(c,rw){if(!rw)return 0;const u=[];c.items.forEach(i=>{if(lyIn('damga','cihaz',i.pid))u.push(psNum(i.price))});c.acc.forEach(a=>{if(lyIn('damga','aksesuar',a.aid))for(let k=0;k<Math.min(a.qty,20);k++)u.push(psNum(a.price))});
+/* ödüle uygun ürün mü (085): ödülün kendi ürün listesi, boşsa genel damga ürünleri */
+function lyRwIn(items,kind,id){if(!Array.isArray(items)||!items.length)return lyIn('damga',kind,id);
+  if(kind==='aksesuar'){const a=S.d.accMap.get(id)||{};return items.some(x=>(x.ref_type==='aksesuar'&&x.ref===id)||(x.ref_type==='acc_kategori'&&String(x.ref).toLocaleLowerCase('tr')===String(a.category||'').toLocaleLowerCase('tr')))}
+  const p=S.d.productMap.get(id)||{};return items.some(x=>(x.ref_type==='cihaz'&&x.ref===id)||(x.ref_type==='cihaz_kategori'&&x.ref===p.cat)||(x.ref_type==='cihaz_alt'&&x.ref===p.sub))}
+const lyRwItems=r=>Array.isArray(r&&r.items)&&r.items.length?r.items.map(lyRefName).join(', '):'';
+/* fişteki damga ödülü tutarı: ödüle uygun ürünlerden en pahalı `units` adet */
+function lyRewardVal(c,rw){if(!rw)return 0;const u=[],it=rw.items;c.items.forEach(i=>{if(lyRwIn(it,'cihaz',i.pid))u.push(psNum(i.price))});c.acc.forEach(a=>{if(lyRwIn(it,'aksesuar',a.aid))for(let k=0;k<Math.min(a.qty,20);k++)u.push(psNum(a.price))});
   const s=u.sort((a,b)=>b-a).slice(0,rw.units||1).reduce((x,y)=>x+y,0);return r2(rw.type==='yuzde'?s*Number(rw.value)/100:rw.type==='hediye'?s:Math.min(s,Number(rw.value)))}
 const lyRw=c=>c.ly&&c.ly.rid&&c.ly.info?(c.ly.info.rewards||[]).find(r=>r.id===c.ly.rid):null;
-const lyRwTxt=r=>r.type==='yuzde'?`seçili üründe %${num(r.value)} indirim`:r.type==='hediye'?'seçili ürün hediye':`seçili üründe ${money(r.value)} indirim`;
+const lyRwTxt=r=>{const n=lyRwItems(r),w=n?esc(n):'seçili ürün',q=(r.units||1)>1?' ('+r.units+' adet)':'';return r.type==='yuzde'?`${n?w+' için':'seçili üründe'} %${num(r.value)} indirim${q}`:r.type==='hediye'?`${w} hediye${q}`:`${n?w+' için':'seçili üründe'} ${money(r.value)} indirim${q}`};
 /* bu satıştan kazanılacak puan (tahmini; sunucu aynı kuralla hesaplar) */
 function lyEarnEst(c,t){if(!c.ly||!c.ly.mid||!lyOn())return null;const R=lyR();let al;try{al=psAlloc(c,t)}catch(e){return null}
   if(c.ly.info&&(c.ly.info.blocked||c.ly.info.status==='askida'))return {pts:0,stamp:false,blocked:true};
@@ -2512,7 +2518,7 @@ function lyDraw(){const Q=S.lyq,i=Q.info,c=S.cart,R=lyR(),t=psTotals(c),linked=c
       <div class="ly-bal"><small>Kullanılabilir</small><b>${num(i.avail||0)}</b><small>puan = ${money(Math.max(0,i.avail||0))}</small></div></div>
      ${i.pending?`<div class="sub">${num(i.pending)} puan bekleme süresinde (${R.wait_days} gün sonra kullanılabilir)</div>`:''}${i.debt?`<div class="sub neg">${num(i.debt)} puan iade borcu (sonraki kazanımdan düşülür)</div>`:''}
      ${R.stamp_on?`<div class="ly-stamps">${dots}</div><div class="sub">${i.stamps}/${i.size} damga${i.cards_done?' · '+i.cards_done+' kart tamamlandı':''}</div>`:''}</div>
-     ${(i.rewards||[]).length?`<h3 style="margin:10px 0 4px">Damga ödülleri</h3>${i.rewards.map(r=>{const v=linked||!c.ly?lyRewardVal(c,r):0,on=c.ly&&c.ly.rid===r.id;return `<div class="ly-rw${on?' on':''}"><span>${ic('gift','sm')} <b>${r.at}. damga</b> · ${lyRwTxt(r)}<small class="sub">${r.ready?(v>0?' · bu fişte '+money(v):' · fişte seçili ürün yok'):' · '+fmtDate(r.avail_at)+' tarihinden sonra'}</small></span>${r.ready&&v>0&&c.mode==='satis'?`<button class="btn sm${on?'':' pri'}" data-a="ly-rw" data-id="${r.id}" ${man?'':'disabled title="SMS doğrulaması kapalı; yalnız yetkili kullandırabilir"'}>${on?'Vazgeç':'Kullan'}</button>`:''}</div>`}).join('')}`:''}
+     ${(i.rewards||[]).length?`<h3 style="margin:10px 0 4px">Damga ödülleri</h3>${i.rewards.map(r=>{const v=linked||!c.ly?lyRewardVal(c,r):0,on=c.ly&&c.ly.rid===r.id;return `<div class="ly-rw${on?' on':''}"><span>${ic('gift','sm')} <b>${r.at}. damga</b> · ${lyRwTxt(r)}<small class="sub">${r.ready?(v>0?' · bu fişte '+money(v):' · '+(lyRwItems(r)?'ödül ürünü fişte yok':'fişte seçili ürün yok')):' · '+fmtDate(r.avail_at)+' tarihinden sonra'}</small></span>${r.ready&&v>0&&c.mode==='satis'?`<button class="btn sm${on?'':' pri'}" data-a="ly-rw" data-id="${r.id}" ${man?'':'disabled title="SMS doğrulaması kapalı; yalnız yetkili kullandırabilir"'}>${on?'Vazgeç':'Kullan'}</button>`:''}</div>`}).join('')}`:''}
      ${c.mode==='satis'&&i.status==='aktif'?`<h3 style="margin:10px 0 4px">Puan kullan</h3><div class="row" style="gap:6px;align-items:center"><input class="in" id="ly-use" type="text" inputmode="numeric" style="max-width:140px" value="${esc(Q.use!=null?Q.use:(linked&&c.ly.use?c.ly.use:''))}" placeholder="0" ${man?'':'disabled'}><button class="btn sm" data-a="ly-max" ${man?'':'disabled'}>En fazla</button><span class="sub">En az ${R.min_use} · fişin en çok %${R.max_use_pct}'i</span></div>
        ${man?'':'<div class="note" style="margin-top:6px">SMS doğrulaması kapalı: puan ve ödülü yalnız yetkili (müdür, sahip) kullandırabilir. Sahip, Kampanyalar › Sadakat Programı › Kurallar\'dan açar.</div>'}
        ${nu===true?lyVBlock('kullanim'):''}`:''}`
@@ -2629,7 +2635,7 @@ function lyDikkat(){const F=S.ly.flags;
    <p class="sub">Kendiliğinden işaretlenir: puan kazanmayan numaraya satış, günlük sınıra takılma, puanlı alışverişi tekrar tekrar iade, harcanmış puanlı iade, aynı personelin aynı numaraya 7 günde 5+ satış girmesi, elle düzeltme, eksi bakiye. İşaret suç anlamına gelmez; hareketleri inceleyin.</p>
    ${F?`<div class="tw"><table class="ly-t"><tr><th style="text-align:left">Üye</th><th style="text-align:left">Telefon</th><th style="text-align:left">Neden</th><th>Adet</th><th>Son</th><th></th></tr>
    ${F.map(f=>`<tr><td style="text-align:left"><b>${esc(f.name)}</b></td><td style="text-align:left" class="mono">${lyPhoneTxt(f.phone)}</td><td style="text-align:left">${esc(f.reason)}</td><td>${f.cnt}</td><td>${f.last_at?fmtDate(f.last_at):'—'}</td><td><button class="btn sm" data-a="ly-hist" data-id="${f.member_id}">Hareketler</button></td></tr>`).join('')||'<tr><td colspan="6" class="empty">Şüpheli hareket yok.</td></tr>'}</table></div>`:'<div class="empty">Yükleniyor…</div>'}</div>`}
-function lyKurallar(){const R=S.lyrd||lyR(),mg=can('manage_loyalty'),dis=mg?'':' disabled',I=S.d.loyalty_items||[],B=S.ly.blocked;S.lyrd=R;
+function lyKurallar(){const R=S.lyrd||(r=>{r.stamp_rewards=(r.stamp_rewards||[]).map(x=>Object.assign({},x,{items:Array.isArray(x.items)?x.items.slice():[]}));return r})(lyR()),mg=can('manage_loyalty'),dis=mg?'':' disabled',I=S.d.loyalty_items||[],B=S.ly.blocked;S.lyrd=R;
   const n=(k,l,suf,st)=>`<label class="f">${l}<span class="inl"><input class="in" type="text" inputmode="decimal" data-c="lyr" data-k="${k}" value="${esc(String(R[k]))}"${dis} style="${st||''}">${suf?`<span class="sub">${suf}</span>`:''}</span></label>`;
   const chk=(k,l)=>`<label class="chk"><input type="checkbox" data-c="lyr" data-k="${k}" ${R[k]?'checked':''}${dis}> ${l}</label>`;
   const list=lst=>{const L=I.filter(x=>x.list===lst);return `<div class="ly-chips">${L.map(x=>`<span class="pill">${esc((LY_REF.find(r=>r[0]===x.ref_type)||[0,''])[1])}: <b>${esc(lyRefName(x))}</b>${mg?` <button class="lnk" data-a="ly-idel" data-id="${x.id}" aria-label="Kaldır">×</button>`:''}</span>`).join('')||'<span class="sub">Henüz yok.</span>'}</div>
@@ -2647,9 +2653,9 @@ function lyKurallar(){const R=S.lyrd||lyR(),mg=can('manage_loyalty'),dis=mg?'':'
     <label class="f">Kart geçerliliği (son damgadan)<select class="in" data-c="lyr" data-k="stamp_months"${dis}>${opts(LY_EXP,Number(R.stamp_months))}</select></label></div>
     <h3 style="margin:10px 0 4px">Ödüller</h3>${(R.stamp_rewards||[]).map((x,ix)=>`<div class="row ly-rwr" style="gap:6px;margin-bottom:6px"><input class="in" type="text" inputmode="numeric" data-c="lyrw" data-i="${ix}" data-f="at" value="${x.at}" style="width:64px"${dis} aria-label="Damga"><span class="sub">. damga</span>
       <select class="in" data-c="lyrw" data-i="${ix}" data-f="type" style="width:auto"${dis}>${opts(LY_RT,x.type)}</select>${x.type==='hediye'?'':`<input class="in" type="text" inputmode="decimal" data-c="lyrw" data-i="${ix}" data-f="value" value="${x.value}" style="width:80px"${dis} aria-label="Değer"><span class="sub">${x.type==='yuzde'?'%':'₺'}</span>`}
-      <input class="in" type="text" inputmode="numeric" data-c="lyrw" data-i="${ix}" data-f="units" value="${x.units||1}" style="width:56px"${dis} aria-label="Adet"><span class="sub">adet</span>${mg?`<button class="btn sm" data-a="ly-rwdel" data-i="${ix}" aria-label="Sil">×</button>`:''}</div>`).join('')}
+      <input class="in" type="text" inputmode="numeric" data-c="lyrw" data-i="${ix}" data-f="units" value="${x.units||1}" style="width:56px"${dis} aria-label="Adet"><span class="sub">adet</span>${mg?`<button class="btn sm" data-a="ly-rwdel" data-i="${ix}" aria-label="Sil">×</button>`:''}</div>${lyRwPick(x,ix,mg)}`).join('')}
     ${mg&&(R.stamp_rewards||[]).length<Math.min(10,Math.max(2,Math.round(psNum(R.stamp_size))||10))?'<button class="btn sm" data-a="ly-rwadd">+ Ödül ekle</button>':''}<span class="sub" style="margin-left:6px">En çok 10 ödül; her damgaya bir ödül seçebilirsiniz.</span>
-    <p class="sub">Ödül, fişteki <b>damga ürünlerinden</b> en pahalı "adet" kadarına uygulanır. Ödül de bekleme süresinden sonra kullanılabilir.</p>
+    <p class="sub">Her ödüle <b>hangi ürün</b> için geçerli olacağını seçebilirsiniz (ör. 10. damga: Temperli cam hediye). Ürün seçilmeyen ödül, fişteki <b>damga ürünlerinden</b> en pahalı "adet" kadarına uygulanır. Ödül de bekleme süresinden sonra kullanılabilir.</p>
     <h3 style="margin:12px 0 4px">Damga ürünleri (seçili ürünler)</h3>${list('damga')}</div>
    <div class="card"><h2>Hariç ürünler</h2><p class="sub">Lisanslı ürünler gibi kâr payı düşük ürünler puan kazandırmaz (fişteki diğer ürünler kazandırır).</p>${list('haric')}</div>
    ${lySmsCard(R,n,chk,mg)}
@@ -2674,6 +2680,17 @@ function lySmsCard(R,n,chk,mg){const L=S.ly,W=L.wa,G=L.otplog,sn=x=>x?esc(x):'�
    ${!G?'<div class="sub">Yükleniyor…</div>':`<div class="tw"><table class="ly-t"><tr><th style="text-align:left">Zaman</th><th style="text-align:left">Numara</th><th style="text-align:left">Amaç</th><th style="text-align:left">Durum</th><th style="text-align:left">Açıklama</th><th style="text-align:left">Personel</th><th>Satış / belge</th></tr>
     ${G.map(o=>{const st=LY_OTP_S[o.status]||[o.status,''];return `<tr><td style="text-align:left">${fmtTime(o.created_at)}</td><td style="text-align:left">${esc(o.name||'')} <span class="sub mono">${lyPhoneTxt(o.phone)}</span></td><td style="text-align:left">${esc(LY_OTP_P[o.purpose]||o.purpose)}</td>
       <td style="text-align:left"><span class="pill ${st[1]}">${st[0]}</span>${o.attempts?` <small class="sub">${o.attempts} hatalı</small>`:''}</td><td style="text-align:left;white-space:normal;max-width:320px" class="sub">${sn(o.error)}</td><td style="text-align:left">${sn(o.verified_name||o.by_name)}</td><td>${o.sale_no?esc(o.sale_no):'—'}</td></tr>`}).join('')||'<tr><td colspan="7" class="empty">Henüz gönderim yok.</td></tr>'}</table></div>`}</div>`}
+/* ödül satırı: ödüle özel ürün / kategori seçimi (085) */
+function lyRwPick(x,ix,mg){const L=Array.isArray(x.items)?x.items:[],P=(S.lyrwp=S.lyrwp||{})[ix]||{},ty=P.ty||'aksesuar';
+  const chips=L.map((y,j)=>`<span class="pill">${esc((LY_REF.find(r=>r[0]===y.ref_type)||[0,''])[1])}: <b>${esc(lyRefName(y))}</b>${mg?` <button class="lnk" data-a="ly-rwidel" data-i="${ix}" data-j="${j}" aria-label="Kaldır">×</button>`:''}</span>`).join('');
+  let add='';if(mg&&L.length<20){if(ty==='aksesuar'||ty==='cihaz')add=`<span class="ly-ip"><input class="in" type="search" data-c="lyrwq" data-i="${ix}" placeholder="${ty==='aksesuar'?'Ürün / hizmet adı veya barkod':'Cihaz modeli veya IMEI'}" value="${esc(P.q||'')}" autocomplete="off"><span class="ly-ipr" id="ly-rwr-${ix}">${lyRwRes(ix)}</span></span>`;
+    else{const vals=ty==='acc_kategori'?[...new Set(S.d.accessories.map(a=>a.category).filter(Boolean))].sort((a,b)=>a.localeCompare(b,'tr')):ty==='cihaz_kategori'?CATS:SUBS;add=`<select class="in" id="ly-rwv-${ix}" style="width:auto">${opts(vals.map(v=>[v,v]),'')}</select><button class="btn sm" data-a="ly-rwiadd" data-i="${ix}">Ekle</button>`}
+    add=`<div class="row ly-iadd" style="gap:6px;margin-top:4px"><select class="in" data-c="lyrwt" data-i="${ix}" style="width:auto">${opts(LY_REF,ty)}</select>${add}</div>`}
+  return `<div class="ly-rwp"><span class="sub">${x.type==='hediye'?'Hediye edilecek ürün':'Geçerli ürün'}:</span> ${chips||`<span class="sub">${x.type==='hediye'?'<b>seçilmedi</b> — fişteki damga ürünlerinden en pahalısı hediye edilir':'damga ürünleri (genel liste)'}</span>`}${add}</div>`}
+function lyRwRes(ix){const P=(S.lyrwp||{})[ix]||{},ty=P.ty||'aksesuar',q=psLow(P.q||'').trim();if(!q)return '';const x=(S.lyrd.stamp_rewards||[])[ix]||{},have=new Set((x.items||[]).map(y=>y.ref));
+  const R=ty==='aksesuar'?S.d.accessories.filter(a=>a.active!==false&&psLow([a.name,a.barcode,a.category].join(' ')).includes(q)).slice(0,8).map(a=>[a.id,a.name+(a.is_service?' (hizmet)':'')])
+    :S.d.products.filter(p=>p.status==='stokta'&&psLow([p.model,p.imei].join(' ')).includes(q)).slice(0,8).map(p=>[p.id,p.model+(p.imei?' · '+p.imei:'')]);
+  return `<div class="ps-res">${R.map(([id,nm])=>`<button class="ps-ri" data-a="ly-rwiadd" data-i="${ix}" data-ref="${id}" ${have.has(id)?'disabled':''}><span class="nm"><b>${esc(nm)}</b></span>${have.has(id)?'<small class="sub">ekli</small>':''}</button>`).join('')||'<div class="empty">Eşleşen yok.</div>'}</div>`}
 function lyItemPicker(lst){const ty=S.lyit&&S.lyit[lst]||'aksesuar';
   if(ty==='aksesuar'||ty==='cihaz'){const q=S.lyiq&&S.lyiq[lst]||'';return `<span class="ly-ip"><input class="in" type="search" data-c="lyiq" data-l="${lst}" placeholder="${ty==='aksesuar'?'Ürün / hizmet adı veya barkod':'Cihaz modeli veya IMEI'}" value="${esc(q)}" autocomplete="off"><span class="ly-ipr" id="ly-ipr-${lst}">${lyIpRes(lst)}</span></span>`}
   const vals=ty==='acc_kategori'?[...new Set(S.d.accessories.map(a=>a.category).filter(Boolean))].sort((a,b)=>a.localeCompare(b,'tr')):ty==='cihaz_kategori'?CATS:SUBS;
@@ -8823,11 +8840,15 @@ Object.assign(A,{
     <div class="err" id="f-err" hidden></div><div class="actions"><button class="btn" data-a="close">Vazgeç</button><button class="btn pri" data-a="ly-msave" data-id="${m.id}">Kaydet</button></div>`)},
   async 'ly-msave'(t){t.disabled=true;try{await call('loyalty_set_member',{p_member:t.dataset.id,p:{phone:g('ly-mp'),birth_date:g('ly-mb')||'',status:g('ly-ms'),note:g('ly-mn')}});closeModal();toast('Üye kaydedildi');S.ly.members=undefined;S.ly.ld.members=0;render()}catch(e){t.disabled=false;setErr(msg(e))}},
   'ly-rwadd'(){const R=S.lyrd,L=R.stamp_rewards=(R.stamp_rewards||[]).slice(),used=new Set(L.map(x=>Number(x.at)));let at=Number(R.stamp_size);while(used.has(at)&&at>1)at--;L.push({at,type:'yuzde',value:10,units:1});render()},
-  'ly-rwdel'(t){const R=S.lyrd;R.stamp_rewards=R.stamp_rewards.filter((x,i)=>i!==+t.dataset.i);render()},
-  'ly-rreset'(){S.lyrd=null;render()},
+  'ly-rwdel'(t){const R=S.lyrd;R.stamp_rewards=R.stamp_rewards.filter((x,i)=>i!==+t.dataset.i);S.lyrwp={};render()},
+  'ly-rwiadd'(t){const ix=+t.dataset.i,x=S.lyrd.stamp_rewards[ix],P=(S.lyrwp=S.lyrwp||{})[ix]=S.lyrwp[ix]||{},ty=P.ty||'aksesuar',ref=t.dataset.ref||g('ly-rwv-'+ix);if(!x||!ref)return;
+    const L=x.items=(Array.isArray(x.items)?x.items:[]).slice();if(L.some(y=>y.ref_type===ty&&y.ref===ref))return toast('Bu ürün bu ödülde zaten var',true);if(L.length>=20)return toast('Bir ödüle en çok 20 ürün / kategori seçilebilir',true);
+    L.push({ref_type:ty,ref});P.q='';render()},
+  'ly-rwidel'(t){const x=S.lyrd.stamp_rewards[+t.dataset.i];if(!x)return;x.items=(x.items||[]).filter((y,j)=>j!==+t.dataset.j);render()},
+  'ly-rreset'(){S.lyrd=null;S.lyrwp={};render()},
   async 'ly-rsave'(t){const R=S.lyrd,P={};Object.keys(LY_DEF).forEach(k=>{if(k in R)P[k]=R[k]});
     ['pct_dev','pct_acc','pct_svc','fix_amount','fix_points','wait_days','min_use','max_use_pct','expiry_months','welcome','birthday','daily_limit','stamp_min','stamp_size','stamp_months','otp_ttl','kasa_ttl'].forEach(k=>P[k]=psNum(P[k]));
-    P.stamp_rewards=(R.stamp_rewards||[]).map(x=>({at:Math.round(psNum(x.at)),type:x.type,value:x.type==='hediye'?0:psNum(x.value),units:Math.max(1,Math.round(psNum(x.units)||1))}));
+    P.stamp_rewards=(R.stamp_rewards||[]).map(x=>({at:Math.round(psNum(x.at)),type:x.type,value:x.type==='hediye'?0:psNum(x.value),units:Math.max(1,Math.round(psNum(x.units)||1)),...(Array.isArray(x.items)&&x.items.length?{items:x.items.map(y=>({ref_type:y.ref_type,ref:y.ref}))}:{})}));
     t.disabled=true;try{await call('set_loyalty_rules',{p:P});await syncData();S.lyrd=null;toast('Kurallar kaydedildi');render()}catch(e){t.disabled=false;toast(msg(e),true)}},
   async 'ly-wtest'(t){const p=g('ly-tph');if(!lyPhone(p))return toast('Geçerli bir cep telefonu yazın',true);t.disabled=true;
     try{const r=await fnCall('sadakat',{action:'kod',phone:p,purpose:'test'});toast(`Deneme SMS'i gönderildi: ${r.to}. Mesaj geldiyse kurulum tamam.`)}catch(e){toast(msg(e),true)}
@@ -8845,10 +8866,12 @@ document.addEventListener('input',e=>{const t=e.target,k=t.dataset&&t.dataset.c;
   if(k==='lymq'){S.ui.lymq=t.value;clearTimeout(S.lyT);S.lyT=setTimeout(()=>{render();const el=document.querySelector('[data-c="lymq"]');if(el){el.focus();el.setSelectionRange(el.value.length,el.value.length)}},250);return}
   if(k==='lyr'&&t.type!=='checkbox'&&t.tagName==='INPUT'){S.lyrd[t.dataset.k]=t.value;return}
   if(k==='lyrw'&&t.tagName==='INPUT'){S.lyrd.stamp_rewards[+t.dataset.i][t.dataset.f]=t.value;return}
+  if(k==='lyrwq'){const P=(S.lyrwp=S.lyrwp||{})[t.dataset.i]=S.lyrwp[t.dataset.i]||{};P.q=t.value;const w=document.getElementById('ly-rwr-'+t.dataset.i);if(w)w.innerHTML=lyRwRes(t.dataset.i);return}
   if(k==='lyiq'){S.lyiq=S.lyiq||{};S.lyiq[t.dataset.l]=t.value;const w=document.getElementById('ly-ipr-'+t.dataset.l);if(w)w.innerHTML=lyIpRes(t.dataset.l)}});
 document.addEventListener('change',e=>{const t=e.target,k=t.dataset&&t.dataset.c;if(!k||!k.startsWith('ly'))return;
   if(k==='lyr'){S.lyrd[t.dataset.k]=t.type==='checkbox'?t.checked:t.value;if(t.tagName==='SELECT')render();return}
   if(k==='lyrw'&&t.tagName==='SELECT'){S.lyrd.stamp_rewards[+t.dataset.i][t.dataset.f]=t.value;render();return}
+  if(k==='lyrwt'){const P=(S.lyrwp=S.lyrwp||{})[t.dataset.i]=S.lyrwp[t.dataset.i]||{};P.ty=t.value;P.q='';render();return}
   if(k==='lyit'){S.lyit=S.lyit||{};S.lyit[t.dataset.l]=t.value;render();return}
   if(k==='lyms'){S.ui.lyms=t.value;render();return}
   if(k==='lymk'){S.ui.lymk=t.value;render();return}
