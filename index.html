@@ -705,7 +705,7 @@ html.ps-on body{padding-bottom:0}html.ps-on main{padding:0}html.ps-on .wrap:not(
 .ly-tabs{display:flex;gap:6px;flex-wrap:wrap;margin:10px 0}
 .ly-tabs button.on{background:var(--pink);border-color:var(--pink);color:#fff}
 .em-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:12px}.em-grid .card{margin:0}.em-k.off{opacity:.62}
-.em-ic{width:40px;height:40px;border-radius:12px;background:var(--pinkbg,#FCEAF4);display:grid;place-items:center;font-size:20px;flex:0 0 auto}
+.sv-low td{background:color-mix(in srgb,var(--bad,#C0362C) 7%,transparent)}.em-ic{width:40px;height:40px;border-radius:12px;background:var(--pinkbg,#FCEAF4);display:grid;place-items:center;font-size:20px;flex:0 0 auto}
 .em-stats{display:flex;gap:18px;flex-wrap:wrap}.em-stats div{display:flex;flex-direction:column;min-width:86px}.em-stats b{font-size:1.35em}.em-stats span{font-size:.8em;color:var(--muted)}
 .em-sw{position:relative;display:inline-block;width:42px;height:24px;flex:0 0 auto}.em-sw input{opacity:0;width:0;height:0;position:absolute}
 .em-sw span{position:absolute;inset:0;border-radius:24px;background:var(--line);transition:.2s;cursor:pointer}.em-sw span::after{content:"";position:absolute;width:18px;height:18px;left:3px;top:3px;border-radius:50%;background:#fff;transition:.2s;box-shadow:0 1px 2px rgba(0,0,0,.25)}
@@ -1042,7 +1042,7 @@ function subscribe(){
 /* ================= BİLDİRİM MERKEZİ =================
    Okundu bilgisi sunucuda tutulur (notification_reads / notification_state): bir cihazda okunan her yerde okunmuş görünür.
    Kendi işleminiz için gelen bildirim okunmuş sayılır. Tıklanan bildirim ilgili ekranı açar. */
-const NREF={attendance_issues:'vardiya',breaks:'vardiya',catalog_reservations:'katalog',sales:'satislar',sale_returns:'iadeler',service_orders:'servis',customer_orders:'siparis',follow_ups:'siparis',tasks:'gorev',quotes:'teklif',shortages:'eksikler',
+const NREF={surveys:'eposta',attendance_issues:'vardiya',breaks:'vardiya',catalog_reservations:'katalog',sales:'satislar',sale_returns:'iadeler',service_orders:'servis',customer_orders:'siparis',follow_ups:'siparis',tasks:'gorev',quotes:'teklif',shortages:'eksikler',
   accessories:'aksesuar',shifts:'vardiya',targets:'hedef',day_closings:'kasa',expenses:'odemeler',term_debts:'odemeler',entitlements:'hakedis',commissions:'primler',
   products:'stok',device_inspections:'stok',role_permissions:'yonetim',profiles:'yonetim',trainings:'egitim',notes:'notlar',leave_requests:'personel',advance_requests:'personel',payroll_runs:'personel',prim_periods:'personel'};
 const NKIND={satis:['bag','b'],iade:['undo','w'],servis:['wrench','b'],siparis:['pkg','p'],gorev:['check','v'],vardiya:['clock','v'],kasa:['wallet','r'],odeme:['card','w'],
@@ -1075,13 +1075,14 @@ function notifOpen(id){const n=(S.d.notifications||[]).find(x=>x.id===id);S.noti
   else if(n.ref_table==='notes')after=()=>{const N=NT();N.q='';if(n.ref_id)S.ui.ntOpen=n.ref_id;else{N.view='bugun';N.day=today()}};
   else if(n.ref_table==='attendance_issues'&&n.ref_id){const a=(S.d.attendance_issues||[]).find(x=>x.id===n.ref_id);if(a&&attNeedEx(a)){render();return attExcuse(a.id)}after=()=>{S.ui.attp=a&&a.day<monthStart(today())?'ay':'ay';S.ui.ntHi='attendance_issues:'+n.ref_id;setTimeout(()=>{nlHiRun();document.getElementById('att-card')?.scrollIntoView({block:'start'})},60)}}
   else if(n.ref_table==='breaks'&&n.ref_id){const b=(S.d.breaks||[]).find(x=>x.id===n.ref_id);if(b&&brkNeedEx(b)&&b.ended_at){render();return brkExcuse(b.id)}after=()=>{S.ui.brkp=b&&b.day<weekStart(today())?'ay':b&&b.day<today()?'hafta':'gun';S.ui.ntHi='breaks:'+n.ref_id;setTimeout(()=>{nlHiRun();document.getElementById('brk-card')?.scrollIntoView({block:'start'})},60)}}
+  else if(n.ref_table==='surveys')after=()=>{S.ui.emt='anket';S.ui.svf='takip';if(S.em)S.em.ld=0};
   else if(n.ref_table==='catalog_reservations')after=()=>{S.ui.ctt='rez';S.ui.ctf='tum';S.ui.ctq='';S.ui.ctOpen=n.ref_id;S.ui.ntHi='catalog_reservations:'+n.ref_id;nlHiRun()};
   else if(n.ref_table==='device_inspections'&&prOn())after=()=>{S.ui.pl_dev=true;S.ui.plq=(n.title.split(' · ')[1]||'')};
   if(!tab||!TABS.some(t=>t[0]===tab&&(!t[2]||can(t[2]))))return render();
   if(location.hash.slice(1)===tab){S.navAfter=after;route()}else{S.navAfter=after;location.hash=tab}}
 
 /* ---- Bildirim ayarları (sahip / kullanıcı yöneticisi) ---- */
-const NCODES=[['Kasa ve satış',[['ly_dogumgunu','Sadakat: bugün doğum günü olan üyeler (puan yüklenince) · müdür ve sahibe'],['kasa_fark','Kasa farkı (gün sonu sayımı tutmazsa) · sahibe acil'],['ozel_indirim','Özel indirim (kurallardaki tutar ve üstü) · müdür ve sahibe'],['gunsonu','23:00 gün sonu alınmadı'],['satis_zarar','Zararına satış · kâr görenlere'],['satis_indirim','Yüksek indirimli satış'],['satis_iptal','Satış iptali'],['ozet_gun','22:30 günlük özet · sahibe'],['ozet_hafta','Pazartesi haftalık özet · sahibe'],['satis_adina','Adınıza satış girildi · o personele'],['konsinye_satis','Konsinye cihaz satıldı · konsinye görenlere'],['iade_kayit','İade / değişim kaydı · personel yaparsa müdür ve sahibe, müdür yaparsa sahibe'],['vip_musteri','Yeni VIP müşteri (sadakat kartını tamamladı) · yöneticilere'],['sik_iade','Sık iade: müşteri 6 ayda 3+ iade · yöneticilere'],['iade_kontrol','09:30 iade 3+ gündür kontrol bekliyor'],['gunsonu_iptal','Gün sonu iptal edildi · sahibe acil'],['kasa_elle','Elle kasa hareketi (sahip dışında) · sahibe'],['kasa_birikti','Günlük kasada nakit eşiği aşıldı (günde bir)']]],
+const NCODES=[['Kasa ve satış',[['anket_dusuk','Memnuniyet anketi: düşük puan veren müşteri (geri arama için) · müdür ve sahibe acil'],['ly_dogumgunu','Sadakat: bugün doğum günü olan üyeler (puan yüklenince) · müdür ve sahibe'],['kasa_fark','Kasa farkı (gün sonu sayımı tutmazsa) · sahibe acil'],['ozel_indirim','Özel indirim (kurallardaki tutar ve üstü) · müdür ve sahibe'],['gunsonu','23:00 gün sonu alınmadı'],['satis_zarar','Zararına satış · kâr görenlere'],['satis_indirim','Yüksek indirimli satış'],['satis_iptal','Satış iptali'],['ozet_gun','22:30 günlük özet · sahibe'],['ozet_hafta','Pazartesi haftalık özet · sahibe'],['satis_adina','Adınıza satış girildi · o personele'],['konsinye_satis','Konsinye cihaz satıldı · konsinye görenlere'],['iade_kayit','İade / değişim kaydı · personel yaparsa müdür ve sahibe, müdür yaparsa sahibe'],['vip_musteri','Yeni VIP müşteri (sadakat kartını tamamladı) · yöneticilere'],['sik_iade','Sık iade: müşteri 6 ayda 3+ iade · yöneticilere'],['iade_kontrol','09:30 iade 3+ gündür kontrol bekliyor'],['gunsonu_iptal','Gün sonu iptal edildi · sahibe acil'],['kasa_elle','Elle kasa hareketi (sahip dışında) · sahibe'],['kasa_birikti','Günlük kasada nakit eşiği aşıldı (günde bir)']]],
   ['Ödemeler',[['odeme','09:30 bugün ödenecekler + 3 gün kala hatırlatma'],['kur','Dolar kuru sıçraması (açık dolar borç varken)'],['hakedis','Maaş / hakediş ödendi · personele'],['masraf_buyuk','Büyük masraf (sahip dışında) · sahibe'],['masraf_tekrar','Tekrarlayan masraf otomatik açıldı (sessiz)'],['firma_vade','09:30 firma ödeme vadesi: 3 gün kala, vade günü, sonra haftada bir'],['musteri_alacak','Pazartesi açık müşteri alacakları · yöneticilere'],['alis_yeni','Yeni alış / vadeli alım (sahip dışında) · sahibe'],['alis_iptal','Alış iptali · sahibe']]],
   ['Personel',[['gec_kalma','Geç kalma (vardiya başladı, mesai girişi yok)'],['mesai_acik','23:30 mesai hâlâ açık'],['vardiya_degisim','Vardiya değişikliği · ilgili personele'],['mola_uyari','Mola: bitmeden önce uyarı · ilgili personele'],['mola_asim','Mola süresi aşıldı · personele acil, müdür ve sahibe'],['mola_mazeret','Mola mazereti istendi / yazıldı · personel, müdür ve sahip'],['gorev','09:30 görevler: bugün son gün / gecikmiş'],['takip','09:30 müşteri takipleri'],['hedef','Hedef tamamlandı (personel ve mağaza, günlük ve aylık)'],['hedef_ara','Her ayın 15\'i: hedefin gerisindeyse günlük gereken'],['egitim','09:30 eğitim son tarihi: 2 gün kala ve gecikince'],['gorev_bitti','Görev tamamlandı · görevi verene'],['egitim_bitti','Eğitim tamamlandı · eğitim yöneticilerine'],['egitim_yonetici','09:30 geciken eğitimler · eğitim yöneticilerine (pazartesi tam liste)'],['gec_giris','Geç giriş (vardiya başladıktan sonra mesaiye başlama) · personele, müdür ve sahibe'],['erken_cikis','Erken çıkış (vardiya bitmeden) · personele, müdür ve sahibe'],['devam_mazeret','Geç giriş / erken çıkış mazereti istendi / yazıldı'],['plansiz_mesai','Planlı vardiya yokken mesai başladı'],['avans_kesinti','Avans / kesinti eklendi · personele'],['prim_oran','Prim oranı değişti · personele'],['prim_hakedis','Prim hakedişe işlendi · personele'],['hakedis_odenmedi','Ayın 5\'i: geçmiş aydan ödenmemiş hakedişler'],['atama','Sipariş / müşteri takibi size atandı']]],
   ['Servis ve teklif',[['katalog_rezerve','Katalogdan cihaz rezerve edildi / rezervasyon kapandı veya süresi doldu'],['servis_gecikme','Servis: söz verilen tarih geçti'],['servis_bekleyen','Servis: hazır, 7 gündür teslim alınmadı'],['servis_teklif','Servis fiyat teklifi 2 gündür cevapsız'],['dis_servis','Dış serviste süre aşıldı'],['teklif_sure','Teklif geçerliliği yarın bitiyor'],['teklif_sonuc','Teklif kabul / red edildi · yöneticilere ve hazırlayana'],['servis_atama','Servis size atandı · teknisyene'],['servis_red','Müşteri servis teklifini reddetti'],['servis_zarar','Servis gideri ücretten fazla (zararına teslim) · sahibe'],['servis_garanti','Garanti içinde aynı cihaz (IMEI) tekrar geldi'],['siparis_yeni','Yeni müşteri siparişi · sipariş yetkililerine'],['siparis_bekleyen','09:30 sipariş N gündür bekliyor · sorumluya (haftada bir)']]],
@@ -2483,7 +2484,7 @@ const LY_DEF={birthday_sms:false,birthday_sms_text:'{marka}: Iyi ki dogdunuz {ad
 const LY_OTP_P={kayit:'Üye kaydı',kullanim:'Puan kullanımı',portal:'Portal girişi',kasa:'Kasa kodu',test:'Deneme',yetkili:'Doğrulamasız (yetkili)',garanti:'Garanti değişimi'},LY_OTP_S={olusturuldu:['Oluşturuldu',''],gonderildi:['Gönderildi',''],hata:['Hata','bad'],dogrulandi:['Doğrulandı','ok'],kullanildi:['Kullanıldı','ok'],iptal:['İptal','']};
 /* doğrulama gereksinimi: null = doğrulama kapalı (yalnız yetkili kullandırır), true = kod gerekir, false = gerekmez */
 const lyNeedUse=()=>{const R=lyR();return R.otp_on?R.otp_use!==false:null},lyNeedJoin=()=>{const R=lyR();return !!R.otp_on&&R.otp_join!==false},lyManOk=()=>lyR().otp_manual!==false&&can('loyalty_redeem_manual');
-const LY_KIND={kazan:['Alışveriş puanı','pos'],hosgeldin:['Hoş geldin puanı','pos'],dogumgunu:['Doğum günü puanı','pos'],harca:['Puan kullanıldı','neg'],harca_iade:['Kullanılan puan iade','pos'],iade_geri:['İade: puan geri alındı','neg'],
+const LY_KIND={anket:['Memnuniyet anketi puanı','pos'],kazan:['Alışveriş puanı','pos'],hosgeldin:['Hoş geldin puanı','pos'],dogumgunu:['Doğum günü puanı','pos'],harca:['Puan kullanıldı','neg'],harca_iade:['Kullanılan puan iade','pos'],iade_geri:['İade: puan geri alındı','neg'],
   iade_mahsup:['İade tutarından düşüldü',''],duzeltme:['Elle düzeltme',''],sure_doldu:['Süresi doldu','neg'],damga:['Damga',''],damga_geri:['Damga geri alındı','neg'],odul:['Damga ödülü kullanıldı',''],engel:['Puan verilmedi','warn']};
 const LY_EXP=[[0,'Süresiz'],[3,'3 ay'],[6,'6 ay'],[12,'1 yıl'],[24,'2 yıl']];
 const LY_RT=[['yuzde','Seçili üründe % indirim'],['hediye','Seçili ürün hediye'],['tutar','Seçili üründe sabit ₺ indirim']];
@@ -9963,7 +9964,7 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape'){scanStop();closeMod
   if(e.key==='Enter'&&e.target.id==='cq'){const p=prodFind(e.target.value);if(p){e.preventDefault();S.cart.q='';cartAdd(p.id)}else{const ac=accFind(e.target.value);if(ac){e.preventDefault();S.cart.q='';accAdd(ac.id)}}}});
 /* ================= E-POSTA BİLDİRİMLERİ (093) =================
    Müşteriye otomatik e-postalar: kuyruk sunucuda (email_queue), gönderim "eposta" sunucu fonksiyonu (Resend). */
-const EM_DEF={on:false,from_name:'Anka İletişim',reply_to:'',logo_url:'https://sadakat.ankailetisimtr.com/mail-logo.png',portal_url:'https://sadakat.ankailetisimtr.com',site_url:'',instagram:'',hours:'',kinds:{},texts:{}};
+const EM_DEF={review_url:'https://g.page/r/CRpV-NbgKngxEBM/review',review_delay:3,review_gap:180,survey_points:50,survey_delay:1,survey_gap:90,survey_valid:14,on:false,from_name:'Anka İletişim',reply_to:'',logo_url:'https://sadakat.ankailetisimtr.com/mail-logo.png',portal_url:'https://sadakat.ankailetisimtr.com',site_url:'',instagram:'',hours:'',kinds:{},texts:{}};
 const EM_K=[['hosgeldin','Sadakat programına hoş geldin','🎉','Müşteri sadakat programına üye olunca (ya da üyeye sonradan e-posta izni eklenince) bir kez. Program kuralları, damga kartı ve portal bağlantısı.','İzinli üyeler'],
   ['fis','Satış fişi','🧾','Her satış tamamlanınca hemen. Kazanılan puan, bakiye ve garanti belgesi bağlantısı da eklenir.','İzinli müşteriler'],
   ['puan_hazir','Puanınız kullanıma hazır','⭐','Kazanılan puanların bekleme süresi dolup kullanılabilir olunca (günde en çok bir, 10:00 sonrası).','İzinli üyeler'],
@@ -9973,16 +9974,51 @@ const EM_K=[['hosgeldin','Sadakat programına hoş geldin','🎉','Müşteri sad
   ['servis_kabul','Servis kaydı alındı','🔧','Teknik servise cihaz kabul edilince; servis no, sorun, tahmini teslim ve ücret.','İzinli müşteriler'],
   ['servis_hazir','Cihaz teslime hazır','✅','Servis kaydı "Hazır" durumuna geçince; yapılan işlem, ücret, servis garantisi.','İzinli müşteriler'],
   ['garanti_bitis','Garanti bitiyor','🛡️','İşletme garantisinin bitmesine 30 gün kala; ücretsiz kontrol daveti.','İzinli müşteriler'],
-  ['rezervasyon','Katalog rezervasyonu alındı','📱','Müşteri katalogdan rezervasyon talebi gönderince; talep no, cihaz, ayırma süresi.','Formda yazılan adres']];
+  ['rezervasyon','Katalog rezervasyonu alındı','📱','Müşteri katalogdan rezervasyon talebi gönderince; talep no, cihaz, ayırma süresi.','Formda yazılan adres'],
+  ['anket','Memnuniyet anketi (puanlı)','📝','Satıştan 1 gün sonra (Anket ve yorum sekmesinden değişir); 3 kısa soru, doldurana sadakat puanı. 90 günde en çok bir.','İzinli sadakat üyeleri'],
+  ['yorum_istegi','Google yorum isteği (ödülsüz)','💬','Satıştan 3 gün sonra Google yorum bağlantısı; ödül sunulmaz (Google kuralı). Aynı kişiye 180 günde en çok bir.','İzinli tüm müşteriler']];
 const EM_ST={bekliyor:['warn','Bekliyor'],gonderiliyor:['','Gönderiliyor'],gonderildi:['ok','Gönderildi'],hata:['bad','Gönderilemedi'],iptal:['','İptal']};
 const emInst=()=>(S.d.role_permissions||[]).some(r=>r.permission==='manage_email');
 function emR(){let s={};try{s=JSON.parse(((S.d.app_settings||[]).find(x=>x.key==='email_rules')||{}).value||'{}')||{}}catch(e){}
   return {...EM_DEF,...s,kinds:{...Object.fromEntries(EM_K.map(k=>[k[0],true])),...(s.kinds||{})},texts:{...(s.texts||{})}}}
 const emValid=v=>/^[^@\s<>",;]+@[^@\s<>",;]+\.[a-zA-Z]{2,}$/.test(String(v||'').trim());
 const emKName=k=>k==='deneme'?'Deneme':(EM_K.find(x=>x[0]===k)||[0,k])[1];
-async function emLoad(){const E=S.em=S.em||{};E.ld=1;try{const r=await sb.from('email_queue').select('*').order('created_at',{ascending:false}).limit(300);if(r.error)throw r.error;E.q=r.data||[]}catch(e){E.q=[];E.err=msg(e)}render()}
+async function emLoad(){const E=S.em=S.em||{};E.ld=1;try{const r=await sb.from('email_queue').select('*').order('created_at',{ascending:false}).limit(300);if(r.error)throw r.error;E.q=r.data||[]}catch(e){E.q=[];E.err=msg(e)}
+  try{const r=await sb.from('surveys').select('*').order('created_at',{ascending:false}).limit(300);E.sv=r.error?[]:(r.data||[])}catch(e){E.sv=[]}render()}
+const SV_F={bekliyor:['bad','Aranacak'],arandi:['warn','Arandı'],cozuldu:['ok','Çözüldü'],gerek_yok:['','Gerek yok']};
+const svStars=n=>n?'<span style="color:#E2A33B;letter-spacing:1px">'+'★'.repeat(n)+'</span><span style="color:var(--line)">'+'★'.repeat(5-n)+'</span>':'—';
+function emSurvey(mg){const E=S.em,D=S.emd,u=S.ui,cm=S.d.contactMap||new Map(),sv=E.sv||[],dis=mg?'':' disabled',d90=Date.now()-90*864e5;
+  const L=sv.filter(x=>new Date(x.created_at).getTime()>d90),A=L.filter(x=>x.answered_at),avg=A.length?A.reduce((a,x)=>a+x.score,0)/A.length:0;
+  const NP=A.filter(x=>x.nps!=null),nps=NP.length?Math.round((NP.filter(x=>x.nps>=9).length-NP.filter(x=>x.nps<=6).length)/NP.length*100):null;
+  const RV=(E.q||[]).filter(x=>x.kind==='yorum_istegi'&&new Date(x.created_at).getTime()>d90),RS=RV.filter(x=>x.status==='gonderildi'),RC=RV.filter(x=>x.clicked_at);
+  const f=u.svf||'',rows=sv.filter(x=>x.answered_at&&(!f||(f==='low'?x.low:f==='takip'?x.follow==='bekliyor':true)));
+  const nf=(k,l,sub,min,max)=>`<label class="f">${l}${sub?` <span class="sub">${sub}</span>`:''}<input class="in" type="number" min="${min}" max="${max}" data-c="emn" data-k="${k}" value="${esc(D[k]??'')}"${dis}></label>`;
+  return `<div class="card"><h2>Memnuniyet anketi <span class="sub">(son 90 gün)</span></h2>
+     <div class="em-stats"><div><b>${num(L.length)}</b><span>anket gönderildi</span></div><div><b>${num(A.length)}</b><span>dolduruldu${L.length?' (%'+Math.round(A.length/L.length*100)+')':''}</span></div>
+       <div><b>${A.length?avg.toFixed(1).replace('.',','):'—'}</b><span>ortalama / 5</span></div><div><b>${nps==null?'—':nps}</b><span>önerme puanı (NPS)</span></div><div><b>${num(A.filter(x=>x.low).length)}</b><span>memnuniyetsiz</span></div></div>
+     <p class="sub" style="margin:8px 0 0">Anketi dolduran sadakat üyesine puan yüklenir. Bu, mağazaya gelen bir geri bildirimdir; Google yorumuyla ilişkisi yoktur. 1–2 yıldız ya da 0–6 önerme puanında müdür ve sahibe acil bildirim gelir.</p></div>
+   <div class="card"><h2>Google yorum isteği <span class="sub">(son 90 gün)</span></h2>
+     <div class="em-stats"><div><b>${num(RS.length)}</b><span>istek gönderildi</span></div><div><b>${num(RC.length)}</b><span>bağlantıya tıkladı${RS.length?' (%'+Math.round(RC.length/RS.length*100)+')':''}</span></div></div>
+     <p class="sub" style="margin:8px 0 0">Google, yorum karşılığında puan, indirim ya da hediye verilmesini yasaklar; bu e-postada ödül yoktur ve memnun / memnuniyetsiz ayrımı yapılmadan izinli herkese gider. Kimin yorum yazdığını Google bildirmez; yalnız bağlantıya tıklayanları görürüz.</p></div>
+   <div class="card"><div class="row" style="gap:8px;flex-wrap:wrap"><h2 style="margin:0;flex:1">Anket cevapları</h2><select class="in" data-c="svf" style="max-width:200px">${opts([['','Tümü'],['low','Memnuniyetsizler'],['takip','Aranacaklar']],f)}</select></div>
+   ${rows.length?`<div class="tw" style="margin-top:10px"><table class="ly-t"><tr><th style="text-align:left">Tarih</th><th style="text-align:left">Müşteri</th><th>Genel</th><th>Personel</th><th>Önerme</th><th style="text-align:left">Yorum</th><th>Takip</th></tr>
+     ${rows.slice(0,150).map(x=>{const c=x.contact_id&&cm.get(x.contact_id),fs=SV_F[x.follow];return `<tr${x.low?' class="sv-low"':''}><td style="text-align:left">${fmtTime(x.answered_at)}</td>
+       <td style="text-align:left">${c?esc(c.name)+`<br><span class="sub">${esc(c.phone||'')}</span>`:'—'}</td><td>${svStars(x.score)}</td><td>${svStars(x.staff_score)}</td><td>${x.nps==null?'—':`<b>${x.nps}</b>/10`}</td>
+       <td style="text-align:left;white-space:normal;max-width:320px">${esc(x.comment||'')}${x.follow_note?`<div class="sub">Not: ${esc(x.follow_note)}</div>`:''}</td>
+       <td>${fs?`<span class="pill ${fs[0]}">${fs[1]}</span><br>`:''}${x.low||x.follow?`<button class="btn sm" data-a="sv-follow" data-id="${x.id}">Güncelle</button>`:''}</td></tr>`}).join('')}</table></div>`:'<div class="empty">Henüz cevap yok.</div>'}</div>
+   <div class="card"><h2>Zamanlama ve puan</h2><div class="form">
+     <label class="f full">Google "Yorum isteyin" bağlantısı<input class="in" data-c="emr" data-k="review_url" value="${esc(D.review_url||'')}" placeholder="https://g.page/r/…/review"${dis}></label>
+     ${nf('review_delay','Yorum isteği','(satıştan kaç gün sonra)',1,30)}${nf('review_gap','Yorum isteği tekrar aralığı','(gün)',30,730)}
+     ${nf('survey_points','Anket puanı','(0 = puansız)',0,1000)}${nf('survey_delay','Anket','(satıştan kaç gün sonra)',0,30)}
+     ${nf('survey_gap','Anket tekrar aralığı','(gün)',7,365)}${nf('survey_valid','Anket bağlantısı geçerliliği','(gün)',3,60)}</div>
+     ${mg?`<div class="ly-save"><button class="btn pri" data-a="em-save">Kaydet</button></div>`:''}</div>`}
+function svFollowModal(id){const x=(S.em.sv||[]).find(v=>v.id===id);if(!x)return;const c=x.contact_id&&S.d.contactMap.get(x.contact_id);
+  modal(`<h2>Müşteri takibi${c?' · '+esc(c.name):''}</h2><div class="note">${svStars(x.score)} ${x.nps!=null?' · önerme '+x.nps+'/10':''}${x.comment?'<br>"'+esc(x.comment)+'"':''}${c&&c.phone?`<br>Telefon: <a href="tel:${esc(c.phone)}">${esc(c.phone)}</a>`:''}</div>
+   <div class="form"><label class="f full">Durum<select class="in" id="sv-st">${opts(Object.entries(SV_F).map(([k,v])=>[k,v[1]]),x.follow||'bekliyor')}</select></label>
+   <label class="f full">Not<textarea class="in" id="sv-note" rows="3" maxlength="500" placeholder="Ne konuşuldu, nasıl çözüldü?">${esc(x.follow_note||'')}</textarea></label></div>
+   <div class="err" id="f-err"></div><div class="actions"><button class="btn" data-a="close">Vazgeç</button><button class="btn pri" data-a="sv-follow-save" data-id="${id}">Kaydet</button></div>`)}
 async function emStatus(){const E=S.em=S.em||{};E.stl=1;try{E.st=await fnCall('eposta',{action:'durum'})}catch(e){E.st={err:msg(e)}}render()}
-function vEposta(){const E=S.em=S.em||{},u=S.ui,mg=can('manage_email'),R=emR(),t=['bildirimler','gonderimler','ayarlar'].includes(u.emt)?u.emt:'bildirimler';
+function vEposta(){const E=S.em=S.em||{},u=S.ui,mg=can('manage_email'),R=emR(),t=['bildirimler','gonderimler','anket','ayarlar'].includes(u.emt)?u.emt:'bildirimler';
   if(!emInst())return `<h1>E-posta Bildirimleri</h1><div class="note">Bu bölüm için <b>093_eposta_otomasyonu.sql</b> dosyasının Supabase'de çalıştırılması gerekir.</div>`;
   if(!E.ld)emLoad();if(!E.stl)emStatus();
   if(!S.emd)S.emd=JSON.parse(JSON.stringify(R));if(E.to===undefined)E.to=prefGet('em_to','',true)||'';
@@ -9990,13 +10026,13 @@ function vEposta(){const E=S.em=S.em||{},u=S.ui,mg=can('manage_email'),R=emR(),t
   const okC=(S.d.contacts||[]).filter(c=>c.kind==='musteri'&&c.email_ok&&c.email&&!c.email_off_at).length,st=E.st;
   const stH=!st?'<span class="sub">Sunucu kontrol ediliyor…</span>':st.err?`<div class="note bad">"eposta" sunucu fonksiyonuna ulaşılamadı: ${esc(st.err)}. Fonksiyon yayınlanmamış olabilir (KURULUM › E-posta otomasyonu).</div>`
     :st.configured?`<span class="pill ok">Gönderime hazır</span> <span class="sub">Gönderen: ${esc(st.from)}</span>`:`<div class="note warn">Sunucu fonksiyonunda eksik gizli anahtar: <b>${esc((st.missing||[]).join(', '))}</b>. KURULUM › E-posta otomasyonu adımlarını izleyin.</div>`;
-  const tabs=[['bildirimler','Bildirimler'],['gonderimler','Gönderimler'+(wait?` (${wait})`:'')],['ayarlar','Ayarlar']];
+  const svLow=(E.sv||[]).filter(x=>x.low&&x.follow==='bekliyor').length,tabs=[['bildirimler','Bildirimler'],['gonderimler','Gönderimler'+(wait?` (${wait})`:'')],['anket','Anket ve yorum'+(svLow?` (${svLow})`:'')],['ayarlar','Ayarlar']];
   return `<div class="row"><h1 style="flex:1;margin:0">E-posta Bildirimleri</h1><span class="pill ${R.on?'ok':''}">${R.on?'Açık':'Kapalı'}</span>${mg?` <button class="btn sm ${R.on?'':'pri'}" data-a="em-on">${R.on?'Otomasyonu durdur':'Otomasyonu başlat'}</button>`:''}</div>
    <div class="card"><div class="row" style="flex-wrap:wrap;gap:14px"><div style="flex:1;min-width:220px">${stH}</div>
      <div class="em-stats"><div><b>${num(L30.filter(x=>x.status==='gonderildi').length)}</b><span>gönderildi (30 gün)</span></div><div><b>${num(wait)}</b><span>bekliyor</span></div><div><b>${num(L30.filter(x=>x.status==='hata').length)}</b><span>gönderilemedi</span></div><div><b>${num(okC)}</b><span>e-posta izni olan müşteri</span></div></div></div>
      <p class="sub" style="margin:8px 0 0">Yalnız e-posta adresi kayıtlı ve <b>"e-posta ile bilgilendirme"</b> izni verilmiş müşterilere gönderilir (müşteri kartı, sadakat üyeliği ya da satış fişi penceresinden). Her e-postada "bildirimlerden çık" bağlantısı vardır.</p></div>
    <div class="seg ly-tabs" role="tablist">${tabs.map(([k,l])=>`<button role="tab" class="${t===k?'on':''}" data-a="em-tab" data-k="${k}">${l}</button>`).join('')}</div>
-   ${t==='bildirimler'?emKinds(mg):t==='gonderimler'?emList(mg):emSet(mg)}`}
+   ${t==='bildirimler'?emKinds(mg):t==='gonderimler'?emList(mg):t==='anket'?emSurvey(mg):emSet(mg)}`}
 function emKinds(mg){const D=S.emd,dis=mg?'':' disabled';
   return `<div class="em-grid">${EM_K.map(([k,n,ic,when,who])=>`<div class="card em-k${D.kinds[k]?'':' off'}"><div class="row" style="align-items:flex-start;gap:10px"><div class="em-ic">${ic}</div>
      <div style="flex:1;min-width:0"><b>${esc(n)}</b><div class="sub">${esc(when)}</div><div class="sub" style="margin-top:2px">Alıcı: ${esc(who)}</div></div>
@@ -10046,11 +10082,14 @@ async function emBoot(){try{if(!emInst()||!(can('view_email')||can('manage_email
   if(late){S.emKick=1;await fnCall('eposta',{action:'gonder'})}}catch(e){console.warn('e-posta',e)}}
 Object.assign(A,{
   'em-tab'(t){S.ui.emt=t.dataset.k;render()},
+  'sv-follow'(t){svFollowModal(t.dataset.id)},
+  async 'sv-follow-save'(t){t.disabled=true;try{await call('survey_follow',{p_id:t.dataset.id,p_status:g('sv-st'),p_note:g('sv-note')},'Takip kaydedildi');closeModal();S.em.ld=0}catch(e){t.disabled=false;setErr(msg(e));return}render()},
   async 'em-on'(t){const R=emR();t.disabled=true;try{await call('set_email_rules',{p:{on:!R.on}},R.on?'E-posta otomasyonu durduruldu':'E-posta otomasyonu başladı');await syncData();if(S.emd)S.emd.on=!R.on}catch(e){}render()},
   async 'em-save'(t){const D=S.emd;if(!D)return;const to=document.getElementById('em-to');if(to){const v=to.value.trim();if(v&&!emValid(v))return toast('Deneme adresi geçersiz',true);S.em.to=v;prefSet('em_to',v)}
     if(D.reply_to&&!emValid(D.reply_to))return toast('Yanıt adresi geçersiz',true);
     const P={from_name:String(D.from_name||'').trim(),reply_to:String(D.reply_to||'').trim(),logo_url:String(D.logo_url||'').trim(),portal_url:String(D.portal_url||'').trim().replace(/\/$/,''),site_url:String(D.site_url||'').trim(),
-      instagram:String(D.instagram||'').trim(),hours:String(D.hours||'').trim(),kinds:D.kinds,texts:Object.fromEntries(Object.entries(D.texts).map(([k,v])=>[k,String(v||'').trim()]).filter(x=>x[1]))};
+      instagram:String(D.instagram||'').trim(),hours:String(D.hours||'').trim(),kinds:D.kinds,
+      review_url:String(D.review_url||'').trim(),...Object.fromEntries(['review_delay','review_gap','survey_points','survey_delay','survey_gap','survey_valid'].map(k=>[k,Number(D[k])||0])),texts:Object.fromEntries(Object.entries(D.texts).map(([k,v])=>[k,String(v||'').trim()]).filter(x=>x[1]))};
     t.disabled=true;try{await call('set_email_rules',{p:P},'E-posta ayarları kaydedildi');await syncData();S.emd=null}catch(e){t.disabled=false;return}render()},
   'em-prev'(t){emPreview(t.dataset.k)},
   'em-pw'(t){const f=document.getElementById('em-frame');if(f)f.style.width=t.dataset.w+'px';document.querySelectorAll('[data-a="em-pw"]').forEach(b=>b.setAttribute('aria-pressed',String(b===t)))},
@@ -10065,10 +10104,10 @@ Object.assign(A,{
       try{const r=await fnCall('eposta',{action:'gonder'});toast(r.failed?'E-posta gönderilemedi: '+(r.errors||[]).join(' / '):'Satış fişi '+to+' adresine gönderildi',!!r.failed)}catch(e){toast('Fiş sıraya alındı; birkaç dakika içinde gönderilecek')}}
     catch(e){t.disabled=false;setErr(msg(e))}}
 });
-document.addEventListener('input',e=>{const t=e.target,k=t.dataset&&t.dataset.c;if(!S.emd||!['emr','emt'].includes(k))return;if(k==='emr')S.emd[t.dataset.k]=t.value;else S.emd.texts[t.dataset.k]=t.value});
+document.addEventListener('input',e=>{const t=e.target,k=t.dataset&&t.dataset.c;if(!S.emd||!['emr','emt','emn'].includes(k))return;if(k==='emr')S.emd[t.dataset.k]=t.value;else if(k==='emn')S.emd[t.dataset.k]=t.value===''?'':Number(t.value);else S.emd.texts[t.dataset.k]=t.value});
 document.addEventListener('change',e=>{const t=e.target,k=t.dataset&&t.dataset.c;if(!k)return;
   if(k==='emk'&&S.emd){S.emd.kinds[t.dataset.k]=t.checked;const c=t.closest('.em-k');if(c)c.classList.toggle('off',!t.checked)}
-  else if(k==='ems'){S.ui.ems=t.value;render()}else if(k==='emkf'){S.ui.emk=t.value;render()}});
+  else if(k==='ems'){S.ui.ems=t.value;render()}else if(k==='svf'){S.ui.svf=t.value;render()}else if(k==='emkf'){S.ui.emk=t.value;render()}});
 sb.auth.onAuthStateChange((ev,session)=>{
   if(session&&session.user&&qsShared()&&qsGet().users[session.user.id])qsStore(session);   // ortak bilgisayar: yenilenen anahtarı sakla
   if(S.switching)return;
