@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="tr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>CepOS · Yedek görüntüleyici</title>
+<style>
+:root{--bg:#F4F7FA;--card:#fff;--fg:#14212B;--muted:#5D6B78;--line:#DDE5EC;--pink:#C20C77;--soft:#FCEAF4;--ok:#1A8F4E;--bad:#C0392B}
+@media (prefers-color-scheme:dark){:root{--bg:#0E151B;--card:#16202A;--fg:#E6EDF3;--muted:#9AA9B6;--line:#2A3743;--pink:#FF7AC2;--soft:#2B1A25;--ok:#5FD08C;--bad:#FF8A7A}}
+*{box-sizing:border-box}body{margin:0;font:15px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;background:var(--bg);color:var(--fg)}
+main{max-width:1200px;margin:auto;padding:20px}h1{font-size:22px;margin:0 0 4px}.sub{color:var(--muted);font-size:13px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px;margin:14px 0}
+.drop{display:block;border:2px dashed var(--line);border-radius:12px;padding:26px;text-align:center;cursor:pointer}.drop.on{border-color:var(--pink);background:var(--soft)}
+button,.btn{font:inherit;padding:7px 14px;border-radius:8px;border:1px solid var(--pink);background:var(--pink);color:#fff;cursor:pointer}
+button.ghost{background:transparent;color:var(--pink)}input[type=search]{font:inherit;padding:7px 10px;border:1px solid var(--line);border-radius:8px;background:var(--card);color:var(--fg);width:260px;max-width:100%}
+.grid{display:grid;grid-template-columns:280px 1fr;gap:14px}.grid>*{min-width:0}@media(max-width:800px){.grid{grid-template-columns:1fr}}
+.tl{max-height:70vh;overflow:auto;border:1px solid var(--line);border-radius:10px}.tl div{display:flex;justify-content:space-between;gap:8px;padding:7px 10px;border-bottom:1px solid var(--line);cursor:pointer}
+.tl div[hidden]{display:none}.tl div:hover{background:var(--soft)}.tl div.on{background:var(--soft);font-weight:600}.tl small{color:var(--muted)}
+.tw{overflow:auto;max-height:66vh;border:1px solid var(--line);border-radius:10px}table{border-collapse:collapse;font-size:13px;width:max-content;min-width:100%}
+th,td{padding:5px 9px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top;max-width:340px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+th{position:sticky;top:0;background:var(--card);z-index:1}.row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}.err{color:var(--bad);font-weight:600}
+.kv{display:flex;gap:22px;flex-wrap:wrap}.kv b{display:block;font-size:20px}
+</style></head><body><main>
+<h1>CepOS · Yedek görüntüleyici</h1>
+<p class="sub">Yedek dosyası (<b>cepos-yedek-….zip</b>) yalnızca bu bilgisayarda, tarayıcının içinde açılır; hiçbir yere gönderilmez. Bu sayfayı GitHub'a yüklemenize gerek yok. Güncel Chrome, Edge ya da Safari ile açın.</p>
+<div class="card"><label class="drop" id="drop"><input type="file" id="file" accept=".zip,application/zip" hidden>
+  <b>Yedek dosyasını seçin</b> ya da buraya sürükleyin<br><span class="sub">CepOS › Yönetim › Yedekler'den indirdiğiniz ya da e-postayla gelen ZIP dosyası</span></label>
+  <p id="msg" class="sub" style="margin:8px 0 0"></p></div>
+<div id="out"></div>
+<script>
+const NAMES={sales:'Satışlar',sale_items:'Satış · cihaz satırları',sale_accessory_items:'Satış · aksesuar satırları',sale_payments:'Satış · ödemeler',sale_returns:'İadeler (cihaz)',
+  sale_accessory_returns:'İadeler (aksesuar)',exchanges:'Değişimler',contacts:'Müşteriler ve firmalar',products:'Cihazlar (stok)',product_costs:'Cihaz maliyetleri',accessories:'Aksesuarlar',
+  accessory_moves:'Aksesuar hareketleri',purchases:'Alışlar',purchase_lines:'Alış satırları',cash_entries:'Kasa ve banka hareketleri',day_closings:'Gün sonları',expenses:'Masraflar',
+  party_entries:'Cari hareketler',service_orders:'Servis kayıtları',service_costs:'Servis giderleri',customer_orders:'Siparişler',quotes:'Teklifler',profiles:'Kullanıcılar / personel',
+  loyalty_members:'Sadakat üyeleri',loyalty_ledger:'Sadakat puan hareketleri',campaigns:'Kampanyalar',device_warranties:'Garanti belgeleri',gift_cards:'Hediye çekleri',
+  shifts:'Vardiyalar',time_clock:'Mesai giriş-çıkış',commissions:'Primler',entitlements:'Hakedişler',notes:'Notlar',tasks:'Görevler',targets:'Hedefler',app_settings:'Ayarlar',
+  role_permissions:'Yetkiler',notifications:'Bildirimler',email_queue:'E-posta gönderimleri',catalog_items:'Katalog',catalog_reservations:'Rezervasyonlar',surveys:'Anketler'};
+const $=id=>document.getElementById(id),esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const fmt=n=>(Number(n)||0).toLocaleString('tr-TR');let Z=null,cur=null,curRows=[];
+
+async function inflate(bytes,method){if(method===0)return bytes;if(method!==8)throw new Error('Desteklenmeyen sıkıştırma ('+method+')');
+  const s=new Blob([bytes]).stream().pipeThrough(new DecompressionStream('deflate-raw'));return new Uint8Array(await new Response(s).arrayBuffer())}
+function readZip(buf){const u=new Uint8Array(buf),dv=new DataView(buf);let e=-1;
+  for(let i=u.length-22;i>=Math.max(0,u.length-65557);i--)if(dv.getUint32(i,true)===0x06054b50){e=i;break}
+  if(e<0)throw new Error('Bu bir ZIP dosyası değil ya da dosya bozuk.');
+  const n=dv.getUint16(e+10,true),cd=dv.getUint32(e+16,true),out=[];let p=cd;const td=new TextDecoder();
+  for(let k=0;k<n;k++){if(dv.getUint32(p,true)!==0x02014b50)throw new Error('ZIP dizini bozuk.');
+    const meth=dv.getUint16(p+10,true),cs=dv.getUint32(p+20,true),nl=dv.getUint16(p+28,true),xl=dv.getUint16(p+30,true),cl=dv.getUint16(p+32,true),lo=dv.getUint32(p+42,true);
+    const name=td.decode(u.subarray(p+46,p+46+nl));const lnl=dv.getUint16(lo+26,true),lxl=dv.getUint16(lo+28,true),start=lo+30+lnl+lxl;
+    out.push({name,meth,data:u.subarray(start,start+cs)});p+=46+nl+xl+cl}
+  return out}
+async function text(ent){return new TextDecoder().decode(await inflate(ent.data,ent.meth))}
+async function rowsOf(t){const ents=Z.tables[t]||[];const rows=[];for(const e of ents){for(const l of (await text(e)).split('\n'))if(l.trim())rows.push(JSON.parse(l))}return rows}
+
+async function open(file){$('msg').textContent='Açılıyor…';$('out').innerHTML='';
+  try{const ents=readZip(await file.arrayBuffer());const info=ents.find(e=>e.name==='_bilgi.json');
+    if(!info)throw new Error('Bu dosya bir CepOS yedeği değil (_bilgi.json yok).');
+    const meta=JSON.parse(await text(info));const tables={};
+    for(const e of ents){const m=/^tablolar\/(.+?)(?:-(\d+))?\.ndjson$/.exec(e.name);if(m)(tables[m[1]]=tables[m[1]]||[]).push(Object.assign(e,{part:Number(m[2]||1)}))}
+    Object.values(tables).forEach(a=>a.sort((x,y)=>x.part-y.part));
+    Z={meta,tables,counts:Object.fromEntries((meta.tablolar||[]).map(t=>[t.tablo,t.satir]))};$('msg').textContent='';draw()}
+  catch(e){$('msg').innerHTML='<span class="err">'+esc(e.message)+'</span>'}}
+function draw(){const M=Z.meta,list=Object.keys(Z.tables).sort((a,b)=>(NAMES[a]?0:1)-(NAMES[b]?0:1)||(NAMES[a]||a).localeCompare(NAMES[b]||b,'tr'));
+  $('out').innerHTML=`<div class="card"><div class="kv"><div><span class="sub">Yedek tarihi</span><b>${esc(new Date(M.tarih).toLocaleString('tr-TR'))}</b></div>
+    <div><span class="sub">Tablo</span><b>${fmt(M.tablo_sayisi)}</b></div><div><span class="sub">Toplam kayıt</span><b>${fmt(M.toplam_satir)}</b></div>
+    <div><span class="sub">Tür</span><b>${esc(M.tur||'')}</b></div></div><p class="sub" style="margin:8px 0 0">${esc(M.not||'')}</p></div>
+   <div class="grid"><div><input type="search" id="tq" placeholder="Tablo ara…" style="width:100%;margin-bottom:8px"><div class="tl" id="tl">${list.map(t=>`<div data-t="${esc(t)}"><span>${esc(NAMES[t]||t)}${NAMES[t]?`<br><small>${esc(t)}</small>`:''}</span><small>${fmt(Z.counts[t])}</small></div>`).join('')}</div></div>
+   <div id="view" class="card" style="margin:0"><p class="sub">Soldan bir tablo seçin.</p></div></div>`;
+  $('tl').onclick=e=>{const d=e.target.closest('[data-t]');if(d)show(d.dataset.t)};
+  $('tq').oninput=e=>{const q=e.target.value.toLocaleLowerCase('tr');document.querySelectorAll('#tl [data-t]').forEach(d=>{d.hidden=!!q&&!d.textContent.toLocaleLowerCase('tr').includes(q)})}}
+const cell=v=>v==null?'':typeof v==='object'?JSON.stringify(v):String(v);
+async function show(t){cur=t;document.querySelectorAll('#tl [data-t]').forEach(d=>d.classList.toggle('on',d.dataset.t===t));
+  $('view').innerHTML='<p class="sub">Yükleniyor…</p>';curRows=await rowsOf(t);renderRows('')}
+function renderRows(q){const cols=[...new Set(curRows.flatMap(r=>Object.keys(r)))];q=(q||'').toLocaleLowerCase('tr');
+  const R=q?curRows.filter(r=>cols.some(c=>cell(r[c]).toLocaleLowerCase('tr').includes(q))):curRows,shown=R.slice(0,300);
+  $('view').innerHTML=`<div class="row" style="margin-bottom:10px"><b style="flex:1">${esc(NAMES[cur]||cur)} <span class="sub">· ${fmt(R.length)} kayıt${R.length>300?' (ilk 300 gösteriliyor)':''}</span></b>
+     <input type="search" id="rq" placeholder="Bu tabloda ara…" value="${esc(q)}"><button id="csv">Excel'e aktar (CSV)</button></div>
+   ${cols.length?`<div class="tw"><table><thead><tr>${cols.map(c=>`<th>${esc(c)}</th>`).join('')}</tr></thead><tbody>${shown.map(r=>`<tr>${cols.map(c=>`<td title="${esc(cell(r[c]).slice(0,500))}">${esc(cell(r[c]))}</td>`).join('')}</tr>`).join('')}</tbody></table></div>`:'<p class="sub">Bu tablo boş.</p>'}`;
+  const rq=$('rq');rq.oninput=()=>{const v=rq.value,pos=rq.selectionStart;renderRows(v);const n=$('rq');n.focus();n.setSelectionRange(pos,pos)};
+  $('csv').onclick=()=>csv(cols,R)}
+function csv(cols,R){const q=v=>{const s=cell(v);return /[;"\n\r]/.test(s)?'"'+s.replace(/"/g,'""')+'"':s};
+  const body='﻿'+[cols.join(';'),...R.map(r=>cols.map(c=>q(r[c])).join(';'))].join('\r\n');
+  const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([body],{type:'text/csv;charset=utf-8'}));a.download=`${cur}-${(Z.meta.gun||'yedek')}.csv`;document.body.appendChild(a);a.click();a.remove()}
+$('file').onchange=e=>{const f=e.target.files[0];if(f)open(f)};
+const dr=$('drop');['dragover','dragenter'].forEach(k=>dr.addEventListener(k,e=>{e.preventDefault();dr.classList.add('on')}));
+['dragleave','drop'].forEach(k=>dr.addEventListener(k,e=>{e.preventDefault();dr.classList.remove('on')}));
+dr.addEventListener('drop',e=>{const f=e.dataTransfer.files[0];if(f)open(f)});
+</script></main></body></html>
