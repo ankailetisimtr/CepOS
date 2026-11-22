@@ -704,6 +704,12 @@ html.ps-on body{padding-bottom:0}html.ps-on main{padding:0}html.ps-on .wrap:not(
 .ly-kpis{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px;margin-bottom:12px}
 .ly-tabs{display:flex;gap:6px;flex-wrap:wrap;margin:10px 0}
 .ly-tabs button.on{background:var(--pink);border-color:var(--pink);color:#fff}
+.em-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:12px}.em-grid .card{margin:0}.em-k.off{opacity:.62}
+.em-ic{width:40px;height:40px;border-radius:12px;background:var(--pinkbg,#FCEAF4);display:grid;place-items:center;font-size:20px;flex:0 0 auto}
+.em-stats{display:flex;gap:18px;flex-wrap:wrap}.em-stats div{display:flex;flex-direction:column;min-width:86px}.em-stats b{font-size:1.35em}.em-stats span{font-size:.8em;color:var(--muted)}
+.em-sw{position:relative;display:inline-block;width:42px;height:24px;flex:0 0 auto}.em-sw input{opacity:0;width:0;height:0;position:absolute}
+.em-sw span{position:absolute;inset:0;border-radius:24px;background:var(--line);transition:.2s;cursor:pointer}.em-sw span::after{content:"";position:absolute;width:18px;height:18px;left:3px;top:3px;border-radius:50%;background:#fff;transition:.2s;box-shadow:0 1px 2px rgba(0,0,0,.25)}
+.em-sw input:checked+span{background:var(--pink)}.em-sw input:checked+span::after{transform:translateX(18px)}.em-sw input:disabled+span{opacity:.6;cursor:default}
 .ly-t{width:100%;border-collapse:collapse}.ly-t th,.ly-t td{padding:7px 8px;border-bottom:1px solid var(--line);text-align:right;white-space:nowrap}.ly-t th{font-size:.82em;color:var(--muted);font-weight:600}
 .ly-chips{display:flex;gap:6px;flex-wrap:wrap;margin:6px 0}
 .ly-rwp{margin:-2px 0 10px 8px;padding:6px 10px;border-left:3px solid color-mix(in srgb,var(--pink) 45%,transparent);display:flex;gap:6px;flex-wrap:wrap;align-items:center}.ly-rwp .ly-iadd{flex-basis:100%}
@@ -745,10 +751,11 @@ const TYPE_LABEL={cihaz_onarim:'Cihaz onarımı (maliyete eklendi)',cihaz_onarim
   alis_borc:'Veresiye alış',alis_odeme:'Alış ödemesi',kur_farki:'Kur farkı',odeme:'Ödeme',sermaye_girisi:'Sermaye girişi',sermaye_iadesi:'Sermaye iadesi',hakedis:'Hakediş',hakedis_iptal:'Hakediş iptali',hakedis_odeme:'Hakediş ödemesi',alis_iade:'Firma iadesi',iade_tahsilat:'İade bedeli geri alındı',cari_iade:'Firma iade tahsilatı',firma_iade:'Firmaya iade'};
 const ROLES=[['owner','İşletme sahibi'],['manager','Mağaza müdürü'],['staff','Personel']];
 const MON=['Oca','Şub','Mar','Nis','May','Haz','Tem','Ağu','Eyl','Eki','Kas','Ara'];
-const TABS=[['panel','Genel Bakış',null],['notlar','Notlarım',null],['satis','Satış','make_sale'],['stok','Cihazlar',null],['aksesuar','Aksesuarlar',null],['sayim','Stok Sayım','stock_count'],['sorgu','Sorgulamalar',null],['alislar','Alışlar','make_purchase'],['satislar','Satışlar',null],['iadeler','İade&Değişim','process_refund'],['kampanya','Kampanyalar','view_loyalty|warranty_use|view_warranty|view_protection|manage_protection|view_multibuy|manage_multibuy|gift_card_sell|view_gift_cards|manage_gift_cards|view_oldmodel|manage_oldmodel|view_special_discount|manage_special_discount'],['fireler','Fireler','record_waste'],['servis','Teknik Servis','manage_service'],['siparis','Siparişler','manage_orders'],['eksikler','Eksikler','manage_shortages'],['teklif','Teklifler','manage_quotes'],['katalog','Kataloglar','view_catalog|manage_catalog'],['personel','Personeller',null],['gorev','Görevler',null],['vardiya','Vardiya',null],['hedef','Hedefler',null],['hakedis','Hakedişler',null],['primler','Primler','manage_commissions'],['egitim','Eğitimler',null],['kasa','Kasa','view_cash_basic'],['odemeler','Ödemeler','view_payments'],['satisrapor','Satış Raporu','view_all_sales'],['sermaye','Sermaye Raporu','view_cost'],['kazancrapor','Kazanç Raporu','view_payments'],['masraf','Masraflar','manage_expenses'],['musteriler','Müşteriler',null],['firmalar','Firmalar','manage_suppliers'],['konsinye','Konsinye','view_consignment'],['yonetim','Yönetim','manage_users']];
+const TABS=[['panel','Genel Bakış',null],['notlar','Notlarım',null],['satis','Satış','make_sale'],['stok','Cihazlar',null],['aksesuar','Aksesuarlar',null],['sayim','Stok Sayım','stock_count'],['sorgu','Sorgulamalar',null],['alislar','Alışlar','make_purchase'],['satislar','Satışlar',null],['iadeler','İade&Değişim','process_refund'],['kampanya','Kampanyalar','view_loyalty|warranty_use|view_warranty|view_protection|manage_protection|view_multibuy|manage_multibuy|gift_card_sell|view_gift_cards|manage_gift_cards|view_oldmodel|manage_oldmodel|view_special_discount|manage_special_discount'],['fireler','Fireler','record_waste'],['servis','Teknik Servis','manage_service'],['siparis','Siparişler','manage_orders'],['eksikler','Eksikler','manage_shortages'],['teklif','Teklifler','manage_quotes'],['katalog','Kataloglar','view_catalog|manage_catalog'],['personel','Personeller',null],['gorev','Görevler',null],['vardiya','Vardiya',null],['hedef','Hedefler',null],['hakedis','Hakedişler',null],['primler','Primler','manage_commissions'],['egitim','Eğitimler',null],['kasa','Kasa','view_cash_basic'],['odemeler','Ödemeler','view_payments'],['satisrapor','Satış Raporu','view_all_sales'],['sermaye','Sermaye Raporu','view_cost'],['kazancrapor','Kazanç Raporu','view_payments'],['masraf','Masraflar','manage_expenses'],['musteriler','Müşteriler',null],['firmalar','Firmalar','manage_suppliers'],['konsinye','Konsinye','view_consignment'],['yonetim','Yönetim','manage_users'],['eposta','E-posta Bildirimleri','view_email|manage_email']];
 
 /* ================= İKONLAR (ince çizgili, 24x24) ================= */
 const IC={
+  mail:'<rect x="3" y="5" width="18" height="14" rx="2.5"/><path d="m4 7 8 6 8-6"/>',
   store:'<path d="M4 9.5V19a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1V9.5"/><path d="M3 9.5 4.6 4h14.8L21 9.5a2.6 2.6 0 0 1-4.5 1.6 2.6 2.6 0 0 1-4.5 0 2.6 2.6 0 0 1-4.5 0A2.6 2.6 0 0 1 3 9.5z"/><path d="M9.5 20v-5h5v5"/>',
   gcard:'<rect x="3" y="6" width="18" height="12" rx="2"/><path d="M3 10.5h18M8 6v12M8 10.5c-1.6-2.6-4-2.4-3.6-.9.3 1 2 1 3.6.9zm0 0c1.6-2.6 4-2.4 3.6-.9-.3 1-2 1-3.6.9z"/>',
   shield:'<path d="M12 3l7.5 3v5.5c0 4.6-3.2 8.3-7.5 9.5-4.3-1.2-7.5-4.9-7.5-9.5V6z"/><path d="M8.8 12.2l2.2 2.2 4.3-4.6"/>',
@@ -804,9 +811,9 @@ mobile_bell:'<path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/>'};
 const ic=(n,c)=>`<svg class="ic${c?' '+c:''}" viewBox="0 0 24 24" aria-hidden="true">${IC[n]||''}</svg>`;
 /* ☰ menü: gruplar ve ikonlar (tüm sekmeler burada; "Satış" ekranı Satışlar'daki "Satış yap" ve paneldeki "Yeni satış" ile açılır) */
 const MENU=[[null,['panel','notlar']],['Mağaza',['satislar','stok','aksesuar','musteriler','firmalar','alislar']],['Operasyon',['servis','siparis','teklif','kampanya','katalog','eksikler','iadeler','fireler','sayim','sorgu']],
-  ['Personel',['personel','gorev','vardiya','hedef','hakedis','primler','egitim']],['Finans',['kasa','odemeler','masraf','konsinye']],['Raporlar',['satisrapor','sermaye','kazancrapor']],['Yönetim',['yonetim']]];
+  ['Personel',['personel','gorev','vardiya','hedef','hakedis','primler','egitim']],['Finans',['kasa','odemeler','masraf','konsinye']],['Raporlar',['satisrapor','sermaye','kazancrapor']],['Yönetim',['yonetim','eposta']]];
 const TAB_IC={katalog:'store',kampanya:'star',panel:'grid',notlar:'notebook',satislar:'bag',satis:'bag',stok:'phone',aksesuar:'headphones',musteriler:'users',firmalar:'building',alislar:'truck',servis:'wrench',siparis:'pkg',teklif:'file',eksikler:'clip',iadeler:'undo',fireler:'flame',sayim:'scan',sorgu:'shield',
-  personel:'users',gorev:'check',vardiya:'cal',hedef:'target',hakedis:'note',primler:'award',egitim:'book',kasa:'wallet',odemeler:'card',masraf:'receipt',konsinye:'hand',satisrapor:'bars',sermaye:'pie',kazancrapor:'trend',yonetim:'sliders'};
+  personel:'users',gorev:'check',vardiya:'cal',hedef:'target',hakedis:'note',primler:'award',egitim:'book',kasa:'wallet',odemeler:'card',masraf:'receipt',konsinye:'hand',satisrapor:'bars',sermaye:'pie',kazancrapor:'trend',yonetim:'sliders',eposta:'mail'};
 
 /* ================= YARDIMCILAR ================= */
 const pad=n=>String(n).padStart(2,'0');
@@ -1127,7 +1134,7 @@ async function boot(){
     if(!S.me||!S.me.active)return renderBlocked();
     if(!(await qsBoot(data.session)))return;
     if(S.me.must_change_password)return renderPwChange();
-    subscribe();rtSubscribe();swListen();swReg();fxStart();lySmsBoot();if(!location.hash.slice(1)&&prefGet('nt_start','0')==='1'){try{history.replaceState(null,'','#notlar')}catch(e){}}route()}
+    subscribe();rtSubscribe();swListen();swReg();fxStart();lySmsBoot();emBoot();if(!location.hash.slice(1)&&prefGet('nt_start','0')==='1'){try{history.replaceState(null,'','#notlar')}catch(e){}}route()}
   catch(e){document.getElementById('app').innerHTML=`<div class="wrap"><main><div class="card"><h1>Bağlantı kurulamadı</h1><p class="sub">${esc(msg(e))}</p><button class="btn pri" data-a="retry">Tekrar dene</button></div></main></div>`}}
 function renderLogin(err){
   const L=qsShared()?qsList():[];
@@ -1379,7 +1386,7 @@ function drawer(open){const r=document.documentElement;if(open===undefined)open=
   const d=document.getElementById('drawer');if(d)d.setAttribute('aria-hidden',String(!open));
   if(open){S.dq='';drawNav();const i=document.getElementById('dq');if(i){i.value='';setTimeout(()=>i.focus(),30)}}}
 function drawNav(){const el=document.getElementById('dnav');if(!el||!S.d)return;
-  const tab=S.ui.tab==='satis'?'satislar':S.ui.tab,q=(S.dq||'').trim().toLocaleLowerCase('tr'),ok=k=>{const t=TABS.find(x=>x[0]===k);return t&&(!t[2]||can(t[2]))};
+  const tab=S.ui.tab==='satis'?'satislar':S.ui.tab,q=(S.dq||'').trim().toLocaleLowerCase('tr'),ok=k=>{const t=TABS.find(x=>x[0]===k);return t&&(!t[2]||can(t[2]))&&(k!=='eposta'||emInst())};
   const svN=ok('servis')?svOpenN():0,ordReady=ok('siparis')&&(S.d.customer_orders||[]).some(o=>o.status==='hazir'||o.status==='bulundu');
   const item=k=>`<a href="#${k}"${k===tab?' aria-current="page"':''}>${ic(TAB_IC[k]||'grid')}<span>${esc(tabLabel(k))}</span>${k==='servis'&&svN?`<span class="cnt">${svN}</span>`:''}${k==='siparis'&&ordReady?'<span class="pdot" title="Hazır sipariş var"></span>':''}</a>`;
   const html=MENU.map(([g,ks])=>{const L=ks.filter(ok).filter(k=>!q||tabLabel(k).toLocaleLowerCase('tr').includes(q)||(g||'').toLocaleLowerCase('tr').includes(q));
@@ -1426,7 +1433,7 @@ function render(){
   document.documentElement.classList.toggle('ps-on',tab==='satis');
   const unread=nUnreadCount();
   const secLock=qsSecLocked(tab);
-  const page=secLock?qsLockPage(tab):qsUnlockBar(tab)+{personel:vPersonel,kampanya:vKampanya,panel:vPanel,notlar:vNotlar,satis:vSatis,stok:vStok,aksesuar:vAksesuar,sayim:vSayim,sorgu:vSorgu,alislar:vAlislar,satislar:vSatislar,iadeler:vIadeler,fireler:vFireler,odemeler:vOdemeler,kazancrapor:vKazancRapor,satisrapor:vSatisRapor,sermaye:vSermaye,hakedis:vHakedis,primler:vPrimler,kasa:vKasa,masraf:vMasraf,musteriler:vMusteriler,firmalar:vFirmalar,konsinye:vKonsinye,servis:vServis,siparis:vSiparis,eksikler:vEksik,teklif:vTeklif,katalog:vKatalog,gorev:vGorev,vardiya:vVardiya,hedef:vHedef,egitim:vEgitim,yonetim:vYonetim}[tab]();
+  const page=secLock?qsLockPage(tab):qsUnlockBar(tab)+{eposta:vEposta,personel:vPersonel,kampanya:vKampanya,panel:vPanel,notlar:vNotlar,satis:vSatis,stok:vStok,aksesuar:vAksesuar,sayim:vSayim,sorgu:vSorgu,alislar:vAlislar,satislar:vSatislar,iadeler:vIadeler,fireler:vFireler,odemeler:vOdemeler,kazancrapor:vKazancRapor,satisrapor:vSatisRapor,sermaye:vSermaye,hakedis:vHakedis,primler:vPrimler,kasa:vKasa,masraf:vMasraf,musteriler:vMusteriler,firmalar:vFirmalar,konsinye:vKonsinye,servis:vServis,siparis:vSiparis,eksikler:vEksik,teklif:vTeklif,katalog:vKatalog,gorev:vGorev,vardiya:vVardiya,hedef:vHedef,egitim:vEgitim,yonetim:vYonetim}[tab]();
   const grp=tabGroup(tab);
   document.getElementById('app').innerHTML=`<header class="top"><div class="wrap">
     <button class="ib" data-a="drawer-open" aria-label="Menüyü aç" title="Menü (Ctrl+K)">${ic('menu')}</button>
@@ -2399,7 +2406,7 @@ async function psDo(m,btn){const c=S.cart,t=psTotals(c),er=psCheckOut(m);if(er)r
       res=await call('exchange_item',{p:{old_kind:r.kind,old_id:r.id,old_qty:r.kind==='aksesuar'?r.qty:1,credit:r2(psNum(r.amount)),reason_code:r.rc,reason:r.why||null,disposition:r.disp,waste_reason:r.kind==='aksesuar'&&r.disp==='zayiat'?r.wr:null,
         new_items:al.items,new_accessories:al.acc,payments:t.net>0?pays:[],refund_method:t.net<0&&m!=='parcali'?m:'nakit',staff:c.staff&&c.staff!==S.user.id?c.staff:null,note:c.note||null}});
       saleId=res.sale_id;txt='Değişim '+res.exchange_no+' tamamlandı · yeni satış '+res.sale_no}
-    psSnd(c.mode==='satis'?'done-'+m:'done-'+c.mode);closeModal();S.fis.f[S.fis.cur]=psNew();S.cart=S.fis.f[S.fis.cur];S.ps.more=false;S.ps.last=saleId||S.ps.last;psFlash(txt);psSave();
+    if(saleId)emAfterSale(c.customer);psSnd(c.mode==='satis'?'done-'+m:'done-'+c.mode);closeModal();S.fis.f[S.fis.cur]=psNew();S.cart=S.fis.f[S.fis.cur];S.ps.more=false;S.ps.last=saleId||S.ps.last;psFlash(txt);psSave();
     toast(txt);S.mine=null;await syncData();S.dash=null;render();if(res&&res.warranties&&res.warranties.length){S.wAfter=saleId;wAfterSale(res.warranties)}else if(saleId&&prefGet('ps_rc')!=='0')saleReceipt(saleId)}
   catch(e){if(btn)btn.disabled=false;psSnd('err');setErr(msg(e))}}
 function psProforma(){const c=S.cart,t=psTotals(c),d=S.d,sh=shopSet(),cu=c.customer&&d.contactMap.get(c.customer);
@@ -2562,9 +2569,11 @@ function ljDraw(){const Q=S.lyq,i=Q.info,R=lyR();
       <p class="sub" style="margin-top:8px">Puan ve ödül kullanımı satış ekranındaki <b>Sadakat</b> düğmesinden yapılır.</p></div>`
    :`<div class="note">${i.contact_id?`<b>${esc(i.name)}</b> kayıtlı müşteri ama sadakat üyesi değil.${i.phone?'':' Müşterinin telefonu kayıtlı değil: yukarıya cep numarasını yazın, üyelikle birlikte kaydedilir.'}`:'Bu numarayla kayıtlı müşteri yok; yeni müşteri ve üye olarak eklenir.'}</div>
      <div class="form">${i.contact_id?'':`<label class="f">İsim soyisim <span class="req">*</span><input class="in" id="lj-c-nn" value="${esc(Q['lj-c-nn']||'')}"></label><input type="hidden" id="lj-c" value="__new__"><input type="hidden" id="lj-c-nt" value="${esc(i.phone)}">${acqQuick('lj-c')}`}
-      <label class="f">Doğum tarihi <span class="sub">(doğum günü puanı için)</span><input class="in" id="lj-bd" type="date" max="${today()}" value="${esc(Q['lj-bd']||'')}"></label></div>
+      <label class="f">Doğum tarihi <span class="sub">(doğum günü puanı için)</span><input class="in" id="lj-bd" type="date" max="${today()}" value="${esc(Q['lj-bd']||'')}"></label>
+      ${emInst()?`<label class="f">E-posta <span class="sub">(isteğe bağlı)</span><input class="in" id="lj-em" type="email" value="${esc(Q['lj-em']!=null?Q['lj-em']:((i.contact_id&&(S.d.contactMap.get(i.contact_id)||{}).email)||''))}" placeholder="ornek@mail.com"></label>`:''}</div>
      <label class="chk" style="margin-top:8px"><input type="checkbox" id="lj-kvkk" ${Q['lj-kvkk']?'checked':''}> <span>Müşteriye sadakat programı ve kişisel verilerinin işlenmesi hakkında bilgi verildi; üye olmayı kabul etti. <span class="req">*</span></span></label>
      <label class="chk" style="margin-top:6px"><input type="checkbox" id="lj-mk" ${Q['lj-mk']?'checked':''}> <span>Kampanya ve bilgilendirme mesajı (SMS / WhatsApp) almayı kabul etti <span class="sub">(isteğe bağlı; üyelik için şart değil)</span></span></label>
+     ${emInst()?`<label class="chk" style="margin-top:6px"><input type="checkbox" id="lj-emok" ${Q['lj-emok']?'checked':''}> <span>Satış fişi, puan ve sadakat bilgilendirmelerini e-posta ile almayı kabul etti <span class="sub">(hoş geldin e-postası hemen gider)</span></span></label>`:''}
      <p class="sub">İlk alışverişte ${num(R.welcome)} puan hoş geldin hediyesi${R.birthday?' · doğum gününde '+num(R.birthday)+' puan':''}.</p>
      ${lyNeedJoin()?lyVBlock('kayit'):''}`;
   modal(`<div class="row" style="gap:10px"><span class="icb p">${ic('star','lg')}</span><div><h2 style="margin:0">Sadakat programı · üye kaydı</h2><div class="sub">Müşterinin cep numarasını yazın.</div></div></div>
@@ -2580,7 +2589,7 @@ function lyModal(){const c=S.cart,cu=c.customer&&S.d.contactMap.get(c.customer);
   if(S.lyq.phone&&!S.lyq.info)lySearch()}
 async function lySearch(){const Q=S.lyq,p=lyPhone(Q.phone);if(!p){Q.err='Geçerli bir cep telefonu yazın (05XX XXX XX XX)';return lyDraw()}
   Q.err='';Q.busy=true;if(!Q.info||Q.info.phone!==p){Q.v={};Q.use=null;Q.bd='';Q.kvkk=false}lyDraw();try{Q.info=await lyFetch(p)}catch(e){Q.err=msg(e);Q.info=null}Q.busy=false;lyDraw()}
-function lyKeep(){const Q=S.lyq;if(!Q)return;const e=id=>document.getElementById(id);if(Q.std){['lj-bd','lj-bd2','lj-c-nn'].forEach(k=>{if(e(k))Q[k]=e(k).value});['lj-kvkk','lj-mk'].forEach(k=>{if(e(k))Q[k]=e(k).checked})}if(e('ly-use'))Q.use=e('ly-use').value;if(e('ly-bd'))Q.bd=e('ly-bd').value;if(e('ly-kvkk'))Q.kvkk=e('ly-kvkk').checked;
+function lyKeep(){const Q=S.lyq;if(!Q)return;const e=id=>document.getElementById(id);if(Q.std){['lj-bd','lj-bd2','lj-c-nn','lj-em'].forEach(k=>{if(e(k))Q[k]=e(k).value});['lj-kvkk','lj-mk','lj-emok'].forEach(k=>{if(e(k))Q[k]=e(k).checked})}if(e('ly-use'))Q.use=e('ly-use').value;if(e('ly-bd'))Q.bd=e('ly-bd').value;if(e('ly-kvkk'))Q.kvkk=e('ly-kvkk').checked;
   if(e('ly-man'))(Q.v=Q.v||{}).man=e('ly-man').checked;if(e('ly-code'))(Q.v=Q.v||{}).code=e('ly-code').value;if(e('s-cust-nn'))S.cart.nn=e('s-cust-nn').value}
 function lyVBlock(pur){const Q=S.lyq,v=Q.v=Q.v||{},ok=v.ok&&v.ok.pur===pur,sent=v.sent&&v.sent.pur===pur?v.sent:null;
   return `<div class="ly-v${ok?' ok':''}"><div class="row" style="gap:6px"><span class="ly-vh">${ic('sms','sm')} ${pur==='kayit'?'Üyelik doğrulaması':'Puan / ödül kullanım doğrulaması'}</span>${ok?`<span class="pill ok">${ic('check','sm')} Doğrulandı · ${v.ok.kind==='kasa'?'kasa kodu':'SMS kodu'}</span>`:''}</div>
@@ -3628,7 +3637,7 @@ function saleReceipt(id,w){w=w||S.ui.rcw||'80';S.ui.rcw=w;const D=rcData(id);if(
   modal(`<div class="no-print"><h2>Satış fişi · ${esc(D.s.sale_no)}</h2><div class="seg" style="margin-bottom:10px">${[['80','Fiş yazıcı (80 mm)'],['a4','A4']].map(([k,t])=>`<button data-a="rc-w" data-id="${id}" data-w="${k}" aria-pressed="${w===k}">${t}</button>`).join('')}</div></div>
   ${rcHtml(id,w)}
   <div class="actions no-print"><span class="sub" style="margin-right:auto">PDF için "Yazdır" penceresinde hedef olarak "PDF olarak kaydet" seçin.</span><button class="btn" data-a="close">Kapat</button>${typeof dwBtns==='function'?dwBtns(id):''}<button class="btn pri" data-a="rc-print" data-w="${w}">Yazdır / PDF</button>
-   <a class="btn" target="_blank" rel="noopener" href="https://wa.me/${ph}?text=${encodeURIComponent(txt)}">WhatsApp</a>${c&&c.email?`<a class="btn" href="mailto:${encodeURIComponent(c.email)}?subject=${encodeURIComponent(shopSet().name+' · Satış fişi '+D.s.sale_no)}&body=${encodeURIComponent(txt)}">E-posta</a>`:''}</div>`)}
+   <a class="btn" target="_blank" rel="noopener" href="https://wa.me/${ph}?text=${encodeURIComponent(txt)}">WhatsApp</a>${emInst()?emRcBtn(id):c&&c.email?`<a class="btn" href="mailto:${encodeURIComponent(c.email)}?subject=${encodeURIComponent(shopSet().name+' · Satış fişi '+D.s.sale_no)}&body=${encodeURIComponent(txt)}">E-posta</a>`:''}</div>`)}
 function rcText(id){const D=rcData(id);if(!D)return '';const {s,items,acc,pays,cust}=D,sh=shopSet();
   return [`${sh.name} · Satış fişi ${s.sale_no}`,fmtDate(s.sold_at),cust?'Sayın '+cust.name:'',''].filter((x,i)=>x||i>2).join('\n')+'\n'
    +[...items.map(({p,i})=>`• ${p.model||'Cihaz'}${p.imei?' (IMEI '+p.imei+')':''} — ${money(i.price)}`),...acc.map(({a,l})=>`• ${a.name||'Aksesuar'} x${l.qty} — ${money(Number(l.qty)*Number(l.unit_price))}`)].join('\n')
@@ -4262,7 +4271,7 @@ function cariCard(c,k){
     if(ek)detail=`<div style="margin-top:8px"><h3 style="margin:0 0 4px">Alışveriş geçmişi</h3>${sl.sort((a,b)=>String(b.sold_at).localeCompare(String(a.sold_at))).slice(0,15).map(s=>`<div class="sub">${fmtDate(String(s.sold_at).slice(0,10))} · ${esc(s.sale_no)} · <b>${money(s.total)}</b></div>`).join('')||'<div class="sub">Satış yok.</div>'}${bought.length?`<h3 style="margin:8px 0 4px">Bizim aldığımız cihazlar</h3>${[...bought].sort((a,b)=>String(b.buy_date).localeCompare(String(a.buy_date))).map(x=>`<div class="sub">${fmtDate(x.buy_date)} · ${esc(x.model)}${x.imei?' · '+esc(x.imei):''}${x.buy_source==='takas'?' · takas':''}${can('view_cost')&&d.cost.has(x.id)?' · <b>'+money(d.cost.get(x.id))+'</b>':''}</div>`).join('')}`:''}${can('view_cash')&&d.party_entries.some(e=>e.contact_id===c.id)?`<h3 style="margin:8px 0 4px">Cari hareketler</h3>`+ledger(c.id):''}</div>`}
   const ind=k!=='firma'&&(c.customer_type||'bireysel')==='bireysel';
   const extra=[c.tax_no?(ind?'TC: ':'Vergi no: ')+esc(c.tax_no):'',c.tax_office&&!ind?'Vergi dairesi: '+esc(c.tax_office):'',c.address?esc(c.address):'',c.iban?'IBAN: '+esc(c.iban):'',k==='firma'&&c.payment_term_days!=null?'Vade: '+c.payment_term_days+' gün':''].filter(Boolean);
-  return `<div class="item"><div class="main"><b>${esc(c.name)}</b>${k!=='firma'?vipTag(c):''}${k!=='firma'&&c.ly_member?' <span class="pill p" title="Sadakat programı üyesi">★ Sadakat üyesi</span>':''}${k!=='firma'?` <span class="pill">${ind?'Bireysel':'Kurumsal'}</span> <span class="pill ch ch-${c.acq_channel||'yok'}" title="Müşteri kazanım kanalı">${esc(acqTxt(c))}</span>${c.marketing_ok?' <span class="pill" title="Kampanya mesajı izni var">İleti izni</span>':''}${c.referred_by&&S.d.contactMap.get(c.referred_by)?` <span class="sub">Tavsiye: ${esc(S.d.contactMap.get(c.referred_by).name)}</span>`:''}`:''}${can('view_cash')&&bal!==0?` <span class="pill ${bal>0&&k==='firma'?'warn':''}">${k==='firma'?(bal>0?'Borcumuz ':'Alacağımız ')+money(Math.abs(bal)):(bal>0?'Borcumuz ':'Alacağımız ')+money(Math.abs(bal))}</span>`:''}
+  return `<div class="item"><div class="main"><b>${esc(c.name)}</b>${k!=='firma'?vipTag(c):''}${k!=='firma'&&c.ly_member?' <span class="pill p" title="Sadakat programı üyesi">★ Sadakat üyesi</span>':''}${k!=='firma'&&c.email_ok&&c.email?' <span class="pill" title="E-posta ile bilgilendirme izni var">✉ E-posta</span>':''}${k!=='firma'?` <span class="pill">${ind?'Bireysel':'Kurumsal'}</span> <span class="pill ch ch-${c.acq_channel||'yok'}" title="Müşteri kazanım kanalı">${esc(acqTxt(c))}</span>${c.marketing_ok?' <span class="pill" title="Kampanya mesajı izni var">İleti izni</span>':''}${c.referred_by&&S.d.contactMap.get(c.referred_by)?` <span class="sub">Tavsiye: ${esc(S.d.contactMap.get(c.referred_by).name)}</span>`:''}`:''}${can('view_cash')&&bal!==0?` <span class="pill ${bal>0&&k==='firma'?'warn':''}">${k==='firma'?(bal>0?'Borcumuz ':'Alacağımız ')+money(Math.abs(bal)):(bal>0?'Borcumuz ':'Alacağımız ')+money(Math.abs(bal))}</span>`:''}
     <div class="meta">${c.person?`<span>Yetkili: ${esc(c.person)}</span>`:''}${c.phone?`<span>${telLink(c.phone)}</span>`:''}${c.email?`<span>${esc(c.email)}</span>`:''}</div>
     ${extra.length?`<div class="meta">${extra.map(x=>`<span>${x}</span>`).join('')}</div>`:''}<div class="meta">${stats}</div>${detail}</div>
     <div class="side"><div class="acts">${k==='firma'&&can('add_expense')?`<button class="btn sm pri" data-a="pay-party" data-id="${c.id}">Öde</button><button class="btn sm" data-a="ret-open" data-id="${c.id}">İade et</button>`:''}${k==='firma'&&can('view_cash')?`<button class="btn sm" data-a="fr-open" data-id="${c.id}">Rapor</button>`:''}${k==='firma'&&can('make_purchase')?`<button class="btn sm" data-a="pf-open" data-sup="${c.id}">Toplu alım</button>`:''}${k==='musteri'&&lyCamp()&&can('make_sale')?`<button class="btn sm" data-a="lj-open" data-cid="${c.id}">Sadakat</button>`:''}${can('view_cash')||k==='musteri'?`<button class="btn sm" data-a="ekstre" data-id="${c.id}">${k==='firma'?'Ekstre':'Geçmiş'}</button>`:''}${wa}${ntBtn('contacts',c.id)}${can('manage_documents')?docBtn('contacts',c.id):''}${can('manage_contacts')?`<button class="btn sm" data-a="edit-contact" data-id="${c.id}">Düzenle</button>`:''}</div></div></div>`}
@@ -4292,7 +4301,8 @@ function acqFields(c){const ch=c.acq_channel||'',L=S.d.contacts.filter(x=>x.kind
   return `<div class="form full acqbox" style="padding:0"><label class="f">Müşteri kazanım kanalı <span class="req">*</span><select class="in" id="c-acq" data-c="acqch" required>${opts([['','- seçin -'],...ACQ],ch)}</select></label>
    <label class="f" id="c-acqsrc-w" ${ch==='internet'?'':'hidden'}>İnternet kaynağı <span class="req">*</span><select class="in" id="c-acqsrc">${opts([['','- seçin -'],...ACQ_SRC],c.acq_source||'')}</select></label>
    <label class="f" id="c-ref-w" ${ch==='sosyal'?'':'hidden'}>Tavsiye eden müşteri <span class="sub">(isteğe bağlı)</span><select class="in" id="c-ref">${opts([['','- yok / bilinmiyor -'],...L.map(x=>[x.id,x.name+(x.phone?' · '+x.phone:'')])],c.referred_by||'')}</select></label>
-   <label class="ck full"><input type="checkbox" id="c-mkt" ${c.marketing_ok?'checked':''}> Kampanya ve bilgilendirme mesajı (SMS, WhatsApp, e-posta) almayı kabul ediyor${c.marketing_ok_at?` <span class="sub">· ${fmtDate(String(c.marketing_ok_at).slice(0,10))}</span>`:''}</label></div>`}
+   <label class="ck full"><input type="checkbox" id="c-mkt" ${c.marketing_ok?'checked':''}> Kampanya ve bilgilendirme mesajı (SMS, WhatsApp, e-posta) almayı kabul ediyor${c.marketing_ok_at?` <span class="sub">· ${fmtDate(String(c.marketing_ok_at).slice(0,10))}</span>`:''}</label>
+   ${emInst()?`<label class="ck full"><input type="checkbox" id="c-eml" ${c.email_ok?'checked':''}> Satış fişi, sadakat ve servis bilgilendirmelerini <b>e-posta</b> ile almayı kabul ediyor <span class="sub">(e-posta adresi gerekir)</span>${c.email_off_at&&!c.email_ok?` <span class="pill warn">${fmtDate(String(c.email_off_at).slice(0,10))} tarihinde bildirimlerden çıktı</span>`:c.email_ok_at&&c.email_ok?` <span class="sub">· ${fmtDate(String(c.email_ok_at).slice(0,10))}</span>`:''}</label>`:''}</div>`}
 function acqQuick(id){const cart=id==='s-cust',ch=cart?S.cart.nch||'':'',src=cart?S.cart.nsrc||'':'';
   return `<label class="f">Kazanım kanalı <span class="req">*</span><select class="in" id="${id}-nch" data-c="acqq" data-p="${id}">${opts([['','- seçin -'],...ACQ],ch)}</select></label>
    <label class="f" id="${id}-nsrcw" ${ch==='internet'?'':'hidden'}>İnternet kaynağı <span class="req">*</span><select class="in" id="${id}-nsrc" data-c="acqqs" data-p="${id}">${opts([['','- seçin -'],...ACQ_SRC],src)}</select></label>`}
@@ -7112,7 +7122,8 @@ const A={
     if(firm||ct==='kurumsal')o.tax_office=r0.tax_office||null;else o.tax_office=null;
     if(firm){const term=g('c-term');if(term!==''&&!(Number(term)>=0&&Number(term)<=365))return setErr('Vade 0 ile 365 gün arasında olmalı.');
       Object.assign(o,{person:g('c-person')||null,iban:g('c-iban')||null,payment_term_days:term===''?null:Math.round(Number(term))})}
-    else{o.customer_type=ct;try{Object.assign(o,acqRead('c'))}catch(e){return setErr(e.message)}o.referred_by=o.acq_channel==='sosyal'?(g('c-ref')||null):null;o.marketing_ok=!!(document.getElementById('c-mkt')||{}).checked}
+    else{o.customer_type=ct;try{Object.assign(o,acqRead('c'))}catch(e){return setErr(e.message)}o.referred_by=o.acq_channel==='sosyal'?(g('c-ref')||null):null;o.marketing_ok=!!(document.getElementById('c-mkt')||{}).checked;
+      const eml=document.getElementById('c-eml');if(eml){o.email_ok=eml.checked;if(o.email_ok&&!o.email)return setErr('E-posta ile bilgilendirme izni için e-posta adresini yazın.')}}
     const r=id?await sb.from('contacts').update(o).eq('id',id):await sb.from('contacts').insert({...o,kind:firm?'firma':'musteri',branch_id:S.me.branch_id});
     if(r.error)return setErr(r.error.message);toast('Kaydedildi');closeModal();await reload()},
   'ret-open'(t){retModal(t.dataset.id)},
@@ -9068,10 +9079,11 @@ Object.assign(A,{
   async 'lj-join'(t){lyKeep();const Q=S.lyq,i=Q.info,v=Q.v||{},vok=v.ok&&v.ok.pur==='kayit'?v.ok:null,mn=!!v.man&&lyManOk();
     if(!i.contact_id&&!String(Q['lj-c-nn']||'').trim())return setErr('İsim soyisim yazın.');
     if(!Q['lj-kvkk'])return setErr('Müşteriye bilgi verildiğini ve üyeliği kabul ettiğini işaretleyin.');
+    const em=String(Q['lj-em']||'').trim();if(em&&!emValid(em))return setErr('E-posta adresi geçersiz.');if(Q['lj-emok']&&!em)return setErr('E-posta izni için e-posta adresini yazın.');
     if(lyNeedJoin()&&!vok&&!mn)return setErr('Üyelik için müşterinin telefonuna SMS ile gelen kodu doğrulayın.');t.disabled=true;
     const ph=i.phone||lyPhone(g('lj-ph'));if(!ph){t.disabled=false;return setErr('Geçerli bir cep telefonu yazın (05XX XXX XX XX).')}
     try{let cid=i.contact_id;if(!cid)cid=await resolveContact('musteri','lj-c');
-      await call('loyalty_join',{p:{contact_id:cid,phone:ph,birth_date:Q['lj-bd']||null,kvkk:true,marketing:!!Q['lj-mk'],otp:vok?vok.id:null,manual:!vok&&mn&&lyNeedJoin()}});
+      await call('loyalty_join',{p:{contact_id:cid,phone:ph,birth_date:Q['lj-bd']||null,kvkk:true,marketing:!!Q['lj-mk'],otp:vok?vok.id:null,manual:!vok&&mn&&lyNeedJoin(),...(emInst()&&em?{email:em,email_ok:!!Q['lj-emok']}:{})}});
       await syncData();Q.cid='';Q.info=await lyFetch(ph);ljDraw();toast(`${Q.info.name||'Müşteri'} sadakat programına katıldı`);if(S.ly){S.ly.members=undefined;if(S.ly.ld)S.ly.ld.members=0}}
     catch(e){t.disabled=false;setErr(msg(e))}},
   async 'lj-bdset'(t){const d=g('lj-bd2');if(!d)return toast('Doğum tarihini seçin',true);t.disabled=true;
@@ -9949,6 +9961,114 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape'){scanStop();closeMod
   if(e.key==='Enter'&&e.target.id==='pf-aq'){e.preventDefault();const v=e.target.value.trim(),ac=accFind(v)||(v?S.d.accessories.find(a=>a.active!==false&&[a.name,a.barcode,a.sku].join(' ').toLowerCase().includes(v.toLowerCase())):null);if(ac)pfAddAcc(ac.id);else toast('Ürün bulunamadı',true)}
   if(e.key==='Enter'&&e.target.id==='sc-scan'){e.preventDefault();const v=e.target.value;e.target.value='';scScan(v);return}
   if(e.key==='Enter'&&e.target.id==='cq'){const p=prodFind(e.target.value);if(p){e.preventDefault();S.cart.q='';cartAdd(p.id)}else{const ac=accFind(e.target.value);if(ac){e.preventDefault();S.cart.q='';accAdd(ac.id)}}}});
+/* ================= E-POSTA BİLDİRİMLERİ (093) =================
+   Müşteriye otomatik e-postalar: kuyruk sunucuda (email_queue), gönderim "eposta" sunucu fonksiyonu (Resend). */
+const EM_DEF={on:false,from_name:'Anka İletişim',reply_to:'',logo_url:'https://sadakat.ankailetisimtr.com/mail-logo.png',portal_url:'https://sadakat.ankailetisimtr.com',site_url:'',instagram:'',hours:'',kinds:{},texts:{}};
+const EM_K=[['hosgeldin','Sadakat programına hoş geldin','🎉','Müşteri sadakat programına üye olunca (ya da üyeye sonradan e-posta izni eklenince) bir kez. Program kuralları, damga kartı ve portal bağlantısı.','İzinli üyeler'],
+  ['fis','Satış fişi','🧾','Her satış tamamlanınca hemen. Kazanılan puan, bakiye ve garanti belgesi bağlantısı da eklenir.','İzinli müşteriler'],
+  ['puan_hazir','Puanınız kullanıma hazır','⭐','Kazanılan puanların bekleme süresi dolup kullanılabilir olunca (günde en çok bir, 10:00 sonrası).','İzinli üyeler'],
+  ['puan_sure','Puan süresi doluyor','⏳','Puanların süresinin dolmasına 30 gün kala (ayda en çok bir hatırlatma).','İzinli üyeler'],
+  ['odul','Damga ödülü kazanıldı','🎁','Damga kartında ödül adımına ulaşılınca; ödül ve kullanılabileceği tarih.','İzinli üyeler'],
+  ['dogumgunu','Doğum günü kutlaması','🎂','Doğum günü puanı yüklendiği sabah, 10:00\'dan sonra; hediye puan ve geçerlilik süresi.','E-posta + kampanya izni olan üyeler'],
+  ['servis_kabul','Servis kaydı alındı','🔧','Teknik servise cihaz kabul edilince; servis no, sorun, tahmini teslim ve ücret.','İzinli müşteriler'],
+  ['servis_hazir','Cihaz teslime hazır','✅','Servis kaydı "Hazır" durumuna geçince; yapılan işlem, ücret, servis garantisi.','İzinli müşteriler'],
+  ['garanti_bitis','Garanti bitiyor','🛡️','İşletme garantisinin bitmesine 30 gün kala; ücretsiz kontrol daveti.','İzinli müşteriler'],
+  ['rezervasyon','Katalog rezervasyonu alındı','📱','Müşteri katalogdan rezervasyon talebi gönderince; talep no, cihaz, ayırma süresi.','Formda yazılan adres']];
+const EM_ST={bekliyor:['warn','Bekliyor'],gonderiliyor:['','Gönderiliyor'],gonderildi:['ok','Gönderildi'],hata:['bad','Gönderilemedi'],iptal:['','İptal']};
+const emInst=()=>(S.d.role_permissions||[]).some(r=>r.permission==='manage_email');
+function emR(){let s={};try{s=JSON.parse(((S.d.app_settings||[]).find(x=>x.key==='email_rules')||{}).value||'{}')||{}}catch(e){}
+  return {...EM_DEF,...s,kinds:{...Object.fromEntries(EM_K.map(k=>[k[0],true])),...(s.kinds||{})},texts:{...(s.texts||{})}}}
+const emValid=v=>/^[^@\s<>",;]+@[^@\s<>",;]+\.[a-zA-Z]{2,}$/.test(String(v||'').trim());
+const emKName=k=>k==='deneme'?'Deneme':(EM_K.find(x=>x[0]===k)||[0,k])[1];
+async function emLoad(){const E=S.em=S.em||{};E.ld=1;try{const r=await sb.from('email_queue').select('*').order('created_at',{ascending:false}).limit(300);if(r.error)throw r.error;E.q=r.data||[]}catch(e){E.q=[];E.err=msg(e)}render()}
+async function emStatus(){const E=S.em=S.em||{};E.stl=1;try{E.st=await fnCall('eposta',{action:'durum'})}catch(e){E.st={err:msg(e)}}render()}
+function vEposta(){const E=S.em=S.em||{},u=S.ui,mg=can('manage_email'),R=emR(),t=['bildirimler','gonderimler','ayarlar'].includes(u.emt)?u.emt:'bildirimler';
+  if(!emInst())return `<h1>E-posta Bildirimleri</h1><div class="note">Bu bölüm için <b>093_eposta_otomasyonu.sql</b> dosyasının Supabase'de çalıştırılması gerekir.</div>`;
+  if(!E.ld)emLoad();if(!E.stl)emStatus();
+  if(!S.emd)S.emd=JSON.parse(JSON.stringify(R));if(E.to===undefined)E.to=prefGet('em_to','',true)||'';
+  const Q=E.q||[],d30=Date.now()-30*864e5,L30=Q.filter(x=>new Date(x.created_at).getTime()>d30&&x.kind!=='deneme'),wait=Q.filter(x=>x.status==='bekliyor').length;
+  const okC=(S.d.contacts||[]).filter(c=>c.kind==='musteri'&&c.email_ok&&c.email&&!c.email_off_at).length,st=E.st;
+  const stH=!st?'<span class="sub">Sunucu kontrol ediliyor…</span>':st.err?`<div class="note bad">"eposta" sunucu fonksiyonuna ulaşılamadı: ${esc(st.err)}. Fonksiyon yayınlanmamış olabilir (KURULUM › E-posta otomasyonu).</div>`
+    :st.configured?`<span class="pill ok">Gönderime hazır</span> <span class="sub">Gönderen: ${esc(st.from)}</span>`:`<div class="note warn">Sunucu fonksiyonunda eksik gizli anahtar: <b>${esc((st.missing||[]).join(', '))}</b>. KURULUM › E-posta otomasyonu adımlarını izleyin.</div>`;
+  const tabs=[['bildirimler','Bildirimler'],['gonderimler','Gönderimler'+(wait?` (${wait})`:'')],['ayarlar','Ayarlar']];
+  return `<div class="row"><h1 style="flex:1;margin:0">E-posta Bildirimleri</h1><span class="pill ${R.on?'ok':''}">${R.on?'Açık':'Kapalı'}</span>${mg?` <button class="btn sm ${R.on?'':'pri'}" data-a="em-on">${R.on?'Otomasyonu durdur':'Otomasyonu başlat'}</button>`:''}</div>
+   <div class="card"><div class="row" style="flex-wrap:wrap;gap:14px"><div style="flex:1;min-width:220px">${stH}</div>
+     <div class="em-stats"><div><b>${num(L30.filter(x=>x.status==='gonderildi').length)}</b><span>gönderildi (30 gün)</span></div><div><b>${num(wait)}</b><span>bekliyor</span></div><div><b>${num(L30.filter(x=>x.status==='hata').length)}</b><span>gönderilemedi</span></div><div><b>${num(okC)}</b><span>e-posta izni olan müşteri</span></div></div></div>
+     <p class="sub" style="margin:8px 0 0">Yalnız e-posta adresi kayıtlı ve <b>"e-posta ile bilgilendirme"</b> izni verilmiş müşterilere gönderilir (müşteri kartı, sadakat üyeliği ya da satış fişi penceresinden). Her e-postada "bildirimlerden çık" bağlantısı vardır.</p></div>
+   <div class="seg ly-tabs" role="tablist">${tabs.map(([k,l])=>`<button role="tab" class="${t===k?'on':''}" data-a="em-tab" data-k="${k}">${l}</button>`).join('')}</div>
+   ${t==='bildirimler'?emKinds(mg):t==='gonderimler'?emList(mg):emSet(mg)}`}
+function emKinds(mg){const D=S.emd,dis=mg?'':' disabled';
+  return `<div class="em-grid">${EM_K.map(([k,n,ic,when,who])=>`<div class="card em-k${D.kinds[k]?'':' off'}"><div class="row" style="align-items:flex-start;gap:10px"><div class="em-ic">${ic}</div>
+     <div style="flex:1;min-width:0"><b>${esc(n)}</b><div class="sub">${esc(when)}</div><div class="sub" style="margin-top:2px">Alıcı: ${esc(who)}</div></div>
+     <label class="em-sw" title="Aç / kapat"><input type="checkbox" data-c="emk" data-k="${k}" ${D.kinds[k]?'checked':''}${dis}><span></span></label></div>
+     <details style="margin-top:8px"${D.texts[k]?' open':''}><summary class="sub">Giriş metnini özelleştir</summary><textarea class="in" rows="3" maxlength="600" data-c="emt" data-k="${k}" placeholder="Boş bırakılırsa hazır metin kullanılır. {ad} müşterinin adı."${dis}>${esc(D.texts[k]||'')}</textarea></details>
+     <div class="row" style="gap:6px;margin-top:8px"><button class="btn sm" data-a="em-prev" data-k="${k}">Önizle</button>${mg?`<button class="btn sm" data-a="em-test" data-k="${k}">Deneme gönder</button>`:''}</div></div>`).join('')}</div>
+   ${mg?`<div class="ly-save"><span class="sub" style="margin-right:auto">Deneme e-postası ${S.em.to?'<b>'+esc(S.em.to)+'</b>':'kendi e-posta adresinize'} gider (Ayarlar'dan değiştirilebilir).</span><button class="btn pri" data-a="em-save">Kaydet</button></div>`:''}`}
+function emList(mg){const E=S.em,u=S.ui,fs=u.ems||'',fk=u.emk||'',cm=S.d.contactMap||new Map();
+  const L=(E.q||[]).filter(x=>(!fs||x.status===fs)&&(!fk||x.kind===fk)),wait=(E.q||[]).filter(x=>x.status==='bekliyor').length;
+  return `<div class="card"><div class="row" style="gap:8px;flex-wrap:wrap"><select class="in" data-c="ems" style="max-width:180px">${opts([['','Tüm durumlar'],...Object.entries(EM_ST).map(([k,v])=>[k,v[1]])],fs)}</select>
+     <select class="in" data-c="emkf" style="max-width:230px">${opts([['','Tüm bildirimler'],...EM_K.map(k=>[k[0],k[1]]),['deneme','Deneme']],fk)}</select><span style="flex:1"></span>
+     <button class="btn sm" data-a="em-reload">Yenile</button>${wait?` <button class="btn sm pri" data-a="em-send">Bekleyenleri şimdi gönder (${wait})</button>`:''}</div>
+   ${E.q===undefined?'<div class="sub" style="margin-top:10px">Yükleniyor…</div>':L.length?`<div class="tw" style="margin-top:10px"><table class="ly-t"><tr><th style="text-align:left">Tarih</th><th style="text-align:left">Bildirim</th><th style="text-align:left">Alıcı</th><th>Durum</th><th style="text-align:left">Açıklama</th><th></th></tr>
+     ${L.slice(0,200).map(x=>{const st=EM_ST[x.status]||['',x.status],c=x.contact_id&&cm.get(x.contact_id);
+       return `<tr><td style="text-align:left">${fmtTime(x.sent_at||x.created_at)}</td><td style="text-align:left">${esc(emKName(x.kind))}${x.manual&&x.kind!=='deneme'?' <span class="pill">elle</span>':''}${x.subject?`<div class="sub" style="max-width:260px;overflow:hidden;text-overflow:ellipsis">${esc(x.subject)}</div>`:''}</td>
+        <td style="text-align:left">${c?esc(c.name)+'<br>':''}<span class="sub">${esc(x.to_email)}</span></td><td><span class="pill ${st[0]}">${st[1]}</span>${x.tries>1?` <span class="sub">${x.tries}. deneme</span>`:''}</td>
+        <td style="text-align:left;white-space:normal;max-width:280px"><span class="sub">${esc(x.error||(x.status==='bekliyor'&&new Date(x.send_after)>new Date()?'Gönderim: '+fmtTime(x.send_after):''))}</span></td>
+        <td>${mg&&x.kind!=='deneme'?(['hata','iptal'].includes(x.status)?`<button class="btn sm" data-a="em-retry" data-id="${x.id}">Yeniden dene</button>`:['bekliyor'].includes(x.status)?`<button class="btn sm" data-a="em-cancel" data-id="${x.id}">İptal</button>`:''):''}</td></tr>`}).join('')}</table></div>`
+     :'<div class="empty">Kayıt yok.</div>'}
+   <p class="sub">Gönderilemeyen e-posta 15 dk, 30 dk ve 45 dk arayla en çok 3 kez denenir. Geçersiz adres gibi kalıcı hatalar yeniden denenmez.</p></div>`}
+function emSet(mg){const D=S.emd,dis=mg?'':' disabled',f=(k,l,ph,sub)=>`<label class="f">${l}${sub?` <span class="sub">${sub}</span>`:''}<input class="in" data-c="emr" data-k="${k}" value="${esc(D[k]||'')}" placeholder="${esc(ph||'')}"${dis}></label>`;
+  return `<div class="card"><h2>Gönderen ve görünüm</h2><div class="form">
+    ${f('from_name','Gönderen adı','Anka İletişim','(müşterinin gelen kutusunda görünen ad)')}${f('reply_to','Yanıt adresi',shopSet().email||'destek@…','(boşsa mağaza e-postası)')}
+    ${f('logo_url','Logo adresi','https://…/mail-logo.png','(https; portal deposundaki mail-logo.png)')}${f('portal_url','Sadakat portalı','https://sadakat.ankailetisimtr.com')}
+    ${f('site_url','Web sitesi','https://…','(isteğe bağlı)')}${f('instagram','Instagram','@ankailetisim','(isteğe bağlı)')}
+    ${f('hours','Çalışma saatleri','Her gün 10:00 - 21:00','(alt bilgide)')}
+    <label class="f">Deneme e-postası adresi <span class="sub">(yalnız bu cihazda)</span><input class="in" id="em-to" type="email" value="${esc(S.em.to||'')}" placeholder="Boşsa giriş yaptığınız e-posta"></label></div>
+    <p class="sub">Mağaza adı, adres, telefon ve e-posta alt bilgide <b>İşletme profili</b>'nden alınır. Gönderen e-posta adresi sunucu fonksiyonundaki <b>EMAIL_FROM</b> anahtarıdır.</p>
+    ${mg?`<div class="ly-save"><button class="btn pri" data-a="em-save">Kaydet</button></div>`:''}</div>`}
+async function emPreview(k){toast('Önizleme hazırlanıyor…');try{const r=await fnCall('eposta',{action:'onizle',kind:k});
+  modal(`<h2>${esc(emKName(k))} · önizleme</h2><div class="sub" style="margin-bottom:8px">Konu: <b>${esc(r.subject)}</b> <span>(örnek verilerle; mağaza bilgileri ve kurallar gerçek)</span></div>
+   <div class="seg" style="margin-bottom:8px"><button data-a="em-pw" data-w="640" aria-pressed="true">Bilgisayar</button><button data-a="em-pw" data-w="380" aria-pressed="false">Telefon</button></div>
+   <div style="text-align:center;background:#F4F7FA;border-radius:12px;padding:8px"><iframe id="em-frame" sandbox="" title="E-posta önizleme" style="width:640px;max-width:100%;height:68vh;border:0;background:#F4F7FA"></iframe></div>
+   <div class="actions"><button class="btn" data-a="close">Kapat</button></div>`);const f=document.getElementById('em-frame');if(f)f.srcdoc=r.html}catch(e){toast(msg(e),true)}}
+function emRcBtn(id){return emInst()?`<button class="btn" data-a="em-rc" data-id="${id}">E-posta gönder</button>`:''}
+async function emRcModal(id){const D=rcData(id);if(!D)return;const c=D.cust,can2=!!c&&!c.email_ok;let L=[];
+  try{const r=await sb.from('email_queue').select('*').eq('ref_table','sales').eq('ref_id',id);L=(r.data||[]).sort((a,b)=>String(b.created_at).localeCompare(String(a.created_at)))}catch(e){}
+  modal(`<h2>Satış fişini e-postayla gönder · ${esc(D.s.sale_no)}</h2>
+   ${L.length?`<div class="note">${L.slice(0,4).map(x=>`${fmtTime(x.sent_at||x.created_at)} · ${esc(x.to_email)} · <b>${(EM_ST[x.status]||['',x.status])[1]}</b>${x.error?' — '+esc(x.error):''}`).join('<br>')}</div>`:''}
+   <div class="form"><label class="f full">E-posta adresi<input class="in" id="em-rc-to" type="email" value="${esc(c&&c.email||'')}" placeholder="musteri@ornek.com"></label></div>
+   ${can2?`<label class="chk"><input type="checkbox" id="em-rc-save" ${c.email?'':'checked'}> <span>Adresi <b>${esc(c.name)}</b> kartına kaydet; müşteri fiş ve bilgilendirmeleri e-posta ile almayı kabul etti</span></label>`:''}
+   <div class="err" id="f-err"></div><div class="actions"><button class="btn" data-a="close">Vazgeç</button><button class="btn pri" data-a="em-rc-send" data-id="${id}">Gönder</button></div>`)}
+function emAfterSale(cid){try{if(!emInst()||!cid)return;const R=emR(),c=S.d.contactMap.get(cid);if(R.on&&R.kinds.fis&&c&&c.email_ok&&c.email)setTimeout(()=>fnCall('eposta',{action:'gonder'}).catch(()=>{}),600)}catch(e){}}
+async function emBoot(){try{if(!emInst()||!(can('view_email')||can('manage_email'))||S.emKick)return;
+  const r=await sb.from('email_queue').select('id,send_after,status,tries').eq('status','bekliyor').order('send_after').limit(20);
+  const late=(r.data||[]).some(x=>x.status==='bekliyor'&&new Date(x.send_after)<new Date(Date.now()-10*60000)&&(x.tries||0)<3);
+  if(late){S.emKick=1;await fnCall('eposta',{action:'gonder'})}}catch(e){console.warn('e-posta',e)}}
+Object.assign(A,{
+  'em-tab'(t){S.ui.emt=t.dataset.k;render()},
+  async 'em-on'(t){const R=emR();t.disabled=true;try{await call('set_email_rules',{p:{on:!R.on}},R.on?'E-posta otomasyonu durduruldu':'E-posta otomasyonu başladı');await syncData();if(S.emd)S.emd.on=!R.on}catch(e){}render()},
+  async 'em-save'(t){const D=S.emd;if(!D)return;const to=document.getElementById('em-to');if(to){const v=to.value.trim();if(v&&!emValid(v))return toast('Deneme adresi geçersiz',true);S.em.to=v;prefSet('em_to',v)}
+    if(D.reply_to&&!emValid(D.reply_to))return toast('Yanıt adresi geçersiz',true);
+    const P={from_name:String(D.from_name||'').trim(),reply_to:String(D.reply_to||'').trim(),logo_url:String(D.logo_url||'').trim(),portal_url:String(D.portal_url||'').trim().replace(/\/$/,''),site_url:String(D.site_url||'').trim(),
+      instagram:String(D.instagram||'').trim(),hours:String(D.hours||'').trim(),kinds:D.kinds,texts:Object.fromEntries(Object.entries(D.texts).map(([k,v])=>[k,String(v||'').trim()]).filter(x=>x[1]))};
+    t.disabled=true;try{await call('set_email_rules',{p:P},'E-posta ayarları kaydedildi');await syncData();S.emd=null}catch(e){t.disabled=false;return}render()},
+  'em-prev'(t){emPreview(t.dataset.k)},
+  'em-pw'(t){const f=document.getElementById('em-frame');if(f)f.style.width=t.dataset.w+'px';document.querySelectorAll('[data-a="em-pw"]').forEach(b=>b.setAttribute('aria-pressed',String(b===t)))},
+  async 'em-test'(t){const to=S.em.to||prefGet('em_to','')||'';t.disabled=true;try{const r=await fnCall('eposta',{action:'deneme',kind:t.dataset.k,to:to||undefined});toast('Deneme e-postası gönderildi: '+r.to);S.em.ld=0}catch(e){toast(msg(e),true)}t.disabled=false},
+  'em-reload'(){S.em.ld=0;S.em.q=undefined;render()},
+  async 'em-send'(t){t.disabled=true;try{const r=await fnCall('eposta',{action:'gonder'});toast(`${r.sent} e-posta gönderildi${r.failed?' · '+r.failed+' gönderilemedi: '+(r.errors||[]).join(' / '):''}`,!!r.failed)}catch(e){toast(msg(e),true)}S.em.ld=0;render()},
+  async 'em-retry'(t){try{await call('email_retry',{p_id:t.dataset.id},'Yeniden gönderim sırasına alındı');S.em.ld=0}catch(e){}render()},
+  async 'em-cancel'(t){if(!armed(t,'İptal edilsin mi?'))return;try{await call('email_cancel',{p_id:t.dataset.id},'E-posta iptal edildi');S.em.ld=0}catch(e){}render()},
+  'em-rc'(t){emRcModal(t.dataset.id)},
+  async 'em-rc-send'(t){const to=g('em-rc-to').trim(),sv=document.getElementById('em-rc-save');if(!emValid(to))return setErr('Geçerli bir e-posta adresi yazın.');t.disabled=true;
+    try{await call('email_send_receipt',{p_sale:t.dataset.id,p_email:to,p_save:!!(sv&&sv.checked)});closeModal();if(sv&&sv.checked)await syncData();
+      try{const r=await fnCall('eposta',{action:'gonder'});toast(r.failed?'E-posta gönderilemedi: '+(r.errors||[]).join(' / '):'Satış fişi '+to+' adresine gönderildi',!!r.failed)}catch(e){toast('Fiş sıraya alındı; birkaç dakika içinde gönderilecek')}}
+    catch(e){t.disabled=false;setErr(msg(e))}}
+});
+document.addEventListener('input',e=>{const t=e.target,k=t.dataset&&t.dataset.c;if(!S.emd||!['emr','emt'].includes(k))return;if(k==='emr')S.emd[t.dataset.k]=t.value;else S.emd.texts[t.dataset.k]=t.value});
+document.addEventListener('change',e=>{const t=e.target,k=t.dataset&&t.dataset.c;if(!k)return;
+  if(k==='emk'&&S.emd){S.emd.kinds[t.dataset.k]=t.checked;const c=t.closest('.em-k');if(c)c.classList.toggle('off',!t.checked)}
+  else if(k==='ems'){S.ui.ems=t.value;render()}else if(k==='emkf'){S.ui.emk=t.value;render()}});
 sb.auth.onAuthStateChange((ev,session)=>{
   if(session&&session.user&&qsShared()&&qsGet().users[session.user.id])qsStore(session);   // ortak bilgisayar: yenilenen anahtarı sakla
   if(S.switching)return;
