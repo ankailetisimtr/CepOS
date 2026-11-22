@@ -3990,10 +3990,12 @@ const PAYL={nakit:'Nakit',pos:'POS',havale:'Havale / EFT',enpara:'EnPara banka h
 const PAY_X=[['enpara','EnPara banka hesabı'],['odeal','ÖdeAl banka hesabı'],['konsinye','Konsinye sermayesi']];
 const payXOn=()=>can('pay_from_accounts');
 const payBal=m=>r2(m==='konsinye'?sum((S.d.cash_entries||[]).filter(e=>e.fund==='yatirimci'),e=>e.amount):cashBal(m,null,'anka'));
-function payOpts(sel,kon){const L=METHODS.slice();if(payXOn())PAY_X.forEach(([k,l])=>{if(k!=='konsinye'||kon)L.push([k,l+' · '+money(payBal(k))])});
+/* 095: kasa bakiyelerini görmeyen (müdür) seçenekte bakiye görmez, bakiye uyarısı almaz */
+const payBalSee=()=>can('view_cash_all');
+function payOpts(sel,kon){const L=METHODS.slice();if(payXOn())PAY_X.forEach(([k,l])=>{if(k!=='konsinye'||kon)L.push([k,payBalSee()?l+' · '+money(payBal(k)):l])});
   if(!L.some(x=>x[0]===sel))sel=L[0][0];return opts(L,sel)}
 /* banka bakiyesi kayıtlarda yetmiyorsa uyar; ikinci tıklamada devam (kullanıcı kararı: engelleme yok) */
-function payWarn(a,m,amt){if(!['enpara','odeal'].includes(m)||!(amt>0))return true;const b=payBal(m);if(amt<=b+0.005)return true;
+function payWarn(a,m,amt){if(!['enpara','odeal'].includes(m)||!(amt>0)||!payBalSee())return true;const b=payBal(m);if(amt<=b+0.005)return true;
   const t=document.querySelector('.modal [data-a="'+a+'"]')||document.querySelector('[data-a="'+a+'"]');if(!t)return true;
   if(!t.dataset.armed)toast(`${PAYL[m]} kayıtlı bakiyesi ${money(b)}, ödeme ${money(amt)}. Bankadaki gerçek bakiyeyi kontrol edin; doğruysa tekrar tıklayın.`,true);return armed(t,'Bakiye yetersiz · yine de kaydet')}
 function prRange(){const u=S.ui,a=u.prf||addDays(today(),-30),b=u.prt||today();return a<=b?[a,b]:[b,a]}
