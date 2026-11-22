@@ -594,7 +594,7 @@ html.ps-full header.top{display:none}html.ps-full .wrap{max-width:none}html.ps-f
 .ps-ic span{color:var(--muted)}.ps-ic:hover{border-color:var(--accent);color:var(--accent)}.ps-ic:disabled{opacity:.45;cursor:not-allowed}
 .ps-ic.on.bad{background:var(--bad);border-color:var(--bad);color:#fff}.ps-ic.on.warn{background:var(--warn);border-color:var(--warn);color:#fff}.ps-ic.on span{color:inherit}
 .ps-ic.dng{color:var(--bad)}.ps-ic.dng:hover{background:var(--bad-soft);border-color:var(--bad)}
-.ps-chip{font-size:13px;color:var(--muted)}.ps-tool.oi.on{color:var(--pink)}.ps-chip.oi b{color:var(--bad,#c0392b)}
+.ps-chip{font-size:13px;color:var(--muted)}.ps-tool.oi.on{color:var(--pink)}.ly-smsbox{background:var(--soft,#f4f4f6);border-radius:12px;padding:10px 12px;font-family:ui-monospace,monospace;font-size:13px;white-space:pre-wrap;word-break:break-word}.ps-chip.oi b{color:var(--bad,#c0392b)}
 .ps-paid{display:flex;align-items:center;gap:10px;flex-wrap:wrap}.ps-paid>label{font-weight:500;min-width:56px}
 .ps-paid>.in{flex:1;min-width:120px;height:52px;border-radius:12px;font-size:20px;text-align:center}
 .ps-qp{display:flex;gap:6px}.ps-qp .btn{height:52px;min-width:54px;border-radius:26px;font-size:13px}
@@ -851,7 +851,7 @@ async function all(table,order,asc){
     out=out.concat(data||[]);if(!data||data.length<1000)break;from+=1000}
   return out}
 /* uygulamanın yüklediği tablolar ve sıralamaları (canlı güncelleme de bunları kullanır) */
-const LOAD_NAMES=['special_discounts','attendance_issues','breaks','break_limits','device_warranties','catalog_items','catalog_photos','catalog_reservations','staff_profiles','staff_identity','staff_docs','leave_types','leave_requests','advance_requests','payroll_runs','prim_periods','prim_corrections','prim_plans','prim_adjustments','gift_cards','gift_card_moves','gift_card_lots','m3_sales','protection_packages','protection_slots','protection_slot_items','protection_sales','warranty_packages','warranty_types','warranty_materials','campaigns','loyalty_items','pos_groups','pos_group_items','pos_banks','pos_bank_rates','trainings','training_progress','training_questions','training_paths','training_path_items','training_assignments','notification_reads','notification_state','price_refs','price_deductions','device_inspections','term_debts','term_debt_payments','work_schedules','shift_changes','owner_closings','entitlements','staff_pay_profiles','exchanges','service_costs','shortages','accessory_categories','accessory_families','expense_categories','expense_templates','expenses','cash_accounts','app_settings','day_closings','day_closing_lines','fx_rates','purchases','purchase_lines','profiles','staff_settings','role_permissions','contacts','products','product_costs','sales','sale_items','sale_payments','sale_trade_ins','sale_item_costs','commissions','sale_returns','cash_entries','party_entries','consignment_agreements','consignment_rates','notifications','service_orders','service_events','customer_orders','follow_ups','quotes','quote_items','attachments','shifts','time_clock','tasks','push_subscriptions','accessories','accessory_costs','accessory_moves','sale_accessory_items','sale_accessory_costs','sale_accessory_returns'];
+const LOAD_NAMES=['ly_sms','special_discounts','attendance_issues','breaks','break_limits','device_warranties','catalog_items','catalog_photos','catalog_reservations','staff_profiles','staff_identity','staff_docs','leave_types','leave_requests','advance_requests','payroll_runs','prim_periods','prim_corrections','prim_plans','prim_adjustments','gift_cards','gift_card_moves','gift_card_lots','m3_sales','protection_packages','protection_slots','protection_slot_items','protection_sales','warranty_packages','warranty_types','warranty_materials','campaigns','loyalty_items','pos_groups','pos_group_items','pos_banks','pos_bank_rates','trainings','training_progress','training_questions','training_paths','training_path_items','training_assignments','notification_reads','notification_state','price_refs','price_deductions','device_inspections','term_debts','term_debt_payments','work_schedules','shift_changes','owner_closings','entitlements','staff_pay_profiles','exchanges','service_costs','shortages','accessory_categories','accessory_families','expense_categories','expense_templates','expenses','cash_accounts','app_settings','day_closings','day_closing_lines','fx_rates','purchases','purchase_lines','profiles','staff_settings','role_permissions','contacts','products','product_costs','sales','sale_items','sale_payments','sale_trade_ins','sale_item_costs','commissions','sale_returns','cash_entries','party_entries','consignment_agreements','consignment_rates','notifications','service_orders','service_events','customer_orders','follow_ups','quotes','quote_items','attachments','shifts','time_clock','tasks','push_subscriptions','accessories','accessory_costs','accessory_moves','sale_accessory_items','sale_accessory_costs','sale_accessory_returns'];
 const LOAD_ORDERS={attendance_issues:'created_at',breaks:'started_at',device_warranties:'created_at',catalog_reservations:'created_at',catalog_photos:'sort',device_inspections:'created_at',term_debts:'created_at',term_debt_payments:'created_at',work_schedules:'valid_from',shift_changes:'created_at',owner_closings:'created_at',entitlements:'created_at',staff_pay_profiles:'updated_at',exchanges:'created_at',service_costs:'created_at',shortages:'created_at',accessory_categories:'sort',accessory_families:'created_at',expenses:'created_at',expense_templates:'created_at',expense_categories:'sort',day_closings:'closed_at',cash_accounts:'sort',sales:'sold_at',cash_entries:'created_at',notifications:'created_at',party_entries:'created_at',service_orders:'received_at',service_events:'at',quotes:'created_at',attachments:'created_at',time_clock:'clock_in',tasks:'created_at',accessory_moves:'created_at',purchases:'created_at',fx_rates:'fetched_at'};
 const dropCaches=()=>{S.ov=undefined;S.lbx={};S.ph={};S.pay={};S.pm=undefined;S.pml=undefined;S.wd=null;S.prm=undefined;S.hp=undefined;S.ops=undefined;S.svp=undefined;S.work=undefined;S.team=null;S.tp=null};
 async function loadAll(){
@@ -1127,7 +1127,7 @@ async function boot(){
     if(!S.me||!S.me.active)return renderBlocked();
     if(!(await qsBoot(data.session)))return;
     if(S.me.must_change_password)return renderPwChange();
-    subscribe();rtSubscribe();swListen();swReg();fxStart();if(!location.hash.slice(1)&&prefGet('nt_start','0')==='1'){try{history.replaceState(null,'','#notlar')}catch(e){}}route()}
+    subscribe();rtSubscribe();swListen();swReg();fxStart();lySmsBoot();if(!location.hash.slice(1)&&prefGet('nt_start','0')==='1'){try{history.replaceState(null,'','#notlar')}catch(e){}}route()}
   catch(e){document.getElementById('app').innerHTML=`<div class="wrap"><main><div class="card"><h1>Bağlantı kurulamadı</h1><p class="sub">${esc(msg(e))}</p><button class="btn pri" data-a="retry">Tekrar dene</button></div></main></div>`}}
 function renderLogin(err){
   const L=qsShared()?qsList():[];
@@ -2470,7 +2470,7 @@ function svcProf(){const el=document.getElementById('svc-prof');if(!el||el.hidde
   el.hidden=!(p>0);el.innerHTML=p>0?`Birim kâr: <b class="${p-c<0?'neg':'pos'}">${money(p-c)}</b>${c>0?` (%${num(Math.round((p-c)/p*1000)/10)})`:''} · Personel primi bu kârdan hesaplanır.`:''}
 
 /* ================= KAMPANYALAR · SADAKAT PROGRAMI (060) ================= */
-const LY_DEF={birthday_wait_days:30,birthday_valid_days:30,mode:'yuzde',pct_dev:1,pct_acc:3,pct_svc:3,fix_amount:100,fix_points:1,kons:true,wait_days:15,min_use:50,max_use_pct:50,expiry_months:0,welcome:50,birthday:50,daily_limit:3,return_deduct:true,
+const LY_DEF={birthday_sms:false,birthday_sms_text:'{marka}: Iyi ki dogdunuz {ad}! Dogum gununuz icin hesabiniza {puan} TL degerinde {puan} puan yukledik. {gun} gun icinde magazamizda kullanabilirsiniz.',birthday_sms_ret:'',birthday_wait_days:30,birthday_valid_days:30,mode:'yuzde',pct_dev:1,pct_acc:3,pct_svc:3,fix_amount:100,fix_points:1,kons:true,wait_days:15,min_use:50,max_use_pct:50,expiry_months:0,welcome:50,birthday:50,daily_limit:3,return_deduct:true,
   stamp_on:true,stamp_min:1000,stamp_rule:'ikisi',stamp_size:10,stamp_months:0,stamp_rewards:[{at:5,type:'yuzde',value:50,units:1},{at:10,type:'hediye',value:0,units:1}],
   otp_on:false,otp_join:true,otp_use:true,otp_manual:true,otp_ttl:5,kasa_ttl:10,portal_on:true};
 const LY_OTP_P={kayit:'Üye kaydı',kullanim:'Puan kullanımı',portal:'Portal girişi',kasa:'Kasa kodu',test:'Deneme',yetkili:'Doğrulamasız (yetkili)',garanti:'Garanti değişimi'},LY_OTP_S={olusturuldu:['Oluşturuldu',''],gonderildi:['Gönderildi',''],hata:['Hata','bad'],dogrulandi:['Doğrulandı','ok'],kullanildi:['Kullanıldı','ok'],iptal:['İptal','']};
@@ -2521,6 +2521,35 @@ function lyBdCard(){const M=S.ly&&S.ly.members;if(!M)return '';const L=M.filter(
   return `<div class="card"><h2>Yaklaşan doğum günleri (7 gün)</h2>${L.length?`<div class="tw"><table class="ly-t"><tr><th style="text-align:left">Üye</th><th style="text-align:left">Telefon</th><th>Doğum günü</th><th></th></tr>${L.map(m=>`<tr><td style="text-align:left"><b>${esc(m.name)}</b></td><td style="text-align:left" class="mono">${lyPhoneTxt(m.phone)}</td><td>${fmtDate(m.birth_date).slice(0,5)} · ${lyBdIn(m.birth_date)?lyBdIn(m.birth_date)+' gün sonra':'<b>bugün</b>'}</td><td><a class="btn sm" target="_blank" rel="noopener" href="https://wa.me/${waPhone(m.phone)}">WhatsApp</a></td></tr>`).join('')}</table></div>`:'<div class="sub">Önümüzdeki 7 günde doğum günü olan üye yok.</div>'}
    ${miss?`<p class="sub">${num(miss)} üyenin doğum tarihi kayıtlı değil · <button class="lnk" data-a="ly-bdmiss">Listeyi aç</button>. Müşteri mağazaya gelince satış ekranındaki Sadakat penceresinden ya da müşteri kartından eklenebilir.</p>`:''}
    <p class="sub">Doğum günü puanı sabah kendiliğinden yüklenir; WhatsApp ile kutlama mesajı göndermek için yalnız ileti izni olan müşterilere yazın.</p></div>`}
+/* ---- doğum günü SMS'i (092) ---- */
+const LY_SMS_ST={bekliyor:['warn','Bekliyor'],gonderiliyor:['warn','Gönderiliyor'],gonderildi:['ok','Gönderildi'],hata:['bad','Gönderilemedi'],iptal:['','İptal']};
+const smsAscii=t=>String(t||'').replace(/[çÇğĞıİöÖşŞüÜâÂîû]/g,c=>({'ç':'c','Ç':'C','ğ':'g','Ğ':'G','ı':'i','İ':'I','ö':'o','Ö':'O','ş':'s','Ş':'S','ü':'u','Ü':'U','â':'a','Â':'A','î':'i','û':'u'})[c]).replace(/[^\x20-\x7E]/g,'').replace(/\s+/g,' ').trim();
+function lySmsSample(R){let t=String(R.birthday_sms_text||'').replace(/\{marka\}/g,'Anka Iletisim').replace(/\{ad\}/g,'Ayşe').replace(/\{puan\}/g,num(psNum(R.birthday)||0)).replace(/\{gun\}/g,Number(R.birthday_valid_days)?num(R.birthday_valid_days):'');
+  if(String(R.birthday_sms_ret||'').trim())t+=' '+String(R.birthday_sms_ret).trim();return smsAscii(t)}
+function lySmsPrevHtml(R){const t=lySmsSample(R),n=t.length,seg=n<=160?1:n<=306?2:0;
+  return `<div class="ly-smsbox">${esc(t.slice(0,306))}</div><div class="sub">${n} karakter · ${seg?seg+' SMS':'<b class="neg">çok uzun: 306 karakterden sonrası kesilir</b>'} · Türkçe harfler sadeleştirilerek gönderilir (ı→i, ş→s…).</div>`}
+function lySmsPrev(){const e=document.getElementById('ly-smsprev');if(e&&S.lyrd)e.innerHTML=lySmsPrevHtml(S.lyrd)}
+function lyBdSmsCard(R,mg,dis,chk){
+  return `<div class="card"><h2>Doğum günü SMS'i</h2>
+   <div class="f full">${chk('birthday_sms','Doğum günü puanı yüklenince müşteriye kutlama SMS\'i gönderilsin')}</div>
+   <p class="sub">Puan sabah yüklenir, SMS <b>10:00</b>'dan sonra gönderilir. Yalnız <b>kampanya mesajı izni</b> olan üyelere gider (üye kaydındaki onay kutusu); Netgsm İYS süzgeciyle gönderir, İYS'de onayı olmayan numaraya mesaj gitmez.</p>
+   <div class="form"><label class="f full">Mesaj metni<textarea class="in" rows="3" maxlength="300" data-c="lyr" data-k="birthday_sms_text"${dis}>${esc(R.birthday_sms_text||'')}</textarea>
+     <small class="sub">Kullanılabilir alanlar: <b>{ad}</b> müşterinin adı · <b>{puan}</b> doğum günü puanı · <b>{gun}</b> puanın geçerlilik günü · <b>{marka}</b> mağaza adı</small></label>
+    <label class="f full">Ret / iptal açıklaması <span class="sub">(ticari SMS'te zorunlu; Netgsm panelindeki İYS ret numaranız)</span><input class="in" type="text" maxlength="80" data-c="lyr" data-k="birthday_sms_ret" value="${esc(R.birthday_sms_ret||'')}" placeholder="Orn. RET yazip 3XXX'e gonderin"${dis}></label></div>
+   <h3 style="margin:10px 0 4px">Önizleme</h3><div id="ly-smsprev">${lySmsPrevHtml(R)}</div>
+   ${mg?`<h3 style="margin:12px 0 4px">Deneme gönderimi</h3><div class="row" style="gap:6px;flex-wrap:wrap"><input class="in" id="ly-bsph" type="tel" inputmode="tel" placeholder="05XX XXX XX XX" style="max-width:200px"><button class="btn sm" data-a="ly-smstest">Deneme SMS'i gönder</button></div>
+    <p class="sub">Önce "Kaydet" ile metni kaydedin. Deneme, kayıtlı metni sizin adınızla gönderir (başında "DENEME"). Gerekenler: Netgsm'de <b>normal SMS paketi</b> (OTP paketi yetmez), onaylı SMS başlığı ve İYS'de marka kaydı.</p>`:''}</div>`}
+function lySmsList(){const L=(S.d.ly_sms||[]).slice().sort((a,b)=>String(b.created_at).localeCompare(String(a.created_at))),R=lyR(),mg=can('manage_loyalty');
+  if(!L.length&&!R.birthday_sms)return mg?`<div class="card"><h2>Doğum günü SMS'leri</h2><p class="sub">Kapalı. Açmak için Kurallar › Doğum günü SMS'i.</p></div>`:'';
+  const wait=L.filter(x=>x.status==='bekliyor').length,cm=new Map((S.d.contacts||[]).map(c=>[c.id,c]));
+  return `<div class="card"><div class="row"><h2 style="flex:1;margin:0">Doğum günü SMS'leri</h2>${R.birthday_sms?'<span class="pill ok">Açık</span>':'<span class="pill">Kapalı</span>'}${mg&&wait?` <button class="btn sm" data-a="ly-smssend">Bekleyenleri şimdi gönder (${wait})</button>`:''}</div>
+   ${L.length?`<div class="tw"><table class="ly-t"><tr><th style="text-align:left">Tarih</th><th style="text-align:left">Müşteri</th><th style="text-align:left">Telefon</th><th>Durum</th><th style="text-align:left">Açıklama</th><th></th></tr>${L.slice(0,30).map(x=>{const st=LY_SMS_ST[x.status]||['',x.status],c=cm.get(x.contact_id);
+     return `<tr><td style="text-align:left">${fmtTime(x.sent_at||x.created_at)}</td><td style="text-align:left">${esc(c?c.name:'—')}</td><td style="text-align:left" class="mono">${lyPhoneTxt(x.phone)}</td><td><span class="pill ${st[0]}">${st[1]}</span>${x.tries>1?' <span class="sub">'+x.tries+'. deneme</span>':''}</td><td style="text-align:left"><span class="sub">${esc(x.error||'')}</span></td><td>${mg&&['bekliyor','hata'].includes(x.status)?`<button class="btn sm" data-a="ly-smscancel" data-id="${x.id}">İptal</button>`:''}</td></tr>`}).join('')}</table></div>`:'<div class="sub">Henüz doğum günü SMS\'i yok.</div>'}
+   <p class="sub">Gönderilemeyen mesaj 1 saat arayla en çok 3 kez denenir; açıklamada Netgsm'in hata nedeni yazar.</p></div>`}
+/* sahip girişinde sunucu fonksiyonu adresini kaydet; bekleyen SMS varsa (zamanlanmış iş çalışmadıysa) gönder */
+async function lySmsBoot(){try{if(isOwner()){const cur=((S.d.app_settings||[]).find(x=>x.key==='functions_base')||{}).value;if(cur!==CFG.URL&&/^https:\/\/[a-z0-9-]+\.supabase\.(co|in)$/.test(CFG.URL))await sb.rpc('set_functions_base',{p_url:CFG.URL})}
+  if(!can('manage_loyalty')||S.lySmsKick)return;const late=(S.d.ly_sms||[]).some(x=>x.status==='bekliyor'&&new Date(x.send_after)<new Date(Date.now()-30*60000)&&(x.tries||0)<3);
+  if(late){S.lySmsKick=1;await fnCall('sadakat',{action:'sms_gonder'});await syncData()}}catch(e){console.warn('doğum günü SMS',e)}}
 function ljOpen(o){o=o||{};S.lyq={std:true,phone:o.phone||'',cid:o.cid||'',info:null,v:{}};ljDraw();if(o.cid||o.phone)ljSearch()}
 async function ljSearch(){const Q=S.lyq;let q=Q.cid||'';if(!q){const p=lyPhone(Q.phone);if(!p){Q.err='Geçerli bir cep telefonu yazın (05XX XXX XX XX)';return ljDraw()}q=p}
   Q.err='';Q.busy=true;ljDraw();try{Q.info=await lyFetch(q);if(Q.info&&Q.info.phone)Q.phone=Q.info.phone}catch(e){Q.err=msg(e);Q.info=null}Q.busy=false;ljDraw()}
@@ -2717,7 +2746,7 @@ function vSadakat(){const u=S.ui,c=lyCamp(),L=S.ly=S.ly||{},t=u.lyt||'ozet',mg=c
 function lyOzetOld(s){const share=s.all_sales_month?Math.round(s.sales_month/s.all_sales_month*100):0;
   return `<div class="ly-kpis">${lyTile('Üye',num(s.members),`${num(s.active)} aktif · bu ay ${num(s.new_month)} yeni`)}${lyTile('Puan borcu',money(s.liability),'','p')}${lyTile('Bu ay kazanılan',num(s.earned_month)+' puan',`kullanılan ${num(s.spent_month)}`)}${lyTile('Üyeli satış (bu ay)',share+'%',`${num(s.sales_month)} / ${num(s.all_sales_month)} satış · ${money(s.revenue_month)}`)}</div>`}
 const lyTile=(l,v,s,cls)=>`<div class="card kpi"><div class="sub">${l}</div><div class="kv ${cls||''}">${v}</div>${s?`<div class="sub">${s}</div>`:''}</div>`;
-function lyOzet(){return lyOzet0()+lyBdCard()}
+function lyOzet(){return lyOzet0()+lyBdCard()+lySmsList()}
 function lyOzet0(){const s=S.ly.sum,R=lyR(),head=crRange('lys');if(!s)return head+'<div class="card empty">Yükleniyor…</div>';
   if(S.ly.sumOld)return head+'<div class="note bad">Seçili aralığa göre özet için 073_kampanya_tarih_araligi.sql dosyasını çalıştırın. Şimdilik yalnız bu ayın değerleri gösteriliyor.</div>'+lyOzetOld(s);
   const share=s.all_sales?Math.round(s.sales/s.all_sales*100):0;
@@ -2777,6 +2806,7 @@ function lyKurallar(){const R=S.lyrd||(r=>{r.stamp_rewards=(r.stamp_rewards||[])
     <label class="f">Puan geçerliliği<select class="in" data-c="lyr" data-k="expiry_months"${dis}>${opts(LY_EXP,Number(R.expiry_months))}</select></label></div>
     <p class="sub">Bekleme süresi 14 günlük cayma hakkını kapsasın diye önerilir: alışveriş yapıp puanı hemen harcayıp ürünü iade etmeyi engeller.</p></div>
    <div class="card"><h2>Hediye puanlar</h2><div class="form">${n('welcome','Hoş geldin (ilk alışverişte)','puan')}${n('birthday','Doğum günü (yılda bir)','puan')}${n('birthday_valid_days','Doğum günü puanı geçerliliği (0 = genel kural)','gün')}${n('birthday_wait_days','Doğum tarihi girildikten sonra bekleme','gün')}</div><p class="sub">Doğum günü puanı her sabah kendiliğinden yüklenir; üyenin doğum tarihi kayıtlı olmalı. Bekleme süresi, doğum tarihini o gün yazıp hemen puan almayı engeller. Puan yüklenince müdür ve sahibe bildirim gider.</p></div>
+   ${lyBdSmsCard(R,mg,dis,chk)}
    <div class="card"><h2>Damga kartı</h2><div class="form"><div class="f full">${chk('stamp_on','Damga kartı açık')}</div>
     <label class="f">Damga koşulu<select class="in" data-c="lyr" data-k="stamp_rule"${dis}>${opts(LY_SR,R.stamp_rule)}</select></label>${n('stamp_min','Fiş tutarı eşiği','₺')}${n('stamp_size','Kart','damga')}
     <label class="f">Kart geçerliliği (son damgadan)<select class="in" data-c="lyr" data-k="stamp_months"${dis}>${opts(LY_EXP,Number(R.stamp_months))}</select></label></div>
@@ -9029,6 +9059,10 @@ Object.assign(A,{
     if(use>0){if(use<R.min_use){c.ly=prev;return setErr(`En az ${R.min_use} puan kullanılabilir.`)}if(use>mx){c.ly=prev;return setErr(`Bu fişte en çok ${mx} puan kullanılabilir.`)}}
     c.ly.use=use;if(vok){c.ly.otp=vok.id;c.ly.vk=vok.kind}else if(mn&&nu===true&&(use>0||rid))c.ly.man=true;if(!c.customer&&i.contact_id)c.customer=i.contact_id;closeModal();psSnd('add');psFlash(`Sadakat: ${i.name}${use?' · '+use+' puan kullanılıyor':''}`);render()},
   'ly-unlink'(){S.cart.ly=null;closeModal();psSnd('del');render()},
+  async 'ly-smstest'(t){const p=g('ly-bsph');if(!lyPhone(p))return toast('Geçerli bir cep telefonu yazın',true);t.disabled=true;
+    try{const r=await fnCall('sadakat',{action:'sms_deneme',phone:p});toast('Deneme SMS\'i gönderildi: '+r.text)}catch(e){toast(msg(e),true)}t.disabled=false},
+  async 'ly-smssend'(t){t.disabled=true;try{const r=await fnCall('sadakat',{action:'sms_gonder'});toast(`${r.sent} SMS gönderildi${r.failed?' · '+r.failed+' gönderilemedi: '+(r.errors||[]).join(' / '):''}`,!!r.failed);await syncData()}catch(e){toast(msg(e),true)}render()},
+  async 'ly-smscancel'(t){try{await call('ly_sms_cancel',{p_id:t.dataset.id},'Mesaj iptal edildi');await syncData()}catch(e){}render()},
   'lj-open'(t){ljOpen({cid:t.dataset.cid||''})},
   'lj-find'(){const Q=S.lyq;lyKeep();Q.phone=g('lj-ph');if(Q.info&&Q.info.contact_id&&!Q.info.phone&&!Q.info.member){Q.info=Object.assign({},Q.info,{phone:lyPhone(Q.phone)});return ljDraw()}Q.cid='';Q.info=null;Q.v={};ljSearch()},
   async 'lj-join'(t){lyKeep();const Q=S.lyq,i=Q.info,v=Q.v||{},vok=v.ok&&v.ok.pur==='kayit'?v.ok:null,mn=!!v.man&&lyManOk();
@@ -9095,7 +9129,7 @@ Object.assign(A,{
 document.addEventListener('input',e=>{const t=e.target,k=t.dataset&&t.dataset.c;if(!k||!k.startsWith('ly'))return;
   if(k==='lyph'){S.lyq.phone=t.value;return}
   if(k==='lymq'){S.ui.lymq=t.value;clearTimeout(S.lyT);S.lyT=setTimeout(()=>{render();const el=document.querySelector('[data-c="lymq"]');if(el){el.focus();el.setSelectionRange(el.value.length,el.value.length)}},250);return}
-  if(k==='lyr'&&t.type!=='checkbox'&&t.tagName==='INPUT'){S.lyrd[t.dataset.k]=t.value;return}
+  if(k==='lyr'&&t.type!=='checkbox'&&(t.tagName==='INPUT'||t.tagName==='TEXTAREA')){S.lyrd[t.dataset.k]=t.value;if(/^birthday(_sms|$)/.test(t.dataset.k))lySmsPrev();return}
   if(k==='lyrw'&&t.tagName==='INPUT'){S.lyrd.stamp_rewards[+t.dataset.i][t.dataset.f]=t.value;return}
   if(k==='lyrwq'){const P=(S.lyrwp=S.lyrwp||{})[t.dataset.i]=S.lyrwp[t.dataset.i]||{};P.q=t.value;const w=document.getElementById('ly-rwr-'+t.dataset.i);if(w)w.innerHTML=lyRwRes(t.dataset.i);return}
   if(k==='lyiq'){S.lyiq=S.lyiq||{};S.lyiq[t.dataset.l]=t.value;const w=document.getElementById('ly-ipr-'+t.dataset.l);if(w)w.innerHTML=lyIpRes(t.dataset.l)}});
