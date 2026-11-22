@@ -1915,9 +1915,15 @@ function barBits(code){const c=String(code||'').trim();
 function barSvg(code,h){const {bits}=barBits(code),q=10,W=bits.length+2*q;let r='',i=0;
   while(i<bits.length){if(bits[i]==='1'){let j=i;while(j<bits.length&&bits[j]==='1')j++;r+=`<rect x="${q+i}" y="0" width="${j-i}" height="${h||40}"/>`;i=j}else i++}
   return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${W} ${h||40}" preserveAspectRatio="none" shape-rendering="crispEdges" fill="#000" role="img" aria-label="Barkod ${esc(code)}">${r}</svg>`}
-const LBL_SIZES={'50x30':['50 × 30 mm (etiket yazıcı)',50,30],'40x25':['40 × 25 mm (küçük etiket)',40,25],'70x37':['A4 sayfa, 3 × 8 etiket (70 × 37 mm)',70,37]};
+const LBL_SIZES={'50x30':['50 × 30 mm (etiket yazıcı)',50,30],'58x40':['58 × 40 mm (etiket yazıcı, geniş)',58,40],'40x25':['40 × 25 mm (küçük etiket)',40,25],'70x37':['A4 sayfa, 3 × 8 etiket (70 × 37 mm)',70,37]};
+/* 097: Fiyat Etiketi Yönetmeliği şablonu (aksesuar) */
+const accLblOn=()=>(S.d.app_settings||[]).some(x=>x.key==='acc_label_v');
+const ORIGINS=['Çin','Türkiye','Vietnam','Hindistan','Tayvan','Güney Kore','Japonya','ABD','Almanya','Endonezya','Tayland','Malezya'];
+const VATS=[20,10,1,0];
+const lblYasal=()=>S.lbl&&S.lbl.k==='a'&&accLblOn()&&S.lbl.tpl!=='basit';
+const lblStale=x=>x.lp&&x.pc&&new Date(x.pc)>new Date(x.lp);
 const lblItems=k=>k==='c'?S.d.products.filter(inStock).map(p=>({id:p.id,name:p.model,sub:p.imei||'',code:p.barcode||'',price:p.target_price,stock:null}))
-  :S.d.accessories.filter(a=>a.active!==false).map(a=>({id:a.id,name:a.name,sub:a.category||'',code:a.barcode||'',price:a.sale_price,stock:a.stock_qty}));
+  :S.d.accessories.filter(a=>a.active!==false&&!a.is_service).map(a=>({id:a.id,name:a.name,sub:a.category||'',code:a.barcode||'',price:a.sale_price,stock:a.stock_qty,origin:a.origin||'',vat:a.vat_rate==null?20:Number(a.vat_rate),pc:a.price_changed_at,lp:a.label_printed_at}));
 function lblOpen(k,id){const L=S.lbl=S.lbl||{k:'a',q:'',sel:new Map(),size:'50x30',price:true,shop:true};
   const ok={a:can('manage_accessories|print_labels'),c:can('manage_products|print_labels')};if(!ok.a&&!ok.c)return toast('Yetkiniz yok',true);
   L.k=ok[k]?k:(ok.a?'a':'c');if(id)L.sel.set(L.k+id,1);L.q='';lblModal()}
@@ -1927,18 +1933,38 @@ function lblModal(){const L=S.lbl,ok={a:can('manage_accessories|print_labels'),c
    <input class="in" id="lb-q" type="search" placeholder="Ara (ad, IMEI, barkod)" value="${esc(L.q)}" style="flex:1;min-width:160px">
    <button class="btn sm" data-a="lbl-missing">Eksik barkodları üret</button></div>
   <div id="lb-list" style="max-height:34vh;overflow:auto;margin:8px 0"></div>
-  <div class="form"><label class="f">Etiket boyutu<select class="in" id="lb-size" data-c="lblopt">${opts(Object.entries(LBL_SIZES).map(([v,x])=>[v,x[0]]),L.size)}</select></label>
+  ${L.k==='a'&&accLblOn()?`<div class="form"><label class="f">Etiket şablonu<select class="in" id="lb-tpl" data-c="lblopt">${opts([['yasal','Fiyat etiketi (yönetmeliğe uygun)'],['basit','Sade barkod etiketi']],L.tpl==='basit'?'basit':'yasal')}</select></label>
+   ${lblYasal()?`<div class="f sub" style="align-self:end">Ad, tüm vergiler dahil fiyat, barkod numarası, etiket tarihi, üretim yeri ve KDV oranı basılır.</div>`:''}</div>
+   ${lblYasal()&&can('manage_accessories')?`<div class="row" style="gap:6px;margin:6px 0"><span class="sub">Seçili ürünlerin üretim yeri:</span><input class="in" id="lb-org" list="lb-orgs" placeholder="Örn. Çin" style="max-width:160px"><datalist id="lb-orgs">${ORIGINS.map(o=>`<option value="${esc(o)}">`).join('')}</datalist><button class="btn sm" data-a="lbl-org-set">Seçililere uygula</button><span style="flex:1"></span><button class="btn sm" data-a="lbl-stale">Fiyatı değişenleri seç</button></div>`:lblYasal()?`<div class="row" style="margin:6px 0"><span style="flex:1"></span><button class="btn sm" data-a="lbl-stale">Fiyatı değişenleri seç</button></div>`:''}`:''}
+  <div class="form"><label class="f">Etiket boyutu<select class="in" id="lb-size" data-c="lblopt">${opts(Object.entries(LBL_SIZES).filter(([v])=>!(lblYasal()&&v==='40x25')).map(([v,x])=>[v,x[0]]),L.size)}</select></label>
    <label class="chk" style="align-self:end"><input type="checkbox" id="lb-price" data-c="lblopt" ${L.price?'checked':''}> Fiyatı yazdır</label><label class="chk" style="align-self:end"><input type="checkbox" id="lb-shop" data-c="lblopt" ${L.shop!==false?'checked':''}> İşletme adını yazdır</label></div>
   <div class="err" id="f-err" hidden></div><div class="actions"><span class="sub" id="lb-cnt" style="margin-right:auto"></span><button class="btn" data-a="close">Kapat</button><button class="btn" data-a="lbl-all">Görünenlerin tümünü seç</button><button class="btn pri" data-a="lbl-print">Etiketleri yazdır</button></div>`);
   lblList()}
 function lblList(){const L=S.lbl,el=document.getElementById('lb-list');if(!el)return;const q=(L.q||'').toLowerCase();
   const l=lblItems(L.k).filter(x=>!q||[x.name,x.sub,x.code].join(' ').toLowerCase().includes(q)).slice(0,200);
   el.innerHTML=l.map(x=>{const key=L.k+x.id,n=L.sel.get(key);
-    return `<div class="item" style="padding:6px 0;align-items:center"><label class="chk" style="flex:1;min-width:0"><input type="checkbox" data-c="lblsel" data-key="${key}" ${n?'checked':''}><span style="min-width:0"><b>${esc(x.name)}</b>${x.sub?` <span class="sub">${esc(x.sub)}</span>`:''}<br>${x.code?`<span class="mono sub">${esc(x.code)}</span>`:'<span class="pill warn">Barkod yok, yazdırırken üretilir</span>'}</span></label>
+    return `<div class="item" style="padding:6px 0;align-items:center"><label class="chk" style="flex:1;min-width:0"><input type="checkbox" data-c="lblsel" data-key="${key}" ${n?'checked':''}><span style="min-width:0"><b>${esc(x.name)}</b>${x.sub?` <span class="sub">${esc(x.sub)}</span>`:''}<br>${x.code?`<span class="mono sub">${esc(x.code)}</span>`:'<span class="pill warn">Barkod yok, yazdırırken üretilir</span>'}${lblYasal()?` ${x.origin?`<span class="sub">· ${esc(x.origin)} · KDV %${x.vat}</span>`:'<span class="pill bad">Üretim yeri eksik</span>'}${lblStale(x)?' <span class="pill warn">Fiyat değişti · etiket yenilenmeli</span>':''}`:''}</span></label>
      <input class="in" type="number" min="1" max="99" step="1" inputmode="numeric" style="width:64px" aria-label="Etiket adedi" data-c="lblcopies" data-key="${key}" value="${n||1}" ${n?'':'disabled'}></div>`}).join('')||'<div class="empty">Ürün yok.</div>';
   lblCount()}
 function lblCount(){const e=document.getElementById('lb-cnt');if(!e)return;let n=0,c=0;for(const v of S.lbl.sel.values()){n++;c+=v}e.textContent=n?`${n} ürün · ${c} etiket`:'Seçim yok'}
-function lblSheet(items,size,price){const [,w,h]=LBL_SIZES[size],a4=size==='70x37';
+function lblSheet(items,size,price,yasal){const [,w,h]=LBL_SIZES[size],a4=size==='70x37',dt=fmtDate(today()),sm=h<35;
+  if(yasal){const yc=x=>`<div class="lbl ly"><div class="ln">${esc(x.name)}</div><div class="ly-m"><div class="ly-b"><div class="lb">${barSvg(x.code,40)}</div><div class="lc">${esc(x.code)}</div></div>
+      <div class="ly-p"><div class="lp">${x.price!=null?money(x.price):'—'}</div><div class="lk">KDV %${esc(x.vat)} dahil</div></div></div>
+      <div class="ly-f"><span>Üretim yeri: <b>${esc(x.origin||'—')}</b></span><span>Etiket tarihi: ${esc(dt)}</span></div>${/^türkiye$/i.test(x.origin||'')?'<div class="ly-y">YERLİ ÜRETİM</div>':''}${S.lbl&&S.lbl.shop?`<div class="ls">${esc(shopSet().name)}</div>`:''}</div>`;
+    const css=`@media screen{#lblsheet{display:none!important}}@page{size:${a4?'A4':w+'mm '+h+'mm'};margin:${a4?'10mm 0':'0'}}
+     #lblsheet{${a4?'display:grid;grid-template-columns:repeat(3,70mm);justify-content:center;':''}}
+     #lblsheet .lbl{box-sizing:border-box;width:${w}mm;height:${a4?h:h-0.4}mm;padding:1.4mm 1.8mm;overflow:hidden;background:#fff;color:#000;font-family:Arial,Helvetica,sans-serif;display:flex;flex-direction:column;justify-content:space-between;gap:.4mm;${a4?'':'page-break-after:always;'}break-inside:avoid}
+     #lblsheet .lbl:last-child{page-break-after:auto;break-after:auto}
+     @media print{html,body.lbl-print{margin:0!important;padding:0!important;height:auto!important;min-height:0!important;background:#fff!important}body.lbl-print #lblsheet{margin:0;padding:0}}
+     #lblsheet .ln{font-size:${sm?7:8.5}pt;font-weight:700;text-align:center;line-height:1.1;max-height:2.25em;overflow:hidden}
+     #lblsheet .ly-m{display:flex;align-items:center;gap:1.2mm;flex:1;min-height:0}
+     #lblsheet .ly-b{flex:1.15;min-width:0}#lblsheet .lb{height:${Math.round(h*(sm?.3:.34))}mm}#lblsheet .lb svg{width:100%;height:100%;display:block}
+     #lblsheet .lc{font:${sm?5.5:6.5}pt/1 monospace;text-align:center;letter-spacing:.04em;margin-top:.3mm}
+     #lblsheet .ly-p{flex:1;text-align:center}#lblsheet .lp{font-size:${sm?11:14}pt;font-weight:800;line-height:1;white-space:nowrap}#lblsheet .lk{font-size:${sm?5.5:6.5}pt;margin-top:.6mm}
+     #lblsheet .ly-f{display:flex;justify-content:space-between;gap:1mm;font-size:${sm?5:6}pt;line-height:1.1;border-top:.2mm solid #000;padding-top:.4mm}#lblsheet .ly-f b{font-weight:700}
+     #lblsheet .ly-y{font-size:${sm?5:6}pt;font-weight:800;text-align:center;border:.25mm solid #000;border-radius:.6mm;line-height:1.2}
+     #lblsheet .ls{font-size:4.5pt;text-align:center;line-height:1}`;
+    return {css,html:items.map(yc).join('')}}
   const cell=x=>`<div class="lbl"><div class="ln">${esc(x.name)}</div><div class="lb">${barSvg(x.code,40)}</div><div class="lc">${esc(x.code)}</div>${price&&x.price!=null?`<div class="lp">${money(x.price)}</div>`:''}${S.lbl&&S.lbl.shop?`<div class="ls">${esc(shopSet().name)}</div>`:''}</div>`;
   const css=`@media screen{#lblsheet{display:none!important}}@page{size:${a4?'A4':w+'mm '+h+'mm'};margin:${a4?'10mm 0':'0'}}
    #lblsheet{${a4?'display:grid;grid-template-columns:repeat(3,70mm);justify-content:center;':''}}
@@ -1951,7 +1977,7 @@ function lblSheet(items,size,price){const [,w,h]=LBL_SIZES[size],a4=size==='70x3
    #lblsheet .ls{font-size:5pt;text-align:center;line-height:1;color:#000}
    #lblsheet .lp{font-size:${h<28?9:11}pt;font-weight:800;text-align:center;line-height:1}`;
   return {css,html:items.map(cell).join('')}}
-function lblRun(items,size,price){const {css,html}=lblSheet(items,size,price);
+function lblRun(items,size,price,yasal){const {css,html}=lblSheet(items,size,price,yasal);
   prReset();
   const st=document.createElement('style');st.id='lblstyle';st.textContent=css;document.head.appendChild(st);
   const d=document.createElement('div');d.id='lblsheet';d.innerHTML=html;document.body.appendChild(d);document.body.classList.add('lbl-print');
@@ -1962,7 +1988,12 @@ async function lblPrint(){const L=S.lbl;if(!L.sel.size)return setErr('Önce ür�
     if(made){await syncData();render();toast(made+' ürüne barkod üretildi')}
     const items=[];for(const [key,n] of L.sel){const it=lblItems(L.k).find(x=>x.id===key.slice(1));if(it&&it.code)for(let i=0;i<n;i++)items.push(it)}
     if(!items.length)return setErr('Yazdırılacak etiket yok.');
-    L.size=g('lb-size')||L.size;L.price=document.getElementById('lb-price').checked;L.shop=document.getElementById('lb-shop').checked;lblRun(items,L.size,L.price)}catch(e){setErr(msg(e))}}
+    L.size=g('lb-size')||L.size;L.price=document.getElementById('lb-price').checked;L.shop=document.getElementById('lb-shop').checked;
+    const yas=lblYasal();if(yas){const miss=[...new Set(items.filter(x=>!x.origin).map(x=>x.name))];
+      if(miss.length)return setErr(`Yönetmelik gereği üretim yeri zorunlu. Eksik: ${miss.slice(0,5).join(', ')}${miss.length>5?' +'+(miss.length-5):''}. ${can('manage_accessories')?'Üstteki "Seçililere uygula" ile ya da ürünü düzenleyerek girin.':'Yöneticiden ürün kartına girmesini isteyin.'}`);
+      if(L.size==='40x25')L.size='50x30'}
+    lblRun(items,L.size,L.price,yas);
+    if(yas)call('acc_label_printed',{p_ids:[...new Set(items.map(x=>x.id))]}).then(()=>{const t=new Date().toISOString();items.forEach(x=>{const a=S.d.accMap&&S.d.accMap.get(x.id);if(a)a.label_printed_at=t})}).catch(()=>{})}catch(e){setErr(msg(e))}}
 function vStok(){
   const u=S.ui;
   if(u.kz_dev&&isOwner())return kzView('dev');
@@ -6734,6 +6765,8 @@ function accModal(a){
    <label class="f">Stok kodu<input class="in" id="ac-sku" value="${esc(a.sku)}"></label>
    <label class="f">Satış fiyatı (₺)<input class="in" id="ac-price" type="number" min="0" step="0.01" inputmode="decimal" value="${a.sale_price==null?'':a.sale_price}"></label>
    <label class="f">Asgari stok (uyarı)<input class="in" id="ac-min" type="number" min="0" step="1" inputmode="numeric" value="${a.min_stock||0}"></label>
+   ${accLblOn()?`<label class="f">Üretim yeri <span class="sub">(fiyat etiketinde zorunlu)</span><input class="in" id="ac-org" list="ac-orgs" maxlength="40" value="${esc(a.origin||'')}" placeholder="Örn. Çin"><datalist id="ac-orgs">${ORIGINS.map(o=>`<option value="${esc(o)}">`).join('')}</datalist></label>
+   <label class="f">KDV oranı<select class="in" id="ac-vat">${opts(VATS.map(v=>[String(v),'%'+v]),String(a.vat_rate==null?20:a.vat_rate))}</select></label>`:''}
    <label class="f full">Not<input class="in" id="ac-notes" value="${esc(a.notes)}"></label>
    ${e?`${can('archive_accessory')||a.is_service?`<label class="chk full"><input type="checkbox" id="ac-act" ${a.active!==false?'checked':''}> Aktif (satışta görünür)</label>`:''}${!a.family_id&&Number(a.stock_qty)===0&&!a.is_service?`<div class="full note">Bu ürünün stoğu yok. Garanti paketi, temizlik gibi stok tutulmayan bir satış kalemiyse <button type="button" class="lnk" data-a="svc-conv" data-id="${a.id}">hizmete çevirin</button> (stok takibi kapanır).</div>`:''}`:`
    <div class="full sub" style="margin-top:4px">${h?'Faturadaki satır bilgisi (ürün tanımlanır ve bu faturaya eklenir):':'İsterseniz ilk alışı da şimdi girin (boş bırakırsanız sonra "Alış" ile girersiniz):'}</div>
@@ -7244,16 +7277,17 @@ const A={
   'acc-recv'(t){accRecvModal(t.dataset.id)},'acc-count'(t){accCountModal(t.dataset.id)},'acc-write'(t){accWriteModal(t.dataset.id)},'acc-moves'(t){accMovesModal(t.dataset.id)},
   async 'acc-save'(t){const id=t.dataset.id,name=g('ac-name');if(!name)return setErr('Ürün adını yazın.');
     const a0=id?S.d.accMap.get(id):null;const o={name,category:null,barcode:g('ac-bar')||null,sku:g('ac-sku')||null,sale_price:nv('ac-price'),min_stock:Math.max(0,Math.round(nv('ac-min')||0)),notes:g('ac-notes')||null};
+    const ex097=document.getElementById('ac-org')?{origin:g('ac-org').trim()||null,vat_rate:Number(g('ac-vat')||20)}:null;if(ex097&&ex097.origin&&ex097.origin.length<2)return setErr('Üretim yeri en az 2 harf olmalı.');
     try{
       if(a0&&a0.family_id){delete o.name;delete o.category;o.variant_label=name}else o.category=await catResolve('ac-cat','ac-newcat');
-      if(id){const ae=document.getElementById('ac-act'),r=await sb.from('accessories').update({...o,...(ae?{active:ae.checked}:{})}).eq('id',id);if(r.error)throw r.error}
+      if(id){const ae=document.getElementById('ac-act'),r=await sb.from('accessories').update({...o,...(ex097||{}),...(ae?{active:ae.checked}:{})}).eq('id',id);if(r.error)throw r.error}
       else if(S.accHost&&S.pf){const q=Math.round(nv('ac-q0')||0),c=nv('ac-c0'),cur=g('ac-cur0')||'TRY';
         if(q<1)return setErr('Faturadaki adedi yazın.');if(c==null||c<0)return setErr('Birim maliyeti yazın.');
-        const nid=await call('create_accessory',{p:o});const ab=document.getElementById('ac-autobar');if(!o.barcode&&ab&&ab.checked)await call('generate_barcode',{p_kind:'aksesuar',p_id:nid});
+        const nid=await call('create_accessory',{p:o});if(ex097)await sb.from('accessories').update(ex097).eq('id',nid);const ab=document.getElementById('ac-autobar');if(!o.barcode&&ab&&ab.checked)await call('generate_barcode',{p_kind:'aksesuar',p_id:nid});
         if(cur==='USD')await call('set_accessories_usd_mode',{p_ids:[nid],p_usd:true});
         await syncData();S.pf.accs.push({id:nid,qty:q,cur,cost:c});if(!S.pf.term)S.pf.cur=cur;S.accHost=false;pfModal();toast('Ürün tanımlandı ve faturaya eklendi');return}
       else{const usd=g('ac-cur0')==='USD';if(usd&&!(S.fx&&S.fx.ok))return setErr('Canlı kur alınamadı; dolar maliyet için kur gerekli.');
-        const nid=await call('create_accessory',{p:o});const ab=document.getElementById('ac-autobar');if(!o.barcode&&ab&&ab.checked)await call('generate_barcode',{p_kind:'aksesuar',p_id:nid});const q=nv('ac-q0'),c=nv('ac-c0');
+        const nid=await call('create_accessory',{p:o});if(ex097)await sb.from('accessories').update(ex097).eq('id',nid);const ab=document.getElementById('ac-autobar');if(!o.barcode&&ab&&ab.checked)await call('generate_barcode',{p_kind:'aksesuar',p_id:nid});const q=nv('ac-q0'),c=nv('ac-c0');
         if(usd)await call('set_accessories_usd_mode',{p_ids:[nid],p_usd:true});
         if(q>0&&c!=null&&c>=0)await call('receive_accessory',usd?{p_accessory:nid,p_qty:Math.round(q),p_unit_cost:null,p_method:g('ac-m0'),p_usd_cost:c,p_fx_rate:S.fx.rate}:{p_accessory:nid,p_qty:Math.round(q),p_unit_cost:c,p_method:g('ac-m0')})}
       toast('Kaydedildi');closeModal();await reload()}catch(e){setErr(msg(e))}},
@@ -7283,6 +7317,9 @@ const A={
     try{await call('write_off_accessory',{p_accessory:id,p_qty:q,p_reason:r,p_note:n||null,p_date:d},'Fire kaydedildi');closeModal();await reload()}catch(e){setErr(msg(e))}},
   'lbl-open'(t){lblOpen(t.dataset.k,t.dataset.id)},
   'lbl-kind'(t){S.lbl.k=t.dataset.v;S.lbl.q='';lblModal()},
+  async 'lbl-org-set'(t){const L=S.lbl,v=g('lb-org').trim();if(v.length<2)return setErr('Üretim yerini yazın (ör. Çin).');const ids=[...L.sel.keys()].filter(k=>k[0]==='a').map(k=>k.slice(1));if(!ids.length)return setErr('Önce ürün seçin.');
+    t.disabled=true;const r=await sb.from('accessories').update({origin:v}).in('id',ids);t.disabled=false;if(r.error)return setErr(msg(r.error));ids.forEach(id=>{const a=S.d.accMap&&S.d.accMap.get(id);if(a)a.origin=v});toast(ids.length+' ürünün üretim yeri: '+v);lblList()},
+  'lbl-stale'(){const L=S.lbl;let n=0;lblItems('a').filter(lblStale).forEach(x=>{if(!L.sel.has('a'+x.id)){L.sel.set('a'+x.id,1);n++}});toast(n?n+' ürün seçildi (fiyatı son etiketten sonra değişmiş)':'Fiyatı değişen ürün yok');lblList()},
   'lbl-all'(){const L=S.lbl,q=(L.q||'').toLowerCase();lblItems(L.k).filter(x=>!q||[x.name,x.sub,x.code].join(' ').toLowerCase().includes(q)).slice(0,200).forEach(x=>L.sel.set(L.k+x.id,L.sel.get(L.k+x.id)||1));lblList()},
   async 'lbl-missing'(){const L=S.lbl;try{const n=await call('generate_missing_barcodes',{p_kind:L.k==='c'?'cihaz':'aksesuar'});await syncData();render();toast(n?n+' ürüne barkod üretildi':'Barkodsuz ürün yok');lblList()}catch(e){setErr(msg(e))}},
   'lbl-print'(){lblPrint()},
@@ -9897,7 +9934,7 @@ document.addEventListener('change',async e=>{
     case 'purange':S.ui.puf=g('puf')||S.ui.puf;S.ui.put=g('put')||S.ui.put;S.ui.pus=g('pus');S.ui.puc=document.getElementById('puc').checked;render();break;
     case 'pfh':case 'pfa':if(S.pf)pfField(t);break;
     case 'lblsel':{const L=S.lbl,key=t.dataset.key;if(t.checked)L.sel.set(key,1);else L.sel.delete(key);const ci=document.querySelector('[data-c="lblcopies"][data-key="'+key+'"]');if(ci){ci.disabled=!t.checked;if(t.checked)ci.value=1}lblCount();break}
-    case 'lblopt':S.lbl.size=g('lb-size')||S.lbl.size;S.lbl.price=document.getElementById('lb-price').checked;S.lbl.shop=document.getElementById('lb-shop').checked;break;
+    case 'lblopt':{S.lbl.size=g('lb-size')||S.lbl.size;S.lbl.price=document.getElementById('lb-price').checked;S.lbl.shop=document.getElementById('lb-shop').checked;const tp=document.getElementById('lb-tpl');if(tp&&tp.value!==(S.lbl.tpl||'yasal')){S.lbl.tpl=tp.value;if(lblYasal()&&S.lbl.size==='40x25')S.lbl.size='50x30';lblModal()}break}
     case 'flf':S.ui[t.dataset.f]=t.value;render();break;
     case 'firerange':S.ui.ff=g('ff')||S.ui.ff;S.ui.ft=g('ft')||S.ui.ft;S.ui.fr=g('fr');render();break;
     case 'psub':{const el=document.getElementById('p-inv');if(el)el.innerHTML=invPill(t.value);break}
