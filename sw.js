@@ -12,7 +12,7 @@ self.addEventListener('push', e => {
   const opt = {
     body: d.body || '',
     icon: 'icon-192.png',
-    badge: 'icon-192.png',
+    badge: 'badge-96.png',                // durum çubuğundaki küçük simge: şeffaf zeminde beyaz kuş (Android yalnız şekli kullanır)
     data: { url: d.url || '#panel' },
     tag: d.tag || undefined,
     renotify: !!d.tag,
