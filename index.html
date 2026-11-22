@@ -5107,10 +5107,13 @@ function svDeliverModal(id){
 /* ---- Teknik servis: gider/kazanç, teklif-onay, müşteri formları ---- */
 const SV_TERMS='1) Cihazdaki veriler (rehber, fotoğraf, uygulama) servis işlemi sırasında silinebilir; yedek almak müşterinin sorumluluğundadır.\n2) Arıza tespiti sırasında bildirilmemiş ek arızalar çıkabilir; ek işlem için müşteriden onay alınır.\n3) Onarım tamamlandığında bildirilen cihaz, bildirim tarihinden itibaren 30 gün içinde teslim alınmalıdır.\n4) Sıvı teması, kırık/ezik ve yetkisiz müdahale görmüş cihazlarda onarım garantisi geçerli olmaz.\n5) Kişisel veriler 6698 sayılı KVKK kapsamında yalnızca servis hizmeti için işlenir.';
 const SHOP_DEF={name:'Anka İletişim',address:'Bahçelievler Mah. Ömür Sk. Ömür Avm No: 21 Kat: -1 Anka İletişim Bahçelievler/İstanbul',email:'destek@ankailetisimtr.com',phone:'0533 133 31 12',note:'Bizi tercih ettiğiniz için teşekkür ederiz. İade ve değişim işlemlerinde fişinizi ibraz ediniz.'};
-const shopSet=()=>{const m=Object.fromEntries((S.d.app_settings||[]).map(x=>[x.key,x.value]));return{name:m.shop_name||SHOP_DEF.name,phone:m.shop_phone||SHOP_DEF.phone,address:m.shop_address||SHOP_DEF.address,email:m.shop_email||SHOP_DEF.email,taxOffice:m.shop_tax_office||'',taxNo:m.shop_tax_no||'',note:m.receipt_note||SHOP_DEF.note,terms:m.service_terms||SV_TERMS,wdays:m.service_warranty_days==null||m.service_warranty_days===''?90:Number(m.service_warranty_days)}};
+/* 096 kurulu mu: ilk değerler app_settings'e yazılır */
+const shopExtraOn=()=>(S.d.app_settings||[]).some(x=>x.key==='shop_hours'||x.key==='shop_web');
+const shopSet=()=>{const m=Object.fromEntries((S.d.app_settings||[]).map(x=>[x.key,x.value]));return{name:m.shop_name||SHOP_DEF.name,phone:m.shop_phone||SHOP_DEF.phone,address:m.shop_address||SHOP_DEF.address,email:m.shop_email||SHOP_DEF.email,taxOffice:m.shop_tax_office||'',taxNo:m.shop_tax_no||'',web:m.shop_web||'',instagram:m.shop_instagram||'',hours:m.shop_hours||'',note:m.receipt_note||SHOP_DEF.note,terms:m.service_terms||SV_TERMS,wdays:m.service_warranty_days==null||m.service_warranty_days===''?90:Number(m.service_warranty_days)}};
 /* işletme künyesi: tüm belgelerde aynı bilgiler */
 const shopTax=sh=>[sh.taxOffice?sh.taxOffice+' V.D.':'',sh.taxNo?'VKN/TCKN: '+sh.taxNo:''].filter(Boolean).join(' · ');
-const shopLines=sh=>[sh.address,[sh.phone?'Tel: '+sh.phone:'',sh.email].filter(Boolean).join(' · '),shopTax(sh)].filter(Boolean);
+const webShort=u=>String(u||'').replace(/^https?:\/\//,'').replace(/\/$/,'');
+const shopLines=sh=>[sh.address,[sh.phone?'Tel: '+sh.phone:'',sh.email].filter(Boolean).join(' · '),[webShort(sh.web),sh.instagram?'Instagram '+sh.instagram:''].filter(Boolean).join(' · '),shopTax(sh)].filter(Boolean);
 const shopBlock=(sh,al)=>`<div style="font-size:12px;color:#555;${al?'text-align:'+al+';':''}">${shopLines(sh).map(esc).join('<br>')}</div>`;
 const SQL={yok:'Teklif yok',verildi:'Teklif verildi',kabul:'Teklif kabul edildi',red:'Teklif reddedildi'};
 const CHN=[['yuz_yuze','Yüz yüze'],['telefon','Telefonla'],['whatsapp','WhatsApp'],['eposta','E-posta']];
@@ -5447,6 +5450,8 @@ function svSetModal(){const sh=shopSet();
    <label class="f">E-posta<input class="in" id="ss-e" type="email" maxlength="200" value="${esc(sh.email)}"></label><label class="f">Vergi dairesi (isteğe bağlı)<input class="in" id="ss-vd" maxlength="200" value="${esc(sh.taxOffice)}"></label>
    <label class="f">Vergi no / TCKN (isteğe bağlı)<input class="in" id="ss-vn" maxlength="200" value="${esc(sh.taxNo)}"></label>
    <label class="f full">Adres<input class="in" id="ss-a" maxlength="200" value="${esc(sh.address)}"></label>
+   ${shopExtraOn()?`<label class="f">Web adresi<input class="in" id="ss-web" maxlength="200" value="${esc(sh.web)}" placeholder="https://ankailetisimtr.com"></label><label class="f">Instagram<input class="in" id="ss-ig" maxlength="60" value="${esc(sh.instagram)}" placeholder="@ankailetisimtr"></label>
+   <label class="f full">Çalışma saatleri <span class="sub">(katalog, sadakat portalı ve e-postalarda)</span><input class="in" id="ss-hr" maxlength="120" value="${esc(sh.hours)}" placeholder="Her gün 10:00 - 22:00"></label>`:''}
    <label class="f full">Fiş alt notu<textarea class="in" id="ss-rn" maxlength="1500" style="min-height:60px;font-family:var(--font);font-size:13px">${esc(sh.note)}</textarea></label>
    <label class="f">Varsayılan onarım garantisi (gün)<input class="in" id="ss-w" type="number" min="0" max="730" value="${sh.wdays}"></label>
    <label class="f full">Şartlar ve KVKK metni<textarea class="in" id="ss-t" maxlength="1500" style="min-height:160px;font-family:var(--font);font-size:13px">${esc(sh.terms)}</textarea></label></div>
@@ -7494,7 +7499,7 @@ const A={
       toast('Form '+c.email+' adresine gönderildi');await reload()}
     catch(e){toast(msg(e),true);t.disabled=false;t.textContent='E-posta gönder';delete t.dataset.armed}},
   'sv-set'(){svSetModal()},
-  async 'sv-set-save'(){try{for(const [k,v] of [['shop_name',g('ss-n')],['shop_phone',g('ss-p')],['shop_address',g('ss-a')],['shop_email',g('ss-e')],['shop_tax_office',g('ss-vd')],['shop_tax_no',g('ss-vn')],['receipt_note',g('ss-rn')],['service_warranty_days',String(Math.round(nv('ss-w')||0))],['service_terms',g('ss-t')]])await call('set_shop_setting',{p_key:k,p_value:v});toast('İşletme bilgileri kaydedildi');closeModal();await reload()}catch(e){setErr(msg(e))}},
+  async 'sv-set-save'(){try{for(const [k,v] of [['shop_name',g('ss-n')],['shop_phone',g('ss-p')],['shop_address',g('ss-a')],['shop_email',g('ss-e')],...(document.getElementById('ss-web')&&shopExtraOn()?[['shop_web',g('ss-web')],['shop_instagram',g('ss-ig')],['shop_hours',g('ss-hr')]]:[]),['shop_tax_office',g('ss-vd')],['shop_tax_no',g('ss-vn')],['receipt_note',g('ss-rn')],['service_warranty_days',String(Math.round(nv('ss-w')||0))],['service_terms',g('ss-t')]])await call('set_shop_setting',{p_key:k,p_value:v});toast('İşletme bilgileri kaydedildi');closeModal();await reload()}catch(e){setErr(msg(e))}},
   ordfilter(t){S.ui.of=t.dataset.v;render()},
   'sh-new'(){shModal()},'sh-edit'(t){shModal(S.d.shortages.find(x=>x.id===t.dataset.id))},
   shfilter(t){S.ui.shf=t.dataset.v;render()},
@@ -8607,7 +8612,7 @@ function dwPill(imei){if(!imei)return '';const d=dwAll().find(x=>x.imei===imei&&
 function dwHtml(d){const sh=shopSet(),T=d.terms||{},c=d.contact_id&&S.d.contactMap.get(d.contact_id),s=d.sale_id&&S.d.saleMap&&S.d.saleMap.get(d.sale_id),[stt]=dwStatus(d);
   const L=(a,cls)=>(a||[]).length?`<ul class="dw-l ${cls}">${a.map(x=>`<li>${esc(x)}</li>`).join('')}</ul>`:'';
   return `<div class="qdoc dwdoc">${d.status==='iptal'?`<div class="dw-void">İPTAL · ${esc(d.cancel_reason||'')}</div>`:''}
-  <div class="dw-hd"><div><img src="${LOGO.word_l}" alt="" class="dw-logo"><div class="dw-shop"><b>${esc(sh.name)}</b><div>${esc(sh.address||'')}</div><div>${esc([sh.phone,sh.email].filter(Boolean).join(' · '))}</div>${sh.taxNo?`<div>${esc([sh.taxOffice?sh.taxOffice+' V.D.':'',sh.taxNo].filter(Boolean).join(' · '))}</div>`:''}</div></div>
+  <div class="dw-hd"><div><img src="${LOGO.word_l}" alt="" class="dw-logo"><div class="dw-shop"><b>${esc(sh.name)}</b><div>${esc(sh.address||'')}</div><div>${esc([sh.phone,sh.email,webShort(sh.web)].filter(Boolean).join(' · '))}</div>${sh.taxNo?`<div>${esc([sh.taxOffice?sh.taxOffice+' V.D.':'',sh.taxNo].filter(Boolean).join(' · '))}</div>`:''}</div></div>
     <div class="dw-ttl"><h1>${esc(T.title||'İŞLETME GARANTİ BELGESİ')}</h1><div><span>Belge no</span><b class="mono">${esc(d.cert_no)}</b></div><div><span>Düzenleme</span><b>${fmtDate(String(d.created_at).slice(0,10))}</b></div></div></div>
   <div class="dw-period"><div><span>Garanti süresi</span><b>${d.months} ay</b></div><div><span>Başlangıç</span><b>${fmtDate(d.start_date)}</b></div><div><span>Bitiş</span><b>${fmtDate(d.end_date)}</b></div><div><span>Durum</span><b>${esc(stt)}</b></div></div>
   <div class="dw-g"><div class="dw-box"><h3>Alıcı</h3><div class="dw-kv"><span>Ad soyad</span><b>${esc(d.customer_name||(c&&c.name)||'—')}</b></div><div class="dw-kv"><span>Telefon</span><b>${esc(d.customer_phone||(c&&c.phone)||'—')}</b></div></div>
