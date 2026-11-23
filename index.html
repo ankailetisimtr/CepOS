@@ -724,6 +724,9 @@ html.ps-on body{padding-bottom:0}html.ps-on main{padding:0}html.ps-on .wrap:not(
 .ly-v.ok{border-style:solid;border-color:color-mix(in srgb,var(--ok,#1a8f4e) 50%,var(--line))}.ly-vh{font-weight:700;display:inline-flex;gap:6px;align-items:center}
 .w-mat{gap:8px;padding:4px 0}.w-mat select{flex:1;min-width:0}.ps-line.w-line .nm small .btn{margin-left:4px}
 .wcert{max-width:720px;margin:0 auto}tr.off td{opacity:.55}
+.sys-sum ul{margin:8px 0 0;padding:0;list-style:none}.sys-sum li{margin:6px 0;display:block}.sys-sum.ok{border-color:var(--good)}.sys-sum.warn{border-color:var(--warn)}.sys-sum.bad{border-color:var(--bad)}
+.sys-list{display:flex;flex-direction:column;gap:2px}.sys-r{display:flex;gap:10px;align-items:flex-start;padding:7px 0;border-bottom:1px solid var(--line)}.sys-r:last-child{border-bottom:0}.sys-r .sub{margin:2px 0 0;word-break:break-word}.sys-fix{color:var(--fg)!important}
+.sys-i{flex:0 0 22px;width:22px;height:22px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:var(--on-solid)}.sys-i.ok{background:var(--good)}.sys-i.warn{background:var(--warn)}.sys-i.bad{background:var(--bad)}.sys-i.off{background:var(--muted)}
 .du-b{margin:10px 0 12px}.du-track{height:10px;border-radius:6px;background:var(--line);overflow:hidden;margin:6px 0 4px}.du-track i{display:block;height:100%;border-radius:6px;background:var(--good)}.du-track i.warn{background:var(--warn)}.du-track i.bad{background:var(--bad)}
 .du-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:14px;margin-top:6px}.du-grid h3{margin:0 0 6px}.arch-note{margin-top:8px;display:flex;gap:8px;align-items:center;flex-wrap:wrap}
 .ly-save{position:sticky;bottom:0;background:var(--card);padding:10px 0;border-top:1px solid var(--line);display:flex;gap:8px;justify-content:flex-end}
@@ -757,7 +760,7 @@ const TYPE_LABEL={devir:'Önceki dönem devri',cihaz_onarim:'Cihaz onarımı (ma
   alis_borc:'Veresiye alış',alis_odeme:'Alış ödemesi',kur_farki:'Kur farkı',odeme:'Ödeme',sermaye_girisi:'Sermaye girişi',sermaye_iadesi:'Sermaye iadesi',hakedis:'Hakediş',hakedis_iptal:'Hakediş iptali',hakedis_odeme:'Hakediş ödemesi',alis_iade:'Firma iadesi',iade_tahsilat:'İade bedeli geri alındı',cari_iade:'Firma iade tahsilatı',firma_iade:'Firmaya iade'};
 const ROLES=[['owner','İşletme sahibi'],['manager','Mağaza müdürü'],['staff','Personel']];
 const MON=['Oca','Şub','Mar','Nis','May','Haz','Tem','Ağu','Eyl','Eki','Kas','Ara'];
-const TABS=[['panel','Genel Bakış',null],['notlar','Notlarım',null],['satis','Satış','make_sale'],['stok','Cihazlar',null],['aksesuar','Aksesuarlar',null],['sayim','Stok Sayım','stock_count'],['sorgu','Sorgulamalar',null],['alislar','Alışlar','make_purchase'],['satislar','Satışlar',null],['iadeler','İade&Değişim','process_refund'],['kampanya','Kampanyalar','view_loyalty|warranty_use|view_warranty|view_protection|manage_protection|view_multibuy|manage_multibuy|gift_card_sell|view_gift_cards|manage_gift_cards|view_oldmodel|manage_oldmodel|view_special_discount|manage_special_discount'],['fireler','Fireler','record_waste'],['servis','Teknik Servis','manage_service'],['siparis','Siparişler','manage_orders'],['eksikler','Eksikler','manage_shortages'],['teklif','Teklifler','manage_quotes'],['katalog','Kataloglar','view_catalog|manage_catalog'],['personel','Personeller',null],['gorev','Görevler',null],['vardiya','Vardiya',null],['hedef','Hedefler',null],['hakedis','Hakedişler',null],['primler','Primler','manage_commissions'],['egitim','Eğitimler',null],['kasa','Kasa','view_cash_basic'],['odemeler','Ödemeler','view_payments'],['satisrapor','Satış Raporu','view_all_sales'],['sermaye','Sermaye Raporu','view_cost'],['kazancrapor','Kazanç Raporu','view_payments'],['masraf','Masraflar','manage_expenses'],['musteriler','Müşteriler',null],['firmalar','Firmalar','manage_suppliers'],['konsinye','Konsinye','view_consignment'],['yonetim','Yönetim','manage_users'],['eposta','E-posta Bildirimleri','view_email|manage_email'],['yedek','Yedekler','manage_backup']];
+const TABS=[['panel','Genel Bakış',null],['notlar','Notlarım',null],['satis','Satış','make_sale'],['stok','Cihazlar',null],['aksesuar','Aksesuarlar',null],['sayim','Stok Sayım','stock_count'],['sorgu','Sorgulamalar',null],['alislar','Alışlar','make_purchase'],['satislar','Satışlar',null],['iadeler','İade&Değişim','process_refund'],['kampanya','Kampanyalar','view_loyalty|warranty_use|view_warranty|view_protection|manage_protection|view_multibuy|manage_multibuy|gift_card_sell|view_gift_cards|manage_gift_cards|view_oldmodel|manage_oldmodel|view_special_discount|manage_special_discount'],['fireler','Fireler','record_waste'],['servis','Teknik Servis','manage_service'],['siparis','Siparişler','manage_orders'],['eksikler','Eksikler','manage_shortages'],['teklif','Teklifler','manage_quotes'],['katalog','Kataloglar','view_catalog|manage_catalog'],['personel','Personeller',null],['gorev','Görevler',null],['vardiya','Vardiya',null],['hedef','Hedefler',null],['hakedis','Hakedişler',null],['primler','Primler','manage_commissions'],['egitim','Eğitimler',null],['kasa','Kasa','view_cash_basic'],['odemeler','Ödemeler','view_payments'],['satisrapor','Satış Raporu','view_all_sales'],['sermaye','Sermaye Raporu','view_cost'],['kazancrapor','Kazanç Raporu','view_payments'],['masraf','Masraflar','manage_expenses'],['musteriler','Müşteriler',null],['firmalar','Firmalar','manage_suppliers'],['konsinye','Konsinye','view_consignment'],['yonetim','Yönetim','manage_users'],['eposta','E-posta Bildirimleri','view_email|manage_email'],['yedek','Yedekler','manage_backup'],['sistem','Sistem durumu','manage_users']];
 
 /* ================= İKONLAR (ince çizgili, 24x24) ================= */
 const IC={
@@ -803,6 +806,7 @@ hand:'<path d="M11 17l2 2a1 1 0 1 0 3-3"/><path d="M14 14l2.5 2.5a1 1 0 1 0 3-3l
 bars:'<path d="M3 3v18h18M18 17V9M13 17V5M8 17v-3"/>',
 pie:'<path d="M21.21 15.89A10 10 0 1 1 8 2.83"/><path d="M22 12A10 10 0 0 0 12 2v10z"/>',
 trend:'<path d="M22 7l-8.5 8.5-5-5L2 17"/><path d="M16 7h6v6"/>',
+pulse:'<path d="M3 12h4l3-8 4 16 3-8h4"/>',
 database:'<ellipse cx="12" cy="5" rx="8" ry="3"/><path d="M4 5v6c0 1.66 3.58 3 8 3s8-1.34 8-3V5M4 11v6c0 1.66 3.58 3 8 3s8-1.34 8-3v-6"/>',
 sliders:'<path d="M20 7h-9M14 17H5"/><circle cx="17" cy="17" r="3"/><circle cx="7" cy="7" r="3"/>',
 plus:'<path d="M12 5v14M5 12h14"/>',right:'<path d="M5 12h14M12 5l7 7-7 7"/>',upright:'<path d="M7 17L17 7M7 7h10v10"/>',downright:'<path d="M7 7l10 10M17 7v10H7"/>',tag:'<path d="M12.59 2.59A2 2 0 0 0 11.17 2H4a2 2 0 0 0-2 2v7.17a2 2 0 0 0 .59 1.42l8.7 8.7a2.43 2.43 0 0 0 3.42 0l6.58-6.58a2.43 2.43 0 0 0 0-3.42z"/><circle cx="7.5" cy="7.5" r="1.5"/>',
@@ -818,9 +822,9 @@ mobile_bell:'<path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/>'};
 const ic=(n,c)=>`<svg class="ic${c?' '+c:''}" viewBox="0 0 24 24" aria-hidden="true">${IC[n]||''}</svg>`;
 /* ☰ menü: gruplar ve ikonlar (tüm sekmeler burada; "Satış" ekranı Satışlar'daki "Satış yap" ve paneldeki "Yeni satış" ile açılır) */
 const MENU=[[null,['panel','notlar']],['Mağaza',['satislar','stok','aksesuar','musteriler','firmalar','alislar']],['Operasyon',['servis','siparis','teklif','kampanya','katalog','eksikler','iadeler','fireler','sayim','sorgu']],
-  ['Personel',['personel','gorev','vardiya','hedef','hakedis','primler','egitim']],['Finans',['kasa','odemeler','masraf','konsinye']],['Raporlar',['satisrapor','sermaye','kazancrapor']],['Yönetim',['yonetim','eposta','yedek']]];
+  ['Personel',['personel','gorev','vardiya','hedef','hakedis','primler','egitim']],['Finans',['kasa','odemeler','masraf','konsinye']],['Raporlar',['satisrapor','sermaye','kazancrapor']],['Yönetim',['yonetim','sistem','eposta','yedek']]];
 const TAB_IC={katalog:'store',kampanya:'star',panel:'grid',notlar:'notebook',satislar:'bag',satis:'bag',stok:'phone',aksesuar:'headphones',musteriler:'users',firmalar:'building',alislar:'truck',servis:'wrench',siparis:'pkg',teklif:'file',eksikler:'clip',iadeler:'undo',fireler:'flame',sayim:'scan',sorgu:'shield',
-  personel:'users',gorev:'check',vardiya:'cal',hedef:'target',hakedis:'note',primler:'award',egitim:'book',kasa:'wallet',odemeler:'card',masraf:'receipt',konsinye:'hand',satisrapor:'bars',sermaye:'pie',kazancrapor:'trend',yonetim:'sliders',eposta:'mail',yedek:'database'};
+  personel:'users',gorev:'check',vardiya:'cal',hedef:'target',hakedis:'note',primler:'award',egitim:'book',kasa:'wallet',odemeler:'card',masraf:'receipt',konsinye:'hand',satisrapor:'bars',sermaye:'pie',kazancrapor:'trend',yonetim:'sliders',eposta:'mail',yedek:'database',sistem:'pulse'};
 
 /* ================= YARDIMCILAR ================= */
 const pad=n=>String(n).padStart(2,'0');
@@ -1519,7 +1523,7 @@ function render(){
   document.documentElement.classList.toggle('ps-on',tab==='satis');
   const unread=nUnreadCount();
   const secLock=qsSecLocked(tab);
-  const page=secLock?qsLockPage(tab):qsUnlockBar(tab)+{eposta:vEposta,yedek:vYedek,personel:vPersonel,kampanya:vKampanya,panel:vPanel,notlar:vNotlar,satis:vSatis,stok:vStok,aksesuar:vAksesuar,sayim:vSayim,sorgu:vSorgu,alislar:vAlislar,satislar:vSatislar,iadeler:vIadeler,fireler:vFireler,odemeler:vOdemeler,kazancrapor:vKazancRapor,satisrapor:vSatisRapor,sermaye:vSermaye,hakedis:vHakedis,primler:vPrimler,kasa:vKasa,masraf:vMasraf,musteriler:vMusteriler,firmalar:vFirmalar,konsinye:vKonsinye,servis:vServis,siparis:vSiparis,eksikler:vEksik,teklif:vTeklif,katalog:vKatalog,gorev:vGorev,vardiya:vVardiya,hedef:vHedef,egitim:vEgitim,yonetim:vYonetim}[tab]();
+  const page=secLock?qsLockPage(tab):qsUnlockBar(tab)+{eposta:vEposta,yedek:vYedek,sistem:vSistem,personel:vPersonel,kampanya:vKampanya,panel:vPanel,notlar:vNotlar,satis:vSatis,stok:vStok,aksesuar:vAksesuar,sayim:vSayim,sorgu:vSorgu,alislar:vAlislar,satislar:vSatislar,iadeler:vIadeler,fireler:vFireler,odemeler:vOdemeler,kazancrapor:vKazancRapor,satisrapor:vSatisRapor,sermaye:vSermaye,hakedis:vHakedis,primler:vPrimler,kasa:vKasa,masraf:vMasraf,musteriler:vMusteriler,firmalar:vFirmalar,konsinye:vKonsinye,servis:vServis,siparis:vSiparis,eksikler:vEksik,teklif:vTeklif,katalog:vKatalog,gorev:vGorev,vardiya:vVardiya,hedef:vHedef,egitim:vEgitim,yonetim:vYonetim}[tab]();
   const grp=tabGroup(tab);
   document.getElementById('app').innerHTML=`<header class="top"><div class="wrap">
     <button class="ib" data-a="drawer-open" aria-label="Menüyü aç" title="Menü (Ctrl+K)">${ic('menu')}</button>
@@ -10191,6 +10195,101 @@ function svFollowModal(id){const x=(S.em.sv||[]).find(v=>v.id===id);if(!x)return
    <label class="f full">Not<textarea class="in" id="sv-note" rows="3" maxlength="500" placeholder="Ne konuşuldu, nasıl çözüldü?">${esc(x.follow_note||'')}</textarea></label></div>
    <div class="err" id="f-err"></div><div class="actions"><button class="btn" data-a="close">Vazgeç</button><button class="btn pri" data-a="sv-follow-save" data-id="${id}">Kaydet</button></div>`)}
 async function emStatus(){const E=S.em=S.em||{};E.stl=1;try{E.st=await fnCall('eposta',{action:'durum'})}catch(e){E.st={err:msg(e)}}render()}
+/* ================= SİSTEM DURUMU (101) ================= */
+const APP_V='2026.11.23';   // bu index.html'in sürümü
+// sunucu fonksiyonlarının bu uygulamanın beklediği sürümü (fonksiyon kodu her değiştiğinde ikisi birlikte değişir)
+const EDGE_V={sadakat:'2026.11.23',eposta:'2026.11.23','push-notify':'2026.11.23','user-admin':'2026.11.23',yedek:'2026.11.23'};
+const SYS_MIGS=['001_temel_cekirdek.sql', '002_konsinye_guncelleme.sql', '003_servis_siparis_teklif.sql', '004_belgeler_fotograf.sql', '005_vardiya_gorev.sql', '006_hedefler.sql', '007_push_bildirim.sql', '008_aksesuar.sql', '009_fire_kaydi.sql', '010_barkod.sql', '011_alislar_kur.sql', '012_kasa_gunsonu.sql', '013_masraflar.sql', '014_aksesuar_varyant.sql', '015_yatirimci_raporu.sql', '016_garanti_taksit.sql', '017_cari_kartlari.sql', '018_teklif_sihirbazi.sql', '019_stok_sayim.sql', '020_siparis_aksesuar.sql', '021_eksikler.sql', '022_teknik_servis.sql', '023_iadeler.sql', '024_degisim.sql', '025_servis_baglantisi.sql', '026_hakedisler.sql', '027_sahip_kasasi.sql', '028_calisma_duzeni.sql', '029_iskonto.sql', '030_vadeli_alim.sql', '031_aksesuar_dolar_maliyet.sql', '032_primler.sql', '033_cihaz_kontrol.sql', '034_kontrol_cari_duzeltme.sql', '035_kontrol_tablet_saat.sql', '036_alt_kategori_af_mf.sql', '037_toplu_alim_cihaz.sql', '038_kazanc_raporlari_sahip.sql', '039_isletme_profili.sql', '040_fiyat_onerisi.sql', '041_kategori_hedefleri.sql', '042_vardiya_hatirlatma.sql', '043_bildirim_altyapisi.sql', '044_bildirimler.sql', '045_musteri_turleri.sql', '046_egitimler.sql', '047_egitim_gelistirme.sql', '048_kullanici_yonetimi.sql', '049_kullanici_silme_pasif.sql', '050_ortak_bilgisayar.sql', '051_canli_guncelleme.sql', '052_hizli_yenileme.sql', '053_bildirim_ekleri.sql', '054_notlar.sql', '055_musteri_kanali.sql', '056_banka_komisyon.sql', '057_odeal_cekim_komisyonu.sql', '058_satis_ekrani.sql', '059_hizmet_urunleri.sql', '060_sadakat.sql', '061_sadakat_whatsapp.sql', '062_garanti_paketleri.sql', '063_garanti_devir_portal.sql', '064_sms_dogrulama.sql', '065_koruma_paketleri.sql', '066_uc_al_iki_ode.sql', '067_bir_alana_bir_bedava.sql', '068_hediye_ceki.sql', '069_prim_sistemi.sql', '070_prim_magaza_hedefleri.sql', '071_prim_cihaz_hedefleri.sql', '072_personel_karti.sql', '073_kampanya_tarih_araligi.sql', '074_not_baglantilari.sql', '075_kataloglar.sql', '076_garanti_belgesi.sql', '077_mola_takibi.sql', '078_mola_bordro.sql', '079_mesai_gec_erken.sql', '080_personel_yetkileri.sql', '081_ekip_performansi.sql', '082_kasa_gorunumu.sql', '083_eski_model_indirimi.sql', '084_sadakat_vip.sql', '085_sadakat_odul_urunu.sql', '086_alis_odeme_hesaplari.sql', '087_aksesuar_pasif_sil.sql', '088_toplu_alim_sahip.sql', '089_stok_cihaz_onarim.sql', '090_ozel_indirim.sql', '091_sadakat_uyelik.sql', '092_dogumgunu_sms.sql', '093_eposta_otomasyonu.sql', '094_anket_yorum.sql', '095_mudur_urun_alisi.sql', '096_isletme_iletisim.sql', '097_aksesuar_etiket.sql', '098_denetim_duzeltmeleri.sql', '099_yedekleme.sql', '100_donemsel_yukleme.sql', '101_sistem_durumu.sql'];
+const SYS_FN={sadakat:{l:'Sadakat portalı ve SMS doğrulama',m:60,f:'sadakat_index.ts',k:'Sadakat 2. aşama (SMS doğrulama)'},eposta:{l:'E-posta otomasyonu',m:93,f:'eposta_index.ts',k:'E-posta otomasyonu'},
+  'push-notify':{l:'Telefon bildirimleri',m:43,f:'push-notify index.ts',k:'Telefon bildirimleri'},'user-admin':{l:'Kullanıcı yönetimi',m:48,f:'user-admin index.ts',k:'Kullanıcı yönetimi'},yedek:{l:'Yedekleme',m:99,f:'yedek_index.ts',k:'Otomatik yedekleme'}};
+const SYS_JOB={'anka-eposta':['E-posta gönderimi',93,5],'anka-eposta-gunluk':['Günlük e-postalar (anket, yorum, puan, garanti)',93,1440],'anka-mola':['Mola takibi',77,1],'anka-devam':['Geç giriş / erken çıkış hatırlatmaları',79,10],
+  'anka-yedek':['Yedekleme',99,5],'anka-sadakat-gunluk':['Sadakat günlük işleri (puan süreleri)',60,1440],'anka-katalog':['Katalog rezervasyon süreleri',75,60],'anka-hediye-ceki':['Hediye çeki süreleri',68,1440],
+  'anka-not-hatirlatma':['Not hatırlatmaları',54,5],'anka-bildirim-kuyruk':['Sessiz saatte biriken bildirimler',43,10],'anka-bildirim-temizlik':['Eski bildirim temizliği',43,1440],
+  'anka-bildirim-gec':['Geç kalma bildirimi',44,1440],'anka-bildirim-sabah':['Sabah özeti',44,1440],'anka-bildirim-ozet':['Akşam özeti',44,1440],'anka-bildirim-gunsonu':['Gün sonu hatırlatması',44,1440],
+  'anka-bildirim-mesai':['Mesai kapanış hatırlatması',44,1440],'anka-bildirim-hafta':['Haftalık özet',44,10080],'anka-vardiya-giris':['Vardiya giriş hatırlatması',42,1440],'anka-vardiya-cikis':['Vardiya çıkış hatırlatması',42,1440],
+  'anka-cron-temizlik':['Zamanlanmış iş geçmişi temizliği',101,1440]};
+const SYS_BUCKET={'anka-docs':['Belgeler (kimlik, sözleşme, fotoğraf)',33],'anka-training':['Eğitim dosyaları',46],'anka-notes':['Not ekleri',54],'anka-staff':['Personel belgeleri',72],'anka-katalog':['Katalog fotoğrafları',75],'anka-yedek':['Yedekler',99]};
+async function sysLoad(){const X=S.sys={busy:true,at:Date.now(),fn:{}};render();
+  const st=sb.rpc('sys_status').then(r=>{X.st=r.error?{err:msg(r.error)}:r.data},e=>{X.st={err:msg(e)}});
+  const fns=Object.keys(EDGE_V).map(n=>fnCall(n,{action:'surum'}).then(d=>{X.fn[n]={ok:true,d}},e=>{const m=msg(e);X.fn[n]={ok:false,nf:/yayınlanmamış/.test(m),m}}));
+  await Promise.all([st,...fns]);X.busy=false;if(S.ui.tab==='sistem')render()}
+const sysAgo=t=>{if(!t)return 'hiç';const m=Math.round((Date.now()-new Date(t).getTime())/6e4);return m<1?'az önce':m<60?m+' dk önce':m<1440?Math.round(m/60)+' saat önce':Math.round(m/1440)+' gün önce'};
+function sysEval(){const X=S.sys||{},T=X.st||{},I=[],add=(lv,sec,t,fix)=>I.push({lv,sec,t,fix}),inst=new Set(T.migrations||[]),has=n=>inst.has(n);
+  const out={sec:{},I};const row=(sec,lv,name,info,fix)=>{(out.sec[sec]=out.sec[sec]||[]).push({lv,name,info,fix});if(lv!=='ok'&&lv!=='off')add(lv,sec,name+(info?': '+info:''),fix)};
+  const dbOk=!T.err;
+  if(T.err)row('sql','bad','Veri tabanı denetimi yapılamadı',T.err,/sys_status|function|schema cache|SQL dosyası/i.test(T.err)?'101_sistem_durumu.sql dosyasını SQL Editor\'de çalıştırın.':'');
+  if(dbOk){
+  // SQL dosyaları
+  const miss=SYS_MIGS.map((f,i)=>[i+1,f]).filter(([n])=>!inst.has(n));
+  row('sql',miss.length?'bad':'ok','Kurulu SQL dosyaları',`${inst.size} / ${SYS_MIGS.length}`+(miss.length?` · eksik: ${miss.map(x=>x[1]).join(', ')}`:''),miss.length?'Eksik dosyaları numara sırasıyla SQL Editor\'de çalıştırın (KURULUM › Kurulum adımları).':'');
+  const extra=[...inst].filter(n=>n>SYS_MIGS.length);if(extra.length)row('sql','warn','Uygulamadan yeni SQL dosyası kurulu',extra.join(', '),'index.html güncel değil; son index.html dosyasını GitHub\'a yükleyin.');}
+  // sunucu fonksiyonları
+  for(const [n,inf] of Object.entries(SYS_FN)){if(dbOk&&!has(inf.m)){row('fn','off',inf.l,'Bu özellik kurulu değil');continue}const r=X.fn[n];if(!r){row('fn','warn',inf.l,'denetleniyor…');continue}
+    if(!r.ok){if(r.nf)row('fn','bad',inf.l,'"'+n+'" fonksiyonu yayınlanmamış',`Supabase › Edge Functions'a ${inf.f} dosyasını "${n}" adıyla yayınlayın (KURULUM › ${inf.k}).`);
+      else row('fn','warn',inf.l,'Eski sürüm (sürüm bilgisi vermiyor)',`${inf.f} dosyasının son hâlini aynı adla yeniden yayınlayın.`);continue}
+    const d=r.d||{},ok=d.surum===EDGE_V[n],eks=(d.eksik||[]);
+    row('fn',!ok?'warn':eks.length?'bad':'ok',inf.l,`sürüm ${d.surum||'?'}${ok?' (güncel)':' · beklenen '+EDGE_V[n]}${eks.length?' · eksik gizli anahtar: '+eks.join(', '):''}`,
+      !ok?`${inf.f} dosyasının son hâlini aynı adla yeniden yayınlayın.`:eks.length?`Supabase › Edge Functions › Secrets bölümüne ekleyin: ${eks.join(', ')}.`:'')}
+  if(dbOk&&(has(93)||has(99))&&!T.functions_base)row('fn','warn','Sunucu fonksiyon adresi','Zamanlanmış işlerin fonksiyonları çağırması için gerekli','İşletme sahibi hesabıyla CepOS\'u bir kez açın; adres kendiliğinden kaydedilir.');
+  if(dbOk){
+  // zamanlanmış işler
+  if(!T.pg_cron)row('cron','bad','pg_cron eklentisi kapalı','Zamanlanmış işler çalışmaz','Supabase › Database › Extensions › pg_cron\'u açın, ardından ilgili SQL dosyalarını (043, 077, 093, 099…) yeniden çalıştırın.');
+  else if(T.cron_err)row('cron','warn','Zamanlanmış işler okunamadı',T.cron_err,'');
+  else{const jobs=new Map((T.cron||[]).map(j=>[j.name,j]));
+    for(const [k,[l,m,per]] of Object.entries(SYS_JOB)){if(!has(m))continue;const j=jobs.get(k);
+      if(!j){row('cron','bad',l,'İş tanımlı değil',`${SYS_MIGS[m-1]} dosyasını yeniden çalıştırın.`);continue}
+      const lim=Math.max(per*3,per+15)*6e4,late=!j.last_ok||Date.now()-new Date(j.last_ok).getTime()>lim;
+      const lv=!j.active?'warn':j.last_status==='failed'?'bad':late?'warn':j.fails_24h?'warn':'ok';
+      row('cron',lv,l,`son başarılı çalışma ${sysAgo(j.last_ok)}${j.fails_24h?` · son 24 saatte ${j.fails_24h} hata`:''}${!j.active?' · iş durdurulmuş':''}${lv==='bad'||j.fails_24h?' · '+(j.last_fail_msg||j.last_msg||''):''}`,
+        lv==='ok'?'':!j.active?'Supabase › Integrations › Cron bölümünden işi yeniden etkinleştirin.':j.last_status==='failed'?'Hata mesajını Claude\'a iletin.':late?'Biraz sonra tekrar bakın; düzelmezse pg_cron\'un açık olduğunu kontrol edin.':'')}
+    if(T.cron_hist)row('cron',T.cron_hist.bytes>52428800&&!has(101)?'warn':'ok','İş geçmişi tablosu',`${num(T.cron_hist.rows)} kayıt · ${duMB(T.cron_hist.bytes)}${has(101)?' · 7 günden eskiler her gece silinir':''}`,'')}
+  if(T.net&&T.net.errors)row('cron',T.net.errors>3?'bad':'warn','Sunucu fonksiyonu çağrıları',`son 24 saatte ${num(T.net.errors)} / ${num(T.net.total)} çağrı başarısız${(T.net.samples||[]).length?' · son: '+T.net.samples.map(x=>`${x.code?'HTTP '+x.code:''} ${String(x.msg||'').slice(0,90)}`).join(' | '):''}`,
+    'HTTP 401: fonksiyonun "Verify JWT" seçeneğini kapatın. HTTP 404: fonksiyon yayınlanmamış. Diğerleri için mesajı Claude\'a iletin.');
+  else if(T.net)row('cron','ok','Sunucu fonksiyonu çağrıları',`son 24 saatte ${num(T.net.total)} çağrı, hata yok`,'');
+  // e-posta (Resend) ve Netgsm
+  if(has(93)&&T.email){const E=T.email,fe=X.fn.eposta&&X.fn.eposta.ok&&X.fn.eposta.d||{};
+    row('msg',(fe.eksik||[]).length?'bad':'ok','Resend ayarları',(fe.eksik||[]).length?'eksik: '+fe.eksik.join(', '):X.fn.eposta&&X.fn.eposta.ok?'RESEND_API_KEY ve EMAIL_FROM tanımlı':'denetlenemedi (eposta fonksiyonu)',(fe.eksik||[]).length?'Supabase › Edge Functions › Secrets: '+fe.eksik.join(', '):'');
+    row('msg',E.stuck?'bad':E.failed_7d?'warn':'ok','E-posta gönderimi',`son gönderim ${sysAgo(E.last_sent)} · son 24 saatte ${num(E.sent_24h)} gönderildi${E.pending?` · ${num(E.pending)} sırada`:''}${E.stuck?` · ${num(E.stuck)} e-posta 30 dakikadan uzun süredir bekliyor`:''}${E.failed_7d?` · son 7 günde ${num(E.failed_7d)} başarısız`:''}${(E.stuck||E.failed_7d)&&E.last_error?' · son hata: '+E.last_error.msg:''}`,
+      E.stuck?'eposta fonksiyonunun yayınlı, "Verify JWT" seçeneğinin kapalı ve Resend alan adının doğrulanmış olduğunu kontrol edin.':E.failed_7d?'E-posta Bildirimleri › Gönderimler\'de ayrıntıya bakın.':'');
+    if(E.on===false)row('msg','warn','E-posta otomasyonu','kapalı','E-posta Bildirimleri › Ayarlar\'dan açın.')}
+  if(has(64)&&T.sms){const M=T.sms,fs_=X.fn.sadakat&&X.fn.sadakat.ok&&X.fn.sadakat.d||{};
+    row('msg',(fs_.eksik||[]).length?'bad':'ok','Netgsm ayarları',(fs_.eksik||[]).length?'eksik: '+fs_.eksik.join(', '):X.fn.sadakat&&X.fn.sadakat.ok?'NETGSM_USER, NETGSM_PASS, NETGSM_HEADER tanımlı':'denetlenemedi (sadakat fonksiyonu)',(fs_.eksik||[]).length?'Supabase › Edge Functions › Secrets: '+fs_.eksik.join(', '):'');
+    row('msg',M.failed_7d?'warn':'ok','SMS doğrulama kodları',`son başarılı gönderim ${sysAgo(M.last_sent)} · son 7 günde ${num(M.sent_7d)} gönderildi${M.failed_7d?`, ${num(M.failed_7d)} başarısız · son hata: ${M.last_error&&M.last_error.msg||''}`:''}`,
+      M.failed_7d?'Netgsm hesabınızda kredi ve gönderici adı onayını kontrol edin; Sadakat › Kurallar › Deneme SMS\'i ile deneyin.':'')}
+  // yedek ve telefon bildirimleri
+  if(has(99)&&T.backup){const B=T.backup,age=B.last_ok?(Date.now()-new Date(B.last_ok).getTime())/36e5:null;
+    row('data',!B.on?'warn':age==null||age>36?'bad':'ok','Son başarılı yedek',B.last_ok?`${sysAgo(B.last_ok)}${B.last&&B.last.status==='hata'?' · son deneme hata: '+(B.last.error||''):''}`:'henüz alınmadı',
+      !B.on?'Yedekler › Ayarlar\'dan otomatik yedeği açın.':age==null||age>36?'Yedekler › Şimdi yedek al ile deneyin; olmazsa yedek fonksiyonunu kontrol edin.':'');
+    if(!B.email_to)row('data','warn','Haftalık yedek e-postası','adres yok','Yedekler › Ayarlar\'dan e-posta adresi yazın.')}
+  if(has(43)&&T.push){const P=T.push,fp=X.fn['push-notify']&&X.fn['push-notify'].ok&&X.fn['push-notify'].d||{};
+    row('data',(fp.eksik||[]).length?'bad':'ok','Telefon bildirimleri',`${num(P.devices)} cihaz, ${num(P.users)} kişi${P.last_ok?' · son başarılı gönderim '+sysAgo(P.last_ok):''}${(fp.eksik||[]).length?' · eksik: '+fp.eksik.join(', '):''}`,(fp.eksik||[]).length?'Supabase › Edge Functions › Secrets: '+fp.eksik.join(', '):'')}
+  // veri tabanı
+  row('db',T.timezone==='Europe/Istanbul'?'ok':'bad','Saat dilimi',T.timezone||'?',T.timezone==='Europe/Istanbul'?'':'SQL Editor\'de: alter database postgres set timezone to \'Europe/Istanbul\';');
+  if(T.db_bytes){const pc=T.db_bytes/T.db_limit*100;row('db',pc>=90?'bad':pc>=70?'warn':'ok','Veri tabanı boyutu',`${duMB(T.db_bytes)} / ${duMB(T.db_limit)} (%${Math.round(pc)})`,pc>=70?'Yönetim › Veri ve kullanım bölümüne bakın.':'')}
+  if(!T.pg_net)row('db','bad','pg_net eklentisi kapalı','Zamanlanmış işler e-posta ve yedek fonksiyonlarını çağıramaz','Supabase › Database › Extensions › pg_net\'i açın.');
+  for(const [b,[l,m]] of Object.entries(SYS_BUCKET)){if(!has(m)||!T.buckets)continue;const x=(T.buckets||[]).find(y=>y.id===b);
+    row('db',x?'ok':'bad','Depolama: '+l,x?`${num(x.files)} dosya · ${duMB(x.bytes)}${x.public?' · herkese açık':''}`:'kova yok',x?'':`${SYS_MIGS[m-1]} dosyasını yeniden çalıştırın.`)}
+  // güvenlik ve kullanıcılar
+  const Sx=T.security||{};
+  row('sec',(Sx.rls_off||[]).length?'bad':'ok','Satır güvenliği (RLS)',(Sx.rls_off||[]).length?'kapalı tablo: '+Sx.rls_off.join(', '):'tüm tablolarda açık',(Sx.rls_off||[]).length?'Bu tabloları Claude\'a bildirin.':'');
+  row('sec',(Sx.open_internal||[]).length?'bad':'ok','İç fonksiyonlar',(Sx.open_internal||[]).length?'personele açık: '+Sx.open_internal.join(', '):'personele kapalı',(Sx.open_internal||[]).length?'098_denetim_duzeltmeleri.sql dosyasını çalıştırın; sürerse Claude\'a bildirin.':'');
+  if(T.users){const U=T.users;row('sec',U.owners<1?'bad':'ok','İşletme sahibi hesabı',`${U.owners} sahip · ${U.active} aktif kullanıcı${U.must_change?` · ${U.must_change} kişi henüz şifresini değiştirmedi`:''}`,'')}
+  if(T.shop){const ms=Object.entries(T.shop).filter(([,v])=>!v).map(([k])=>({shop_name:'ünvan',shop_phone:'telefon',shop_email:'e-posta',shop_address:'adres',shop_tax_no:'vergi no'}[k]||k));
+    row('sec',ms.length?'warn':'ok','İşletme bilgileri',ms.length?'eksik: '+ms.join(', '):'tamam',ms.length?'Yönetim › İşletme bilgileri › Düzenle.':'')}}
+  // bu cihaz
+  const pwa=matchMedia('(display-mode: standalone)').matches,np=typeof Notification!=='undefined'?Notification.permission:'yok';
+  row('dev','ok','Uygulama sürümü',APP_V,'');
+  row('dev',LIVE.ok?'ok':'warn','Canlı bağlantı',LIVE.ok?'açık · değişiklikler anında gelir':'bağlantı bekleniyor · veriler birkaç dakikada bir yenilenir',LIVE.ok?'':'İnternet bağlantısını kontrol edin.');
+  row('dev','ok','Son eşitleme',LIVE.lastSync?sysAgo(LIVE.lastSync):'—','');
+  row('dev','ok','Bu cihazda',`${pwa?'uygulama olarak kurulu':'tarayıcıda açık'} · bildirim izni: ${np==='granted'?'verildi':np==='denied'?'engellendi':np==='default'?'sorulmadı':'desteklenmiyor'}${ARCH.on&&ARCH.from?` · ${fmtDate(ARCH.from)} sonrası kayıtlar yüklü`:''}`,'');
+  return out}
+function vSistem(){const X=S.sys;if(!X||(!X.busy&&Date.now()-X.at>10*60e3&&!X.st))sysLoad();
+  const E=X&&!X.busy?sysEval():null,secs=[['sql','SQL dosyaları'],['fn','Sunucu fonksiyonları'],['cron','Zamanlanmış işler'],['msg','E-posta ve SMS'],['data','Yedek ve bildirimler'],['db','Veri tabanı ve depolama'],['sec','Güvenlik ve hesaplar'],['dev','Bu cihaz']];
+  const ico={ok:'✓',warn:'!',bad:'✕',off:'–'},nb=E?E.I.filter(x=>x.lv==='bad').length:0,nw=E?E.I.filter(x=>x.lv==='warn').length:0;
+  return `<div class="row"><h1 style="flex:1;margin:0">Sistem durumu</h1>${X&&X.at?`<span class="sub">${X.busy?'Denetleniyor…':'Son denetim '+sysAgo(X.at)}</span>`:''}<button class="btn" data-a="sys-refresh"${X&&X.busy?' disabled':''}>Yenile</button></div>
+   ${!E?'<div class="card"><p class="sub">Denetleniyor…</p></div>':`<div class="card sys-sum ${nb?'bad':nw?'warn':'ok'}"><b>${nb?`${nb} sorun${nw?', '+nw+' uyarı':''}`:nw?`${nw} uyarı`:'Her şey yolunda'}</b>
+     ${E.I.length?`<ul>${E.I.filter(x=>x.lv==='bad').concat(E.I.filter(x=>x.lv==='warn')).map(x=>`<li><span class="sys-i ${x.lv}">${ico[x.lv]}</span> ${esc(x.t)}${x.fix?`<div class="sub">${esc(x.fix)}</div>`:''}</li>`).join('')}</ul>`:'<div class="sub">SQL dosyaları, sunucu fonksiyonları, zamanlanmış işler, e-posta, SMS, yedek ve güvenlik denetimlerinin hepsi geçti.</div>'}</div>
+   ${secs.filter(([k])=>E.sec[k]).map(([k,l])=>`<div class="card"><h2>${l}</h2><div class="sys-list">${E.sec[k].map(r=>`<div class="sys-r"><span class="sys-i ${r.lv}">${ico[r.lv]}</span><div><b>${esc(r.name)}</b><div class="sub">${esc(r.info||'')}</div>${r.fix&&r.lv!=='ok'?`<div class="sub sys-fix">${esc(r.fix)}</div>`:''}</div></div>`).join('')}</div></div>`).join('')}`}`}
 /* ================= YEDEKLER (099) ================= */
 const YD_DEF={on:true,weekly_day:1,email_to:'',mail_mode:'ek',max_mb:20,keep_daily:14,keep_weekly:8,keep_manual:5,hour:3};
 const YD_GUN=['Pazar','Pazartesi','Salı','Çarşamba','Perşembe','Cuma','Cumartesi'];
@@ -10258,6 +10357,7 @@ function vYedek(){const Y=S.yd=S.yd||{},R=ydR();
      <b>Girmeyenler:</b> gizli anahtarlar, SMS doğrulama kodları, portal oturumları, cihaz bildirim anahtarları, geçici kayıtlar ve kullanıcı şifreleri. Depolamadaki fotoğraflar ve belgeler bu yedeğe dahil değildir.<br>
      <b>Geri yükleme:</b> bir sorun olursa yedek dosyası boş bir Supabase veri tabanına geri yüklenebilir (KURULUM › Otomatik yedekleme › Geri yükleme).</p></div>`}
 Object.assign(A,{
+  'sys-refresh'(){sysLoad()},
   'du-refresh'(){S.dbu=null;S.dbuLoc=null;duLoad();render()},
   'arch-all'(t){t.disabled=true;archLoad(null)},
   async 'arch-find'(t){t.disabled=true;await archFind(t.dataset.q)},
