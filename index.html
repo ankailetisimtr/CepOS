@@ -3041,13 +3041,13 @@ const wLineInfo=l=>{const w=l.w;if(!w||!w.imei)return `<button class="btn sm ly"
 
 /* ----- garanti belgesi ----- */
 function wCertHtml(w){const sh=shopSet(),R=wR(),T=(R.terms||[]).filter(Boolean),RW=(l,v)=>`<div class="sum"><span>${l}</span><b>${v}</b></div>`;
-  return `<div class="qdoc rcpt wcert"><div style="text-align:center"><b style="font-size:17px">${esc(sh.name)}</b><div>${esc(sh.phone||'')}</div><div style="font-size:18px;margin:10px 0 2px"><b>ÖMÜR BOYU GARANTİ BELGESİ</b></div><div class="mono">${esc(w.no)} · ${fmtDate(w.start_date)}</div></div><hr>
+  return `<div class="qdoc rcpt wcert"><div style="text-align:center"><b style="font-size:17px">${esc(sh.name)}</b>${shopBlock(sh,'center')}<div style="font-size:18px;margin:10px 0 2px"><b>ÖMÜR BOYU GARANTİ BELGESİ</b></div><div class="mono">${esc(w.no)} · ${fmtDate(w.start_date)}</div></div><hr>
    ${RW('Müşteri',esc(w.customer||'—'))}${w.phone?RW('Telefon',esc(w.phone)):''}${RW('Cihaz',esc(w.device))}${RW('IMEI',`<span class="mono">${esc(w.imei)}${w.imei2?' / '+esc(w.imei2):''}</span>`)}
    ${RW('Paket',esc(w.package))}${RW('Kapsam',(w.parts||[]).map(p=>esc(p.name)).join(' + '))}${w.sale_no?RW('Satış fişi',esc(w.sale_no)):''}${RW('Değişim hakkı',`Paket yılı başına ${num(w.limit)}${w.scope==='parca'?' (parça başına)':''}`)}
    ${w.status!=='aktif'?`<div style="text-align:center;margin:8px 0"><b>İPTAL EDİLMİŞTİR</b> ${esc(w.cancel_reason||'')}</div>`:''}<hr>
    <b>Koşullar</b><ol style="margin:6px 0 0 18px;padding:0">${T.map(t=>`<li style="margin:3px 0">${esc(t)}</li>`).join('')}</ol>
    <div class="row" style="margin-top:28px;justify-content:space-between"><div style="text-align:center;width:45%">Müşteri<br><br>…………………………</div><div style="text-align:center;width:45%">${esc(sh.name)}<br><br>…………………………</div></div>
-   <div style="text-align:center;font-size:.8em;margin-top:10px;color:#555">Değişim için cihazınızla birlikte mağazamıza gelin. Belge numarası: ${esc(w.no)}</div></div>`}
+   <div style="text-align:center;font-size:.8em;margin-top:10px;color:#555">Değişim için cihazınızla birlikte mağazamıza gelin${sh.hours?' (çalışma saatleri: '+esc(sh.hours)+')':''}. Belge numarası: ${esc(w.no)}</div></div>`}
 async function wCert(id){try{const w=await call('warranty_get',{p_id:id});modal(`<div class="no-print"><h2>Garanti belgesi · ${esc(w.no)}</h2></div>${wCertHtml(w)}
   <div class="actions no-print"><span class="sub" style="margin-right:auto">PDF için "Yazdır" penceresinde "PDF olarak kaydet" seçin.</span><button class="btn" data-a="close">Kapat</button><button class="btn pri" data-a="rc-print" data-w="a4">Yazdır / PDF</button></div>`)}catch(e){toast(msg(e),true)}}
 function wAfterSale(list){if(!list||!list.length)return;modal(`<h2>${ic('star')} Garanti kaydı oluşturuldu</h2><p>${list.map(x=>`<b>${esc(x.no)}</b> · ${(x.parts||[]).map(wTN).join(' + ')}`).join('<br>')}</p>
