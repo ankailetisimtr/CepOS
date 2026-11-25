@@ -65,7 +65,9 @@ header.top .wrap{display:flex;align-items:center;gap:10px;height:62px}
 .media .ph{color:var(--muted);opacity:.5}.media .ph .ic{width:54px;height:54px;stroke-width:1.2}
 .badges{position:absolute;top:10px;left:10px;display:flex;gap:6px;flex-wrap:wrap}
 .bdg{background:rgba(255,255,255,.94);color:#121B23;border-radius:999px;padding:3px 9px;font-size:12px;font-weight:600;box-shadow:0 1px 3px rgba(0,0,0,.08)}
-.bdg.new{background:#121B23;color:#fff}.bdg.pink{background:var(--pink);color:#fff}
+.bdg.new{background:#121B23;color:#fff}.bdg.pink{background:var(--pink);color:#fff}.bdg.deal{background:#E2A33B;color:#121B23}
+.oldp{color:var(--muted);font-weight:500;font-size:.72em;text-decoration:line-through;margin-right:6px;white-space:nowrap}.tag.deal{background:#FFF1D6;color:#8A5300}
+@media (prefers-color-scheme: dark){.tag.deal{background:#3A2A10;color:#F3C46B}}
 .pcount{position:absolute;right:10px;bottom:10px;background:rgba(18,27,35,.62);color:#fff;border-radius:999px;font-size:12px;padding:2px 8px;display:flex;align-items:center;gap:4px}
 .resv{position:absolute;inset:0;background:rgba(18,27,35,.5);display:flex;align-items:center;justify-content:center}
 .resv span{background:#fff;color:#121B23;border-radius:999px;padding:6px 14px;font-weight:700;font-size:13px}
@@ -194,7 +196,7 @@ const IC={phone:'<rect x="6.5" y="2.5" width="11" height="19" rx="2.5"/><path d=
   wa:'<path d="M4 20l1.3-3.9A8 8 0 1 1 8 19z"/><path d="M9 8.5c0 3.5 3 6.5 6.5 6.5l1-1.6-2-1-1 .8a5 5 0 0 1-2.2-2.2l.8-1-1-2z"/>',
   clock:'<circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/>',bag:'<path d="M5 8h14l-1 12H6z"/><path d="M9 8V6.5a3 3 0 0 1 6 0V8"/>',star:'<path d="m12 3.5 2.6 5.3 5.8.8-4.2 4.1 1 5.8L12 16.8l-5.2 2.7 1-5.8-4.2-4.1 5.8-.8z"/>'};
 const ic=(k,c)=>`<svg class="ic ${c||''}" viewBox="0 0 24 24" aria-hidden="true">${IC[k]||''}</svg>`;
-const S={d:null,q:'',cat:'',cond:'',gb:'',sort:'oner',open:null,err:''};
+const S={d:null,q:'',cat:'',cond:'',gb:'',deal:'',sort:'oner',open:null,err:''};
 const MY=(()=>{try{return JSON.parse(localStorage.getItem('anka_katalog_rz')||'{}')}catch(e){return {}}})();
 const saveMy=()=>{try{localStorage.setItem('anka_katalog_rz',JSON.stringify(MY))}catch(e){}};
 const cond=it=>{const s=String(it.sub||'');return /^Sıfır/.test(s)?'Sıfır':/^Yenilenmiş/.test(s)?'Yenilenmiş':/2\.?\s?El/i.test(s)?'2. El':s};
@@ -205,6 +207,8 @@ const catTxt=c=>({'Akıllı Telefon':'Telefon','Tabletler':'Tablet','Akıllı Sa
 const GRP={kamera:'Kamera ve ses',ekran:'Ekran ve gövde',diger:'Face ID, Wi‑Fi, NFC, MagSafe, şarj',depo:'Pil ve depolama',battery:'Pil',camera:'Kamera',charge:'Şarj',cosmetic:'Kozmetik',faceid:'Face ID / kimlik doğrulama',imei:'IMEI',screen:'Ekran',sound:'Ses',storage:'Depolama',wifi:'Wi‑Fi',buttons:'Tuşlar',body:'Gövde',touch:'Dokunmatik',bluetooth:'Bluetooth',sim:'SIM / şebeke',network:'Şebeke',gps:'Konum',sensor:'Sensörler',sensors:'Sensörler',vibration:'Titreşim',nfc:'NFC',magsafe:'MagSafe'};
 const grpTxt=a=>[...new Set((a||[]).map(g=>GRP[g]).filter(Boolean))].join(', ');
 const specLine=it=>[gbTxt(gb(it)),it.color,it.battery!=null?'Pil %'+it.battery:'',it.warranty&&!/Garantisiz/i.test(it.warranty)?'Garantili':''].filter(Boolean).join(' · ');
+const dealPct=it=>it.deal&&it.old_price&&it.price?Math.round((it.old_price-it.price)/it.old_price*100):0;
+const oldP=it=>it.deal&&it.old_price&&it.price!=null?`<s class="oldp">${tl(it.old_price)}</s>`:'';
 const instTxt=it=>it.installment&&it.inst_total?`Peşin fiyatına ${it.installment} taksit · ${tl(Math.ceil(it.inst_total/it.installment))}/ay`:'';
 const phoneDigits=p=>{let d=String(p||'').replace(/\D/g,'');if(d.startsWith('90'))d=d.slice(2);if(d.startsWith('0'))d=d.slice(1);return d};
 const waLink=(t)=>{const w=phoneDigits(S.d&&S.d.shop&&S.d.shop.whatsapp);return w?`https://wa.me/90${w}?text=${encodeURIComponent(t)}`:''};
@@ -216,15 +220,15 @@ async function rpc(fn,body){const r=await fetch(URL0+'/rest/v1/rpc/'+fn,{method:
 /* ---- liste ---- */
 function filtered(){const d=S.d;let L=d.items.slice();const q=S.q.trim().toLocaleLowerCase('tr');
   if(q)L=L.filter(it=>[it.title,it.model,it.color,cond(it),catTxt(it.cat),gbTxt(gb(it))].join(' ').toLocaleLowerCase('tr').includes(q));
-  if(S.cat)L=L.filter(it=>it.cat===S.cat);if(S.cond)L=L.filter(it=>cond(it)===S.cond);if(S.gb)L=L.filter(it=>String(gb(it))===S.gb);
+  if(S.cat)L=L.filter(it=>it.cat===S.cat);if(S.cond)L=L.filter(it=>cond(it)===S.cond);if(S.gb)L=L.filter(it=>String(gb(it))===S.gb);if(S.deal)L=L.filter(it=>it.deal);
   if(S.sort==='artan')L.sort((a,b)=>(a.price??1e12)-(b.price??1e12));else if(S.sort==='azalan')L.sort((a,b)=>(b.price??-1)-(a.price??-1));else if(S.sort==='yeni')L.sort((a,b)=>String(b.added).localeCompare(String(a.added)));
   return L}
 function cardHtml(it,small){const ph=it.photos||[],c=cond(it);
   return `<button class="card" data-a="open" data-id="${esc(it.id)}" aria-label="${esc(it.title)}"><div class="media">${ph[0]?`<img src="${esc(IMG(ph[0]))}" alt="" loading="lazy">`:`<span class="ph">${ic('phone')}</span>`}
-    ${small?'':`<div class="badges"><span class="bdg${c==='Sıfır'?' new':''}">${esc(c)}</span>${it.featured?`<span class="bdg pink">Öne çıkan</span>`:''}</div>${ph.length>1?`<span class="pcount">${ic('cam','s')}${ph.length}</span>`:''}`}
+    ${small?'':`<div class="badges"><span class="bdg${c==='Sıfır'?' new':''}">${esc(c)}</span>${it.deal?`<span class="bdg deal">Fırsat${dealPct(it)?' · %'+dealPct(it):''}</span>`:''}${it.featured?`<span class="bdg pink">Öne çıkan</span>`:''}</div>${ph.length>1?`<span class="pcount">${ic('cam','s')}${ph.length}</span>`:''}`}
     ${it.reserved?'<div class="resv"><span>Rezerve edildi</span></div>':''}</div>
     <div class="body"><div class="title">${esc(it.title)}</div>${small?'':`<div class="specs">${esc(specLine(it))}</div>`}
-    <div class="price">${it.price!=null?tl(it.price):'<span style="font-size:14px;color:var(--muted)">Fiyat için sorun</span>'}</div>${!small&&instTxt(it)?`<div class="inst">${esc(instTxt(it))}</div>`:''}${!small&&MY[it.id]?`<div class="mine">Rezervasyonunuz: ${esc(MY[it.id])}</div>`:''}</div></button>`}
+    <div class="price">${oldP(it)}${it.price!=null?tl(it.price):'<span style="font-size:14px;color:var(--muted)">Fiyat için sorun</span>'}</div>${!small&&instTxt(it)?`<div class="inst">${esc(instTxt(it))}</div>`:''}${!small&&MY[it.id]?`<div class="mine">Rezervasyonunuz: ${esc(MY[it.id])}</div>`:''}</div></button>`}
 function render(){const d=S.d,app=$('#app');
   if(S.err)return app.innerHTML=`<div class="empty">${ic('search')}<p>${esc(S.err)}</p><button class="btn" data-a="retry">Tekrar dene</button></div>`;
   if(!d)return app.innerHTML=`<div class="hero"><div class="skel" style="height:34px;width:60%;aspect-ratio:auto"></div></div><div class="grid">${'<div class="skel"></div>'.repeat(8)}</div>`;
@@ -235,9 +239,9 @@ function render(){const d=S.d,app=$('#app');
   app.innerHTML=`<section class="hero"><h1>${esc(d.title||'Cihaz Kataloğu')}</h1>${d.intro?`<p>${esc(d.intro)}</p>`:''}
     <div class="chips"><span class="hchip"><b>${d.items.length}</b> cihaz</span><span class="hchip">${ic('shield','s')} Kontrol edilmiş cihazlar</span>${d.reserve_on?`<span class="hchip">${ic('clock','s')} Ücretsiz rezervasyon</span>`:''}</div></section>
   <div class="bar"><label class="search">${ic('search')}<input id="q" type="search" placeholder="Model, renk, GB ara…" value="${esc(S.q)}" autocomplete="off" aria-label="Ara"></label>
-    <div class="filters" role="toolbar" aria-label="Süzgeçler">${cats.length>1?chip('cat','','Tümü')+cats.map(c=>chip('cat',c,catTxt(c))).join('')+'<span class="sepv"></span>':''}${conds.length>1?conds.map(c=>chip('cond',c,c)).join('')+'<span class="sepv"></span>':''}${gbs.length>1?gbs.map(g=>chip('gb',String(g),gbTxt(g))).join('')+'<span class="sepv"></span>':''}
+    <div class="filters" role="toolbar" aria-label="Süzgeçler">${cats.length>1?chip('cat','','Tümü')+cats.map(c=>chip('cat',c,catTxt(c))).join('')+'<span class="sepv"></span>':''}${conds.length>1?conds.map(c=>chip('cond',c,c)).join('')+'<span class="sepv"></span>':''}${gbs.length>1?gbs.map(g=>chip('gb',String(g),gbTxt(g))).join('')+'<span class="sepv"></span>':''}${d.items.some(i=>i.deal)?chip('deal','1','Fırsatlar ('+d.items.filter(i=>i.deal).length+')')+'<span class="sepv"></span>':''}
       <select class="chip sel" id="sort" aria-label="Sıralama">${[['oner','Önerilen'],['artan','Fiyat: düşükten yükseğe'],['azalan','Fiyat: yüksekten düşüğe'],['yeni','En yeni']].map(([v,t])=>`<option value="${v}" ${S.sort===v?'selected':''}>${t}</option>`).join('')}</select></div>
-    <div class="count">${L.length===d.items.length?L.length+' cihaz':L.length+' / '+d.items.length+' cihaz'}${S.q||S.cat||S.cond||S.gb?` · <a href="#" data-a="clear">Süzgeçleri temizle</a>`:''}</div></div>
+    <div class="count">${L.length===d.items.length?L.length+' cihaz':L.length+' / '+d.items.length+' cihaz'}${S.q||S.cat||S.cond||S.gb||S.deal?` · <a href="#" data-a="clear">Süzgeçleri temizle</a>`:''}</div></div>
   <section class="grid">${L.map(it=>cardHtml(it)).join('')||`<div class="empty" style="grid-column:1/-1">${ic('search')}<p>Aradığınız cihaz şu anda yok. Bize yazın, sizin için bulalım.</p>${waLink('Merhaba, katalogda bulamadığım bir cihaz arıyorum: '+S.q)?`<a class="btn wa" target="_blank" rel="noopener" href="${esc(waLink('Merhaba, katalogda bulamadığım bir cihaz arıyorum: '+S.q))}">${ic('wa')} WhatsApp'tan sorun</a>`:''}</div>`}</section>`;
   if(keep){const i=$('#q');i.focus();i.setSelectionRange(i.value.length,i.value.length)}}
 function shopHtml(){const s=S.d.shop||{};$('#foot').innerHTML=`<div><b style="color:var(--fg)">${esc(s.name||'Anka İletişim')}</b><br>${esc(s.address||'')}</div><div>${s.phone?`<a href="tel:0${esc(phoneDigits(s.phone))}">${esc(s.phone)}</a><br>`:''}${s.email?`<a href="mailto:${esc(s.email)}">${esc(s.email)}</a><br>`:''}${s.web?`<a href="${esc(s.web)}" target="_blank" rel="noopener">${esc(String(s.web).replace(/^https?:\/\//,'').replace(/\/$/,''))}</a><br>`:''}${s.instagram?`<a href="https://instagram.com/${esc(String(s.instagram).replace(/^@/,''))}" target="_blank" rel="noopener">Instagram ${esc(s.instagram)}</a>`:''}</div><div>${s.hours?`<b style="color:var(--fg)">Çalışma saatleri</b><br>${esc(s.hours)}<br><br>`:''}Fiyatlar ve stok bilgisi değişebilir.<br>Son fiyat mağazamızda teyit edilir.</div>`;
@@ -259,9 +263,9 @@ function detail(id,push){const it=S.d&&S.d.items.find(x=>String(x.id)===String(i
     <div><div class="gal"><div class="track" id="trk">${ph.length?ph.map((p,i)=>`<div><img src="${esc(IMG(p))}" alt="${esc(it.title)} fotoğraf ${i+1}" ${i?'loading="lazy"':''}></div>`).join(''):`<div class="ph">${ic('phone')}</div>`}</div>
       ${ph.length>1?`<button class="nav p" data-a="gal" data-v="-1" aria-label="Önceki">${ic('l')}</button><button class="nav n" data-a="gal" data-v="1" aria-label="Sonraki">${ic('r')}</button><div class="dots">${ph.map((_,i)=>`<i class="${i?'':'on'}"></i>`).join('')}</div>`:''}</div>
       ${ph.length>1?`<div class="thumbs">${ph.map((p,i)=>`<button data-a="thumb" data-v="${i}" class="${i?'':'on'}" aria-label="Fotoğraf ${i+1}"><img src="${esc(IMG(p))}" alt="" loading="lazy"></button>`).join('')}</div>`:''}</div>
-    <div class="info"><div class="cond"><span class="tag">${esc(catTxt(it.cat))}</span><span class="tag${c==='Sıfır'?' ok':''}">${esc(c)}</span>${inv(it)?'<span class="tag ok">Faturalı</span>':''}${it.featured?'<span class="tag pink">Öne çıkan</span>':''}${it.reserved?'<span class="tag warn">Rezerve edildi</span>':''}</div>
+    <div class="info"><div class="cond"><span class="tag">${esc(catTxt(it.cat))}</span><span class="tag${c==='Sıfır'?' ok':''}">${esc(c)}</span>${inv(it)?'<span class="tag ok">Faturalı</span>':''}${it.deal?`<span class="tag deal">Fırsat${dealPct(it)?' · %'+dealPct(it)+' indirim':''}</span>`:''}${it.featured?'<span class="tag pink">Öne çıkan</span>':''}${it.reserved?'<span class="tag warn">Rezerve edildi</span>':''}</div>
       <h2>${esc(it.title)}</h2>${it.title!==it.model?`<div style="color:var(--muted)">${esc(it.model)}</div>`:''}
-      <div class="bigp">${it.price!=null?tl(it.price):'<span style="font-size:20px">Fiyat için bizi arayın</span>'}</div>${instTxt(it)?`<div class="inst" style="font-size:14px">${esc(instTxt(it))}</div>`:''}
+      <div class="bigp">${oldP(it)}${it.price!=null?tl(it.price):'<span style="font-size:20px">Fiyat için bizi arayın</span>'}</div>${instTxt(it)?`<div class="inst" style="font-size:14px">${esc(instTxt(it))}</div>`:''}
       <div class="cta">${resBtn}${wa?`<a class="btn wa" target="_blank" rel="noopener" href="${esc(wa)}">${ic('wa')} Sor</a>`:''}<button class="btn" data-a="share" data-id="${esc(it.id)}" aria-label="Paylaş">${ic('share')}</button></div>
       ${S.d.reserve_on&&!it.reserved?`<div style="color:var(--muted);font-size:13px">${S.d.auto_hold?`Rezervasyon ücretsizdir; cihaz ${S.d.hold_hours} saat sizin için ayrılır.`:'Rezervasyon ücretsizdir; talebiniz alınınca sizi arayacağız.'}</div>`:''}
       ${kv.length?`<div class="sec"><h3>Özellikler</h3><div class="kv">${kv.map(([k,v])=>`<div><small>${esc(k)}</small><b>${esc(v)}</b></div>`).join('')}</div></div>`:''}
@@ -339,7 +343,7 @@ document.addEventListener('click',e=>{const t=e.target.closest('[data-a]');if(!t
   else if(a==='close'){e.preventDefault();back()}
   else if(a==='home'){e.preventDefault();closeOv();S.open=null;history.replaceState(null,'',location.pathname+location.search);render()}
   else if(a==='f'){const k=t.dataset.k,v=t.dataset.v;S[k]=S[k]===v?'':v;render()}
-  else if(a==='clear'){e.preventDefault();S.q='';S.cat='';S.cond='';S.gb='';render()}
+  else if(a==='clear'){e.preventDefault();S.q='';S.cat='';S.cond='';S.gb='';S.deal='';render()}
   else if(a==='retry'){S.err='';render();load()}
   else if(a==='print')window.print();
   else if(a==='reserve')reserveForm(t.dataset.id);
