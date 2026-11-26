@@ -184,6 +184,8 @@ body.lock{overflow:hidden}
 @media(max-width:560px){.gb{margin:12px 0 30px;border-radius:18px}.gb-p{grid-template-columns:repeat(3,minmax(0,1fr))}.gb-p b{font-size:13.5px}}
 @media print{:root{--bg:#fff;--card:#fff;--fg:#121B23;--muted:#5E6B77;--line:#E2E8EE;--soft:#EEF2F6;--bluebg:#E7F3FC;--pinkbg:#FCEAF4;--okbg:#E5F5EC;--warnbg:#FFF3DC;--blue:#0A70B8;--pink:#C20C77;--ok:#17834A;--bad:#BF3328}html,body{background:#fff!important;color:#121B23!important}*{-webkit-print-color-adjust:exact;print-color-adjust:exact}header.top,footer,.gb .acts,.toast{display:none!important}main.wrap{max-width:none;padding:0}.gb{box-shadow:none;margin:0 auto;border:1px solid #E2E8EE;max-width:none}.gb .sec{break-inside:avoid}}
 
+/* fiyat alarmı */
+.pa-b{width:100%;margin:2px 0 6px;color:var(--blue)}.pa-on{display:flex;align-items:center;gap:6px;color:var(--ok);font-size:14px;font-weight:500;margin:2px 0 8px}
 @media (prefers-color-scheme: dark){.btn.pri,.bdg.pink{color:#0D141A}.btn.pri:disabled{color:#E8EEF3}}
 /* mağaza ekranı (118) */
 body.tv{background:#071521;color:#fff;overflow:hidden;cursor:default;height:100vh;margin:0}
@@ -255,7 +257,7 @@ const IC={phone:'<rect x="6.5" y="2.5" width="11" height="19" rx="2.5"/><path d=
   x:'<path d="M6 6l12 12M18 6 6 18"/>',l:'<path d="m15 5-7 7 7 7"/>',r:'<path d="m9 5 7 7-7 7"/>',cam:'<path d="M4 8h3l2-2.5h6L17 8h3v11H4z"/><circle cx="12" cy="13.5" r="3.5"/>',
   pin:'<path d="M12 21s7-6.2 7-11.5A7 7 0 0 0 5 9.5C5 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/>',share:'<circle cx="18" cy="5.5" r="2.5"/><circle cx="6" cy="12" r="2.5"/><circle cx="18" cy="18.5" r="2.5"/><path d="m8.2 10.8 7.6-4M8.2 13.2l7.6 4"/>',
   wa:'<path d="M4 20l1.3-3.9A8 8 0 1 1 8 19z"/><path d="M9 8.5c0 3.5 3 6.5 6.5 6.5l1-1.6-2-1-1 .8a5 5 0 0 1-2.2-2.2l.8-1-1-2z"/>',
-  clock:'<circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/>',bag:'<path d="M5 8h14l-1 12H6z"/><path d="M9 8V6.5a3 3 0 0 1 6 0V8"/>',star:'<path d="m12 3.5 2.6 5.3 5.8.8-4.2 4.1 1 5.8L12 16.8l-5.2 2.7 1-5.8-4.2-4.1 5.8-.8z"/>'};
+  clock:'<circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/>',bag:'<path d="M5 8h14l-1 12H6z"/><path d="M9 8V6.5a3 3 0 0 1 6 0V8"/>',bell:'<path d="M6 16V11a6 6 0 0 1 12 0v5l1.5 2h-15z"/><path d="M10 20.5a2 2 0 0 0 4 0"/>',star:'<path d="m12 3.5 2.6 5.3 5.8.8-4.2 4.1 1 5.8L12 16.8l-5.2 2.7 1-5.8-4.2-4.1 5.8-.8z"/>'};
 const ic=(k,c)=>`<svg class="ic ${c||''}" viewBox="0 0 24 24" aria-hidden="true">${IC[k]||''}</svg>`;
 const S={d:null,q:'',cat:'',cond:'',gb:'',deal:'',sort:'oner',open:null,err:''};
 const MY=(()=>{try{return JSON.parse(localStorage.getItem('anka_katalog_rz')||'{}')}catch(e){return {}}})();
@@ -327,7 +329,7 @@ function detail(id,push){const it=S.d&&S.d.items.find(x=>String(x.id)===String(i
     <div class="info"><div class="cond"><span class="tag">${esc(catTxt(it.cat))}</span><span class="tag${c==='Sıfır'?' ok':''}">${esc(c)}</span>${inv(it)?'<span class="tag ok">Faturalı</span>':''}${it.deal?`<span class="tag deal">Fırsat${dealPct(it)?' · %'+dealPct(it)+' indirim':''}</span>`:''}${it.featured?'<span class="tag pink">Öne çıkan</span>':''}${it.reserved?'<span class="tag warn">Rezerve edildi</span>':''}</div>
       <h2>${esc(it.title)}</h2>${it.title!==it.model?`<div style="color:var(--muted)">${esc(it.model)}</div>`:''}
       <div class="bigp">${oldP(it)}${it.price!=null?tl(it.price):'<span style="font-size:20px">Fiyat için bizi arayın</span>'}</div>${instTxt(it)?`<div class="inst" style="font-size:14px">${esc(instTxt(it))}</div>`:''}
-      <div class="cta">${resBtn}${wa?`<a class="btn wa" target="_blank" rel="noopener" href="${esc(wa)}">${ic('wa')} Sor</a>`:''}<button class="btn" data-a="share" data-id="${esc(it.id)}" aria-label="Paylaş">${ic('share')}</button></div>
+      <div class="cta">${resBtn}${wa?`<a class="btn wa" target="_blank" rel="noopener" href="${esc(wa)}">${ic('wa')} Sor</a>`:''}<button class="btn" data-a="share" data-id="${esc(it.id)}" aria-label="Paylaş">${ic('share')}</button></div>${paBtn(it)}
       ${S.d.reserve_on&&!it.reserved?`<div style="color:var(--muted);font-size:13px">${S.d.auto_hold?`Rezervasyon ücretsizdir; cihaz ${S.d.hold_hours} saat sizin için ayrılır.`:'Rezervasyon ücretsizdir; talebiniz alınınca sizi arayacağız.'}</div>`:''}
       ${kv.length?`<div class="sec"><h3>Özellikler</h3><div class="kv">${kv.map(([k,v])=>`<div><small>${esc(k)}</small><b>${esc(v)}</b></div>`).join('')}</div></div>`:''}
       ${insp&&insp.total?`<div class="sec"><div class="check">${ic('shield','l')}<div><b>Cihaz kontrolünden geçti</b> <small>${insp.total} maddeden ${insp.ok} madde sorunsuz${insp.issue?` · ${insp.issue} maddede not var, mağazada gösterilir`:''}${grpTxt(insp.groups)?' · Sorunsuz: '+esc(grpTxt(insp.groups)):''}</small></div></div></div>`:''}
@@ -440,6 +442,45 @@ async function trackReq(kind){TK.err='';TK.msg='';const n=($('#sv-name')||{}).va
   TK.busy=true;trackHtml();
   try{await rpc('service_track_request',{p_token:TK.tok,p_kind:kind,p_name:n.trim()||null,p_note:note.trim()||null});TK.msg=kind==='onay'?'Onayınız alındı; onarıma başlıyoruz. Teşekkür ederiz.':kind==='red'?'Kararınız bize iletildi. Cihazınızı mağazamızdan teslim alabilirsiniz.':'';TK.busy=false;await showTrack(TK.tok,true)}
   catch(e){TK.busy=false;TK.err=e.message;trackHtml()}}
+/* ---- fiyat alarmı (120) ---- */
+const MYA=(()=>{try{return JSON.parse(localStorage.getItem('anka_katalog_fa')||'{}')}catch(e){return {}}})();
+const saveMya=()=>{try{localStorage.setItem('anka_katalog_fa',JSON.stringify(MYA))}catch(e){}};
+const paBtn=it=>S.d&&S.d.price_alert&&it.price!=null&&!it.reserved?(MYA[it.id]?`<div class="pa-on">${ic('bell','s')} Fiyat alarmınız kurulu${MYA[it.id].t?' · '+tl(MYA[it.id].t)+' ya da altı':''} <a href="#" data-a="pa-open" data-id="${esc(it.id)}">değiştir</a></div>`
+  :`<button class="btn pa-b" data-a="pa-open" data-id="${esc(it.id)}">${ic('bell')} Fiyatı düşünce haber ver</button>`):'';
+function paForm(id){const it=S.d.items.find(x=>String(x.id)===String(id));if(!it)return;F.pa=it.id;const my=MYA[it.id]||{};
+  history.pushState({ov:1,f:1},'','#c/'+it.id+'/alarm');
+  overlay(`<button class="x" data-a="close" aria-label="Kapat">${ic('x')}</button><form class="form" id="paf" novalidate><h2>Fiyatı düşünce haber ver</h2>
+    <div style="color:var(--muted);font-size:14px">Bu cihazın fiyatı düşünce size <b>bir kez</b> e-posta gönderelim. Alarm 90 gün geçerlidir; her e-postadaki bağlantıyla iptal edebilirsiniz.</div>
+    <div class="mini">${(it.photos||[])[0]?`<img src="${esc(IMG(it.photos[0]))}" alt="">`:`<span class="ph">${ic('phone')}</span>`}<div><b>${esc(it.title)}</b><div style="color:var(--muted);font-size:13px">${esc(specLine(it))}</div><b>${tl(it.price)}</b></div></div>
+    <label class="fld"><span>E-posta</span><input id="pa-mail" type="email" autocomplete="email" maxlength="120" value="${esc(my.m||'')}" required></label>
+    <label class="fld"><span>Adınız <small style="color:var(--muted);font-weight:400">(isteğe bağlı)</small></span><input id="pa-name" autocomplete="name" maxlength="80"></label>
+    <label class="fld"><span>Beklediğiniz fiyat <small style="color:var(--muted);font-weight:400">(isteğe bağlı · boş bırakırsanız her düşüşte)</small></span><input id="pa-t" type="number" inputmode="numeric" min="1" step="50" placeholder="ör. ${esc(String(Math.floor(it.price*0.9/50)*50))}" value="${my.t||''}"></label>
+    <label class="hp" aria-hidden="true">Web sitesi<input id="pa-hp" tabindex="-1" autocomplete="off"></label>
+    <label class="ck"><input type="checkbox" id="pa-kvkk"><span>E-posta adresimin yalnız bu cihazın fiyat bildirimi için kullanılmasını kabul ediyorum. ${S.d.kvkk?`<a href="#" data-a="pa-kvkk">Aydınlatma metni</a>`:''}</span></label>
+    <div id="pa-kt" hidden><details open><summary>Aydınlatma metni</summary><p>${esc(S.d.kvkk||'')}</p></details></div>
+    <div class="err" id="pa-err" hidden></div>
+    <button class="btn pri full" type="submit" id="pa-go" style="margin-top:8px">${ic('bell')} Alarm kur</button></form>`,'f');
+  setTimeout(()=>{const n=$('#pa-mail');if(n&&matchMedia('(hover:hover)').matches)n.focus()},250)}
+async function paSubmit(){const e=$('#pa-err'),b=$('#pa-go'),it=S.d.items.find(x=>x.id===F.pa);e.hidden=true;const bad=m=>{e.textContent=m;e.hidden=false};
+  const m=$('#pa-mail').value.trim(),t=$('#pa-t').value.trim();
+  if(!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(m))return bad('Geçerli bir e-posta adresi yazın.');
+  if(t&&!(Number(t)>0&&Number(t)<it.price))return bad('Beklediğiniz fiyat şu anki fiyattan ('+tl(it.price)+') düşük olmalı.');
+  if(!$('#pa-kvkk').checked)return bad('Devam etmek için onay kutusunu işaretleyin.');
+  b.disabled=true;b.textContent='Kuruluyor…';
+  try{const r=await rpc('price_alert_create',{p:{product:it.id,email:m,name:$('#pa-name').value.trim(),target:t||null,kvkk:true,hp:$('#pa-hp').value}});
+    MYA[it.id]={m,t:r&&r.target?Number(r.target):null};saveMya();
+    const sh=ovEl&&ovEl.querySelector('.sheet');if(!sh)return;
+    sh.innerHTML=`<button class="x" data-a="close" aria-label="Kapat">${ic('x')}</button><div class="done"><span class="ok">${ic('bell')}</span><h2>${r&&r.again?'Alarmınız güncellendi':'Fiyat alarmınız kuruldu'}</h2>
+      <p style="margin:0 0 4px"><b>${esc(it.title)}</b></p><p style="color:var(--muted);margin:0">Fiyat ${r&&r.target?tl(r.target)+' ya da altına inince':'düşünce'} <b>${esc(m)}</b> adresine haber vereceğiz.${r&&r.again?'':' Onay e-postasını da gönderdik.'}</p>
+      <div class="btns"><button class="btn pri full" data-a="close">Tamam</button></div></div>`}
+  catch(x){bad(x.message);b.disabled=false;b.innerHTML=ic('bell')+' Alarm kur'}}
+async function showPaCancel(tok){closeOv(true);const app=$('#app');app.innerHTML='<div class="gb"><div class="gb-b"><div class="skel" style="aspect-ratio:auto;height:100px"></div></div></div>';
+  let d=null;try{d=await rpc('price_alert_cancel',{p_token:tok})}catch(e){app.innerHTML=`<div class="empty">${ic('bell')}<p>İşlem yapılamadı. İnternet bağlantınızı kontrol edip tekrar deneyin.</p></div>`;return}
+  if(d&&d.product&&MYA[d.product]){delete MYA[d.product];saveMya()}
+  app.innerHTML=!d?`<div class="empty">${ic('bell')}<h2>Alarm bulunamadı</h2><p>Bağlantı hatalı ya da eksik olabilir.</p><a class="btn" href="${esc(location.pathname)}">Kataloğa dön</a></div>`
+   :`<article class="gb"><div class="gb-st">${ic('check')}<div><b>${d.already?'Bu alarm zaten kapalı':'Fiyat alarmınız iptal edildi'}</b><span>${esc(d.model||'')}</span></div></div><div class="gb-b">
+     <p>${d.already?'Bu cihaz için artık e-posta gönderilmiyor.':'Bu cihaz için size artık fiyat e-postası gönderilmeyecek.'}</p><div class="acts"><a class="btn pri" href="${esc(location.pathname)}">Kataloğa dön</a></div></div></article>`;
+  if(S.d)shopHtml()}
 /* ---- olaylar ---- */
 document.addEventListener('click',e=>{const t=e.target.closest('[data-a]');if(!t)return;const a=t.dataset.a;
   if(a==='open'){e.preventDefault();detail(t.dataset.id,true)}
@@ -452,6 +493,8 @@ document.addEventListener('click',e=>{const t=e.target.closest('[data-a]');if(!t
   else if(a==='sv-ref'){TK.err='';TK.msg='';showTrack(TK.tok,true)}
   else if(a==='sv-onay'||a==='sv-red'||a==='sv-ara')trackReq(a.slice(3));
   else if(a==='reserve')reserveForm(t.dataset.id);
+  else if(a==='pa-open'){e.preventDefault();paForm(t.dataset.id)}
+  else if(a==='pa-kvkk'){e.preventDefault();const k=$('#pa-kt');k.hidden=!k.hidden}
   else if(a==='pref'){F.pref=t.dataset.v;document.querySelectorAll('[data-a="pref"]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.v===F.pref)))}
   else if(a==='kvkk'){e.preventDefault();const k=$('#kvkk-t');k.hidden=!k.hidden}
   else if(a==='share'){const it=S.d.items.find(x=>String(x.id)===t.dataset.id),u=link(t.dataset.id);
@@ -460,12 +503,13 @@ document.addEventListener('click',e=>{const t=e.target.closest('[data-a]');if(!t
   else if(a==='gal'||a==='thumb'){const tr=$('#trk');if(!tr)return;const i=a==='thumb'?Number(t.dataset.v):Math.round(tr.scrollLeft/tr.clientWidth)+Number(t.dataset.v);tr.scrollTo({left:Math.max(0,i)*tr.clientWidth,behavior:'smooth'})}});
 document.addEventListener('input',e=>{if(e.target.id==='q'){S.q=e.target.value;render()}});
 document.addEventListener('change',e=>{if(e.target.id==='sort'){S.sort=e.target.value;render()}});
-document.addEventListener('submit',e=>{if(e.target.id==='rf'){e.preventDefault();submit()}});
+document.addEventListener('submit',e=>{if(e.target.id==='rf'){e.preventDefault();submit()}else if(e.target.id==='paf'){e.preventDefault();paSubmit()}});
 document.addEventListener('keydown',e=>{if(e.key==='Escape'&&ovEl)back()});
 window.addEventListener('popstate',()=>{if(TV.tok){const m=location.hash.match(/^#tv\/([0-9a-f-]{36})$/i);if(!m)location.reload();return}route()});
 function route(){const g0=location.hash.match(/^#g\/([0-9a-f-]{36})$/i);if(g0){S.cert=g0[1];showCert(g0[1]);return}
-  const s0=location.hash.match(/^#s\/([0-9a-f-]{36})$/i);if(s0){S.cert=s0[1];showTrack(s0[1]);return}if(S.cert){S.cert=null;render()}
-  const m=location.hash.match(/^#c\/([0-9a-f-]{36})(\/rezerve)?$/i);
+  const s0=location.hash.match(/^#s\/([0-9a-f-]{36})$/i);if(s0){S.cert=s0[1];showTrack(s0[1]);return}
+  const f0=location.hash.match(/^#fa\/([0-9a-f-]{36})$/i);if(f0){S.cert=f0[1];showPaCancel(f0[1]);return}if(S.cert){S.cert=null;render()}
+  const m=location.hash.match(/^#c\/([0-9a-f-]{36})(\/rezerve|\/alarm)?$/i);
   if(!m){if(ovEl){closeOv();S.open=null;render()}return}
   if(!S.d)return;
   if(!ovEl||S.open!==m[1]||(!m[2]&&ovEl.querySelector('form'))){detail(m[1],false)}}
@@ -576,7 +620,7 @@ function tvStart(tok){TV.tok=tok;document.body.classList.add('tv');document.titl
   document.addEventListener('keydown',e=>{if(!TV.d)return;if(e.key==='ArrowRight'){tvNext()}else if(e.key==='ArrowLeft'){TV.i=Math.max(-1,TV.i-2);tvNext()}})}
 
 const TV0=location.hash.match(/^#tv\/([0-9a-f-]{36})$/i);
-if(TV0)tvStart(TV0[1]);else{if(/^#[gs]\//.test(location.hash))route();else render();load();}
+if(TV0)tvStart(TV0[1]);else{if(/^#(g|s|fa)\//.test(location.hash))route();else render();load();}
 </script>
 </body>
 </html>
