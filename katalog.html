@@ -168,6 +168,19 @@ body.lock{overflow:hidden}
 .gb-p{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:12px 0 4px}.gb-p div{background:var(--soft);border-radius:14px;padding:10px 12px}.gb-p small{display:block;color:var(--muted);font-size:12px}.gb-p b{font-size:15px}
 .gb-l{list-style:none;margin:0;padding:0}.gb-l li{padding:3px 0 3px 22px;position:relative}.gb-l.ok li:before{content:'✓';position:absolute;left:2px;color:var(--ok);font-weight:800}.gb-l.no li:before{content:'✕';position:absolute;left:2px;color:var(--bad);font-weight:800}
 .gb ol{margin:0;padding-left:18px}.gb .acts{display:flex;gap:10px;flex-wrap:wrap;margin-top:18px}
+/* servis takip */
+.gb-st.wait{background:var(--warnbg);color:var(--warn)}.gb-st.info{background:var(--bluebg);color:var(--blue)}
+.sv-steps{list-style:none;margin:16px 0 6px;padding:0;display:grid;grid-template-columns:repeat(4,1fr);gap:6px;counter-reset:s}
+.sv-steps li{position:relative;text-align:center;font-size:12.5px;color:var(--muted);padding-top:34px}
+.sv-steps li:before{counter-increment:s;content:counter(s);position:absolute;top:0;left:50%;transform:translateX(-50%);width:28px;height:28px;border-radius:50%;border:2px solid var(--line);background:var(--card);display:flex;align-items:center;justify-content:center;font-weight:700;color:var(--muted);z-index:1}
+.sv-steps li:after{content:'';position:absolute;top:13px;left:-50%;width:100%;height:2px;background:var(--line)}.sv-steps li:first-child:after{display:none}
+.sv-steps li.done:before{content:'✓';background:var(--ok);border-color:var(--ok);color:#fff}.sv-steps li.done:after,.sv-steps li.on:after{background:var(--ok)}
+.sv-steps li.on{color:var(--fg);font-weight:600}.sv-steps li.on:before{border-color:var(--blue);color:var(--blue);box-shadow:0 0 0 4px var(--bluebg)}
+.sv-q{border:2px solid var(--warn);background:var(--warnbg);border-radius:16px;padding:14px 16px}.sv-q .amt{font-size:26px;font-weight:700;color:var(--fg)}
+.sv-q.done{border-color:var(--ok);background:var(--okbg)}
+.sv-tl{list-style:none;margin:0;padding:0}.sv-tl li{display:flex;gap:10px;padding:6px 0;border-top:1px solid var(--line);font-size:14px}.sv-tl li:first-child{border-top:0}.sv-tl time{color:var(--muted);min-width:118px}
+.sv-ok{background:var(--okbg);color:var(--ok);border-radius:12px;padding:10px 12px;font-size:14px;margin-top:8px}
+@media(max-width:560px){.sv-steps li{font-size:11px}}
 @media(max-width:560px){.gb{margin:12px 0 30px;border-radius:18px}.gb-p{grid-template-columns:repeat(3,minmax(0,1fr))}.gb-p b{font-size:13.5px}}
 @media print{:root{--bg:#fff;--card:#fff;--fg:#121B23;--muted:#5E6B77;--line:#E2E8EE;--soft:#EEF2F6;--bluebg:#E7F3FC;--pinkbg:#FCEAF4;--okbg:#E5F5EC;--warnbg:#FFF3DC;--blue:#0A70B8;--pink:#C20C77;--ok:#17834A;--bad:#BF3328}html,body{background:#fff!important;color:#121B23!important}*{-webkit-print-color-adjust:exact;print-color-adjust:exact}header.top,footer,.gb .acts,.toast{display:none!important}main.wrap{max-width:none;padding:0}.gb{box-shadow:none;margin:0 auto;border:1px solid #E2E8EE;max-width:none}.gb .sec{break-inside:avoid}}
 
@@ -337,6 +350,48 @@ async function showCert(tok){closeOv(true);const app=$('#app');app.innerHTML='<d
     <div class="sec"><div class="store">${ic('pin','l')}<div><b>${esc(s.name||'Anka İletişim')}</b><div style="color:var(--muted);font-size:14px">${esc(s.address||'')}</div>${s.phone?`<a href="tel:0${esc(phoneDigits(s.phone))}">${esc(s.phone)}</a>`:''}</div></div></div>
     <div class="acts"><button class="btn pri" data-a="print">Yazdır / PDF olarak kaydet</button>${s.phone?`<a class="btn wa" target="_blank" rel="noopener" href="https://wa.me/90${esc(phoneDigits(s.phone))}?text=${encodeURIComponent('Merhaba, '+d.cert_no+' numaralı garanti belgem hakkında yazıyorum.')}">WhatsApp</a>`:''}<a class="btn" href="${esc(location.pathname)}">Cihaz kataloğu</a></div></div></article>`;
   if(s.name||s.phone){S.d=S.d||{items:[],shop:s};if(!S.d.shop)S.d.shop=s;shopHtml()}}
+/* ---- servis takip (#s/<bağlantı>) ---- */
+const SVS={kabul:['Cihazınız teslim alındı','İnceleme sırası bekleniyor.',1,'info'],inceleme:['Cihazınız inceleniyor','Teknisyenimiz arızayı inceliyor.',2,'info'],
+  onay_bekliyor:['Onayınız bekleniyor','Onarım teklifimizi aşağıda görebilir, buradan onaylayabilirsiniz.',2,'wait'],parca_bekliyor:['Parça bekleniyor','Onarım için gereken parça tedarik ediliyor.',2,'wait'],
+  gonderildi:['Yetkili serviste','Cihazınız onarım için yetkili servise gönderildi.',2,'info'],dis_serviste:['Yetkili serviste','Cihazınız yetkili serviste onarılıyor.',2,'info'],
+  dondu:['Servisten döndü','Cihazınızın son kontrolleri yapılıyor.',2,'info'],hazir:['Cihazınız teslime hazır','Mağazamıza uğrayarak teslim alabilirsiniz.',3,''],
+  teslim:['Teslim edildi','Bizi tercih ettiğiniz için teşekkür ederiz.',4,''],iptal:['Servis kaydı kapatıldı','Ayrıntı için mağazamızı arayabilirsiniz.',0,'bad']};
+const SVE={kabul:'Teslim alındı',inceleme:'İncelemeye alındı',onay_bekliyor:'Onarım teklifi verildi',parca_bekliyor:'Parça bekleniyor',gonderildi:'Yetkili servise gönderildi',dis_serviste:'Yetkili serviste',dondu:'Yetkili servisten döndü',hazir:'Teslime hazır',teslim:'Teslim edildi',iptal:'Kayıt kapatıldı'};
+const fdt=s=>s?new Date(s).toLocaleString('tr-TR',{day:'numeric',month:'long',hour:'2-digit',minute:'2-digit'}):'';
+const TK={tok:null,d:null,busy:false,err:'',msg:''};
+async function showTrack(tok,silent){closeOv(true);TK.tok=tok;const app=$('#app');if(!silent)app.innerHTML='<div class="gb"><div class="gb-b"><div class="skel" style="aspect-ratio:auto;height:140px"></div></div></div>';
+  try{TK.d=await rpc('service_track_public',{p_token:tok})}catch(e){app.innerHTML=`<div class="empty">${ic('shield')}<p>Servis bilgisi yüklenemedi. İnternet bağlantınızı kontrol edip tekrar deneyin.</p><button class="btn" data-a="sv-ref">Tekrar dene</button></div>`;return}
+  if(!TK.d){app.innerHTML=`<div class="empty">${ic('search')}<h2>Servis kaydı bulunamadı</h2><p>Bağlantı hatalı ya da eksik olabilir. Servis fişinizdeki QR kodu yeniden okutun ya da mağazamızı arayın.</p></div>`;return}
+  trackHtml()}
+function trackHtml(){const d=TK.d,app=$('#app'),s=d.shop||{},st=SVS[d.status]||[d.status,'',1,'info'],step=st[2],q=d.quote,approved=q&&q.status==='kabul'&&q.approved_at;
+  const sub=d.status==='inceleme'&&approved?['Cihazınız onarımda','Onayınızla onarıma başlandı.']:[st[0],st[1]];
+  document.title='Servis takip · '+d.ticket;
+  const kv=[['Fiş no',d.ticket],['Müşteri',d.customer],['IMEI',d.imei],['Bildirilen arıza',d.issue],['Teslim alındı',fdt(d.received_at)],
+    ['Tahmini teslim',d.promised_date&&!['hazir','teslim','iptal'].includes(d.status)?fd(d.promised_date):''],['Tahmini ücret',d.estimate!=null&&!['hazir','teslim'].includes(d.status)&&!(q&&q.status==='verildi')?tl(d.estimate):'']].filter(x=>x[1]);
+  const wa=phoneDigits(s.whatsapp||s.phone),waL=wa?`https://wa.me/90${wa}?text=${encodeURIComponent('Merhaba, '+d.ticket+' numaralı servis kaydım hakkında yazıyorum.')}`:'';
+  app.innerHTML=`<article class="gb"><div class="gb-st ${st[3]}">${ic(d.status==='hazir'||d.status==='teslim'?'check':d.status==='onay_bekliyor'?'clock':'shield')}<div><b>${esc(sub[0])}</b><span>${esc(sub[1])}</span></div></div><div class="gb-b">
+    <h1>SERVİS TAKİP · ${esc(d.ticket)}</h1><h2>${esc(d.device)}</h2>
+    ${step?`<ol class="sv-steps">${['Teslim alındı',d.external?'Onarım (yetkili servis)':'İnceleme ve onarım','Teslime hazır','Teslim edildi'].map((l,i)=>`<li class="${i+1<step||(step===4&&i===3)?'done':i+1===step?'on':''}">${esc(l)}</li>`).join('')}</ol>`:''}
+    ${q&&q.status==='verildi'?`<div class="sec"><div class="sv-q"><div style="color:var(--muted);font-size:13px">Onarım teklifi</div><div class="amt">${tl(q.amount)}</div>${q.note?`<div>${esc(q.note)}</div>`:''}${q.valid_until?`<div style="color:var(--muted);font-size:13px;margin-top:4px">${fd(q.valid_until)} tarihine kadar geçerlidir.</div>`:''}
+      ${q.open?`<label class="fld" style="margin-top:12px"><span>Adınız soyadınız</span><input id="sv-name" autocomplete="name" maxlength="80"></label>
+      <label class="ck"><input type="checkbox" id="sv-ok"><span>Teklifi okudum; yukarıdaki tutarla onarımın yapılmasını onaylıyorum.</span></label>
+      <div class="cta" style="margin:8px 0 0"><button class="btn pri" data-a="sv-onay" ${TK.busy?'disabled':''}>Onaylıyorum</button><button class="btn" data-a="sv-red" ${TK.busy?'disabled':''}>Onaylamıyorum</button></div>`
+      :`<div class="sv-ok" style="background:var(--warnbg);color:var(--warn)">Teklifin süresi dolmuş. Lütfen mağazamızı arayın.</div>`}</div></div>`:''}
+    ${approved?`<div class="sec"><div class="sv-q done"><b>Onarım teklifi onaylandı</b> · ${tl(q.amount)} · ${fdt(q.approved_at)}${q.channel==='web'?' (bu sayfadan)':''}</div></div>`:''}
+    ${q&&q.status==='red'?`<div class="sec"><div class="sv-q">Onarım teklifi onaylanmadı. Cihazınızı mağazamızdan teslim alabilirsiniz.</div></div>`:''}
+    ${['hazir','teslim'].includes(d.status)?`<div class="sec"><div class="check">${ic('check','l')}<div><b>${d.status==='hazir'?'Cihazınızı teslim alabilirsiniz':'Teslim edildi · '+esc(fdt(d.delivered_at))}</b><small>${[d.work_done?'Yapılan işlem: '+esc(d.work_done):'',d.price!=null?'Ücret: '+tl(d.price):'',d.warranty_days?'Onarım garantisi '+d.warranty_days+' gün'+(d.warranty_until?' ('+fd(d.warranty_until)+' tarihine kadar)':''):''].filter(Boolean).join(' · ')}${d.status==='hazir'?'<br>Teslim alırken servis fişinizi ve kimliğinizi yanınızda getirin.':''}</small></div></div></div>`:''}
+    <div class="sec"><div class="kv">${kv.map(([k,v])=>`<div><small>${esc(k)}</small><b>${esc(v)}</b></div>`).join('')}</div></div>
+    ${(d.events||[]).length?`<div class="sec"><h3>Durum geçmişi</h3><ol class="sv-tl">${d.events.slice().reverse().map(e=>`<li><time>${esc(fdt(e.at))}</time><span>${esc(SVE[e.status]||e.status)}</span></li>`).join('')}</ol></div>`:''}
+    ${!['teslim','iptal'].includes(d.status)?`<div class="sec"><h3>Sorunuz mu var?</h3>${d.call_req?'<div class="sv-ok">Aranma isteğiniz alındı; en kısa sürede sizi arayacağız.</div>':`<label class="fld"><span>Not (isteğe bağlı)</span><input id="sv-note" maxlength="300" placeholder="ör. Öğleden sonra müsaitim"></label><button class="btn" data-a="sv-ara" ${TK.busy?'disabled':''}>${ic('clock')} Beni arayın</button>`}</div>`:''}
+    ${TK.err?`<div class="err">${esc(TK.err)}</div>`:''}${TK.msg?`<div class="sv-ok">${esc(TK.msg)}</div>`:''}
+    <div class="sec"><div class="store">${ic('pin','l')}<div><b>${esc(s.name||'Anka İletişim')}</b><div style="color:var(--muted);font-size:14px">${esc(s.address||'')}${s.hours?'<br>Çalışma saatleri: '+esc(s.hours):''}</div>${s.phone?`<a href="tel:0${esc(phoneDigits(s.phone))}">${esc(s.phone)}</a>`:''}</div></div></div>
+    <div class="acts"><button class="btn" data-a="sv-ref">Yenile</button>${waL?`<a class="btn wa" target="_blank" rel="noopener" href="${esc(waL)}">${ic('wa')} WhatsApp</a>`:''}${s.phone?`<a class="btn" href="tel:0${esc(phoneDigits(s.phone))}">Mağazayı ara</a>`:''}</div></div></article>`;
+  if(s.name||s.phone){S.d=S.d||{items:[],shop:s};if(!S.d.shop)S.d.shop=s;shopHtml()}}
+async function trackReq(kind){TK.err='';TK.msg='';const n=($('#sv-name')||{}).value||'',note=($('#sv-note')||{}).value||'';
+  if(kind==='onay'){if(n.trim().length<3||!/\s/.test(n.trim())){TK.err='Onay için adınızı ve soyadınızı yazın.';return trackHtml()}if(!($('#sv-ok')||{}).checked){TK.err='Onaylamak için kutuyu işaretleyin.';return trackHtml()}}
+  TK.busy=true;trackHtml();
+  try{await rpc('service_track_request',{p_token:TK.tok,p_kind:kind,p_name:n.trim()||null,p_note:note.trim()||null});TK.msg=kind==='onay'?'Onayınız alındı; onarıma başlıyoruz. Teşekkür ederiz.':kind==='red'?'Kararınız bize iletildi. Cihazınızı mağazamızdan teslim alabilirsiniz.':'';TK.busy=false;await showTrack(TK.tok,true)}
+  catch(e){TK.busy=false;TK.err=e.message;trackHtml()}}
 /* ---- olaylar ---- */
 document.addEventListener('click',e=>{const t=e.target.closest('[data-a]');if(!t)return;const a=t.dataset.a;
   if(a==='open'){e.preventDefault();detail(t.dataset.id,true)}
@@ -346,6 +401,8 @@ document.addEventListener('click',e=>{const t=e.target.closest('[data-a]');if(!t
   else if(a==='clear'){e.preventDefault();S.q='';S.cat='';S.cond='';S.gb='';S.deal='';render()}
   else if(a==='retry'){S.err='';render();load()}
   else if(a==='print')window.print();
+  else if(a==='sv-ref'){TK.err='';TK.msg='';showTrack(TK.tok,true)}
+  else if(a==='sv-onay'||a==='sv-red'||a==='sv-ara')trackReq(a.slice(3));
   else if(a==='reserve')reserveForm(t.dataset.id);
   else if(a==='pref'){F.pref=t.dataset.v;document.querySelectorAll('[data-a="pref"]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.v===F.pref)))}
   else if(a==='kvkk'){e.preventDefault();const k=$('#kvkk-t');k.hidden=!k.hidden}
@@ -358,7 +415,8 @@ document.addEventListener('change',e=>{if(e.target.id==='sort'){S.sort=e.target.
 document.addEventListener('submit',e=>{if(e.target.id==='rf'){e.preventDefault();submit()}});
 document.addEventListener('keydown',e=>{if(e.key==='Escape'&&ovEl)back()});
 window.addEventListener('popstate',()=>route());
-function route(){const g0=location.hash.match(/^#g\/([0-9a-f-]{36})$/i);if(g0){S.cert=g0[1];showCert(g0[1]);return}if(S.cert){S.cert=null;render()}
+function route(){const g0=location.hash.match(/^#g\/([0-9a-f-]{36})$/i);if(g0){S.cert=g0[1];showCert(g0[1]);return}
+  const s0=location.hash.match(/^#s\/([0-9a-f-]{36})$/i);if(s0){S.cert=s0[1];showTrack(s0[1]);return}if(S.cert){S.cert=null;render()}
   const m=location.hash.match(/^#c\/([0-9a-f-]{36})(\/rezerve)?$/i);
   if(!m){if(ovEl){closeOv();S.open=null;render()}return}
   if(!S.d)return;
@@ -367,7 +425,7 @@ async function load(silent){try{const d=await rpc('catalog_public');S.d=d;S.d.it
     if(S.cert)return shopHtml();
     if(d.title)document.title=d.title+' · '+((d.shop&&d.shop.name)||'Anka İletişim');shopHtml();if(!silent||!ovEl)render();if(!silent)route()}
   catch(e){if(!silent&&!S.cert){S.err='Katalog yüklenemedi. İnternet bağlantınızı kontrol edip tekrar deneyin.';render()}}}
-if(/^#g\//.test(location.hash))route();else render();load();
+if(/^#[gs]\//.test(location.hash))route();else render();load();
 </script>
 </body>
 </html>
