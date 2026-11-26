@@ -185,6 +185,54 @@ body.lock{overflow:hidden}
 @media print{:root{--bg:#fff;--card:#fff;--fg:#121B23;--muted:#5E6B77;--line:#E2E8EE;--soft:#EEF2F6;--bluebg:#E7F3FC;--pinkbg:#FCEAF4;--okbg:#E5F5EC;--warnbg:#FFF3DC;--blue:#0A70B8;--pink:#C20C77;--ok:#17834A;--bad:#BF3328}html,body{background:#fff!important;color:#121B23!important}*{-webkit-print-color-adjust:exact;print-color-adjust:exact}header.top,footer,.gb .acts,.toast{display:none!important}main.wrap{max-width:none;padding:0}.gb{box-shadow:none;margin:0 auto;border:1px solid #E2E8EE;max-width:none}.gb .sec{break-inside:avoid}}
 
 @media (prefers-color-scheme: dark){.btn.pri,.bdg.pink{color:#0D141A}.btn.pri:disabled{color:#E8EEF3}}
+/* mağaza ekranı (118) */
+body.tv{background:#071521;color:#fff;overflow:hidden;cursor:default;height:100vh;margin:0}
+body.tv>header,body.tv>main,body.tv>footer{display:none!important}
+body.tv.nocur,body.tv.nocur *{cursor:none!important}
+#tv{position:fixed;inset:0;display:flex;flex-direction:column;background:radial-gradient(1200px 700px at 85% -10%,rgba(56,182,255,.22),transparent 60%),radial-gradient(900px 600px at -10% 110%,rgba(194,12,119,.22),transparent 60%),#071521;font-family:var(--font)}
+.tv-top{display:flex;align-items:center;gap:2vw;padding:2.2vh 3vw 1vh}
+.tv-top img{height:6.2vh;width:auto}
+.tv-top .tv-sn{font-size:2.2vh;color:#9fb6c8;letter-spacing:.02em}
+.tv-top .sp{flex:1}
+.tv-clock{text-align:right;line-height:1}.tv-clock b{display:block;font-size:5.4vh;font-weight:600;font-variant-numeric:tabular-nums}.tv-clock span{font-size:1.9vh;color:#9fb6c8}
+.tv-stage{position:relative;flex:1;margin:0 3vw}
+.tv-s{position:absolute;inset:0;display:flex;align-items:center;gap:4vw;opacity:0;transform:translateY(1.5vh);transition:opacity .8s ease,transform .8s ease}
+.tv-s.on{opacity:1;transform:none}
+.tv-ph{flex:0 0 44%;height:76%;display:flex;align-items:center;justify-content:center;border-radius:3vh;background:rgba(255,255,255,.05);box-shadow:inset 0 0 0 1px rgba(255,255,255,.07);overflow:hidden}
+.tv-ph img{max-width:100%;max-height:100%;object-fit:contain}
+.tv-ph svg{width:30%;height:30%;stroke:#4CBDFF;fill:none;stroke-width:1.2}
+.tv-tx{flex:1;min-width:0}
+.tv-bd{display:flex;gap:1vw;flex-wrap:wrap;margin-bottom:2vh}
+.tv-b{font-size:2.2vh;font-weight:600;padding:.6vh 1.4vw;border-radius:99px;background:rgba(76,189,255,.16);color:#7fd0ff}
+.tv-b.deal{background:#C20C77;color:#fff}.tv-b.new{background:rgba(94,203,146,.18);color:#7fe0a8}
+.tv-h{font-size:7.2vh;font-weight:700;line-height:1.05;margin:0 0 1.6vh;letter-spacing:-.01em}
+.tv-sp{display:flex;gap:1vw;flex-wrap:wrap;margin-bottom:3vh}
+.tv-sp span{font-size:2.6vh;padding:.8vh 1.2vw;border-radius:1.2vh;background:rgba(255,255,255,.07);color:#d7e3ec}
+.tv-pr{display:flex;align-items:baseline;gap:1.6vw;flex-wrap:wrap}
+.tv-pr b{font-size:10vh;font-weight:700;line-height:1;color:#fff;font-variant-numeric:tabular-nums}
+.tv-pr s{font-size:4vh;color:#8aa0b2}
+.tv-in{font-size:2.8vh;color:#7fd0ff;margin-top:1.6vh}
+.tv-ck{font-size:2.3vh;color:#9fb6c8;margin-top:1.6vh}
+.tv-qs{display:flex;align-items:center;gap:1.2vw;margin-top:3.5vh;font-size:2.1vh;color:#9fb6c8}
+.tv-qs .qr{width:13vh;height:13vh;border-radius:1vh;overflow:hidden;flex:0 0 auto}.tv-qs .qr svg{width:100%;height:100%;display:block}
+.tv-big{flex:1;text-align:center;padding:0 6vw}
+.tv-big .tv-k{display:inline-block;font-size:2.6vh;font-weight:600;letter-spacing:.12em;text-transform:uppercase;padding:.8vh 1.6vw;border-radius:99px;margin-bottom:3vh}
+.tv-big.camp .tv-k{background:#C20C77}.tv-big.msg .tv-k{background:#0A70B8}
+.tv-big h2{font-size:10vh;line-height:1.02;margin:0 0 3vh;font-weight:700;letter-spacing:-.015em}
+.tv-big p{font-size:4vh;line-height:1.35;color:#d7e3ec;max-width:70vw;margin:0 auto}
+.tv-rd{flex:1}.tv-rd h2{font-size:7vh;margin:0 0 1vh}.tv-rd p{font-size:2.8vh;color:#9fb6c8;margin:0 0 3vh}
+.tv-rg{display:grid;grid-template-columns:repeat(4,1fr);gap:1.6vh 1.4vw}
+.tv-rg div{background:rgba(94,203,146,.12);box-shadow:inset 0 0 0 1px rgba(94,203,146,.3);border-radius:1.6vh;padding:1.8vh 1.2vw}
+.tv-rg b{display:block;font-size:4.2vh;font-variant-numeric:tabular-nums;color:#7fe0a8}.tv-rg span{font-size:2.2vh;color:#d7e3ec;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:block}
+.tv-qrs{flex:1;display:flex;justify-content:center;gap:6vw}
+.tv-qc{text-align:center;max-width:36vw}.tv-qc .qr{width:36vh;height:36vh;margin:0 auto 3vh;border-radius:2vh;overflow:hidden;box-shadow:0 2vh 6vh rgba(0,0,0,.35)}.tv-qc .qr svg{width:100%;height:100%;display:block}
+.tv-qc h3{font-size:4.6vh;margin:0 0 1vh}.tv-qc p{font-size:2.6vh;color:#9fb6c8;margin:0}
+.tv-bot{display:flex;align-items:center;gap:2vw;padding:1.6vh 3vw 2.4vh;font-size:2.4vh;color:#c4d3df}
+.tv-bot .tk{flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tv-dots{display:flex;gap:.6vw}.tv-dots i{width:1vh;height:1vh;border-radius:50%;background:rgba(255,255,255,.22)}.tv-dots i.on{background:#4CBDFF}
+.tv-bar{position:absolute;left:0;right:0;bottom:0;height:.6vh;background:rgba(255,255,255,.06)}.tv-bar i{display:block;height:100%;width:0;background:linear-gradient(90deg,#38B6FF,#C20C77)}
+.tv-hint{position:fixed;left:50%;top:2vh;transform:translateX(-50%);background:rgba(0,0,0,.65);color:#fff;font-size:2vh;padding:1vh 2vw;border-radius:99px;z-index:5;transition:opacity .6s}
+.tv-msg{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:2vh}.tv-msg h2{font-size:5vh;margin:0}.tv-msg p{font-size:2.6vh;color:#9fb6c8;margin:0;max-width:60vw}
 </style>
 </head>
 <body>
@@ -414,7 +462,7 @@ document.addEventListener('input',e=>{if(e.target.id==='q'){S.q=e.target.value;r
 document.addEventListener('change',e=>{if(e.target.id==='sort'){S.sort=e.target.value;render()}});
 document.addEventListener('submit',e=>{if(e.target.id==='rf'){e.preventDefault();submit()}});
 document.addEventListener('keydown',e=>{if(e.key==='Escape'&&ovEl)back()});
-window.addEventListener('popstate',()=>route());
+window.addEventListener('popstate',()=>{if(TV.tok){const m=location.hash.match(/^#tv\/([0-9a-f-]{36})$/i);if(!m)location.reload();return}route()});
 function route(){const g0=location.hash.match(/^#g\/([0-9a-f-]{36})$/i);if(g0){S.cert=g0[1];showCert(g0[1]);return}
   const s0=location.hash.match(/^#s\/([0-9a-f-]{36})$/i);if(s0){S.cert=s0[1];showTrack(s0[1]);return}if(S.cert){S.cert=null;render()}
   const m=location.hash.match(/^#c\/([0-9a-f-]{36})(\/rezerve)?$/i);
@@ -425,7 +473,110 @@ async function load(silent){try{const d=await rpc('catalog_public');S.d=d;S.d.it
     if(S.cert)return shopHtml();
     if(d.title)document.title=d.title+' · '+((d.shop&&d.shop.name)||'Anka İletişim');shopHtml();if(!silent||!ovEl)render();if(!silent)route()}
   catch(e){if(!silent&&!S.cert){S.err='Katalog yüklenemedi. İnternet bağlantınızı kontrol edip tekrar deneyin.';render()}}}
-if(/^#[gs]\//.test(location.hash))route();else render();load();
+/* ---- mağaza ekranı (118): #tv/<anahtar> ---- */
+const TV={tok:null,d:null,seq:[],i:-1,timer:null,t0:0,dur:10000,fail:0};
+const QR=(()=>{
+  const ECW=[0,10,16,26,18,24,16,18,22,22,26,30,22,22,24,24,28,28,26,26,26];   // M: blok başına EC kod sözcüğü
+  const NB=[0,1,1,1,2,2,4,4,4,5,5,5,8,9,9,10,10,11,13,14,16];                  // M: blok sayısı
+  const AL=[[],[],[6,18],[6,22],[6,26],[6,30],[6,34],[6,22,38],[6,24,42],[6,26,46],[6,28,50],[6,30,54],[6,32,58],[6,34,62],[6,26,46,66],[6,26,48,70],[6,26,50,74],[6,30,54,78],[6,30,56,82],[6,30,58,86],[6,34,62,90]];
+  const rawMods=v=>{let r=(16*v+128)*v+64;if(v>=2){const n=Math.floor(v/7)+2;r-=(25*n-10)*n-55;if(v>=7)r-=36}return r};
+  const dataCw=v=>Math.floor(rawMods(v)/8)-ECW[v]*NB[v];
+  const EXP=new Array(512),LOG=new Array(256);{let x=1;for(let i=0;i<255;i++){EXP[i]=x;LOG[x]=i;x<<=1;if(x&256)x^=0x11D}for(let i=255;i<512;i++)EXP[i]=EXP[i-255]}
+  const mul=(a,b)=>a&&b?EXP[LOG[a]+LOG[b]]:0;
+  function rsDiv(deg){let r=[1];for(let i=0;i<deg;i++){const n=new Array(r.length+1).fill(0);for(let j=0;j<r.length;j++){n[j]^=r[j];n[j+1]^=mul(r[j],EXP[i])}r=n}return r.slice(1)}
+  function rsRem(data,gen){const r=new Array(gen.length).fill(0);for(const b of data){const f=b^r.shift();r.push(0);for(let i=0;i<gen.length;i++)r[i]^=mul(gen[i],f)}return r}
+  function encode(text){
+    const bytes=[...new TextEncoder().encode(text)];let v=1;
+    for(;v<=20;v++){const cap=dataCw(v)*8,len=4+(v<10?8:16)+bytes.length*8;if(len<=cap)break}
+    if(v>20)throw new Error('QR için metin çok uzun');
+    const bits=[];const put=(val,n)=>{for(let i=n-1;i>=0;i--)bits.push((val>>>i)&1)};
+    put(4,4);put(bytes.length,v<10?8:16);bytes.forEach(b=>put(b,8));
+    const cap=dataCw(v)*8;put(0,Math.min(4,cap-bits.length));while(bits.length%8)bits.push(0);
+    for(let p=0xEC;bits.length<cap;p^=0xEC^0x11)put(p,8);
+    const dat=[];for(let i=0;i<bits.length;i+=8)dat.push(bits.slice(i,i+8).reduce((a,b)=>a*2+b,0));
+    const nb=NB[v],ec=ECW[v],raw=Math.floor(rawMods(v)/8),ns=nb-raw%nb,sl=Math.floor(raw/nb),gen=rsDiv(ec),blocks=[];
+    for(let i=0,k=0;i<nb;i++){const d=dat.slice(k,k+sl-ec+(i<ns?0:1));k+=d.length;const e=rsRem(d,gen);if(i<ns)d.push(0);blocks.push(d.concat(e))}
+    const cw=[];for(let i=0;i<blocks[0].length;i++)blocks.forEach((b,j)=>{if(i!==sl-ec||j>=ns)cw.push(b[i])});
+    const N=v*4+17,m=[...Array(N)].map(()=>new Array(N).fill(false)),fn=[...Array(N)].map(()=>new Array(N).fill(false));
+    const set=(x,y,d)=>{m[y][x]=d;fn[y][x]=true};
+    for(let i=0;i<N;i++){set(6,i,i%2===0);set(i,6,i%2===0)}
+    const finder=(cx,cy)=>{for(let dy=-4;dy<=4;dy++)for(let dx=-4;dx<=4;dx++){const d=Math.max(Math.abs(dx),Math.abs(dy)),x=cx+dx,y=cy+dy;if(x>=0&&x<N&&y>=0&&y<N)set(x,y,d!==2&&d!==4)}};
+    finder(3,3);finder(N-4,3);finder(3,N-4);
+    const al=AL[v];for(let i=0;i<al.length;i++)for(let j=0;j<al.length;j++){if((i===0&&j===0)||(i===0&&j===al.length-1)||(i===al.length-1&&j===0))continue;
+      for(let dy=-2;dy<=2;dy++)for(let dx=-2;dx<=2;dx++)set(al[i]+dx,al[j]+dy,Math.max(Math.abs(dx),Math.abs(dy))!==1)}
+    const fmt=mask=>{const d=(0<<3)|mask;let r=d;for(let i=0;i<10;i++)r=(r<<1)^((r>>>9)*0x537);const b=((d<<10)|r)^0x5412;  // M = 00
+      for(let i=0;i<=5;i++)set(8,i,(b>>>i)&1);set(8,7,(b>>>6)&1);set(8,8,(b>>>7)&1);set(7,8,(b>>>8)&1);for(let i=9;i<15;i++)set(14-i,8,(b>>>i)&1);
+      for(let i=0;i<8;i++)set(N-1-i,8,(b>>>i)&1);for(let i=8;i<15;i++)set(8,N-15+i,(b>>>i)&1);set(8,N-8,true)};
+    fmt(0);
+    if(v>=7){let r=v;for(let i=0;i<12;i++)r=(r<<1)^((r>>>11)*0x1F25);const b=(v<<12)|r;for(let i=0;i<18;i++){const bt=(b>>>i)&1,a=N-11+i%3,c=Math.floor(i/3);set(a,c,bt);set(c,a,bt)}}
+    let i=0;for(let right=N-1;right>=1;right-=2){if(right===6)right=5;for(let vert=0;vert<N;vert++)for(let j=0;j<2;j++){const x=right-j,up=((right+1)&2)===0,y=up?N-1-vert:vert;
+      if(!fn[y][x]&&i<cw.length*8){m[y][x]=((cw[i>>>3]>>>(7-(i&7)))&1)===1;i++}}}
+    const MASK=[(x,y)=>(x+y)%2===0,(x,y)=>y%2===0,(x,y)=>x%3===0,(x,y)=>(x+y)%3===0,(x,y)=>(Math.floor(x/3)+Math.floor(y/2))%2===0,(x,y)=>x*y%2+x*y%3===0,(x,y)=>(x*y%2+x*y%3)%2===0,(x,y)=>((x+y)%2+x*y%3)%2===0];
+    const apply=k=>{for(let y=0;y<N;y++)for(let x=0;x<N;x++)if(!fn[y][x]&&MASK[k](x,y))m[y][x]=!m[y][x]};
+    const pen=()=>{let p=0;const line=g=>{let run=1;for(let k=1;k<=N;k++){if(k<N&&g(k)===g(k-1))run++;else{if(run>=5)p+=run-2;run=1}}};
+      for(let y=0;y<N;y++)line(k=>m[y][k]);for(let x=0;x<N;x++)line(k=>m[k][x]);
+      for(let y=0;y<N-1;y++)for(let x=0;x<N-1;x++){const c=m[y][x];if(c===m[y][x+1]&&c===m[y+1][x]&&c===m[y+1][x+1])p+=3}
+      const pat=(g)=>{for(let k=0;k+10<N;k++){const s=[...Array(11)].map((_,q)=>g(k+q)?1:0).join('');if(s==='10111010000'||s==='00001011101')p+=40}};
+      for(let y=0;y<N;y++)pat(k=>m[y][k]);for(let x=0;x<N;x++)pat(k=>m[k][x]);
+      let dk=0;for(let y=0;y<N;y++)for(let x=0;x<N;x++)if(m[y][x])dk++;p+=Math.floor(Math.abs(dk*20-N*N*10)/(N*N))*10;return p};
+    let best=0,bp=1e9;for(let k=0;k<8;k++){apply(k);fmt(k);const p=pen();if(p<bp){bp=p;best=k}apply(k)}
+    apply(best);fmt(best);return m}
+  function svg(text,o={}){const m=encode(text),N=m.length,q=o.quiet==null?2:o.quiet;let d='';
+    for(let y=0;y<N;y++)for(let x=0;x<N;x++)if(m[y][x])d+=`M${x+q} ${y+q}h1v1h-1z`;
+    return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${N+2*q} ${N+2*q}" shape-rendering="crispEdges"${o.title?` aria-label="${o.title}"`:''}><rect width="100%" height="100%" fill="#fff"/><path d="${d}" fill="${o.color||'#000'}"/></svg>`}
+  return {encode,svg}})();
+const qrTv=t=>{try{return QR.svg(t,{quiet:2})}catch(e){return ''}};
+function tvShop(){return (TV.d&&TV.d.shop)||(S.d&&S.d.shop)||{}}
+function tvTicker(){const d=TV.d||{},s=tvShop();if(d.ticker)return d.ticker;
+  return [s.hours?'Çalışma saatleri: '+s.hours:'',s.phone?'Tel: '+s.phone:'',s.instagram?'Instagram: '+s.instagram:'',s.web?String(s.web).replace(/^https?:\/\//,'').replace(/\/$/,''):''].filter(Boolean).join('   ·   ')}
+function tvBuild(){const d=TV.d||{},D=(d.items||[]).map(x=>({t:'cihaz',x})),O=[...(d.campaigns||[]).map(x=>({t:'camp',x})),...(d.messages||[]).map(x=>({t:'msg',x}))],q=[];let k=0;
+  D.forEach((s,n)=>{q.push(s);if(n%2===1&&k<O.length)q.push(O[k++])});while(k<O.length)q.push(O[k++]);
+  if((d.ready||[]).length)q.splice(Math.min(q.length,4),0,{t:'ready'});
+  if(d.qr&&d.catalog_url||d.review_url)q.push({t:'qr'});
+  if(!q.length)q.push({t:'hos'});TV.seq=q}
+function tvSlide(s){const d=TV.d||{},sh=tvShop();
+  if(s.t==='cihaz'){const it=s.x,ph=(it.photos||[])[0],pc=dealPct(it),sp=[gbTxt(gb(it)),it.color,cond(it),it.battery!=null?'Pil %'+it.battery:'',it.cosmetic_score!=null?'Kozmetik '+it.cosmetic_score+'/10':'',it.warranty&&!/Garantisiz/i.test(it.warranty)?it.warranty:''].filter(Boolean),
+      i=it.inspection,ok=i&&i.total?`${i.ok}/${i.total} kontrol maddesi sorunsuz`:'',u=d.catalog_url?d.catalog_url+'#c/'+it.id:'';
+    return `<div class="tv-ph">${ph?`<img src="${esc(IMG(ph))}" alt="">`:`<svg viewBox="0 0 24 24">${IC.phone}</svg>`}</div><div class="tv-tx">
+      <div class="tv-bd">${pc?`<span class="tv-b deal">Fırsat · %${pc} indirim</span>`:it.deal?'<span class="tv-b deal">Fırsat</span>':''}${it.featured&&!it.deal?'<span class="tv-b">Öne çıkan</span>':''}${it.is_new?'<span class="tv-b new">Yeni geldi</span>':''}<span class="tv-b">${esc(catTxt(it.cat))}</span></div>
+      <h2 class="tv-h">${esc(it.title||it.model)}</h2><div class="tv-sp">${sp.map(x=>`<span>${esc(x)}</span>`).join('')}</div>
+      ${it.price!=null?`<div class="tv-pr"><b>${tl(it.price)}</b>${it.deal&&it.old_price?`<s>${tl(it.old_price)}</s>`:''}</div>`:'<div class="tv-pr"><b style="font-size:6vh">Fiyat için sorun</b></div>'}
+      ${instTxt(it)?`<div class="tv-in">${esc(instTxt(it))}</div>`:''}${ok?`<div class="tv-ck">${esc(ok)}</div>`:''}
+      ${u?`<div class="tv-qs"><span class="qr">${qrTv(u)}</span><span>Fotoğraflar ve ayrıntılar için<br>telefonunuzla okutun</span></div>`:''}</div>`}
+  if(s.t==='camp'||s.t==='msg')return `<div class="tv-big ${s.t}"><span class="tv-k">${s.t==='camp'?'Kampanya':'Duyuru'}</span><h2>${esc(s.x.title||'')}</h2>${s.x.text?`<p>${esc(s.x.text)}</p>`:''}</div>`;
+  if(s.t==='ready'){const R=d.ready.slice(0,16);return `<div class="tv-rd"><h2>Servisiniz hazır</h2><p>Aşağıdaki servis kayıtları teslime hazır. Servis fişinizle kasaya uğrayabilirsiniz.</p>
+      <div class="tv-rg">${R.map(r=>`<div><b>${esc(r.ticket)}</b><span>${esc(r.device)}</span></div>`).join('')}</div></div>`}
+  if(s.t==='qr')return `<div class="tv-qrs">${d.qr&&d.catalog_url?`<div class="tv-qc"><div class="qr">${qrTv(d.catalog_url)}</div><h3>Tüm cihazlarımız telefonunuzda</h3><p>Okutun, fotoğraflarıyla inceleyin, beğendiğinizi ayırtın.</p></div>`:''}
+      ${d.review_url?`<div class="tv-qc"><div class="qr">${qrTv(d.review_url)}</div><h3>Bizi Google'da değerlendirin</h3><p>Görüşleriniz bizim için değerli.</p></div>`:''}</div>`;
+  return `<div class="tv-big msg"><h2>${esc(sh.name||'Hoş geldiniz')}</h2><p>${esc(sh.hours?'Çalışma saatleri: '+sh.hours:'Hoş geldiniz')}</p></div>`}
+function tvFrame(){const sh=tvShop(),lg=(document.querySelector('.lg-d')||{}).src||'';
+  $('#tv').innerHTML=`<div class="tv-top">${lg?`<img src="${lg}" alt="${esc(sh.name||'')}">`:''}<span class="tv-sn">${esc(sh.address||'')}</span><div class="sp"></div><div class="tv-clock"><b id="tv-h"></b><span id="tv-d"></span></div></div>
+    <div class="tv-stage" id="tv-st"></div><div class="tv-bot"><span class="tk" id="tv-tk"></span><span class="tv-dots" id="tv-dt"></span></div><div class="tv-bar"><i id="tv-pb"></i></div>`;tvClock()}
+function tvClock(){const n=new Date(),h=$('#tv-h'),d=$('#tv-d');if(h)h.textContent=n.toLocaleTimeString('tr-TR',{hour:'2-digit',minute:'2-digit'});if(d)d.textContent=n.toLocaleDateString('tr-TR',{weekday:'long',day:'numeric',month:'long'})}
+function tvMsg(h,p){$('#tv').innerHTML=`<div class="tv-msg">${(document.querySelector('.lg-d')||{}).src?`<img src="${document.querySelector('.lg-d').src}" alt="" style="height:9vh">`:''}<h2>${esc(h)}</h2>${p?`<p>${esc(p)}</p>`:''}</div>`}
+function tvNext(){const st=$('#tv-st');if(!st)return;if(TV.i>=TV.seq.length-1||TV.i<0){tvBuild();TV.i=-1}TV.i++;const s=TV.seq[TV.i];
+  const old=st.querySelector('.tv-s.on'),el=document.createElement('div');el.className='tv-s';el.innerHTML=tvSlide(s);st.appendChild(el);
+  requestAnimationFrame(()=>requestAnimationFrame(()=>el.classList.add('on')));if(old){old.classList.remove('on');setTimeout(()=>old.remove(),900)}
+  const n=TV.seq[(TV.i+1)%TV.seq.length];if(n&&n.t==='cihaz'&&(n.x.photos||[])[0]){const im=new Image();im.src=IMG(n.x.photos[0])}
+  const tk=$('#tv-tk');if(tk)tk.textContent=tvTicker();
+  const dt=$('#tv-dt');if(dt)dt.innerHTML=TV.seq.length>1&&TV.seq.length<=30?TV.seq.map((_,k)=>`<i class="${k===TV.i?'on':''}"></i>`).join(''):'';
+  TV.dur=Math.max(5,Number((TV.d||{}).slide_sec)||10)*1000*(s.t==='ready'||s.t==='qr'?1.5:1);TV.t0=Date.now();clearTimeout(TV.timer);TV.timer=setTimeout(tvNext,TV.dur)}
+async function tvLoad(first){let d;try{d=await rpc('store_screen_public',{p_token:TV.tok});TV.fail=0}catch(e){TV.fail++;if(first&&!TV.d)tvMsg('Bağlantı kurulamadı','İnternet bağlantısını kontrol edin. Ekran kendini yeniden deneyecek.');return}
+  if(!d){TV.d=null;clearTimeout(TV.timer);return tvMsg('Ekran bağlantısı geçersiz','CepOS › Kataloglar › Mağaza ekranı bölümündeki güncel bağlantıyı açın.')}
+  if(!d.on){TV.d=null;clearTimeout(TV.timer);return tvMsg('Mağaza ekranı kapalı','CepOS › Kataloglar › Mağaza ekranı bölümünden açılabilir.')}
+  const was=!!TV.d&&!!$('#tv-st');TV.d=d;if(!was){tvFrame();TV.i=-1;tvNext()}}
+async function tvWake(){try{if(navigator.wakeLock&&document.visibilityState==='visible')TV.wl=await navigator.wakeLock.request('screen')}catch(e){}}
+function tvStart(tok){TV.tok=tok;document.body.classList.add('tv');document.title='Mağaza ekranı';let el=$('#tv');if(!el){el=document.createElement('div');el.id='tv';document.body.appendChild(el)}
+  tvMsg('Yükleniyor…');tvLoad(true);setInterval(()=>tvLoad(false),5*60*1000);setInterval(tvClock,15000);
+  setInterval(()=>{const pb=$('#tv-pb');if(pb&&TV.d)pb.style.width=Math.min(100,(Date.now()-TV.t0)/TV.dur*100)+'%'},250);
+  setTimeout(()=>location.reload(),6*3600*1000);tvWake();document.addEventListener('visibilitychange',tvWake);
+  let ct;const cur=()=>{document.body.classList.remove('nocur');clearTimeout(ct);ct=setTimeout(()=>document.body.classList.add('nocur'),3000)};document.addEventListener('mousemove',cur);cur();
+  if(!document.fullscreenElement){const h=document.createElement('div');h.className='tv-hint';h.textContent='Tam ekran için ekrana bir kez tıklayın';document.body.appendChild(h);setTimeout(()=>{h.style.opacity='0';setTimeout(()=>h.remove(),700)},12000)}
+  document.addEventListener('click',()=>{const h=document.querySelector('.tv-hint');if(h)h.remove();if(!document.fullscreenElement&&document.documentElement.requestFullscreen)document.documentElement.requestFullscreen().catch(()=>{});tvWake()});
+  document.addEventListener('keydown',e=>{if(!TV.d)return;if(e.key==='ArrowRight'){tvNext()}else if(e.key==='ArrowLeft'){TV.i=Math.max(-1,TV.i-2);tvNext()}})}
+
+const TV0=location.hash.match(/^#tv\/([0-9a-f-]{36})$/i);
+if(TV0)tvStart(TV0[1]);else{if(/^#[gs]\//.test(location.hash))route();else render();load();}
 </script>
 </body>
 </html>
