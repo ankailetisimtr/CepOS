@@ -245,6 +245,7 @@ textarea.in{min-height:64px;resize:vertical}
 .cf-t tr.cf-low td{background:var(--bad-soft)}.cf-t tr.cf-today td:first-child{box-shadow:inset 3px 0 0 var(--accent)}.cf-i{padding:3px 0;overflow:hidden}.cf-i+.cf-i{border-top:1px dashed var(--line)}
 .sv-trk{display:flex;gap:12px;align-items:center;border:1px dashed #9aa;border-radius:10px;padding:8px 10px;margin:10px 0;font-size:12px}.sv-trk svg{width:84px;height:84px;flex:none}.sv-trk b{display:block;font-size:13px}.sv-trk span{display:block;color:#555}.sv-trk.big svg{width:180px;height:180px}.sv-trk.big{border-color:var(--line)}.sv-trk.big span{color:var(--muted)}.sv-trk .mono{font-size:11px;word-break:break-all}
 .pill.pa{background:var(--accent-soft,rgba(10,112,184,.12));color:var(--accent)}
+.auto-fill{box-shadow:0 0 0 3px color-mix(in srgb,var(--good,#1A8F4E) 30%,transparent);transition:box-shadow .3s}
 .svw{border:1px solid var(--line);border-radius:10px;padding:10px 12px;margin-top:2px;font-size:13.5px}.svw.free{border-color:var(--good,#1A8F4E);background:color-mix(in srgb,var(--good,#1A8F4E) 8%,transparent)}.svw.info{background:var(--soft)}.svw-l{margin:6px 0 4px;padding-left:18px}.svw-l li{margin:3px 0}.svw-l li.ok b{color:var(--good,#1A8F4E)}
 .kv-msg{white-space:pre-wrap;background:var(--soft);border-radius:10px;padding:10px 12px;font-size:14px}.kv-l{margin:0;padding-left:18px}.kv-l li{margin:2px 0}.note.bad{background:var(--bad-soft);border-radius:8px;padding:8px 10px;font-size:13px;color:var(--bad)}
 .ss-link{margin-top:10px;padding:10px 12px;border:1px dashed var(--line);border-radius:10px;background:var(--soft);word-break:break-all}.ss-link code{font-size:14px}.ss-c{padding:10px 0;border-top:1px solid var(--line)}.ss-c:first-of-type{border-top:0}.ss-m{padding:8px 0;border-top:1px solid var(--line)}
@@ -2194,13 +2195,25 @@ const svwInst=()=>!!(S.d&&(S.d.app_settings||[]).some(x=>x.key==='sv_wcheck_v'))
 const SVW_K={onarim:'Önceki onarım garantisi',isletme:'İşletme garantisi',distributor:'Distribütör / ithalatçı garantisi',paket:'Ömür Boyu Garanti paketi',diger:'Diğer'};
 const UUID_RE=/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 let svwT=null;
+// satış kaydındaki modelden marka + model (ör. "Galaxy S24" → "Samsung Galaxy S24")
+const SV_BRANDS=[[/^(apple)\b/i,'Apple',0],[/^(iphone|ipad|airpods|apple watch|watch (se|series|ultra))/i,'Apple',1],[/^samsung\b/i,'Samsung',0],[/^galaxy\b/i,'Samsung',1],
+  [/^xiaomi\b/i,'Xiaomi',0],[/^(redmi|poco|mi \d|mi\d)/i,'Xiaomi',1],[/^google\b/i,'Google',0],[/^pixel\b/i,'Google',1],[/^huawei\b/i,'Huawei',0],[/^(mate|nova|p\d{2})\b/i,'Huawei',1],
+  [/^oppo\b/i,'Oppo',0],[/^(reno|find x)/i,'Oppo',1],[/^honor\b/i,'Honor',0],[/^realme\b/i,'Realme',0],[/^vivo\b/i,'Vivo',0],[/^oneplus\b/i,'OnePlus',0],[/^nothing\b/i,'Nothing',0],
+  [/^tecno\b/i,'Tecno',0],[/^(camon|spark|pova)\b/i,'Tecno',1],[/^infinix\b/i,'Infinix',0],[/^general mobile\b/i,'General Mobile',0],[/^gm \d/i,'General Mobile',1],
+  [/^nokia\b/i,'Nokia',0],[/^(motorola|moto)\b/i,'Motorola',0],[/^tcl\b/i,'TCL',0],[/^reeder\b/i,'Reeder',0],[/^casper\b/i,'Casper',0]];
+function svBrandModel(m){m=String(m||'').replace(/\s+/g,' ').trim();if(!m)return '';
+  for(const [re,b,pre] of SV_BRANDS)if(re.test(m))return pre?b+' '+m:m.replace(re,b);return m}
+function svwFillDev(d){const el=document.getElementById('sv-dev');if(!el||!S.svw)return;const x=(d.items||[]).find(i=>i.kind==='satis'&&i.model);if(!x)return;
+  const v=svBrandModel(x.model),cur=el.value.trim();if(!v||cur===v)return;
+  if(cur&&cur!==S.svw.devAuto)return;   // personelin yazdığı değere dokunma
+  el.value=v;S.svw.devAuto=v;S.svw.devRef=x.ref;el.classList.add('auto-fill');setTimeout(()=>el.classList.remove('auto-fill'),1500)}
 function svwTrigger(){clearTimeout(svwT);svwT=setTimeout(svwCheck,250)}
 async function svwCheck(){const el=document.getElementById('sv-wck');if(!el)return;const im=(g('sv-imei')||'').replace(/\D/g,'');
   if(im.length!==15){el.innerHTML='';if(S.svw)S.svw.data=null;return}
   const c=(document.getElementById('sv-c')||{}).value||'',ex=(document.querySelector('[data-a="sv-save"]')||{dataset:{}}).dataset.id||null;
   el.innerHTML='<div class="sub">Garanti durumu kontrol ediliyor…</div>';
   let d;try{const r=await sb.rpc('service_warranty_check',{p_imei:im,p_contact:UUID_RE.test(c)?c:null,p_exclude:ex||null});if(r.error)throw r.error;d=r.data}catch(e){el.innerHTML=`<div class="sub">Garanti durumu alınamadı: ${esc(msg(e))}</div>`;return}
-  if((g('sv-imei')||'').replace(/\D/g,'')!==im)return;S.svw=S.svw||{};S.svw.data=d;
+  if((g('sv-imei')||'').replace(/\D/g,'')!==im)return;S.svw=S.svw||{};S.svw.data=d;svwFillDev(d);
   const war=document.getElementById('sv-war');
   if(d.free&&S.svw.auto&&!S.svw.touched&&war&&!war.checked){war.checked=true;S.svw.kind=d.best;S.svw.ref=d.ref;S.svw.autoSet=true}
   svwDraw()}
@@ -2217,6 +2230,7 @@ function svwDraw(){const el=document.getElementById('sv-wck'),d=S.svw&&S.svw.dat
   el.innerHTML=`<div class="svw ${d.free?'free':L.length?'info':''}"><div class="row" style="gap:8px"><b>${d.free?'✓ Garanti kapsamında olabilir':L.length?'Garanti bilgisi':'Bu IMEI ile kayıtlı garanti yok'}</b>${d.free?`<span class="sub">${best}</span>`:''}<div class="sp"></div>
       ${d.best&&!war?`<button type="button" class="btn sm" data-a="sv-wset">Garanti kapsamında işaretle</button>`:''}${war&&S.svw.autoSet?'<span class="sub">kendiliğinden işaretlendi</span>':''}</div>
     ${L.length?`<ul class="svw-l">${L.map(line).join('')}</ul>`:''}
+    ${S.svw.devAuto&&(document.getElementById('sv-dev')||{}).value===S.svw.devAuto?`<div class="sub">Marka / model satış kaydından (${esc(S.svw.devRef||'')}) dolduruldu.</div>`:''}
     ${d.history_n?`<div class="sub">Bu cihaz daha önce ${d.history_n} kez servise geldi: ${(d.history||[]).map(h=>`${esc(h.ticket)} (${fmtDate(String(h.at).slice(0,10))}, ${esc(h.issue||'')})`).join(', ')}</div>`:''}</div>`}
 document.addEventListener('change',e=>{const t=e.target;if(!t||!S.svw)return;
   if(t.id==='sv-war'){S.svw.touched=true;S.svw.autoSet=false;if(!t.checked){S.svw.kind=null;S.svw.ref=null}else if(!S.svw.kind&&S.svw.data&&S.svw.data.best){S.svw.kind=S.svw.data.best;S.svw.ref=S.svw.data.ref}svwDraw()}
