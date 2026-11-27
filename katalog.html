@@ -151,6 +151,16 @@ header.top .wrap{display:flex;align-items:center;gap:10px;height:62px}
 .ck{display:flex;gap:10px;align-items:flex-start;margin:10px 0;font-size:14px}.ck input{width:20px;height:20px;margin:1px 0 0;accent-color:var(--blue);flex:none}
 details{background:var(--soft);border-radius:12px;padding:8px 12px;margin:6px 0;font-size:13px;color:var(--muted)}details summary{cursor:pointer;font-weight:600;color:var(--fg)}
 .err{background:#FDEBEA;color:var(--bad);border-radius:12px;padding:10px 12px;margin:8px 0;font-size:14px}
+.tq-band{display:flex;align-items:center;gap:14px;width:100%;text-align:left;margin:4px 0 14px;padding:14px 16px;border-radius:18px;border:1px solid color-mix(in srgb,var(--blue) 30%,var(--line));background:linear-gradient(120deg,var(--bluebg),var(--pinkbg));color:var(--fg);cursor:pointer;font:inherit}
+.tq-band>.ic{width:30px;height:30px;color:var(--blue);flex:none}.tq-band>span:nth-child(2){flex:1;min-width:0}.tq-band b{display:block;font-size:16px}.tq-band small{color:var(--muted);font-size:13.5px}.tq-band .btn{height:40px;flex:none;min-width:0}
+@media (max-width:620px){.tq-band{flex-wrap:wrap}.tq-band .btn{width:100%}}
+.fld select{width:100%;border:1px solid var(--line);background:var(--card);color:var(--fg);border-radius:14px;padding:12px 14px;font-size:16px;outline:0;appearance:auto}
+.seg.wrap{flex-wrap:wrap}.seg.wrap button{flex:1 1 auto;min-width:96px;padding:0 10px;height:42px}
+.tq-h{display:flex;align-items:center;gap:8px;font-size:16px;margin:20px 0 10px}.tq-h i{font-style:normal;width:24px;height:24px;border-radius:50%;background:var(--blue);color:#fff;display:inline-flex;align-items:center;justify-content:center;font-size:13px}
+.tq-q small{font-weight:400;color:var(--muted)}
+.tq-est{margin:12px 0 4px;padding:16px;border-radius:16px;background:var(--okbg);text-align:center}.tq-est small{color:var(--muted);font-size:13px}.tq-est b{display:block;font-size:26px;letter-spacing:-.01em;margin:2px 0}
+.tq-est p{margin:4px 0 0;font-size:13px;color:var(--muted)}.tq-est.none{background:var(--soft)}.tq-est.none b{font-size:17px}
+.btn.full{width:100%;margin-top:8px}
 .hp{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}
 .done{text-align:center;padding:34px 22px calc(28px + env(safe-area-inset-bottom))}
 .done .ok{width:72px;height:72px;border-radius:50%;background:var(--okbg);color:var(--ok);display:inline-flex;align-items:center;justify-content:center;margin-bottom:12px}
@@ -257,7 +267,7 @@ const IC={phone:'<rect x="6.5" y="2.5" width="11" height="19" rx="2.5"/><path d=
   x:'<path d="M6 6l12 12M18 6 6 18"/>',l:'<path d="m15 5-7 7 7 7"/>',r:'<path d="m9 5 7 7-7 7"/>',cam:'<path d="M4 8h3l2-2.5h6L17 8h3v11H4z"/><circle cx="12" cy="13.5" r="3.5"/>',
   pin:'<path d="M12 21s7-6.2 7-11.5A7 7 0 0 0 5 9.5C5 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/>',share:'<circle cx="18" cy="5.5" r="2.5"/><circle cx="6" cy="12" r="2.5"/><circle cx="18" cy="18.5" r="2.5"/><path d="m8.2 10.8 7.6-4M8.2 13.2l7.6 4"/>',
   wa:'<path d="M4 20l1.3-3.9A8 8 0 1 1 8 19z"/><path d="M9 8.5c0 3.5 3 6.5 6.5 6.5l1-1.6-2-1-1 .8a5 5 0 0 1-2.2-2.2l.8-1-1-2z"/>',
-  clock:'<circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/>',bag:'<path d="M5 8h14l-1 12H6z"/><path d="M9 8V6.5a3 3 0 0 1 6 0V8"/>',bell:'<path d="M6 16V11a6 6 0 0 1 12 0v5l1.5 2h-15z"/><path d="M10 20.5a2 2 0 0 0 4 0"/>',star:'<path d="m12 3.5 2.6 5.3 5.8.8-4.2 4.1 1 5.8L12 16.8l-5.2 2.7 1-5.8-4.2-4.1 5.8-.8z"/>'};
+  clock:'<circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/>',swap:'<path d="M7 4 3.5 7.5 7 11"/><path d="M3.5 7.5H17a3.5 3.5 0 0 1 3.5 3.5"/><path d="m17 20 3.5-3.5L17 13"/><path d="M20.5 16.5H7A3.5 3.5 0 0 1 3.5 13"/>',cal:'<rect x="3.5" y="5" width="17" height="15.5" rx="2.5"/><path d="M3.5 10h17M8 3v4M16 3v4"/>',bag:'<path d="M5 8h14l-1 12H6z"/><path d="M9 8V6.5a3 3 0 0 1 6 0V8"/>',bell:'<path d="M6 16V11a6 6 0 0 1 12 0v5l1.5 2h-15z"/><path d="M10 20.5a2 2 0 0 0 4 0"/>',star:'<path d="m12 3.5 2.6 5.3 5.8.8-4.2 4.1 1 5.8L12 16.8l-5.2 2.7 1-5.8-4.2-4.1 5.8-.8z"/>'};
 const ic=(k,c)=>`<svg class="ic ${c||''}" viewBox="0 0 24 24" aria-hidden="true">${IC[k]||''}</svg>`;
 const S={d:null,q:'',cat:'',cond:'',gb:'',deal:'',sort:'oner',open:null,err:''};
 const MY=(()=>{try{return JSON.parse(localStorage.getItem('anka_katalog_rz')||'{}')}catch(e){return {}}})();
@@ -300,7 +310,7 @@ function render(){const d=S.d,app=$('#app');
   const chip=(k,v,l)=>`<button class="chip" data-a="f" data-k="${k}" data-v="${esc(v)}" aria-pressed="${S[k]===v}">${esc(l)}</button>`;
   const keep=document.activeElement&&document.activeElement.id==='q';
   app.innerHTML=`<section class="hero"><h1>${esc(d.title||'Cihaz Kataloğu')}</h1>${d.intro?`<p>${esc(d.intro)}</p>`:''}
-    <div class="chips"><span class="hchip"><b>${d.items.length}</b> cihaz</span><span class="hchip">${ic('shield','s')} Kontrol edilmiş cihazlar</span>${d.reserve_on?`<span class="hchip">${ic('clock','s')} Ücretsiz rezervasyon</span>`:''}</div></section>
+    <div class="chips"><span class="hchip"><b>${d.items.length}</b> cihaz</span><span class="hchip">${ic('shield','s')} Kontrol edilmiş cihazlar</span>${d.reserve_on?`<span class="hchip">${ic('clock','s')} Ücretsiz rezervasyon</span>`:''}</div></section>${tqBand()}
   <div class="bar"><label class="search">${ic('search')}<input id="q" type="search" placeholder="Model, renk, GB ara…" value="${esc(S.q)}" autocomplete="off" aria-label="Ara"></label>
     <div class="filters" role="toolbar" aria-label="Süzgeçler">${cats.length>1?chip('cat','','Tümü')+cats.map(c=>chip('cat',c,catTxt(c))).join('')+'<span class="sepv"></span>':''}${conds.length>1?conds.map(c=>chip('cond',c,c)).join('')+'<span class="sepv"></span>':''}${gbs.length>1?gbs.map(g=>chip('gb',String(g),gbTxt(g))).join('')+'<span class="sepv"></span>':''}${d.items.some(i=>i.deal)?chip('deal','1','Fırsatlar ('+d.items.filter(i=>i.deal).length+')')+'<span class="sepv"></span>':''}
       <select class="chip sel" id="sort" aria-label="Sıralama">${[['oner','Önerilen'],['artan','Fiyat: düşükten yükseğe'],['azalan','Fiyat: yüksekten düşüğe'],['yeni','En yeni']].map(([v,t])=>`<option value="${v}" ${S.sort===v?'selected':''}>${t}</option>`).join('')}</select></div>
@@ -493,6 +503,8 @@ document.addEventListener('click',e=>{const t=e.target.closest('[data-a]');if(!t
   else if(a==='sv-ref'){TK.err='';TK.msg='';showTrack(TK.tok,true)}
   else if(a==='sv-onay'||a==='sv-red'||a==='sv-ara')trackReq(a.slice(3));
   else if(a==='reserve')reserveForm(t.dataset.id);
+  else if(a==='tq'){e.preventDefault();tqOpen(true)}
+  else if(a.startsWith('tq-')){e.preventDefault();tqClick(a,t)}
   else if(a==='pa-open'){e.preventDefault();paForm(t.dataset.id)}
   else if(a==='pa-kvkk'){e.preventDefault();const k=$('#pa-kt');k.hidden=!k.hidden}
   else if(a==='pref'){F.pref=t.dataset.v;document.querySelectorAll('[data-a="pref"]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.v===F.pref)))}
@@ -502,21 +514,110 @@ document.addEventListener('click',e=>{const t=e.target.closest('[data-a]');if(!t
     else navigator.clipboard&&navigator.clipboard.writeText(u).then(()=>toast('Bağlantı kopyalandı'),()=>toast(u))}
   else if(a==='gal'||a==='thumb'){const tr=$('#trk');if(!tr)return;const i=a==='thumb'?Number(t.dataset.v):Math.round(tr.scrollLeft/tr.clientWidth)+Number(t.dataset.v);tr.scrollTo({left:Math.max(0,i)*tr.clientWidth,behavior:'smooth'})}});
 document.addEventListener('input',e=>{if(e.target.id==='q'){S.q=e.target.value;render()}});
-document.addEventListener('change',e=>{if(e.target.id==='sort'){S.sort=e.target.value;render()}});
-document.addEventListener('submit',e=>{if(e.target.id==='rf'){e.preventDefault();submit()}else if(e.target.id==='paf'){e.preventDefault();paSubmit()}});
+document.addEventListener('change',e=>{if(e.target.id==='sort'){S.sort=e.target.value;render()}else if(e.target.id==='tq-model'||e.target.id==='tq-cat'){tqKeep();if(e.target.id==='tq-cat'){TQ.cat=e.target.value;TQ.model=''}else TQ.model=e.target.value;TQ.gb='';TQ.est=null;tqDraw()}else if(e.target.id==='tq-day'){TQ.day=e.target.value}});
+document.addEventListener('input',e=>{if(e.target.id==='tq-other'){TQ.other=e.target.value;TQ.est=null;const r=$('#tq-res');if(r)r.innerHTML=''}});
+document.addEventListener('submit',e=>{if(e.target.id==='tqf'){e.preventDefault();tqSubmit();return}if(e.target.id==='rf'){e.preventDefault();submit()}else if(e.target.id==='paf'){e.preventDefault();paSubmit()}});
 document.addEventListener('keydown',e=>{if(e.key==='Escape'&&ovEl)back()});
 window.addEventListener('popstate',()=>{if(TV.tok){const m=location.hash.match(/^#tv\/([0-9a-f-]{36})$/i);if(!m)location.reload();return}route()});
 function route(){const g0=location.hash.match(/^#g\/([0-9a-f-]{36})$/i);if(g0){S.cert=g0[1];showCert(g0[1]);return}
   const s0=location.hash.match(/^#s\/([0-9a-f-]{36})$/i);if(s0){S.cert=s0[1];showTrack(s0[1]);return}
   const f0=location.hash.match(/^#fa\/([0-9a-f-]{36})$/i);if(f0){S.cert=f0[1];showPaCancel(f0[1]);return}if(S.cert){S.cert=null;render()}
+  if(location.hash==='#degerle'){if(TQ.info&&TQ.info.on){if(!document.getElementById('tqf')&&!document.querySelector('.tq-done'))tqOpen(false)}return}
   const m=location.hash.match(/^#c\/([0-9a-f-]{36})(\/rezerve|\/alarm)?$/i);
   if(!m){if(ovEl){closeOv();S.open=null;render()}return}
   if(!S.d)return;
   if(!ovEl||S.open!==m[1]||(!m[2]&&ovEl.querySelector('form'))){detail(m[1],false)}}
 async function load(silent){try{const d=await rpc('catalog_public');S.d=d;S.d.items=d.items||[];S.err='';
     if(S.cert)return shopHtml();
+    if(TQ.info===null){try{TQ.info=await rpc('trade_quote_info')||{on:false}}catch(e){TQ.info={on:false}}}
     if(d.title)document.title=d.title+' · '+((d.shop&&d.shop.name)||'Anka İletişim');shopHtml();if(!silent||!ovEl)render();if(!silent)route()}
   catch(e){if(!silent&&!S.cert){S.err='Katalog yüklenemedi. İnternet bağlantınızı kontrol edip tekrar deneyin.';render()}}}
+/* ---- online ön değerleme (130): #degerle ---- */
+const TQ={info:null,cat:'',model:'',gb:'',other:'',ans:{},est:null,pref:'arama',day:'',slot:'',f:{}};
+const TQ_Q=[['screen','Ekran',[['saglam','Sağlam'],['cizik','Çizik var'],['kirik','Kırık / çatlak']]],
+  ['body','Kasa ve arka yüzey',[['10','Kusursuz'],['8','Hafif izler'],['6','Belirgin çizikler'],['4','Darbeli / yıpranmış']]],
+  ['battery','Pil sağlığı',[['iyi','%80 ve üstü'],['dusuk','%80 altı'],['bilmiyor','Bilmiyorum']],'iPhone: Ayarlar › Pil › Pil Sağlığı'],
+  ['faceid','Face ID / parmak izi çalışıyor mu?',[['evet','Evet'],['hayir','Hayır']]],
+  ['camera','Kameralar',[['saglam','Sorunsuz'],['arka','Arka kamerada sorun'],['on','Ön kamerada sorun'],['ikisi','İkisinde de sorun']]],
+  ['other','Ses, şarj, Wi‑Fi gibi başka arıza var mı?',[['yok','Yok'],['var','Var']]],
+  ['repair','Daha önce tamir / parça değişimi oldu mu?',[['hayir','Hayır'],['evet','Evet'],['bilmiyor','Bilmiyorum']]],
+  ['box','Kutusu ve faturası',[['var','Var'],['yok','Yok']]]];
+const TQ_OTHER='__diger';
+function tqBand(){if(!TQ.info||!TQ.info.on)return '';return `<button class="tq-band" data-a="tq">${ic('swap')}<span><b>Eski telefonunuz kaç eder?</b><small>Modelini ve durumunu seçin, tahmini takas fiyatını hemen görün, mağazaya randevu alın.</small></span><span class="btn pri sm">Telefonunu değerle</span></button>`}
+const tqCats=()=>[...new Set((TQ.info.models||[]).map(m=>m.cat))];
+const tqModels=()=>(TQ.info.models||[]).filter(m=>!TQ.cat||m.cat===TQ.cat);
+const tqSel=()=>(TQ.info.models||[]).find(m=>m.model===TQ.model&&(!TQ.cat||m.cat===TQ.cat));
+function tqDays(){const I=TQ.info,cd=(I.closed_days||[]).map(Number),t0=new Date((I.today||new Date().toISOString().slice(0,10))+'T12:00:00'),L=[];
+  for(let i=0;i<=(I.days_ahead||14);i++){const d=new Date(t0.getTime()+i*864e5),iso=d.getDay()||7;if(cd.includes(iso))continue;const v=d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+    L.push([v,(i===0?'Bugün, ':i===1?'Yarın, ':'')+d.toLocaleDateString('tr-TR',{weekday:'long',day:'numeric',month:'long'})])}return L}
+function tqKeep(){['name','phone','mail','note'].forEach(k=>{const el=$('#tq-'+k);if(el)TQ.f[k]=el.value});['kvkk','mk'].forEach(k=>{const el=$('#tq-'+k);if(el)TQ.f[k]=el.checked});
+  const o=$('#tq-other');if(o)TQ.other=o.value;const d=$('#tq-day');if(d)TQ.day=d.value}
+function tqOpen(push){if(!TQ.info||!TQ.info.on)return;if(push)history.pushState({ov:1},'','#degerle');const cs=tqCats();if(!TQ.cat&&cs.length===1)TQ.cat=cs[0];overlay('<div id="tq-w"></div>','f tq');tqDraw()}
+function tqHtml(){const I=TQ.info,cs=tqCats(),ms=tqModels(),sel=tqSel(),oth=TQ.model===TQ_OTHER,f=TQ.f;
+  const q=([k,l,o,h])=>`<div class="fld tq-q"><span>${esc(l)}${h?` <small>${esc(h)}</small>`:''}</span><div class="seg wrap">${o.map(([v,t])=>`<button type="button" data-a="tq-ans" data-k="${k}" data-v="${v}" aria-pressed="${TQ.ans[k]===v}">${esc(t)}</button>`).join('')}</div></div>`;
+  const E=TQ.est,days=tqDays();
+  const res=!E?'':E.err?`<div class="err">${esc(E.err)}</div>`:E.high!=null?`<div class="tq-est"><small>Tahmini takas / alış fiyatı</small><b>${tl(E.low)} – ${tl(E.high)}</b><p>Seçtiğiniz bilgilere göre hesaplandı. Kesin fiyat mağazamızdaki ücretsiz kontrolden sonra verilir.</p></div>`
+    :`<div class="tq-est none"><b>Bu cihazın fiyatını mağazada belirliyoruz</b><p>Randevu bırakın; cihazınızı ücretsiz kontrol edip size teklif verelim.</p></div>`;
+  return `<button class="x" data-a="close" aria-label="Kapat">${ic('x')}</button><form class="form" id="tqf" novalidate><h2>Telefonunu değerle</h2>
+   ${I.intro?`<div style="color:var(--muted);font-size:14px">${esc(I.intro)}</div>`:''}
+   <h3 class="tq-h"><i>1</i> Cihazınız</h3>
+   ${cs.length>1?`<label class="fld"><span>Kategori</span><select id="tq-cat">${['',...cs].map(c=>`<option value="${esc(c)}" ${TQ.cat===c?'selected':''}>${esc(c||'Seçin')}</option>`).join('')}</select></label>`:''}
+   <label class="fld"><span>Model</span><select id="tq-model"><option value="">Seçin</option>${ms.map(m=>`<option value="${esc(m.model)}" ${TQ.model===m.model?'selected':''}>${esc(m.model)}</option>`).join('')}<option value="${TQ_OTHER}" ${oth?'selected':''}>Listede yok — kendim yazacağım</option></select></label>
+   ${oth?`<label class="fld"><span>Marka ve model</span><input id="tq-other" maxlength="80" placeholder="ör. Huawei P30 Pro 128 GB" value="${esc(TQ.other)}"></label>`:''}
+   ${sel&&sel.gbs&&sel.gbs.length?`<div class="fld"><span>Hafıza</span><div class="seg wrap">${sel.gbs.map(g=>`<button type="button" data-a="tq-gb" data-v="${g}" aria-pressed="${String(TQ.gb)===String(g)}">${g>=1024?g/1024+' TB':g+' GB'}</button>`).join('')}</div></div>`:''}
+   <h3 class="tq-h"><i>2</i> Durumu</h3>${TQ_Q.map(q).join('')}
+   <button type="button" class="btn full" data-a="tq-est" id="tq-estb">${E&&!E.err?'Fiyatı yeniden hesapla':'Tahmini fiyatı gör'}</button><div id="tq-res">${res}</div>
+   ${E&&!E.err?`<h3 class="tq-h"><i>3</i> Mağazaya gelin</h3>
+   <label class="fld"><span>Gün</span><select id="tq-day">${days.map(([v,l])=>`<option value="${v}" ${TQ.day===v?'selected':''}>${esc(l)}</option>`).join('')}</select></label>
+   <div class="fld"><span>Saat aralığı</span><div class="seg wrap">${(I.slots||[]).map(s=>`<button type="button" data-a="tq-slot" data-v="${esc(s)}" aria-pressed="${TQ.slot===s}">${esc(s)}</button>`).join('')}</div></div>
+   <label class="fld"><span>Ad soyad</span><input id="tq-name" autocomplete="name" maxlength="80" value="${esc(f.name||'')}"></label>
+   <label class="fld"><span>Cep telefonu</span><input id="tq-phone" type="tel" inputmode="tel" autocomplete="tel" placeholder="05XX XXX XX XX" maxlength="17" value="${esc(f.phone||'')}"></label>
+   <label class="fld"><span>E-posta <small style="color:var(--muted);font-weight:400">(isteğe bağlı)</small></span><input id="tq-mail" type="email" autocomplete="email" maxlength="120" value="${esc(f.mail||'')}"></label>
+   <div class="fld"><span>Size nasıl dönelim?</span><div class="seg"><button type="button" data-a="tq-pref" data-v="arama" aria-pressed="${TQ.pref==='arama'}">Telefonla</button><button type="button" data-a="tq-pref" data-v="whatsapp" aria-pressed="${TQ.pref==='whatsapp'}">WhatsApp ile</button></div></div>
+   <label class="fld"><span>Not <small style="color:var(--muted);font-weight:400">(isteğe bağlı)</small></span><textarea id="tq-note" rows="2" maxlength="500" placeholder="ör. Takasla yeni telefon almak istiyorum">${esc(f.note||'')}</textarea></label>
+   <label class="hp" aria-hidden="true">Web sitesi<input id="tq-hp" tabindex="-1" autocomplete="off"></label>
+   ${I.terms?`<details><summary>Koşullar</summary><p>${esc(I.terms)}</p></details>`:''}
+   <label class="ck"><input type="checkbox" id="tq-kvkk" ${f.kvkk?'checked':''}><span>Kişisel verilerimin değerleme talebim için işlenmesine ilişkin <a href="#" data-a="tq-kv">aydınlatma metnini</a> okudum.</span></label>
+   <div id="tq-kt" hidden><details open><summary>Aydınlatma metni</summary><p>${esc(I.kvkk||'')}</p></details></div>
+   <label class="ck"><input type="checkbox" id="tq-mk" ${f.mk?'checked':''}><span>Kampanya ve yeni cihaz duyurularını almak istiyorum (isteğe bağlı).</span></label>
+   <div class="err" id="tq-err" hidden></div>
+   <button class="btn pri full" type="submit" id="tq-go" style="margin-top:8px">Randevu talebi gönder</button>`:''}</form>`}
+function tqDraw(){const w=$('#tq-w');if(!w)return;const sh=w.closest('.sheet'),y=sh?sh.scrollTop:0;w.innerHTML=tqHtml();if(sh)sh.scrollTop=y}
+function tqReady(){const sel=tqSel(),oth=TQ.model===TQ_OTHER;
+  if(!TQ.model)return 'Cihazınızın modelini seçin.';if(oth&&String(TQ.other||'').trim().length<2)return 'Cihazınızın marka ve modelini yazın.';
+  if(sel&&sel.gbs&&sel.gbs.length&&!TQ.gb)return 'Hafızayı seçin.';const miss=TQ_Q.find(([k])=>!TQ.ans[k]);if(miss)return '“'+miss[1]+'” sorusunu cevaplayın.';return ''}
+async function tqClick(a,t){
+  if(a==='tq-ans'){TQ.ans[t.dataset.k]=t.dataset.v;t.parentNode.querySelectorAll('button').forEach(b=>b.setAttribute('aria-pressed',String(b===t)));if(TQ.est&&!TQ.est.err){TQ.est.stale=true;const b=$('#tq-estb');if(b)b.classList.add('pri')}}
+  else if(a==='tq-gb'){tqKeep();TQ.gb=t.dataset.v;TQ.est=null;tqDraw()}
+  else if(a==='tq-slot'){TQ.slot=t.dataset.v;t.parentNode.querySelectorAll('button').forEach(b=>b.setAttribute('aria-pressed',String(b===t)))}
+  else if(a==='tq-pref'){TQ.pref=t.dataset.v;t.parentNode.querySelectorAll('button').forEach(b=>b.setAttribute('aria-pressed',String(b===t)))}
+  else if(a==='tq-kv'){const k=$('#tq-kt');k.hidden=!k.hidden}
+  else if(a==='tq-est'){tqKeep();const m=tqReady();if(m){TQ.est=null;tqDraw();$('#tq-res').innerHTML=`<div class="err">${esc(m)}</div>`;return}
+    const sel=tqSel();t.disabled=true;t.textContent='Hesaplanıyor…';
+    try{TQ.est=sel?await rpc('trade_quote_estimate',{p:{cat:sel.cat,model:sel.model,gb:TQ.gb?Number(TQ.gb):null,answers:TQ.ans}}):{found:false,low:null,high:null};
+      if(!TQ.day){const d=tqDays();TQ.day=(d[1]||d[0]||[''])[0]}if(!TQ.slot)TQ.slot=(TQ.info.slots||[])[0]||''}
+    catch(x){TQ.est={err:x.message}}tqDraw();const r=$('#tq-res');if(r)r.scrollIntoView({behavior:'smooth',block:'start'})}
+  else if(a==='tq-home'){e0()}}
+function e0(){closeOv();history.replaceState(null,'',location.pathname+location.search);render()}
+async function tqSubmit(){tqKeep();const e=$('#tq-err'),b=$('#tq-go'),f=TQ.f,bad=m=>{e.textContent=m;e.hidden=false};e.hidden=true;
+  const m=tqReady();if(m)return bad(m);const ph=phoneDigits(f.phone),name=String(f.name||'').trim();
+  if(name.length<3||!/\s/.test(name))return bad('Adınızı ve soyadınızı yazın.');if(!/^5\d{9}$/.test(ph))return bad('Cep telefonu numaranızı 05XX XXX XX XX biçiminde yazın.');
+  if(!TQ.day)return bad('Mağazaya geleceğiniz günü seçin.');if(!TQ.slot)return bad('Saat aralığını seçin.');if(!f.kvkk)return bad('Devam etmek için aydınlatma metnini onaylayın.');
+  const sel=tqSel(),oth=TQ.model===TQ_OTHER;b.disabled=true;b.textContent='Gönderiliyor…';
+  try{const r=await rpc('trade_quote_create',{p:{cat:sel?sel.cat:(TQ.cat||null),model:oth?'':TQ.model,gb:TQ.gb?Number(TQ.gb):null,other_model:oth?TQ.other:'',answers:TQ.ans,name,phone:ph,email:f.mail||'',
+      pref:TQ.pref,visit_date:TQ.day,visit_slot:TQ.slot,note:f.note||'',kvkk:true,marketing:!!f.mk,hp:($('#tq-hp')||{}).value||''}});tqDone(r)}
+  catch(x){bad(x.message);b.disabled=false;b.textContent='Randevu talebi gönder'}}
+function tqDone(r){const s=S.d.shop||{},sh=ovEl&&ovEl.querySelector('.sheet');if(!sh)return;
+  const when=new Date(r.visit_date+'T12:00:00').toLocaleDateString('tr-TR',{weekday:'long',day:'numeric',month:'long'});
+  const wa=waLink(`Merhaba, ${r.no} numaralı değerleme talebim hakkında yazıyorum: ${r.model}`);
+  sh.innerHTML=`<button class="x" data-a="close" aria-label="Kapat">${ic('x')}</button><div class="done tq-done"><span class="ok">${ic('check')}</span>
+    <h2>${r.again?'Talebiniz güncellendi':'Randevu talebiniz alındı'}</h2><div class="no">${esc(r.no)}</div><p style="margin:0 0 4px"><b>${esc(r.model)}</b></p>
+    ${r.high!=null?`<p style="margin:0 0 6px">Tahmini fiyat: <b>${tl(r.low)} – ${tl(r.high)}</b></p>`:''}
+    <p style="color:var(--muted);margin:0">${ic('cal','s')} <b>${esc(when)}</b> · ${esc(r.visit_slot)}<br>Mağazamız randevunuzu teyit etmek için ${TQ.pref==='whatsapp'?'WhatsApp\'tan yazacak':'sizi arayacak'}. Gelirken cihazınızın hesabını (iCloud / Google) kapatmayı ve kimliğinizi getirmeyi unutmayın.</p>
+    <div class="btns">${wa?`<a class="btn wa" target="_blank" rel="noopener" href="${esc(wa)}">${ic('wa')} WhatsApp'tan yazın</a>`:''}
+      ${s.address?`<a class="btn" target="_blank" rel="noopener" href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent((s.name||'')+' '+s.address)}">${ic('pin')} Mağaza konumu</a>`:''}
+      <button class="btn pri full" data-a="home">Kataloğa dön</button></div></div>`;
+  TQ.est=null;TQ.ans={};TQ.model='';TQ.gb='';TQ.other='';TQ.f={}}
 /* ---- mağaza ekranı (118): #tv/<anahtar> ---- */
 const TV={tok:null,d:null,seq:[],i:-1,timer:null,t0:0,dur:10000,fail:0};
 const QR=(()=>{
