@@ -245,6 +245,24 @@ textarea.in{min-height:64px;resize:vertical}
 .cf-t tr.cf-low td{background:var(--bad-soft)}.cf-t tr.cf-today td:first-child{box-shadow:inset 3px 0 0 var(--accent)}.cf-i{padding:3px 0;overflow:hidden}.cf-i+.cf-i{border-top:1px dashed var(--line)}
 .sv-trk{display:flex;gap:12px;align-items:center;border:1px dashed #9aa;border-radius:10px;padding:8px 10px;margin:10px 0;font-size:12px}.sv-trk svg{width:84px;height:84px;flex:none}.sv-trk b{display:block;font-size:13px}.sv-trk span{display:block;color:#555}.sv-trk.big svg{width:180px;height:180px}.sv-trk.big{border-color:var(--line)}.sv-trk.big span{color:var(--muted)}.sv-trk .mono{font-size:11px;word-break:break-all}
 .pill.pa{background:var(--accent-soft,rgba(10,112,184,.12));color:var(--accent)}
+#sf{position:fixed;inset:0;z-index:2147483000;background:radial-gradient(120% 90% at 0% 0%,#2A0E26 0%,#0E141B 55%,#081018 100%);color:#F1F5F8;display:flex;flex-direction:column;padding:clamp(16px,3vh,36px) clamp(18px,4vw,60px);cursor:none;user-select:none;font-size:clamp(15px,1.5vw,22px)}
+#sf[hidden]{display:none}html.sf-open body{overflow:hidden}
+#sf .sf-top{display:flex;align-items:center;gap:14px}#sf .sf-lg{height:clamp(28px,4.2vh,46px);width:auto}#sf .sf-tag{font-size:.75em;letter-spacing:.08em;text-transform:uppercase;color:#FF7AC2;border:1px solid #FF7AC266;border-radius:999px;padding:3px 10px}
+#sf .sf-clk{text-align:right;line-height:1.1}#sf .sf-clk b{font-size:1.9em;display:block;font-variant-numeric:tabular-nums}#sf .sf-clk span{font-size:.8em;color:#A9B6C1}
+#sf .sf-body{flex:1;display:flex;align-items:center;justify-content:center;min-height:0;opacity:0;transform:translateY(12px);transition:opacity .6s,transform .6s}#sf .sf-body.sf-in{opacity:1;transform:none}
+#sf .sf-s{width:min(1100px,100%)}#sf .sf-k{display:flex;align-items:center;gap:10px;color:#FF7AC2;font-weight:700;letter-spacing:.06em;text-transform:uppercase;font-size:.85em;margin-bottom:.8em}#sf .sf-k .ic{width:1.3em;height:1.3em}
+#sf .sf-h{font-size:clamp(30px,4.6vw,72px);font-weight:800;line-height:1.1;letter-spacing:-.01em}#sf .sf-p{font-size:clamp(18px,2.2vw,34px);color:#C9D3DB;margin-top:.6em;line-height:1.4;max-width:30em}
+#sf .sf-camp{display:inline-block;background:#C20C77;color:#fff;font-weight:700;border-radius:10px;padding:.25em .7em;margin-bottom:.6em;font-size:1em}
+#sf .sf-gw{display:flex;align-items:center;gap:clamp(18px,4vw,60px)}#sf .sf-ring{width:clamp(140px,22vh,260px);height:auto;flex:none}#sf .sf-ring circle{fill:none;stroke-width:12}#sf .sf-ring .bg{stroke:#ffffff1f}#sf .sf-ring .fg{stroke:#FF4FA8;stroke-linecap:round;transition:stroke-dasharray 1s}#sf .sf-ring .fg.ok{stroke:#3DDC84}#sf .sf-ring text{fill:#fff;font-size:26px;font-weight:800}
+#sf .sf-big{font-size:clamp(40px,7vw,110px);font-weight:800;line-height:1;font-variant-numeric:tabular-nums}#sf .sf-sub{color:#A9B6C1;margin-top:.35em}#sf .sf-need{font-size:1.15em;margin-top:.5em}#sf .sf-ok{color:#3DDC84;font-weight:700;font-size:1.2em;margin-top:.5em;display:flex;gap:8px;align-items:center}
+#sf .sf-m{margin-top:clamp(16px,3vh,36px)}#sf .sf-ml{display:flex;justify-content:space-between;gap:12px;margin-bottom:6px}#sf .sf-bar{position:relative;height:14px;border-radius:9px;background:#ffffff1f;overflow:visible}#sf .sf-bar i{display:block;height:100%;border-radius:9px;background:linear-gradient(90deg,#C20C77,#FF4FA8)}
+#sf .sf-bar.dev i{background:linear-gradient(90deg,#0A6FB8,#38B6FF)}#sf .sf-bar em{position:absolute;top:-4px;bottom:-4px;width:2px;background:#fff9}#sf .sf-cats{display:grid;grid-template-columns:1fr 1fr;gap:14px 40px;margin-top:20px;font-size:.9em}
+#sf .sf-tl{display:grid;gap:12px}#sf .sf-ti{display:flex;align-items:center;gap:18px;background:#ffffff0f;border-radius:14px;padding:.55em .9em;font-size:clamp(18px,2vw,30px)}#sf .sf-ti b{font-size:1.6em;min-width:2em;text-align:center;font-variant-numeric:tabular-nums}#sf .sf-ti.hot b{color:#FF7AC2}
+#sf .sf-cl{text-align:center}#sf .sf-bigclk{font-size:clamp(80px,16vw,260px);font-weight:800;line-height:1;font-variant-numeric:tabular-nums;letter-spacing:-.03em}#sf .sf-cl .sf-p{margin-left:auto;margin-right:auto}
+#sf .sf-foot{display:flex;align-items:center;gap:16px;color:#7F8E9B;font-size:.8em}#sf .sf-dots{display:flex;gap:6px}#sf .sf-dots i{width:8px;height:8px;border-radius:50%;background:#ffffff33}#sf .sf-dots i.on{background:#FF7AC2;width:22px;border-radius:5px}
+@media (max-width:700px){#sf .sf-gw{flex-direction:column;align-items:flex-start}#sf .sf-cats{grid-template-columns:1fr}}
+@media print{#sf{display:none!important}}
+.sf-ed{border-top:1px solid var(--line);padding:8px 0;display:grid;gap:6px}.sf-ed:first-of-type{border-top:0}
 .lr-t{width:100%}table.ly-t.lr-t th,table.ly-t.lr-t td{text-align:left!important;vertical-align:middle;padding:6px 6px}.lr-t td:first-child{width:28px}.lr-btn{border-color:#E0A100}.cov-s:empty{display:none}.cov-b{display:flex;flex-wrap:wrap;gap:6px;border:0;background:none;padding:2px 0 4px;cursor:pointer;text-align:left;width:100%}.cov-c{font-size:12.5px;padding:3px 9px;border-radius:999px;background:var(--soft);border:1px solid var(--line);white-space:nowrap}
 .cov-c.hot{background:color-mix(in srgb,var(--accent) 14%,transparent);border-color:var(--accent);font-weight:600}.cov-c.good{background:color-mix(in srgb,var(--good,#1A8F4E) 10%,transparent);border-color:color-mix(in srgb,var(--good,#1A8F4E) 40%,transparent)}.cov-c.warn{background:color-mix(in srgb,#E0A100 14%,transparent);border-color:#E0A100}
 .cov-m{max-height:60vh;overflow:auto}.cov-h{margin:12px 0 4px;font-size:14px}.cov-l{margin:0;padding-left:18px;font-size:13.5px}.cov-l li{margin:3px 0}.cov-l li.hot{font-weight:600}.cov-l li.warn{color:#9a6b00}.cov-p{font-size:13.5px}
@@ -1537,6 +1555,7 @@ function userMenu(){const w=S.work,since=w&&w.clock_open_since,sh=w?(w.my_shift_
    <button class="it" role="menuitem" data-a="snd-toggle" aria-pressed="${sndOn()}">${ic('bell')}Bildirim sesi<span class="v">${sndOn()?'Açık':'Kapalı'}</span></button>
    <button class="it" role="menuitem" data-a="snd-test">${ic('activity')}Sesi dene</button>
    <button class="it" role="menuitem" data-a="push-settings">${ic('bell')}Telefon bildirimleri</button>
+   ${sfInst()?`<button class="it" role="menuitem" data-a="sf-open">${ic('grid')}Personel ekranı<span class="v">${SF.R&&SF.R.on&&sfDev()?'Açık':'Kapalı'}</span></button>`:''}
    ${qsOn()?`<button class="it" role="menuitem" data-a="qs-open">${ic('users')}Kullanıcı değiştir<span class="v">${qsList().length}</span></button>
    <button class="it" role="menuitem" data-a="qs-lock">${ic('shield')}Ekranı kilitle</button>`:''}
    <button class="it" role="menuitem" data-a="pw-change">${ic('shield')}Şifremi değiştir</button>
@@ -4903,6 +4922,114 @@ function acqRead(pre){const ch=g(pre+(pre==='c'?'-acq':'-nch')),src=g(pre+(pre==
 const isVip=c=>!!(c&&c.vip_at);
 const vipTag=c=>isVip(c)?` <span class="pill vip" title="Sadakat kartını tamamladı${c.vip_cards>1?' · '+c.vip_cards+' kart':''} · ${fmtDate(c.vip_at)}">★ VIP${c.vip_cards>1?' ×'+c.vip_cards:''}</span>`:'';
 function vipNote(id){const c=S.d.contactMap.get(id);if(isVip(c)){toast(`★ VIP müşteri · ${c.name} · ${c.vip_cards>1?c.vip_cards+' sadakat kartı':'sadakat kartı'} tamamladı`);psSnd&&psSnd('tick')}}
+/* ================= PERSONEL EKRANI / EKRAN KORUYUCU (126) ================= */
+// CepOS açıkken belirlenen süre işlem yapılmazsa tam ekran personel ekranı açılır; fare, tuş, dokunma ya da barkodla kapanır.
+const sfInst=()=>!!(S.d&&(S.d.app_settings||[]).some(x=>x.key==='staff_screen_v'));
+const SF={on:false,ld:0,last:Date.now(),R:null,rAt:0,i:0,slides:[],slT:null,clT:null,mv:null,eat:0};
+const SF_K={sadakat:'Sadakat Programı',garanti:'Ömür Boyu Garanti',koruma:'Telefon Koruma Paketleri',al3ode2:'3 AL 2 ÖDE',al1b1:'1 ALANA 1 BEDAVA',hediye_ceki:'Hediye Çeki',eski_model:'Eski Model İndirimi',ozel_indirim:'Özel İndirim'};
+const SF_IDLE=[[30,'30 saniye'],[60,'1 dakika'],[120,'2 dakika'],[300,'5 dakika'],[600,'10 dakika'],[1800,'30 dakika']];
+// bu cihazda: telefon gibi küçük dokunmatik ekranlarda varsayılan kapalı
+function sfDev(){let v=null;try{v=localStorage.getItem('cepos_sf_dev')}catch(e){}if(v==='on'||v==='off')return v==='on';
+  return !(matchMedia('(pointer:coarse)').matches&&Math.min(innerWidth,innerHeight)<700)}
+function sfDevSet(on){try{localStorage.setItem('cepos_sf_dev',on?'on':'off')}catch(e){}}
+async function sfLoadRules(force){if(!sfInst()||(!force&&SF.R&&Date.now()-SF.rAt<600000))return SF.R;
+  try{const r=await sb.rpc('staff_screen_rules');if(r.error)throw r.error;SF.R=r.data;SF.rAt=Date.now()}catch(e){if(!SF.R)SF.R=null}return SF.R}
+const sfActive=()=>{const R=SF.R;return !!(R&&R.on&&sfDev()&&S.d&&S.me&&document.querySelector('header.top'))};
+function sfBusy(){if(document.hidden||document.documentElement.classList.contains('pr-on')||document.body.classList.contains('pr-on'))return true;
+  if(document.querySelector('video'))return true;                     // kamera ile barkod okuma açık
+  if(typeof qsSecLocked==='function'&&qsSecLocked(S.ui.tab))return true; // ekran kilidi
+  return false}
+function sfTick(){if(!SF.R){if(S.me&&sfInst()&&!SF.ld&&Date.now()-SF.rAt>60000){SF.ld=1;sfLoadRules(true).finally(()=>{SF.ld=0;if(!SF.R)SF.rAt=Date.now()})}return}
+  if(SF.on||!sfActive()||sfBusy())return;if(Date.now()-SF.last>=Math.max(30,Number(SF.R.idle_sec)||60)*1000)sfShow()}
+function sfAct(e){if(e&&e.type==='pointermove'){if(!SF.on){SF.last=Date.now();return}
+    const p=[e.clientX,e.clientY];if(!SF.mv){SF.mv=p;return}if(Math.abs(p[0]-SF.mv[0])+Math.abs(p[1]-SF.mv[1])<24)return}
+  SF.last=Date.now();if(!SF.on)return;
+  if(e&&(e.type==='pointerdown'||e.type==='touchstart')){SF.eat=Date.now();e.preventDefault&&e.preventDefault();e.stopPropagation&&e.stopPropagation()}
+  sfHide()}
+// ekranı kapatan dokunuş alttaki düğmeye tıklama olarak geçmesin
+document.addEventListener('click',e=>{if(Date.now()-SF.eat<700){SF.eat=0;e.preventDefault();e.stopPropagation()}},true);
+['pointermove','pointerdown','keydown','wheel','touchstart'].forEach(t=>document.addEventListener(t,sfAct,{capture:true,passive:t!=='pointerdown'&&t!=='touchstart'}));
+document.addEventListener('scroll',()=>{if(!SF.on)SF.last=Date.now()},{capture:true,passive:true});
+document.addEventListener('visibilitychange',()=>{if(!document.hidden)SF.last=Date.now()});
+setInterval(sfTick,1000);
+async function sfShow(preview){if(SF.on)return;await sfLoadRules();if(!SF.R)return;
+  if(!preview&&(Date.now()-SF.last<1000*Math.max(30,Number(SF.R.idle_sec)||60)))return;
+  SF.on=true;SF.mv=null;SF.i=0;let el=document.getElementById('sf');
+  if(!el){el=document.createElement('div');el.id='sf';el.setAttribute('role','dialog');el.setAttribute('aria-label','Personel ekranı');document.body.appendChild(el)}
+  el.innerHTML=`<div class="sf-top"><img class="sf-lg" src="${LOGO.word_d}" alt="Anka İletişim"><span class="sf-tag">Personel ekranı</span><span class="sp"></span><div class="sf-clk"><b id="sf-time"></b><span id="sf-date"></span></div></div>
+    <div class="sf-body" id="sf-body"></div><div class="sf-foot"><div class="sf-dots" id="sf-dots"></div><span>Devam etmek için dokunun, fareyi oynatın ya da bir tuşa basın</span></div>`;
+  el.hidden=false;document.documentElement.classList.add('sf-open');sfClock();clearInterval(SF.clT);SF.clT=setInterval(sfClock,1000);
+  SF.shownAt=Date.now();sfBuild();sfSlide();sfRefresh()}
+function sfHide(){if(!SF.on)return;SF.on=false;clearTimeout(SF.slT);clearInterval(SF.clT);const el=document.getElementById('sf');if(el){el.hidden=true;el.innerHTML=''}
+  document.documentElement.classList.remove('sf-open');SF.last=Date.now()}
+function sfClock(){const t=document.getElementById('sf-time'),d=document.getElementById('sf-date');if(!t)return;const n=new Date();
+  t.textContent=n.toLocaleTimeString('tr-TR',{hour:'2-digit',minute:'2-digit'});d.textContent=n.toLocaleDateString('tr-TR',{weekday:'long',day:'numeric',month:'long'});
+  const c=document.getElementById('sf-bigclk');if(c)c.textContent=t.textContent}
+// güncel veriyi arka planda yenile (hedef, bekleyen işler)
+async function sfRefresh(){const old=x=>!x||Date.now()-(x.at||0)>300000;
+  if(old(SF.data)){SF.data={at:Date.now()};
+    if(pnAll()||can('view_store_targets')){const keep=S.tpp;S.tpp=null;await pnLoadTargets().catch(()=>{});if(!S.tpp||S.tpp.rows===false)S.tpp=keep}
+    S.ops=undefined;await loadOps().catch(()=>{});if(SF.on){sfBuild();if(Date.now()-(SF.shownAt||0)<5000){SF.i=0;sfSlide()}else sfDots()}}}
+function sfCloseTime(){const h=String(shopSet().hours||'');const m=[...h.matchAll(/(\d{1,2})[:.](\d{2})/g)];if(m.length<2)return null;const x=m[m.length-1];
+  const d=new Date();d.setHours(+x[1],+x[2],0,0);return d}
+function sfGoal(){const m=monthStart(today()),rows=S.tpp&&S.tpp.key===m?S.tpp.rows:null,r=rows&&rows.find(x=>x.is_store);if(!r)return null;
+  const c=tgCalc(r,m),day=c.Dt>0?c.Dt:c.need;if(!(day>0)&&!(c.T>0))return null;
+  const p=day>0?Math.min(100,c.tt/day*100):0,left=Math.max(0,day-c.tt),ct=sfCloseTime(),hl=ct?(ct-Date.now())/3600000:null,K=tgCats(r,c).filter(x=>x.t>0);
+  const ring=`<svg viewBox="0 0 120 120" class="sf-ring"><circle cx="60" cy="60" r="52" class="bg"/><circle cx="60" cy="60" r="52" class="fg${p>=100?' ok':''}" stroke-dasharray="${(p/100*326.7).toFixed(1)} 326.7" transform="rotate(-90 60 60)"/><text x="60" y="66" text-anchor="middle">%${Math.round(day>0?c.tt/day*100:0)}</text></svg>`;
+  return `<div class="sf-s sf-goal"><div class="sf-k">${ic('target')} Bugünkü mağaza hedefi</div>
+    <div class="sf-gw">${day>0?ring:''}<div class="sf-gt"><div class="sf-big">${pnMoney(c.tt)}</div>${day>0?`<div class="sf-sub">hedef ${pnMoney(day)}${c.Dt>0?'':' (aylık hedefe göre günlük)'}</div>`:''}
+      ${day>0?(c.tt>=day?`<div class="sf-ok">${ic('check')} Bugünün hedefi tamamlandı. Tebrikler!</div>`:`<div class="sf-need">Kalan <b>${pnMoney(left)}</b>${hl!=null&&hl>0.25?` · kapanışa ${hl>=1?Math.floor(hl)+' saat ':''}${Math.round((hl%1)*60)} dk · saatte <b>${pnMoney(left/hl)}</b>`:''}</div>`):''}</div></div>
+    ${c.T>0?`<div class="sf-m"><div class="sf-ml"><span>Aylık ciro</span><span><b>${pnMoney(c.mt)}</b> / ${pnMoney(c.T)} · %${Math.round(c.mt/c.T*100)}</span></div><div class="sf-bar"><i style="width:${Math.min(100,c.mt/c.T*100).toFixed(1)}%"></i>${c.cur&&c.dim?`<em style="left:${Math.min(100,c.WE/(c.WT||c.dim)*100).toFixed(1)}%"></em>`:''}</div>
+      ${c.cur&&c.mt<c.T?`<div class="sf-sub">Ayın kalan ${c.WL} gününde günde ${pnMoney(c.need)}${c.proj!=null?` · bu hızla ay sonu ${pnMoney(c.proj)}`:''}</div>`:''}</div>`:''}
+    ${K.length?`<div class="sf-cats">${K.map(x=>`<div><div class="sf-ml"><span>${esc(x.l)}</span><span><b>${x.f(x.v)}</b> / ${x.f(x.t)}</span></div><div class="sf-bar ${x.k}"><i style="width:${Math.min(100,x.v/x.t*100).toFixed(1)}%"></i></div></div>`).join('')}</div>`:''}</div>`}
+const sfCampOn=c=>{if(!c||!c.active)return false;const r=c.rules||{},t=today();return !(r.valid_to&&String(r.valid_to).slice(0,10)<t)&&!(r.valid_from&&String(r.valid_from).slice(0,10)>t)};
+function sfTips(){const R=SF.R,off=new Set(R.tips_off||[]),T=R.tips||{};
+  return Object.keys(SF_K).filter(k=>!off.has(k)&&T[k]&&sfCampOn((S.d.campaigns||[]).find(c=>c.kind===k))).map((k,i,a)=>`<div class="sf-s sf-tip"><div class="sf-k">${ic('star')} Müşteriye sunmayı unutma · ${i+1}/${a.length}</div>
+    <div class="sf-camp">${esc(SF_K[k])}</div><div class="sf-h">${esc(T[k].title)}</div>${T[k].text?`<div class="sf-p">${esc(T[k].text)}</div>`:''}</div>`)}
+function sfTodo(){const o=S.ops||{},so=S.d.service_orders||[];
+  const L=[[o.service_ready,'Teslime hazır servis — müşteri aransın','servis','wrench',1],[o.orders_ready,'Hazır sipariş — müşteri aransın','siparis','pkg',1],[o.service_overdue,'Süresi geçen servis','servis','wrench',1],
+    [o.followups_mine_due,'Bugünkü ve geciken takiplerim','siparis','clock',1],[o.quotes_expiring,'Süresi dolmak üzere teklif','teklif','file'],[o.service_waiting,'Onay veya parça bekleyen servis','servis','wrench'],
+    [so.filter(x=>x.status==='dondu').length,'Dış servisten dönen, hazırlanacak','servis','truck'],[o.quotes_waiting,'Yanıt bekleyen teklif','teklif','file']].filter(r=>Number(r[0])>0&&pnOk(r[2])).slice(0,6);
+  if(!L.length)return null;
+  return `<div class="sf-s sf-todo"><div class="sf-k">${ic('check')} Bekleyen işler</div><div class="sf-tl">${L.map(r=>`<div class="sf-ti${r[4]?' hot':''}"><b>${num(r[0])}</b><span>${r[1]}</span></div>`).join('')}</div></div>`}
+function sfMsgs(){const t=today();return (SF.R.messages||[]).filter(m=>!m.until||m.until>=t).map(m=>`<div class="sf-s sf-msg"><div class="sf-k">${ic('bell')} Duyuru</div><div class="sf-h">${esc(m.title)}</div>${m.text?`<div class="sf-p">${esc(m.text)}</div>`:''}</div>`)}
+function sfClockSlide(){const n=new Date(),h=n.getHours(),gr=h<12?'Günaydın':h<18?'İyi çalışmalar':'İyi akşamlar',ct=sfCloseTime();
+  return `<div class="sf-s sf-cl"><div class="sf-bigclk" id="sf-bigclk">${n.toLocaleTimeString('tr-TR',{hour:'2-digit',minute:'2-digit'})}</div><div class="sf-h">${gr}${S.me&&S.me.full_name?', '+esc(String(S.me.full_name).split(' ')[0]):''}</div>
+    ${ct&&ct>n?`<div class="sf-p">Kapanışa ${Math.floor((ct-n)/3600000)} saat ${Math.round(((ct-n)%3600000)/60000)} dakika var</div>`:''}</div>`}
+function sfBuild(){const R=SF.R,A=[];if(!R)return;
+  const g=R.goal&&(pnAll()||can('view_store_targets'))?sfGoal():null,td=R.todo?sfTodo():null,tips=R.campaigns?sfTips():[],ms=sfMsgs();
+  // sıra: hedef, ipucu, bekleyen işler, ipucu, duyuru, ipucu… (hedef her 4 slaytta bir yeniden)
+  const rest=[];const q=[...ms];tips.forEach((t,i)=>{rest.push(t);if(i===0&&td)rest.push(td);if(q.length)rest.push(q.shift())});if(!tips.length&&td)rest.push(td);rest.push(...q);
+  for(let i=0;i<rest.length;i++){if(g&&i%3===0)A.push(g);A.push(rest[i])}if(g&&!rest.length)A.push(g);
+  if(R.clock||!A.length)A.push(sfClockSlide());
+  SF.slides=A;if(SF.i>=A.length)SF.i=0}
+function sfDots(){const d=document.getElementById('sf-dots');if(d)d.innerHTML=SF.slides.length>1?SF.slides.map((_,i)=>`<i class="${i===SF.i?'on':''}"></i>`).join(''):''}
+function sfSlide(){if(!SF.on)return;const b=document.getElementById('sf-body');if(!b)return;clearTimeout(SF.slT);
+  if(!SF.slides.length)sfBuild();const h=SF.slides[SF.i]||'';b.innerHTML=h;b.classList.remove('sf-in');void b.offsetWidth;b.classList.add('sf-in');sfDots();sfClock();
+  SF.slT=setTimeout(()=>{SF.i=(SF.i+1)%Math.max(1,SF.slides.length);if(SF.i===0){sfBuild();sfRefresh()}sfSlide()},Math.max(5,Number(SF.R&&SF.R.slide_sec)||12)*1000)}
+// ayarlar
+function sfSetModal(){const R=S.sfd||SF.R||{},mg=can('manage_staff_screen'),dev=sfDev(),T=R.tips||{},off=new Set(R.tips_off||[]);
+  const msgs=(S.sfm||(S.sfm=(R.messages||[]).map(m=>({...m}))));
+  modal(`<h2>Personel ekranı</h2><p class="sub">CepOS açıkken ${esc((SF_IDLE.find(x=>x[0]===Number(R.idle_sec))||[0,(R.idle_sec||60)+' saniye'])[1])} işlem yapılmazsa tam ekran açılır: bugünkü mağaza hedefi, kampanya hatırlatmaları, bekleyen işler ve duyurular döner. Fare, tuş, dokunma ya da barkod okutunca kapanır; kaldığınız yerden devam edersiniz. Müşterilere dönük TV ekranı (Kataloglar › Mağaza ekranı) bundan ayrıdır.</p>
+   <label class="chk" style="margin:10px 0"><input type="checkbox" id="sf-dev" ${dev?'checked':''}> <b>Bu cihazda kullan</b> <span class="sub">— yalnız bu bilgisayar / tablet için</span></label>
+   ${mg?`<div class="card" style="margin:10px 0"><h3>Ayarlar <span class="sub">(tüm cihazlar)</span></h3>
+     <label class="chk"><input type="checkbox" id="sf-on" ${R.on?'checked':''}> Personel ekranı açık</label>
+     <div class="form"><label class="f">Ne kadar işlem yapılmazsa açılsın<select class="in" id="sf-idle">${SF_IDLE.map(([v,l])=>`<option value="${v}" ${Number(R.idle_sec)===v?'selected':''}>${l}</option>`).join('')}</select></label>
+      <label class="f">Slayt süresi (saniye)<input class="in" id="sf-slide" type="number" min="5" max="60" value="${Number(R.slide_sec)||12}"></label></div>
+     <div class="row" style="flex-wrap:wrap;gap:14px;margin-top:8px">${[['goal','Mağaza hedefi'],['campaigns','Kampanya hatırlatmaları'],['todo','Bekleyen işler'],['clock','Saat']].map(([k,l])=>`<label class="chk"><input type="checkbox" id="sf-${k}" ${R[k]?'checked':''}> ${l}</label>`).join('')}</div></div>
+    <div class="card" style="margin:10px 0"><h3>Kampanya hatırlatmaları</h3><p class="sub">Yalnız açık kampanyaların hatırlatması gösterilir. Metni kendi satış dilinize göre düzenleyin.</p>
+     ${Object.keys(SF_K).map(k=>{const cp=(S.d.campaigns||[]).find(c=>c.kind===k),on=sfCampOn(cp);return `<div class="sf-ed"><label class="chk"><input type="checkbox" data-sfk="${k}" ${off.has(k)?'':'checked'}> <b>${esc(SF_K[k])}</b> ${on?'<span class="pill good">açık</span>':'<span class="pill">kampanya kapalı</span>'}</label>
+       <input class="in" id="sf-t-${k}" maxlength="60" value="${esc((T[k]||{}).title||'')}" placeholder="Başlık"><textarea class="in" id="sf-x-${k}" rows="2" maxlength="300" placeholder="Hatırlatma metni">${esc((T[k]||{}).text||'')}</textarea></div>`}).join('')}</div>
+    <div class="card" style="margin:10px 0"><h3>Duyurular <span class="sub">(en çok 8)</span></h3><p class="sub">Ekip için kısa duyuru: sayım günü, toplantı, yeni gelen ürün… Bitiş tarihi geçen duyuru gösterilmez.</p>
+     <div id="sf-msgs">${msgs.map((m,i)=>`<div class="sf-ed"><div class="row" style="gap:8px"><input class="in" data-sfm="title" data-i="${i}" maxlength="60" value="${esc(m.title||'')}" placeholder="Başlık" style="flex:1"><input class="in" type="date" data-sfm="until" data-i="${i}" value="${esc(m.until||'')}" title="Bitiş tarihi (isteğe bağlı)" style="width:auto"><button class="btn sm danger" data-a="sf-mdel" data-i="${i}" aria-label="Sil">${ic('trash','sm')}</button></div>
+       <textarea class="in" data-sfm="text" data-i="${i}" rows="2" maxlength="300" placeholder="Metin">${esc(m.text||'')}</textarea></div>`).join('')||'<p class="sub">Duyuru yok.</p>'}</div>
+     ${msgs.length<8?'<button class="btn sm" data-a="sf-madd">+ Duyuru ekle</button>':''}</div>`:''}
+   <div class="err" id="f-err" hidden></div>
+   <div class="actions"><button class="btn" data-a="sf-preview">Şimdi göster</button><span style="flex:1"></span><button class="btn" data-a="close">Kapat</button>${mg?'<button class="btn pri" data-a="sf-save">Kaydet</button>':''}</div>`)}
+function sfCollect(){const tips={},off=[];Object.keys(SF_K).forEach(k=>{tips[k]={title:g('sf-t-'+k),text:g('sf-x-'+k)};const c=document.querySelector(`[data-sfk="${k}"]`);if(c&&!c.checked)off.push(k)});
+  const p={on:document.getElementById('sf-on').checked,idle_sec:+g('sf-idle'),slide_sec:+g('sf-slide'),tips,tips_off:off};['goal','campaigns','todo','clock'].forEach(k=>p[k]=document.getElementById('sf-'+k).checked);return p}
+function sfKeepMsgs(){if(document.getElementById('sf-on'))S.sfd={...SF.R,...sfCollect(),messages:S.sfm};document.querySelectorAll('[data-sfm]').forEach(el=>{const m=S.sfm&&S.sfm[+el.dataset.i];if(m)m[el.dataset.sfm]=el.value})}
+document.addEventListener('change',e=>{const t=e.target;if(t&&t.id==='sf-dev'){sfDevSet(t.checked);toast(t.checked?'Bu cihazda personel ekranı açık':'Bu cihazda personel ekranı kapalı')}});
 /* ================= ETİKET YENİLEME (124) ================= */
 const lrInst=()=>!!(S.d&&(S.d.app_settings||[]).some(x=>x.key==='label_refresh_v'));
 const lrCanA=()=>can('print_labels|manage_accessories'),lrCanC=()=>can('print_labels|manage_products');
@@ -8282,6 +8409,11 @@ const A={
   async 'ro-rsave'(){const p={};['window','cover','lead','open_days'].forEach(k=>p[k]=Number(g('ror-'+k)));p.note=g('ror-note')||'';if(!await mcall('set_reorder_rules',{p},'Kurallar kaydedildi'))return;closeModal();S.ui.roc=null;await reload();roLoad()},
   'bp-v'(t){S.ui.bpv=t.dataset.v;render()},'bp-f'(t){S.ui.bpf=t.dataset.v;S.ui.bpv='cihaz';render()},'bp-who'(t){S.ui.bpwho=t.dataset.id||'';if(t.dataset.id)S.ui.bpv='cihaz';render()},'bp-model'(t){S.ui.bpm=t.dataset.v||'';if(t.dataset.v)S.ui.bpv='cihaz';render()},'bp-csv'(){bpCsv()},
   'sv-track'(t){svTrackModal(t.dataset.id)},async 'sv-tcopy'(t){if(await copyText(t.dataset.u))toast('Takip bağlantısı kopyalandı')},
+  async 'sf-open'(){S.sfm=null;S.sfd=null;await sfLoadRules(true);if(!SF.R)return toast('Personel ekranı ayarları yüklenemedi',true);sfSetModal()},
+  'sf-preview'(){if(document.getElementById('sf-dev'))sfDevSet(document.getElementById('sf-dev').checked);closeModal();sfShow(true)},
+  'sf-madd'(){sfKeepMsgs();S.sfm.push({title:'',text:'',until:''});sfSetModal()},'sf-mdel'(t){sfKeepMsgs();S.sfm.splice(+t.dataset.i,1);sfSetModal()},
+  async 'sf-save'(){sfKeepMsgs();const p={...sfCollect(),messages:S.sfm.filter(m=>(m.title||'').trim()||(m.text||'').trim()).map(m=>({title:m.title,text:m.text,until:m.until||null}))};
+    try{const r=await call('set_staff_screen',{p});SF.R=r;SF.rAt=Date.now();S.sfm=null;S.sfd=null;closeModal();toast('Personel ekranı kaydedildi')}catch(e){setErr(msg(e))}},
   'lr-open'(t){lrOpen(t.dataset.k)},
   'lr-print'(t){const k=t.dataset.k,ids=[...S.lr.sel].filter(x=>x.startsWith(k==='a'?'aksesuar:':'cihaz:')).map(x=>x.split(':')[1]);if(!ids.length)return setErr('Ürün seçin.');
     if(k==='v'){vlModal('');S.vl.sel=new Set(ids);S.vl.price=true;vlDraw();return}
@@ -10924,7 +11056,7 @@ async function emStatus(){const E=S.em=S.em||{};E.stl=1;try{E.st=await fnCall('e
 const APP_V='2026.11.23';   // bu index.html'in sürümü
 // sunucu fonksiyonlarının bu uygulamanın beklediği sürümü (fonksiyon kodu her değiştiğinde ikisi birlikte değişir)
 const EDGE_V={sadakat:'2026.11.27',eposta:'2026.11.26b','push-notify':'2026.11.23','user-admin':'2026.11.23',yedek:'2026.11.23','cepos-asistan':'2026.11.23'};
-const SYS_MIGS=['001_temel_cekirdek.sql', '002_konsinye_guncelleme.sql', '003_servis_siparis_teklif.sql', '004_belgeler_fotograf.sql', '005_vardiya_gorev.sql', '006_hedefler.sql', '007_push_bildirim.sql', '008_aksesuar.sql', '009_fire_kaydi.sql', '010_barkod.sql', '011_alislar_kur.sql', '012_kasa_gunsonu.sql', '013_masraflar.sql', '014_aksesuar_varyant.sql', '015_yatirimci_raporu.sql', '016_garanti_taksit.sql', '017_cari_kartlari.sql', '018_teklif_sihirbazi.sql', '019_stok_sayim.sql', '020_siparis_aksesuar.sql', '021_eksikler.sql', '022_teknik_servis.sql', '023_iadeler.sql', '024_degisim.sql', '025_servis_baglantisi.sql', '026_hakedisler.sql', '027_sahip_kasasi.sql', '028_calisma_duzeni.sql', '029_iskonto.sql', '030_vadeli_alim.sql', '031_aksesuar_dolar_maliyet.sql', '032_primler.sql', '033_cihaz_kontrol.sql', '034_kontrol_cari_duzeltme.sql', '035_kontrol_tablet_saat.sql', '036_alt_kategori_af_mf.sql', '037_toplu_alim_cihaz.sql', '038_kazanc_raporlari_sahip.sql', '039_isletme_profili.sql', '040_fiyat_onerisi.sql', '041_kategori_hedefleri.sql', '042_vardiya_hatirlatma.sql', '043_bildirim_altyapisi.sql', '044_bildirimler.sql', '045_musteri_turleri.sql', '046_egitimler.sql', '047_egitim_gelistirme.sql', '048_kullanici_yonetimi.sql', '049_kullanici_silme_pasif.sql', '050_ortak_bilgisayar.sql', '051_canli_guncelleme.sql', '052_hizli_yenileme.sql', '053_bildirim_ekleri.sql', '054_notlar.sql', '055_musteri_kanali.sql', '056_banka_komisyon.sql', '057_odeal_cekim_komisyonu.sql', '058_satis_ekrani.sql', '059_hizmet_urunleri.sql', '060_sadakat.sql', '061_sadakat_whatsapp.sql', '062_garanti_paketleri.sql', '063_garanti_devir_portal.sql', '064_sms_dogrulama.sql', '065_koruma_paketleri.sql', '066_uc_al_iki_ode.sql', '067_bir_alana_bir_bedava.sql', '068_hediye_ceki.sql', '069_prim_sistemi.sql', '070_prim_magaza_hedefleri.sql', '071_prim_cihaz_hedefleri.sql', '072_personel_karti.sql', '073_kampanya_tarih_araligi.sql', '074_not_baglantilari.sql', '075_kataloglar.sql', '076_garanti_belgesi.sql', '077_mola_takibi.sql', '078_mola_bordro.sql', '079_mesai_gec_erken.sql', '080_personel_yetkileri.sql', '081_ekip_performansi.sql', '082_kasa_gorunumu.sql', '083_eski_model_indirimi.sql', '084_sadakat_vip.sql', '085_sadakat_odul_urunu.sql', '086_alis_odeme_hesaplari.sql', '087_aksesuar_pasif_sil.sql', '088_toplu_alim_sahip.sql', '089_stok_cihaz_onarim.sql', '090_ozel_indirim.sql', '091_sadakat_uyelik.sql', '092_dogumgunu_sms.sql', '093_eposta_otomasyonu.sql', '094_anket_yorum.sql', '095_mudur_urun_alisi.sql', '096_isletme_iletisim.sql', '097_aksesuar_etiket.sql', '098_denetim_duzeltmeleri.sql', '099_yedekleme.sql', '100_donemsel_yukleme.sql', '101_sistem_durumu.sql', '102_yedek_tetik_duzeltme.sql', '103_sunucu_cagri_suresi.sql', '104_claude_baglayici.sql', '105_egitim_sunumlari.sql', '106_egitim_telefon.sql', '107_kontrol_nfc_magsafe.sql', '108_egitim_kampanyalar.sql', '109_aranan_cihaz.sql', '110_telefon_yenileme.sql', '111_geri_kazanma.sql', '112_bekleyen_cihaz.sql', '113_kayip_onleme.sql', '114_nakit_akisi.sql', '115_alis_karliligi.sql', '116_servis_takip.sql', '117_aksesuar_siparis.sql', '118_magaza_ekrani.sql', '119_kvkk_silme.sql', '120_fiyat_alarmi.sql', '121_portal_gizlilik.sql', '122_servis_garanti_kontrol.sql', '123_musteri_tek_bakis.sql', '124_etiket_yenileme.sql', '125_portal_fisler.sql'];
+const SYS_MIGS=['001_temel_cekirdek.sql', '002_konsinye_guncelleme.sql', '003_servis_siparis_teklif.sql', '004_belgeler_fotograf.sql', '005_vardiya_gorev.sql', '006_hedefler.sql', '007_push_bildirim.sql', '008_aksesuar.sql', '009_fire_kaydi.sql', '010_barkod.sql', '011_alislar_kur.sql', '012_kasa_gunsonu.sql', '013_masraflar.sql', '014_aksesuar_varyant.sql', '015_yatirimci_raporu.sql', '016_garanti_taksit.sql', '017_cari_kartlari.sql', '018_teklif_sihirbazi.sql', '019_stok_sayim.sql', '020_siparis_aksesuar.sql', '021_eksikler.sql', '022_teknik_servis.sql', '023_iadeler.sql', '024_degisim.sql', '025_servis_baglantisi.sql', '026_hakedisler.sql', '027_sahip_kasasi.sql', '028_calisma_duzeni.sql', '029_iskonto.sql', '030_vadeli_alim.sql', '031_aksesuar_dolar_maliyet.sql', '032_primler.sql', '033_cihaz_kontrol.sql', '034_kontrol_cari_duzeltme.sql', '035_kontrol_tablet_saat.sql', '036_alt_kategori_af_mf.sql', '037_toplu_alim_cihaz.sql', '038_kazanc_raporlari_sahip.sql', '039_isletme_profili.sql', '040_fiyat_onerisi.sql', '041_kategori_hedefleri.sql', '042_vardiya_hatirlatma.sql', '043_bildirim_altyapisi.sql', '044_bildirimler.sql', '045_musteri_turleri.sql', '046_egitimler.sql', '047_egitim_gelistirme.sql', '048_kullanici_yonetimi.sql', '049_kullanici_silme_pasif.sql', '050_ortak_bilgisayar.sql', '051_canli_guncelleme.sql', '052_hizli_yenileme.sql', '053_bildirim_ekleri.sql', '054_notlar.sql', '055_musteri_kanali.sql', '056_banka_komisyon.sql', '057_odeal_cekim_komisyonu.sql', '058_satis_ekrani.sql', '059_hizmet_urunleri.sql', '060_sadakat.sql', '061_sadakat_whatsapp.sql', '062_garanti_paketleri.sql', '063_garanti_devir_portal.sql', '064_sms_dogrulama.sql', '065_koruma_paketleri.sql', '066_uc_al_iki_ode.sql', '067_bir_alana_bir_bedava.sql', '068_hediye_ceki.sql', '069_prim_sistemi.sql', '070_prim_magaza_hedefleri.sql', '071_prim_cihaz_hedefleri.sql', '072_personel_karti.sql', '073_kampanya_tarih_araligi.sql', '074_not_baglantilari.sql', '075_kataloglar.sql', '076_garanti_belgesi.sql', '077_mola_takibi.sql', '078_mola_bordro.sql', '079_mesai_gec_erken.sql', '080_personel_yetkileri.sql', '081_ekip_performansi.sql', '082_kasa_gorunumu.sql', '083_eski_model_indirimi.sql', '084_sadakat_vip.sql', '085_sadakat_odul_urunu.sql', '086_alis_odeme_hesaplari.sql', '087_aksesuar_pasif_sil.sql', '088_toplu_alim_sahip.sql', '089_stok_cihaz_onarim.sql', '090_ozel_indirim.sql', '091_sadakat_uyelik.sql', '092_dogumgunu_sms.sql', '093_eposta_otomasyonu.sql', '094_anket_yorum.sql', '095_mudur_urun_alisi.sql', '096_isletme_iletisim.sql', '097_aksesuar_etiket.sql', '098_denetim_duzeltmeleri.sql', '099_yedekleme.sql', '100_donemsel_yukleme.sql', '101_sistem_durumu.sql', '102_yedek_tetik_duzeltme.sql', '103_sunucu_cagri_suresi.sql', '104_claude_baglayici.sql', '105_egitim_sunumlari.sql', '106_egitim_telefon.sql', '107_kontrol_nfc_magsafe.sql', '108_egitim_kampanyalar.sql', '109_aranan_cihaz.sql', '110_telefon_yenileme.sql', '111_geri_kazanma.sql', '112_bekleyen_cihaz.sql', '113_kayip_onleme.sql', '114_nakit_akisi.sql', '115_alis_karliligi.sql', '116_servis_takip.sql', '117_aksesuar_siparis.sql', '118_magaza_ekrani.sql', '119_kvkk_silme.sql', '120_fiyat_alarmi.sql', '121_portal_gizlilik.sql', '122_servis_garanti_kontrol.sql', '123_musteri_tek_bakis.sql', '124_etiket_yenileme.sql', '125_portal_fisler.sql', '126_personel_ekrani.sql'];
 const SYS_FN={sadakat:{l:'Sadakat portalı ve SMS doğrulama',m:60,f:'sadakat_index.ts',k:'Sadakat 2. aşama (SMS doğrulama)'},eposta:{l:'E-posta otomasyonu',m:93,f:'eposta_index.ts',k:'E-posta otomasyonu'},
   'push-notify':{l:'Telefon bildirimleri',m:43,f:'push-notify index.ts',k:'Telefon bildirimleri'},'user-admin':{l:'Kullanıcı yönetimi',m:48,f:'user-admin index.ts',k:'Kullanıcı yönetimi'},yedek:{l:'Yedekleme',m:99,f:'yedek_index.ts',k:'Otomatik yedekleme'},
   'cepos-asistan':{l:'Claude bağlayıcısı',m:104,f:'cepos-asistan_index.ts',k:'Claude bağlayıcısı',opt:true}};
