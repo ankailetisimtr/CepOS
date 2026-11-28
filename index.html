@@ -2042,7 +2042,7 @@ function vPanel(){const d=S.d,t=today(),y=addDays(t,-1),mine=!pnAll();
   const pkTxt=k=>{const x=HR.pk[k];return x?`${pad(x.h)}:00–${pad(x.h+1)}:00`:'—'};
   const goals=pnGoals(),team=pnTeam(L),best=pnBest(L.acc);
   return `<div class="pg-head"><div style="min-width:0"><div class="pg-eyebrow">Mağazanız bir bakışta</div><h1 class="pg-title">Genel Bakış<i>.</i></h1><div class="sub" style="font-size:14.5px">Merhaba${first?' '+esc(first):''}, ${mine?'bugün satışların nasıl gidiyor?':'mağazanızda bugün neler oluyor?'}</div></div><div class="sp"></div>
-    <span class="chip">${ic('cal','sm')}${esc(dateTxt)}</span><button class="btn lgb" data-a="fg-open">${ic('tag','sm')}Fiyat gör</button>${pnOk('kasa')?`<a class="btn lgb" href="#kasa" data-qa="kasa">${ic('wallet','sm')}Kasa</a>`:''}${can('make_sale')?`<a class="btn pri lgb" href="#satis">${ic('plus','sm')}Yeni satış</a>`:''}</div>
+    <span class="chip">${ic('cal','sm')}${esc(dateTxt)}</span><button class="btn lgb" data-a="fg-open">${ic('tag','sm')}Fiyat gör</button>${tiBank()?`<button class="btn lgb" data-a="ti-calc" title="Taksit hesaplayıcı">${ic('card','sm')}Taksit hesapla</button>`:''}${pnOk('kasa')?`<a class="btn lgb" href="#kasa" data-qa="kasa">${ic('wallet','sm')}Kasa</a>`:''}${can('make_sale')?`<a class="btn pri lgb" href="#satis">${ic('plus','sm')}Yeni satış</a>`:''}</div>
   ${qfBanner()}${pnMyTasks()}
   <div class="kpis">
     ${pnSplitKpi(mine?'Bugünkü satışım':'Bugünkü satış','wallet','b',today_,yest,'düne göre','dün satış yoktu',`Toplam ${pnMoney(today_.dev.rev+today_.acc.rev)} · ${num(tN)} işlem`,'satislar')}
