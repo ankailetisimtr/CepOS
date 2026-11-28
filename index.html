@@ -9403,7 +9403,7 @@ const A={
   'qw-back'(){qwCollect();S.qw.step=Math.max(0,S.qw.step-1);qwRender()},
   'qw-next'(){const w=S.qw,key=qwSteps(w.kind)[w.step];qwCollect();const e=qwValidate(key);if(e)return setErr(e);w.step++;qwRender()},
   'qw-save'(){qwSave()},
-  'q-toalis'(t){const l=qSide(t.dataset.id,'alis').filter(i=>!i.converted_product_id);l.length===1?qConvStart(l[0].id):qToAlisModal(t.dataset.id)},
+  'q-toalis'(t){const l=qSide(t.dataset.id,'alis').filter(i=>!i.converted_product_id);l.length===1?qrcStart(l[0].id):qToAlisModal(t.dataset.id)},
   'q-conv'(t){qrcStart(t.dataset.id)},'qrc-redo'(t){const it=(S.d.quote_items||[]).find(x=>x.id===t.dataset.id),f=qrcFirst(it),s2=f&&qrcSecond(it,f),q=it&&S.d.quotes.find(x=>x.id===it.quote_id);if(!s2)return qrcStart(t.dataset.id);closeModal();
     insOpen({context:'alis',first:f.id,qitem:it.id,id:s2.id,cat:s2.cat,price:Number(it.unit_price),contact:q&&q.contact_id||'',done:(row,up)=>qrcModal(it.id,row.id,up),back:()=>qrcModal(it.id,s2.id,null)})},
   'qrc-go'(t){const v=qrcAmtNow();if(!(v>0))return setErr('Anlaşılan alış bedelini yazın.');S.qrcA={item:t.dataset.id,amt:v};qConvStart(t.dataset.id,t.dataset.s,v)},
